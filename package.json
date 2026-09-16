@@ -9,7 +9,8 @@
     "validate:numbering": "node scripts/validate-numbering-markers.mjs",
     "validate:question-plan": "node scripts/validate-question-plan.mjs",
     "validate:progression": "node scripts/validate-forward-progress.mjs",
-    "validate": "npm run validate:curriculum && npm run validate:numbering && npm run validate:question-plan && npm run validate:progression",
+    "test": "vitest run",
+    "validate": "npm run validate:curriculum && npm run validate:numbering && npm run validate:question-plan && npm run validate:progression && npm run test",
     "ci": "npm run sync:curriculum && npm run validate"
   },
   "engines": {
