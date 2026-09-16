@@ -4,6 +4,7 @@ import { QuestionBlock } from './components/QuestionBlock';
 import { ParallelLinesDiagram } from './geometry/ParallelLinesDiagram';
 import { unit1Questions } from './content/questions-unit1';
 import { Unit1Continuation } from './pages/Unit1Continuation';
+import { Unit2Pages } from './pages/Unit2Pages';
 import './styles/print.css';
 
 const byId = (id: string) => {
@@ -151,6 +152,7 @@ export default function App() {
     <div className="preview-stack">
       <Unit1Page1 />
       <Unit1Continuation />
+      <Unit2Pages />
     </div>
   );
 }
