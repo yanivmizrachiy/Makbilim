@@ -99,6 +99,15 @@ gate('student-facing-copy', bannedHits.length === 0, bannedHits.join('; '));
 const stemValues = [...allQuestionText.matchAll(/stem:\s*'([^']+)'/g)].map(m => m[1]);
 gate('hebrew', stemValues.length >= 58 && stemValues.every(s => /[\u0590-\u05FF]/.test(s)), `found ${stemValues.length} Hebrew stems`);
 
+const normalizedStemCounts = new Map();
+for (const stem of stemValues) {
+  const normalized = stem.replace(/\s+/g, ' ').trim();
+  normalizedStemCounts.set(normalized, (normalizedStemCounts.get(normalized) ?? 0) + 1);
+}
+const repeatedStems = [...normalizedStemCounts.entries()].filter(([, count]) => count > 1);
+gate('duplicate-stems', repeatedStems.length === 0,
+  repeatedStems.map(([stem, count]) => `${count}× ${stem}`).join(' | '));
+
 const forbiddenAiPhrases = ['בואו', 'מה דעתכם', 'נסו לגלות', 'אתגר מגניב', 'מגניב'];
 const aiPhraseHits = stemValues.filter(s => forbiddenAiPhrases.some(p => s.includes(p)));
 gate('wording-style', aiPhraseHits.length === 0, aiPhraseHits.join(' | '));
