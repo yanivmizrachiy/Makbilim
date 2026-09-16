@@ -7,6 +7,7 @@ export type AngleMark = {
   label?: string;
   value?: string;
   tone?: 'primary' | 'secondary' | 'neutral';
+  arcStyle?: 'single' | 'double' | 'dashed';
 };
 
 export type ParallelLinesDiagramProps = {
@@ -25,8 +26,8 @@ const W = 520;
 const H = 260;
 const CENTER: Point = { x: W / 2, y: H / 2 };
 
-function classForTone(tone: AngleMark['tone']) {
-  return `angle-mark angle-mark--${tone ?? 'primary'}`;
+function classForMark(mark: AngleMark) {
+  return `angle-mark angle-mark--${mark.tone ?? 'primary'} angle-mark--${mark.arcStyle ?? 'single'}`;
 }
 
 function sectorAngles(lineDeg: number, transversalDeg: number, sector: AngleMark['sector']) {
@@ -111,10 +112,12 @@ export function ParallelLinesDiagram({
         if (!intersection) return null;
         const { start, end } = sectorAngles(orientationDeg, intersection.transDeg, mark.sector);
         const mid = start + (end - start) / 2;
-        const labelPoint = pointOnRay(intersection.point, mid, 38);
+        const labelPoint = pointOnRay(intersection.point, mid, 41);
+        const style = mark.arcStyle ?? 'single';
         return (
-          <g key={`${mark.intersection}-${mark.sector}-${index}`} className={classForTone(mark.tone)}>
+          <g key={`${mark.intersection}-${mark.sector}-${index}`} className={classForMark(mark)}>
             <path d={arcPath(intersection.point, 27, start + 5, end - 5)} />
+            {style === 'double' && <path d={arcPath(intersection.point, 33, start + 6, end - 6)} />}
             {(mark.label || mark.value) && (
               <text x={labelPoint.x} y={labelPoint.y} textAnchor="middle" dominantBaseline="middle">
                 {mark.label ?? mark.value}
