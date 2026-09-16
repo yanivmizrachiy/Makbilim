@@ -201,11 +201,20 @@
 }
 
 .a4-page[data-unit="1"][data-page="3"] .paired-diagrams .geometry-diagram {
-  max-height: 14mm;
+  max-height: 16mm;
 }
 
 .a4-page[data-unit="1"][data-page="3"] .relation-table .geometry-diagram {
-  max-height: 10.8mm;
+  max-height: 12.4mm;
+}
+
+.a4-page[data-unit="1"][data-page="3"] .page-content {
+  padding-top: 1.8mm;
+  gap: 0.65mm;
+}
+
+.a4-page[data-unit="1"][data-page="3"] .question-block--compact {
+  padding-block: 0.45mm;
 }
 
 :is(
@@ -226,7 +235,7 @@
   padding: 0.45mm 0.8mm;
 }
 
-.a4-page[data-unit="1"][data-page="3"] .write-cell { min-height: 4.8mm; }
+.a4-page[data-unit="1"][data-page="3"] .write-cell { min-height: 5.6mm; }
 
 :is(
   .a4-page[data-unit="1"][data-page="3"],
