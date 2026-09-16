@@ -1,11 +1,23 @@
 {
   "projectTitle": "זוויות בין ישרים מקבילים",
-  "questionNumbering": "none",
-  "questionMarker": "●",
+  "canonicalSpec": "SPEC.md",
+  "numbering": {
+    "unitNumbering": "numeric",
+    "pageNumbering": "reset-per-unit",
+    "firstPageInEveryUnit": 1,
+    "globalContinuousPageNumbering": false,
+    "questionNumbering": "none",
+    "subpartNumbering": "none",
+    "questionMarker": "●",
+    "subpartMarker": "•",
+    "questionMarkerRole": "large-solid-bullet",
+    "subpartMarkerRole": "small-solid-bullet"
+  },
   "units": [
     {
       "unit": 1,
       "title": "מושגים בסיסיים",
+      "pageStart": 1,
       "difficulty": ["D1", "D2"],
       "goals": [
         "זיהוי ישרים וישר חותך",
@@ -20,6 +32,7 @@
     {
       "unit": 2,
       "title": "המשפטים הישירים ותנאי המקבילות",
+      "pageStart": 1,
       "difficulty": ["D1", "D2"],
       "goals": [
         "השלמת המשפטים הישירים",
@@ -31,31 +44,36 @@
     },
     {
       "unit": 3,
-      "title": "חישוב ישיר",
+      "title": "חישוב ישיר במספרים",
+      "pageStart": 1,
       "difficulty": ["D1", "D2"],
-      "goals": ["חישוב חד-שלבי", "בחירת המשפט הישיר המתאים", "גמישות חזותית בסיסית"]
+      "goals": ["חישוב חד-שלבי במספרים", "בחירת המשפט הישיר המתאים", "גמישות חזותית בסיסית"]
     },
     {
       "unit": 4,
-      "title": "חישוב משולב",
+      "title": "חישוב משולב במספרים",
+      "pageStart": 1,
       "difficulty": ["D2", "D3"],
       "goals": ["שני שלבי הסקה", "שילוב קודקודיות/צמודות/זווית שטוחה", "בחירת מסלול פתרון"]
     },
     {
       "unit": 5,
-      "title": "טבלאות, קשרים ואלגברה",
+      "title": "טבלאות, ייצוגים ואלגברה",
+      "pageStart": 1,
       "difficulty": ["D2", "D3", "D4"],
-      "goals": ["שליפה מטבלה", "השלמת טבלה", "אלגברה פשוטה", "מציאת x וחישוב זווית"]
+      "goals": ["שליפה מטבלה", "השלמת טבלה", "אלגברה לאחר תרגול מספרי", "מציאת x וחישוב זווית", "כתיבת המשפט המצדיק את המשוואה"]
     },
     {
       "unit": 6,
-      "title": "נימוק, בחירת משפט והבנת נתונים",
+      "title": "נימוק, בחירת משפט והערכת נתונים",
+      "pageStart": 1,
       "difficulty": ["D3", "D4", "D5"],
       "goals": ["קביעה ונימוק", "מידע מספיק/לא מספיק", "איתור טעות", "הוכחה קצרה"]
     },
     {
       "unit": 7,
       "title": "משפטים הפוכים",
+      "pageStart": 1,
       "advanced": true,
       "difficulty": ["D3", "D4", "D5"],
       "prerequisites": [1, 2, 3, 4, 5, 6],
@@ -64,7 +82,7 @@
         "הבחנה בין משפט ישיר להפוך",
         "קביעת מקבילות משוויון זוויות מתאימות",
         "קביעת מקבילות משוויון זוויות מתחלפות",
-        "מציאת x המבטיח מקבילות",
+        "מציאת ערך מספרי ובהמשך x המבטיח מקבילות",
         "בדיקת מספיקות נתונים",
         "הוכחה קצרה לקביעת מקבילות"
       ]
