@@ -14,15 +14,18 @@ describe('Unit 4 — משפטים הפוכים', () => {
     expect(new Set(unit4Questions.map(q => q.stem.trim())).size).toBe(8);
   });
 
-  it('introduces converse theorem completion before algebra without forcing one exact classroom phrase', () => {
+  it('introduces converse theorem completion before algebra without exposing the missing concept', () => {
     const algebraIndex = unit4Questions.findIndex(q => /(?:^|[^A-Za-z])x(?:[^A-Za-z]|$)/.test(q.stem));
     expect(algebraIndex).toBeGreaterThan(3);
 
-    for (const q of unit4Questions.slice(0, 2)) {
+    const firstTwo = unit4Questions.slice(0, 2);
+    for (const q of firstTwo) {
       expect(q.stem).toMatch(/^השלימו/);
       expect(q.stem).toContain('______');
-      expect(q.stem).toMatch(/זוויות (?:מתאימות|מתחלפות)/);
-      expect(q.stem).toContain('מקבילים');
+      expect(q.expected.completions?.length).toBeGreaterThanOrEqual(2);
+      const completedSemanticText = `${q.stem} ${(q.expected.completions ?? []).join(' ')}`;
+      expect(completedSemanticText).toMatch(/(?:מתאימות|מתחלפות)/);
+      expect(completedSemanticText).toContain('מקבילים');
     }
   });
 
