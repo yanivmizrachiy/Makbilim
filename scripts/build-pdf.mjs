@@ -120,6 +120,13 @@ try {
     const subpartMarkerCount = el.querySelectorAll('.subpart-marker').length;
     const sourceNumberCount = el.querySelectorAll('.bbb-source .qnum').length;
     const sourceShaCount = el.querySelectorAll('.bbb-source-block[data-source-sha256]').length;
+    const geometrySvgs = [...el.querySelectorAll('svg.geometry-diagram')];
+    const geometrySvgCount = geometrySvgs.length;
+    const unlabeledGeometrySvgCount = geometrySvgs.filter(svg => {
+      const role = svg.getAttribute('role');
+      const label = svg.getAttribute('aria-label')?.trim() ?? '';
+      return role !== 'img' || label.length < 3;
+    }).length;
     const projectTitleText = el.querySelector('.page-title-group h1')?.textContent?.trim() ?? '';
     const unitTitleText = el.querySelector('.unit-title')?.textContent?.trim() ?? '';
     const pageNumberText = el.querySelector('.page-number')?.textContent?.trim() ?? '';
@@ -132,9 +139,15 @@ try {
       q.scrollHeight - q.clientHeight > 2 || q.scrollWidth - q.clientWidth > 2
     ).length;
     const contentRects = questionContents.map(q => q.getBoundingClientRect());
+    const firstContentRect = contentRects.at(0);
     const lastContentRect = contentRects.at(-1);
+    const topGapPx = contentRect && firstContentRect ? Math.max(0, firstContentRect.top - contentRect.top) : null;
     const bottomGapPx = contentRect && lastContentRect ? Math.max(0, contentRect.bottom - lastContentRect.bottom) : null;
+    const topGapRatio = contentRect && topGapPx != null && contentRect.height > 0 ? topGapPx / contentRect.height : null;
     const bottomGapRatio = contentRect && bottomGapPx != null && contentRect.height > 0 ? bottomGapPx / contentRect.height : null;
+    const usedSpanRatio = contentRect && firstContentRect && lastContentRect && contentRect.height > 0
+      ? Math.max(0, lastContentRect.bottom - firstContentRect.top) / contentRect.height
+      : null;
     const interQuestionGaps = contentRects.slice(1).map((current, i) => Math.max(0, current.top - contentRects[i].bottom));
     const maxInterQuestionGapPx = interQuestionGaps.length ? Math.max(...interQuestionGaps) : 0;
     const maxInterQuestionGapRatio = contentRect && contentRect.height > 0 ? maxInterQuestionGapPx / contentRect.height : 0;
@@ -155,8 +168,11 @@ try {
       scrollOverflow: el.scrollHeight - el.clientHeight,
       overflowingQuestions,
       internallyOverflowingQuestions,
+      topGapPx,
+      topGapRatio,
       bottomGapPx,
       bottomGapRatio,
+      usedSpanRatio,
       maxInterQuestionGapPx,
       maxInterQuestionGapRatio,
       questionCount: questions.length,
@@ -165,6 +181,8 @@ try {
       subpartMarkerCount,
       sourceNumberCount,
       sourceShaCount,
+      geometrySvgCount,
+      unlabeledGeometrySvgCount,
       projectTitleText,
       unitTitleText,
       pageNumberText,
@@ -191,6 +209,9 @@ try {
     const authoredMarkerFailure = !item.isVerbatimCurriculum && (
       item.markerCount !== item.questionCount || item.subpartMarkerCount !== item.subpartCount
     );
+    const authoredGeometryFailure = !item.isVerbatimCurriculum && (
+      item.geometrySvgCount < 1 || item.unlabeledGeometrySvgCount > 0
+    );
     const curriculumFidelityFailure = item.isVerbatimCurriculum && (
       item.questionCount !== 2 || item.sourceNumberCount !== 2 || item.sourceShaCount !== 2
     );
@@ -211,9 +232,12 @@ try {
       item.internallyOverflowingQuestions > 0 ||
       item.questionCount === 0 ||
       authoredMarkerFailure ||
+      authoredGeometryFailure ||
       curriculumFidelityFailure ||
       pageChromeFailure ||
+      (item.topGapRatio != null && item.topGapRatio > 0.08) ||
       (item.bottomGapRatio != null && item.bottomGapRatio > 0.12) ||
+      (item.usedSpanRatio != null && item.usedSpanRatio < 0.76) ||
       item.maxInterQuestionGapRatio > 0.19 ||
       item.unit !== expectedPages[index][0] ||
       item.localPage !== expectedPages[index][1]
@@ -259,7 +283,7 @@ try {
     `${JSON.stringify({ pageCount, expectedPages, mathJaxStatus, layout }, null, 2)}\n`,
     'utf8',
   );
-  console.log(`pdf-visual: PASS — ${pageCount} A4 pages, ${mathJaxStatus.rendered}/${mathJaxStatus.total} MathJax SVG tokens, canonical chrome + utilization + grayscale snapshots generated`);
+  console.log(`pdf-visual: PASS — ${pageCount} A4 pages, ${mathJaxStatus.rendered}/${mathJaxStatus.total} MathJax SVG tokens, canonical chrome + utilization + labeled geometry + grayscale snapshots generated`);
 } finally {
   clearTimeout(hardWatchdog);
   await closeBrowser();
