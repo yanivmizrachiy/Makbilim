@@ -17,8 +17,8 @@ describe('Unit 4 — משפטים הפוכים', () => {
   it('introduces converse theorem language before algebra', () => {
     const algebraIndex = unit4Questions.findIndex(q => /(?:^|[^A-Za-z])x(?:[^A-Za-z]|$)/.test(q.stem));
     expect(algebraIndex).toBeGreaterThan(3);
-    expect(unit4Questions[0].stem).toContain('השלימו את המשפט');
-    expect(unit4Questions[1].stem).toContain('השלימו את המשפט');
+    expect(unit4Questions[0]!.stem).toContain('השלימו את המשפט');
+    expect(unit4Questions[1]!.stem).toContain('השלימו את המשפט');
   });
 
   it('requires justification space in the converse algebra question', () => {
