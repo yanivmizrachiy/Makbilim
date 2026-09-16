@@ -21,70 +21,80 @@
       "difficulty": ["D1", "D2"],
       "goals": [
         "זיהוי ישרים וישר חותך",
-        "זיהוי זוויות מתאימות",
-        "זיהוי זוויות מתחלפות",
+        "זיהוי זוויות מתאימות ומתחלפות",
         "התאמת זווית לזווית לפי מיקום",
-        "הבנה שסוג הזוג אינו תלוי במקבילות"
+        "השלמת המשפטים הישירים",
+        "הבחנה בין סיווג זוויות לבין הסקת שוויון",
+        "תיקון ניסוחים חסרים של המשפטים"
       ],
-      "allowedFormats": ["mark-on-diagram", "matching", "classification", "table", "multiple-choice", "true-false"],
+      "allowedFormats": [
+        "mark-on-diagram",
+        "matching",
+        "classification",
+        "sentence-completion",
+        "table",
+        "multiple-choice",
+        "true-false",
+        "claim-comparison"
+      ],
       "forbiddenAtThisStage": ["algebra", "converse-theorems", "formal-proof"]
     },
     {
       "unit": 2,
-      "title": "המשפטים הישירים ותנאי המקבילות",
+      "title": "תרגילי חישוב",
       "pageStart": 1,
-      "difficulty": ["D1", "D2"],
-      "goals": [
-        "השלמת המשפטים הישירים",
-        "הבחנה בין זיהוי זוג לבין הסקת שוויון",
-        "הבנה שהשוויון מחייב ישרים מקבילים",
-        "תיקון ניסוחים חסרים כגון זוויות מתחלפות שוות"
+      "difficulty": ["D1", "D2", "D3", "D4"],
+      "progression": [
+        "numeric-direct-corresponding",
+        "numeric-direct-alternate",
+        "choose-theorem",
+        "numeric-two-step",
+        "vertical-adjacent-straight-angle-support",
+        "numeric-table",
+        "rotated-diagrams",
+        "simple-x-equation",
+        "two-expression-equation",
+        "solve-x-then-angle"
       ],
-      "requiredFormats": ["sentence-completion", "true-false", "claim-comparison", "choose-correct-statement"]
+      "rules": [
+        "numbers-before-algebra",
+        "equation-requires-geometric-justification-space"
+      ]
     },
     {
       "unit": 3,
-      "title": "חישוב ישיר במספרים",
+      "title": "תרגילי הוכחה",
       "pageStart": 1,
-      "difficulty": ["D1", "D2"],
-      "goals": ["חישוב חד-שלבי במספרים", "בחירת המשפט הישיר המתאים", "גמישות חזותית בסיסית"]
+      "difficulty": ["D2", "D3", "D4", "D5"],
+      "progression": [
+        "choose-reason",
+        "complete-missing-reason",
+        "match-claim-to-reason",
+        "determine-and-justify",
+        "find-proof-error",
+        "order-proof-steps",
+        "complete-proof-line",
+        "short-full-proof"
+      ],
+      "forbiddenAtThisStage": ["converse-theorems-as-main-topic"]
     },
     {
       "unit": 4,
-      "title": "חישוב משולב במספרים",
-      "pageStart": 1,
-      "difficulty": ["D2", "D3"],
-      "goals": ["שני שלבי הסקה", "שילוב קודקודיות/צמודות/זווית שטוחה", "בחירת מסלול פתרון"]
-    },
-    {
-      "unit": 5,
-      "title": "טבלאות, ייצוגים ואלגברה",
-      "pageStart": 1,
-      "difficulty": ["D2", "D3", "D4"],
-      "goals": ["שליפה מטבלה", "השלמת טבלה", "אלגברה לאחר תרגול מספרי", "מציאת x וחישוב זווית", "כתיבת המשפט המצדיק את המשוואה"]
-    },
-    {
-      "unit": 6,
-      "title": "נימוק, בחירת משפט והערכת נתונים",
-      "pageStart": 1,
-      "difficulty": ["D3", "D4", "D5"],
-      "goals": ["קביעה ונימוק", "מידע מספיק/לא מספיק", "איתור טעות", "הוכחה קצרה"]
-    },
-    {
-      "unit": 7,
       "title": "משפטים הפוכים",
       "pageStart": 1,
       "advanced": true,
       "difficulty": ["D3", "D4", "D5"],
-      "prerequisites": [1, 2, 3, 4, 5, 6],
-      "goals": [
-        "השלמת המשפטים ההפוכים",
-        "הבחנה בין משפט ישיר להפוך",
-        "קביעת מקבילות משוויון זוויות מתאימות",
-        "קביעת מקבילות משוויון זוויות מתחלפות",
-        "מציאת ערך מספרי ובהמשך x המבטיח מקבילות",
-        "בדיקת מספיקות נתונים",
-        "הוכחה קצרה לקביעת מקבילות"
+      "prerequisites": [1, 2, 3],
+      "progression": [
+        "complete-converse-theorems",
+        "direct-vs-converse",
+        "numeric-parallelism-inference",
+        "data-sufficiency",
+        "choose-converse-reason",
+        "numeric-value-for-parallelism",
+        "x-value-for-parallelism",
+        "short-parallelism-proof",
+        "combined-direct-and-converse"
       ]
     }
   ]
