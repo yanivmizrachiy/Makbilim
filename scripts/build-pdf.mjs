@@ -41,36 +41,84 @@ try {
     const el = node;
     const rect = el.getBoundingClientRect();
     const content = el.querySelector('.page-content');
+    const contentRect = content?.getBoundingClientRect();
     const questions = [...el.querySelectorAll('.question-block')];
+    const questionContents = [...el.querySelectorAll('.question-content')];
+    const markerCount = el.querySelectorAll('.question-marker').length;
+    const subpartCount = el.querySelectorAll('.subpart').length;
+    const subpartMarkerCount = el.querySelectorAll('.subpart-marker').length;
     const overflowingQuestions = questions.filter(q => {
       const qRect = q.getBoundingClientRect();
       return qRect.bottom > rect.bottom + 1 || qRect.top < rect.top - 1 || qRect.right > rect.right + 1 || qRect.left < rect.left - 1;
     }).length;
-    const contentRect = content?.getBoundingClientRect();
-    const lastRect = questions.at(-1)?.getBoundingClientRect();
+    const contentRects = questionContents.map(q => q.getBoundingClientRect());
+    const lastContentRect = contentRects.at(-1);
+    const bottomGapPx = contentRect && lastContentRect ? Math.max(0, contentRect.bottom - lastContentRect.bottom) : null;
+    const bottomGapRatio = contentRect && bottomGapPx != null && contentRect.height > 0 ? bottomGapPx / contentRect.height : null;
+    const interQuestionGaps = contentRects.slice(1).map((current, i) => Math.max(0, current.top - contentRects[i].bottom));
+    const maxInterQuestionGapPx = interQuestionGaps.length ? Math.max(...interQuestionGaps) : 0;
+    const maxInterQuestionGapRatio = contentRect && contentRect.height > 0 ? maxInterQuestionGapPx / contentRect.height : 0;
+    const unit = Number(el.getAttribute('data-unit'));
+    const localPage = Number(el.getAttribute('data-page'));
     return {
-      page: index + 1,
+      renderIndex: index + 1,
+      unit,
+      localPage,
       widthPx: rect.width,
       heightPx: rect.height,
       scrollOverflow: el.scrollHeight - el.clientHeight,
       overflowingQuestions,
-      bottomGapPx: contentRect && lastRect ? Math.max(0, contentRect.bottom - lastRect.bottom) : null,
+      bottomGapPx,
+      bottomGapRatio,
+      maxInterQuestionGapPx,
+      maxInterQuestionGapRatio,
       questionCount: questions.length,
+      markerCount,
+      subpartCount,
+      subpartMarkerCount,
     };
   }));
 
-  const failures = layout.filter(item =>
+  const expectedPages = [
+    [1,1],[1,2],[1,3],
+    [2,1],[2,2],[2,3],[2,4],[2,5],[2,6],
+    [3,1],[3,2],[3,3],
+    [4,1],[4,2],
+  ];
+
+  const failures = layout.filter((item, index) =>
     item.scrollOverflow > 2 ||
     item.overflowingQuestions > 0 ||
     item.questionCount === 0 ||
-    (item.bottomGapPx != null && item.bottomGapPx > 70)
+    item.markerCount !== item.questionCount ||
+    item.subpartMarkerCount !== item.subpartCount ||
+    (item.bottomGapRatio != null && item.bottomGapRatio > 0.12) ||
+    item.maxInterQuestionGapRatio > 0.19 ||
+    item.unit !== expectedPages[index][0] ||
+    item.localPage !== expectedPages[index][1]
   );
   if (failures.length) throw new Error(`A4 layout QA failed: ${JSON.stringify(failures)}`);
 
   for (let index = 0; index < pageCount; index += 1) {
     const locator = page.locator('.a4-page').nth(index);
-    await locator.screenshot({ path: path.join(shotsDir, `page-${String(index + 1).padStart(2, '0')}.png`) });
+    const item = layout[index];
+    const stem = `u${item.unit}-p${item.localPage}`;
+    await locator.screenshot({ path: path.join(shotsDir, `${stem}-color.png`) });
   }
+
+  await page.evaluate(() => {
+    const style = document.createElement('style');
+    style.id = 'grayscale-qa';
+    style.textContent = 'html { filter: grayscale(1) !important; }';
+    document.head.appendChild(style);
+  });
+  for (let index = 0; index < pageCount; index += 1) {
+    const locator = page.locator('.a4-page').nth(index);
+    const item = layout[index];
+    const stem = `u${item.unit}-p${item.localPage}`;
+    await locator.screenshot({ path: path.join(shotsDir, `${stem}-grayscale.png`) });
+  }
+  await page.evaluate(() => document.getElementById('grayscale-qa')?.remove());
 
   await page.pdf({
     path: path.join(pdfDir, 'זוויות-בין-ישרים-מקבילים.pdf'),
@@ -80,8 +128,8 @@ try {
     margin: { top: '0', right: '0', bottom: '0', left: '0' },
   });
 
-  await fs.writeFile(path.join(root, 'artifacts', 'layout-report.json'), `${JSON.stringify({ pageCount, layout }, null, 2)}\n`, 'utf8');
-  console.log(`pdf-visual: PASS — ${pageCount} A4 pages`);
+  await fs.writeFile(path.join(root, 'artifacts', 'layout-report.json'), `${JSON.stringify({ pageCount, expectedPages, layout }, null, 2)}\n`, 'utf8');
+  console.log(`pdf-visual: PASS — ${pageCount} A4 pages, utilization + grayscale snapshots generated`);
 } finally {
   if (browser) await browser.close();
   server.kill('SIGTERM');
