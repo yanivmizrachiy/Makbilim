@@ -110,7 +110,7 @@ function RelationTable() {
   const diagrams = [
     { orientationDeg: 0, transversalDeg: 59, parallel: true, marks: [{ intersection: 'top' as const, sector: 0 as const }, { intersection: 'bottom' as const, sector: 0 as const }] },
     { orientationDeg: 31, transversalDeg: 122, parallel: false, marks: [{ intersection: 'top' as const, sector: 1 as const }, { intersection: 'bottom' as const, sector: 2 as const }] },
-    { orientationDeg: 82, transversalDeg: 27, parallel: true, marks: [{ intersection: 'top' as const, sector: 2 as const }, { intersection: 'bottom', sector: 2 as const }] },
+    { orientationDeg: 82, transversalDeg: 27, parallel: true, marks: [{ intersection: 'top' as const, sector: 2 as const }, { intersection: 'bottom' as const, sector: 2 as const }] },
     { orientationDeg: -18, transversalDeg: 51, parallel: false, marks: [{ intersection: 'top' as const, sector: 0 as const }, { intersection: 'bottom' as const, sector: 1 as const }] },
   ];
   return (
