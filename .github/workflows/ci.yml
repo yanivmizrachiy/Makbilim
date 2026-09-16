@@ -13,13 +13,36 @@ concurrency:
 
 permissions:
   contents: read
+  actions: write
 
 env:
   NODE_VERSION: '22'
 
 jobs:
+  cleanup:
+    name: Cancel stale main runs
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Cancel older queued or running CI runs on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs?branch=main&per_page=100" \
+            --jq '.workflow_runs[] | select((.status == "queued" or .status == "in_progress") and (.id != '${GITHUB_RUN_ID}')) | .id' \
+            | while read -r run_id; do
+                [ -n "$run_id" ] || continue
+                echo "Cancelling stale run $run_id"
+                gh api -X POST "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/cancel" >/dev/null 2>&1 || true
+              done
+
   freshness:
     name: Verify latest commit
+    needs: [cleanup]
+    if: always() && (needs.cleanup.result == 'success' || needs.cleanup.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
