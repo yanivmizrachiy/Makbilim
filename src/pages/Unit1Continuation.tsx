@@ -5,16 +5,17 @@ import { ParallelLinesDiagram } from '../geometry/ParallelLinesDiagram';
 import { unit1Questions } from '../content/questions-unit1';
 
 const byId = (id: string) => {
-  const question = unit1Questions.find(item => item.id === id);
-  if (!question) throw new Error(`Missing unit 1 question: ${id}`);
-  return question;
+  const q = unit1Questions.find(item => item.id === id);
+  if (!q) throw new Error(`Missing unit 1 question: ${id}`);
+  return q;
 };
 
-function MatchingColumns() {
+function MatchingColumns({ mode }: { mode: 'corresponding' | 'alternate' }) {
   return (
     <div className="matching-columns">
       <div><strong>טור ימני</strong><span>∠1</span><span>∠2</span><span>∠3</span><span>∠4</span></div>
       <div><strong>טור שמאלי</strong><span>∠5</span><span>∠6</span><span>∠7</span><span>∠8</span></div>
+      <span className="sr-only">{mode === 'corresponding' ? 'התאמת זוויות מתאימות' : 'התאמת זוויות מתחלפות'}</span>
     </div>
   );
 }
@@ -23,7 +24,7 @@ function TrueFalseRow({ text }: { text: string }) {
   return (
     <div className="true-false-row">
       <span>{text}</span>
-      <span className="true-false-options"><span>○ נכון</span><span>○ לא נכון</span></span>
+      <span className="true-false-options">○ נכון&nbsp;&nbsp;&nbsp;○ לא נכון</span>
     </div>
   );
 }
@@ -60,7 +61,7 @@ function Unit1Page2() {
         }
       >
         {a.stem}
-        <MatchingColumns />
+        <MatchingColumns mode="alternate" />
       </QuestionBlock>
 
       <QuestionBlock
@@ -73,12 +74,12 @@ function Unit1Page2() {
             transversalDeg={24}
             showParallelMarks={false}
             angleMarks={[
-              { intersection: 'top', sector: 0, arcStyle: 'single', tone: 'primary' },
-              { intersection: 'bottom', sector: 0, arcStyle: 'single', tone: 'primary' },
-              { intersection: 'top', sector: 1, arcStyle: 'double', tone: 'secondary' },
-              { intersection: 'bottom', sector: 2, arcStyle: 'double', tone: 'secondary' },
-              { intersection: 'top', sector: 3, arcStyle: 'dashed', tone: 'neutral' },
-              { intersection: 'bottom', sector: 3, arcStyle: 'dashed', tone: 'neutral' },
+              { intersection: 'top', sector: 0, tone: 'primary', arcStyle: 'single' },
+              { intersection: 'bottom', sector: 0, tone: 'primary', arcStyle: 'single' },
+              { intersection: 'top', sector: 2, tone: 'secondary', arcStyle: 'double' },
+              { intersection: 'bottom', sector: 1, tone: 'secondary', arcStyle: 'double' },
+              { intersection: 'top', sector: 3, tone: 'neutral', arcStyle: 'dashed' },
+              { intersection: 'bottom', sector: 3, tone: 'neutral', arcStyle: 'dashed' },
             ]}
           />
         }
@@ -87,45 +88,15 @@ function Unit1Page2() {
         {b.stem}
       </QuestionBlock>
 
-      <QuestionBlock
-        compact
-        diagram={
-          <ParallelLinesDiagram
-            lineLabels={['e', 'f']}
-            transversalLabel="z"
-            orientationDeg={8}
-            transversalDeg={67}
-            showParallelMarks
-            angleMarks={[
-              { intersection: 'top', sector: 0, tone: 'primary' },
-              { intersection: 'bottom', sector: 0, tone: 'primary' },
-            ]}
-          />
-        }
-      >
+      <QuestionBlock compact answerLines={1} diagram={<ParallelLinesDiagram lineLabels={['e', 'f']} transversalLabel="z" orientationDeg={8} transversalDeg={67} showParallelMarks />}>
         {c.stem}
       </QuestionBlock>
 
-      <QuestionBlock
-        compact
-        diagram={
-          <ParallelLinesDiagram
-            lineLabels={['x', 'y']}
-            transversalLabel="v"
-            orientationDeg={-14}
-            transversalDeg={109}
-            showParallelMarks
-            angleMarks={[
-              { intersection: 'top', sector: 1, tone: 'secondary' },
-              { intersection: 'bottom', sector: 2, tone: 'secondary' },
-            ]}
-          />
-        }
-      >
+      <QuestionBlock compact answerLines={1} diagram={<ParallelLinesDiagram lineLabels={['x', 'y']} transversalLabel="v" orientationDeg={-14} transversalDeg={109} showParallelMarks />}>
         {d.stem}
       </QuestionBlock>
 
-      <QuestionBlock compact answerLines={2}>
+      <QuestionBlock compact>
         {e.stem}
         <div className="true-false-list">
           {(e.subparts ?? []).map((text, index) => <TrueFalseRow key={index} text={text} />)}
@@ -139,7 +110,7 @@ function RelationTable() {
   const diagrams = [
     { orientationDeg: 0, transversalDeg: 59, parallel: true, marks: [{ intersection: 'top' as const, sector: 0 as const }, { intersection: 'bottom' as const, sector: 0 as const }] },
     { orientationDeg: 31, transversalDeg: 122, parallel: false, marks: [{ intersection: 'top' as const, sector: 1 as const }, { intersection: 'bottom' as const, sector: 2 as const }] },
-    { orientationDeg: 82, transversalDeg: 27, parallel: true, marks: [{ intersection: 'top' as const, sector: 2 as const }, { intersection: 'bottom' as const, sector: 2 as const }] },
+    { orientationDeg: 82, transversalDeg: 27, parallel: true, marks: [{ intersection: 'top' as const, sector: 2 as const }, { intersection: 'bottom', sector: 2 as const }] },
     { orientationDeg: -18, transversalDeg: 51, parallel: false, marks: [{ intersection: 'top' as const, sector: 0 as const }, { intersection: 'bottom' as const, sector: 1 as const }] },
   ];
   return (
@@ -223,7 +194,7 @@ function Unit1Page3() {
 
       <QuestionBlock
         compact
-        answerLines={3}
+        answerLines={5}
         diagram={
           <div className="paired-diagrams">
             <ParallelLinesDiagram lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={-21} transversalDeg={48} showParallelMarks />
