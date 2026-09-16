@@ -1,4 +1,8 @@
 import questionPlan from '../content/question-plan.json';
+import { unit1Questions } from '../content/questions-unit1';
+import { unit2Questions } from '../content/questions-unit2';
+import { unit3Questions } from '../content/questions-unit3';
+import { unit4Questions } from '../content/questions-unit4';
 
 export type DemandLevel = 1 | 2 | 3 | 4 | 5;
 
@@ -51,6 +55,34 @@ type RawUnit = {
   title: string;
   tasks?: RawTask[];
 };
+
+type ContentQuestion = {
+  id: string;
+  stem: string;
+  subparts?: string[];
+  choices?: string[];
+  diagram?: {
+    topology?: string;
+    lineLabels?: string[];
+    pointLabels?: string[];
+    parallelGiven?: boolean;
+    parallelGivens?: string[];
+    givens?: string[];
+    targets?: string[];
+    target?: string;
+    highlights?: string[];
+  };
+  expected?: Record<string, unknown>;
+};
+
+const contentQuestions = [
+  ...unit1Questions,
+  ...unit2Questions,
+  ...unit3Questions,
+  ...unit4Questions,
+] as ContentQuestion[];
+
+const contentById = new Map(contentQuestions.map(question => [question.id, question]));
 
 const difficultyValue = (difficulty: string): DemandLevel => {
   const n = Number(difficulty.replace(/\D/g, ''));
@@ -108,6 +140,49 @@ const wordingArchetypeFor = (format: string) => {
   return 'חשבו/מצאו/קבעו ונמקו';
 };
 
+const sourceRefsFor = (unit: number) => {
+  if (unit === 1) return ['sources/manifest.json#core-source', 'sources/manifest.json#worksheet-source'];
+  if (unit === 2) return ['sources/manifest.json#core-source', 'sources/manifest.json#worksheet-source', 'sources/manifest.json#instructional-source'];
+  if (unit === 3) return ['sources/manifest.json#core-source', 'sources/manifest.json#instructional-source'];
+  return ['sources/manifest.json#core-source', 'sources/manifest.json#visual-task-reference'];
+};
+
+const givenTypeFor = (question: ContentQuestion) => {
+  const diagram = question.diagram;
+  if (!diagram) return 'statement-only';
+  const parallel = diagram.parallelGiven === true || (diagram.parallelGivens?.length ?? 0) > 0;
+  const givens = diagram.givens ?? [];
+  const numeric = givens.some(value => /\d/.test(value));
+  const equality = givens.some(value => /=/.test(value));
+  return [parallel ? 'parallel' : 'not-parallel-given', numeric ? 'numeric' : 'non-numeric', equality ? 'equality' : 'no-equality'].join('+');
+};
+
+const targetTypeFor = (question: ContentQuestion) => {
+  const targets = question.diagram?.targets ?? [];
+  if (targets.length) return targets.join(' & ');
+  if (question.diagram?.target) return question.diagram.target;
+  const expectedKeys = Object.keys(question.expected ?? {}).sort();
+  if (expectedKeys.length) return `expected:${expectedKeys.join('+')}`;
+  if (question.choices?.length) return 'choice-selection';
+  if (question.subparts?.length) return 'multi-part-response';
+  return 'open-response';
+};
+
+const valueFamilyFor = (task: RawTask, question: ContentQuestion) => {
+  if (containsAlgebra(task)) return 'algebraic';
+  const text = `${question.stem} ${JSON.stringify(question.diagram?.givens ?? [])} ${JSON.stringify(question.expected ?? {})}`;
+  if (/\d/.test(text)) return 'numeric';
+  if (/[α-ωΑ-Ω]/u.test(text)) return 'symbolic';
+  return 'verbal';
+};
+
+const symbolFamilyFor = (question: ContentQuestion) => {
+  const lineLabels = question.diagram?.lineLabels ?? [];
+  const pointLabels = question.diagram?.pointLabels ?? [];
+  const symbols = [...lineLabels, ...pointLabels];
+  return symbols.length ? symbols.join(',') : 'no-diagram-symbols';
+};
+
 const rawUnits = questionPlan.units as RawUnit[];
 
 export const didacticProfiles: DidacticProfile[] = rawUnits
@@ -120,6 +195,37 @@ export const didacticProfiles: DidacticProfile[] = rawUnits
     const responseMode = responseModeFor(task.format);
     const theoremIds = task.theoremIds ?? [];
     const progressionGain = task.progressionGain ?? task.skill;
+    const question = contentById.get(task.id);
+    if (!question) throw new Error(`Missing authored content for didactic profile ${task.id}`);
+
+    const wordingArchetype = wordingArchetypeFor(task.format);
+    const misconceptionTarget = misconceptionFor(task);
+    const transferDemand = Math.max(1, Math.min(5, visual + (unit.unit >= 3 ? 1 : 0))) as DemandLevel;
+    const sourceArchetypeRefs = sourceRefsFor(unit.unit);
+    const topology = question.diagram?.topology ?? 'statement-only';
+    const givenType = givenTypeFor(question);
+    const targetType = targetTypeFor(question);
+    const valueFamily = valueFamilyFor(task, question);
+    const symbolFamily = symbolFamilyFor(question);
+
+    const fingerprint = JSON.stringify({
+      skill: task.skill,
+      theoremIds,
+      topology,
+      givenType,
+      targetType,
+      reasoningSteps: reasoning,
+      responseMode,
+      difficulty: task.difficulty,
+      valueFamily,
+      symbolFamily,
+      wordingArchetype,
+      instructionVerb: task.instructionVerb ?? 'קבעו',
+      misconceptionTarget,
+      sourceArchetypeRefs,
+      transferDemand,
+      progressionGain,
+    });
 
     return {
       id: task.id,
@@ -132,7 +238,7 @@ export const didacticProfiles: DidacticProfile[] = rawUnits
       visualDemand: task.visualDemand,
       languageDemand: /proof|error|sufficient|claim|reason/i.test(`${task.format} ${task.skill}`) ? Math.min(5, difficulty + 1) as DemandLevel : Math.max(1, difficulty - 1) as DemandLevel,
       decisionDemand: /choose|route|sufficient|error|compare|proof/i.test(`${task.format} ${task.skill}`) ? Math.min(5, difficulty + 1) as DemandLevel : difficulty,
-      transferDemand: Math.max(1, Math.min(5, visual + (unit.unit >= 3 ? 1 : 0))) as DemandLevel,
+      transferDemand,
       learningObjective: task.learningObjective ?? task.skill.replaceAll('-', ' '),
       assessmentPurpose: `לבדוק שליטה ב-${task.skill.replaceAll('-', ' ')}`,
       prerequisites: prerequisitesFor(unit.unit, task),
@@ -140,21 +246,13 @@ export const didacticProfiles: DidacticProfile[] = rawUnits
       format: task.format,
       responseMode,
       reasoningSteps: reasoning,
-      misconceptionTarget: misconceptionFor(task),
+      misconceptionTarget,
       evidenceOfLearning: `התלמיד מבצע בהצלחה משימת ${responseMode} ומנמק בהתאם לנתונים`,
-      wordingArchetype: wordingArchetypeFor(task.format),
+      wordingArchetype,
       instructionVerb: task.instructionVerb ?? 'קבעו',
-      sourceArchetypeRefs: ['sources/manifest.json'],
+      sourceArchetypeRefs,
       numericBeforeAlgebra: task.numericBeforeAlgebra ?? !algebra,
-      fingerprint: [
-        task.skill,
-        task.format,
-        task.difficulty,
-        task.visualDemand,
-        theoremIds.join('+') || 'none',
-        responseMode,
-        progressionGain,
-      ].join('|'),
+      fingerprint,
     } satisfies DidacticProfile;
   }));
 
