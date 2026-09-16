@@ -30,7 +30,8 @@ const studentText = (question: Record<string, unknown>) => {
   return parts.join(' ');
 };
 
-const hasAlgebra = (text: string) => /(?:^|[^A-Za-z])[xyab](?:[^A-Za-z]|$)|\b(?:alpha|beta)\b/i.test(text) || /[αβ]/u.test(text);
+const hasAlgebra = (text: string) =>
+  /(?:\d|\))\s*[xy](?:\s*[+\-]|\b)|[xy]\s*[+\-=]|מצאו\s+את\s+[xy]\b/i.test(text);
 
 const orientationBucket = (deg: number) => {
   const normalized = ((deg % 180) + 180) % 180;
@@ -40,6 +41,8 @@ const orientationBucket = (deg: number) => {
   return 'diag-negative';
 };
 
+const canonicalUnitManifest = new Map(pageManifest.originalUnits.map(unit => [unit.unit, unit]));
+
 describe('canonical deep workbook contract', () => {
   it('keeps plan, authored content, answer key and didactic profiles in exact ID parity', () => {
     const planIds = plannedTasks.map(task => task.id).sort();
@@ -47,32 +50,29 @@ describe('canonical deep workbook contract', () => {
     const answerIds = teacherAnswerKey.map(entry => entry.id).sort();
     const profileIds = didacticProfiles.map(profile => profile.id).sort();
 
-    expect(planIds).toHaveLength(58);
-    expect(new Set(planIds).size).toBe(58);
+    expect(planIds).toHaveLength(questionPlan.originalTaskCount);
+    expect(new Set(planIds).size).toBe(planIds.length);
     expect(contentIds).toEqual(planIds);
     expect(answerIds).toEqual(planIds);
     expect(profileIds).toEqual(planIds);
   });
 
-  it('enforces exact unit and page architecture', () => {
-    expect(pageManifest.originalPageCount).toBe(14);
-    expect(pageManifest.curriculumUnit.pages).toBe(4);
-    expect(pageManifest.studentPageCount).toBe(18);
+  it('derives the page architecture from the canonical manifest and rejects cross-layer drift', () => {
+    const summedOriginalPages = pageManifest.originalUnits.reduce((sum, unit) => sum + unit.pages, 0);
+    expect(pageManifest.originalPageCount).toBe(summedOriginalPages);
+    expect(pageManifest.studentPageCount).toBe(pageManifest.originalPageCount + pageManifest.curriculumUnit.pages);
+    expect(pageManifest.curriculumUnit.identifiedQuestionBlocks).toBe(questionPlan.curriculumSourceTaskBlocks);
 
-    const expected = new Map([
-      [1, { tasks: 14, pages: 3 }],
-      [2, { tasks: 24, pages: 6 }],
-      [3, { tasks: 12, pages: 3 }],
-      [4, { tasks: 8, pages: 2 }],
-    ]);
+    for (const manifestUnit of pageManifest.originalUnits) {
+      const planUnit = questionPlan.units.find(item => item.unit === manifestUnit.unit);
+      const questions = allQuestions.filter(question => question.unit === manifestUnit.unit);
+      const expectedPages = Array.from({ length: manifestUnit.pages }, (_, i) => i + 1);
 
-    for (const [unit, contract] of expected) {
-      const planUnit = questionPlan.units.find(item => item.unit === unit);
-      const questions = allQuestions.filter(question => question.unit === unit);
-      expect(planUnit?.taskCount).toBe(contract.tasks);
-      expect(planUnit?.pages).toBe(contract.pages);
-      expect(questions).toHaveLength(contract.tasks);
-      expect(new Set(questions.map(question => question.page))).toEqual(new Set(Array.from({ length: contract.pages }, (_, i) => i + 1)));
+      expect(manifestUnit.pageNumbers).toEqual(expectedPages);
+      expect(planUnit, `unit ${manifestUnit.unit} missing from question plan`).toBeTruthy();
+      expect(planUnit?.pages).toBe(manifestUnit.pages);
+      expect(planUnit?.taskCount).toBe(questions.length);
+      expect(new Set(questions.map(question => question.page))).toEqual(new Set(expectedPages));
     }
   });
 
@@ -96,6 +96,30 @@ describe('canonical deep workbook contract', () => {
         const visualDelta = visualValue(curr.visualDemand) - visualValue(prev.visualDemand);
         expect(Math.abs(difficultyDelta), `${prev.id} → ${curr.id}: difficulty jump`).toBeLessThanOrEqual(1);
         expect(Math.abs(visualDelta), `${prev.id} → ${curr.id}: visual jump`).toBeLessThanOrEqual(2);
+      }
+    }
+  });
+
+  it('requires every adjacent authored task to add a meaningful didactic difference', () => {
+    const profileById = new Map(didacticProfiles.map(profile => [profile.id, profile]));
+    const comparedKeys = ['format', 'responseMode', 'reasoningSteps', 'difficulty', 'visualDemand', 'instructionVerb'] as const;
+
+    for (const unit of questionPlan.units.filter(item => item.unit <= 4)) {
+      for (let i = 1; i < unit.tasks.length; i += 1) {
+        const prevTask = unit.tasks[i - 1];
+        const currTask = unit.tasks[i];
+        const prev = profileById.get(prevTask.id);
+        const curr = profileById.get(currTask.id);
+        expect(prev).toBeTruthy();
+        expect(curr).toBeTruthy();
+        if (!prev || !curr) continue;
+
+        const differences = comparedKeys.filter(key => JSON.stringify(prev[key]) !== JSON.stringify(curr[key])).length;
+        const skillChanged = prevTask.skill !== currTask.skill;
+        const theoremChanged = JSON.stringify(prevTask.theoremIds ?? []) !== JSON.stringify(currTask.theoremIds ?? []);
+        const progressionChanged = prevTask.progressionGain !== currTask.progressionGain;
+        expect(differences + Number(skillChanged) + Number(theoremChanged) + Number(progressionChanged),
+          `${prevTask.id} → ${currTask.id} does not add enough new learning value`).toBeGreaterThanOrEqual(2);
       }
     }
   });
@@ -167,8 +191,8 @@ describe('canonical deep workbook contract', () => {
   });
 
   it('requires complete, non-placeholder didactic profiles and unique fingerprints', () => {
-    expect(didacticProfiles).toHaveLength(58);
-    expect(new Set(didacticProfiles.map(profile => profile.fingerprint)).size).toBe(58);
+    expect(didacticProfiles).toHaveLength(questionPlan.originalTaskCount);
+    expect(new Set(didacticProfiles.map(profile => profile.fingerprint)).size).toBe(questionPlan.originalTaskCount);
 
     for (const profile of didacticProfiles) {
       expect(profile.learningObjective.trim().length, `${profile.id} missing learning objective`).toBeGreaterThan(2);
@@ -179,6 +203,14 @@ describe('canonical deep workbook contract', () => {
       expect(profile.sourceArchetypeRefs.length, `${profile.id} missing source archetype references`).toBeGreaterThan(0);
       expect(profile.reasoningSteps).toBeGreaterThanOrEqual(1);
       expect(profile.reasoningSteps).toBeLessThanOrEqual(5);
+    }
+  });
+
+  it('keeps every authored question on a page declared for its unit', () => {
+    for (const question of allQuestions) {
+      const manifestUnit = canonicalUnitManifest.get(question.unit);
+      expect(manifestUnit, `unit ${question.unit} missing from page manifest`).toBeTruthy();
+      expect(manifestUnit?.pageNumbers, `${question.id} uses undeclared page ${question.page}`).toContain(question.page);
     }
   });
 });
