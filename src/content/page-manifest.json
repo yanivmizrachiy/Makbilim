@@ -3,12 +3,12 @@
   "canonicalSpec": "SPEC.md",
   "pageNumbering": "reset-per-unit",
   "originalUnits": [
-    {"unit": 1, "title": "מושגים בסיסיים", "pages": 3, "pageNumbers": [1,2,3]},
+    {"unit": 1, "title": "מושגים בסיסיים", "pages": 4, "pageNumbers": [1,2,3,4]},
     {"unit": 2, "title": "תרגילי חישוב", "pages": 6, "pageNumbers": [1,2,3,4,5,6]},
     {"unit": 3, "title": "תרגילי הוכחה", "pages": 3, "pageNumbers": [1,2,3]},
     {"unit": 4, "title": "משפטים הפוכים", "pages": 2, "pageNumbers": [1,2]}
   ],
-  "originalPageCount": 14,
+  "originalPageCount": 15,
   "curriculumUnit": {
     "unit": 5,
     "title": "שאלות מתוך תוכנית הלימודים",
@@ -19,7 +19,7 @@
     "questionsPerPage": 2,
     "firstPage": 1
   },
-  "studentPageCount": 18,
+  "studentPageCount": 19,
   "studentFacingRules": {
     "originalUnitsQuestionMarker": "●",
     "originalUnitsSubpartMarker": "•",
