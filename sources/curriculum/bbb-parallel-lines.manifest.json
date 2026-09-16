@@ -15,6 +15,10 @@
   },
   "sourceFiles": [
     {
+      "path": "geometry8/wsengine.py",
+      "blobSha": "781653819a037b7a0acfb23cbbbf7988ed7fb395"
+    },
+    {
       "path": "geometry8/topics/t02_angles.py",
       "blobSha": "7902f00caa849e5e43f7d91c3c8ffb0debe3e25b"
     },
