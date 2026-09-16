@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Sync pinned curriculum source
+        run: npm run sync:curriculum
+
+      - name: Validate canonical contracts
+        run: npm run validate
+
+      - name: Ensure generated curriculum has eight immutable blocks
+        run: node -e "const fs=require('fs');const p='src/content/generated/curriculum-source.json';const j=JSON.parse(fs.readFileSync(p,'utf8'));if(j.blockCount!==8||j.immutable!==true)process.exit(1);console.log('generated curriculum: PASS')"
