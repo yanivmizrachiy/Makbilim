@@ -36,6 +36,23 @@ export function correspondingPair(seed: Sector = 0): AnglePair {
   ];
 }
 
+/**
+ * All alternate-angle pairs for the two intersections of one transversal
+ * with a pair of parallel lines. This includes the two interior and the two
+ * exterior alternate pairs. With identical sector indexing at both
+ * intersections, the alternate mate is the vertically opposite sector.
+ */
+export function alternatePairs(): AnglePair[] {
+  return ([0, 1, 2, 3] as const).map(sector => [
+    { intersection: 'top', sector },
+    { intersection: 'bottom', sector: ((sector + 2) % 4) as Sector },
+  ] as const);
+}
+
+export function alternatePairAny(seed: Sector = 0): AnglePair {
+  return alternatePairs()[seed]!;
+}
+
 export function verticalPair(intersection: IntersectionName, seed: Sector = 0): AnglePair {
   return [
     { intersection, sector: seed },
@@ -50,6 +67,11 @@ export function adjacentPair(intersection: IntersectionName, seed: Sector = 0): 
   ];
 }
 
+/**
+ * Interior-only subset, retained for tasks that explicitly ask for
+ * alternate-interior angles rather than the broader school term
+ * "זוויות מתחלפות".
+ */
 export function alternateInteriorPairs(lineDeg: number, transversalDeg: number): AnglePair[] {
   const mids = sectorMidpoints(lineDeg, transversalDeg);
   const towardBottom = vector(lineDeg + 90);
