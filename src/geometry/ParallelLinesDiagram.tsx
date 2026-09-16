@@ -34,8 +34,9 @@ function sectorAngles(lineDeg: number, transversalDeg: number, sector: AngleMark
   const rays = [lineDeg, transversalDeg, lineDeg + 180, transversalDeg + 180]
     .map(a => ((a % 360) + 360) % 360)
     .sort((a, b) => a - b);
-  const start = rays[sector];
-  const next = rays[(sector + 1) % rays.length] + (sector === rays.length - 1 ? 360 : 0);
+  const start = rays[sector]!;
+  const nextBase = rays[(sector + 1) % rays.length]!;
+  const next = nextBase + (sector === rays.length - 1 ? 360 : 0);
   return { start, end: next };
 }
 
