@@ -1,7 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import './styles/dense-overrides.css';
 import './styles/bbb-source.css';
 import './styles/page-tuning.css';
 
