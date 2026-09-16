@@ -37,7 +37,7 @@ export const unit4Questions: Unit4Question[] = [
   {
     id: 'U4-P1-B',
     page: 1,
-    stem: 'השלימו את המשפט: אם זוג זוויות מתחלפות הנוצרות על ידי ישר חותך ______ זו לזו, אפשר להסיק ששני הישרים ______.',
+    stem: 'השלימו את המשפט: אם שני ישרים נחתכים על ידי ישר שלישי, וזוג זוויות מתחלפות ______ זו לזו, אז שני הישרים ______.',
     expected: { completions: ['שוות', 'מקבילים'] }
   },
   {
@@ -55,7 +55,7 @@ export const unit4Questions: Unit4Question[] = [
   {
     id: 'U4-P1-D',
     page: 1,
-    stem: 'בסרטוט שני ישרים נחתכים על ידי ישר שלישי. נתון כי ∠A = 67° ו־∠B = 67°, והזוויות ∠A ו־∠B מתאימות. קבעו אם p ∥ q. נמקו.',
+    stem: 'בשרטוט שני ישרים נחתכים על ידי ישר שלישי. נתון כי ∠A = 67° ו־∠B = 67°, והזוויות ∠A ו־∠B מתאימות. קבעו אם p ∥ q. נמקו.',
     diagram: {
       topology: 'converse-corresponding-equal-numeric',
       lineLabels: ['p', 'q', 't'],
@@ -74,7 +74,7 @@ export const unit4Questions: Unit4Question[] = [
   {
     id: 'U4-P2-A',
     page: 2,
-    stem: 'בסרטוט שני ישרים נחתכים על ידי ישר שלישי. נתון כי ∠C = 112° ו־∠D = 112°, והזוויות ∠C ו־∠D מתחלפות. קבעו אם k ∥ m. נמקו.',
+    stem: 'בשרטוט שני ישרים נחתכים על ידי ישר שלישי. נתון כי ∠C = 112° ו־∠D = 112°, והזוויות ∠C ו־∠D מתחלפות. קבעו אם k ∥ m. נמקו.',
     diagram: {
       topology: 'converse-alternate-equal-numeric',
       lineLabels: ['k', 'm', 'r'],
