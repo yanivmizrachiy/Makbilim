@@ -106,56 +106,66 @@ function Unit1Page2() {
   );
 }
 
-function RelationTable() {
-  const diagrams: Array<{
-    orientationDeg: number;
-    transversalDeg: number;
-    parallel: boolean;
-    marks: AngleMark[];
-  }> = [
-    {
-      orientationDeg: 0,
-      transversalDeg: 59,
-      parallel: true,
-      marks: [
-        { intersection: 'top', sector: 0, tone: 'primary' },
-        { intersection: 'bottom', sector: 0, tone: 'primary' },
-      ],
-    },
-    {
-      orientationDeg: 31,
-      transversalDeg: 122,
-      parallel: false,
-      marks: [
-        { intersection: 'top', sector: 1, tone: 'primary' },
-        { intersection: 'bottom', sector: 3, tone: 'primary' },
-      ],
-    },
-    {
-      orientationDeg: 82,
-      transversalDeg: 27,
-      parallel: true,
-      marks: [
-        { intersection: 'top', sector: 2, tone: 'primary' },
-        { intersection: 'bottom', sector: 2, tone: 'primary' },
-      ],
-    },
-    {
-      orientationDeg: -18,
-      transversalDeg: 51,
-      parallel: false,
-      marks: [
-        { intersection: 'top', sector: 0, tone: 'primary' },
-        { intersection: 'bottom', sector: 2, tone: 'primary' },
-      ],
-    },
-  ];
+export const unit1RelationTableCases: Array<{
+  orientationDeg: number;
+  transversalDeg: number;
+  parallel: boolean;
+  relation: 'מתאימות' | 'מתחלפות';
+  equalityConclusion: 'כן' | 'לא ניתן לקבוע';
+  marks: AngleMark[];
+}> = [
+  {
+    orientationDeg: 0,
+    transversalDeg: 59,
+    parallel: true,
+    relation: 'מתאימות',
+    equalityConclusion: 'כן',
+    marks: [
+      { intersection: 'top', sector: 0, tone: 'primary' },
+      { intersection: 'bottom', sector: 0, tone: 'primary' },
+    ],
+  },
+  {
+    orientationDeg: 31,
+    transversalDeg: 122,
+    parallel: false,
+    relation: 'מתאימות',
+    equalityConclusion: 'לא ניתן לקבוע',
+    marks: [
+      { intersection: 'top', sector: 1, tone: 'primary' },
+      { intersection: 'bottom', sector: 1, tone: 'primary' },
+    ],
+  },
+  {
+    orientationDeg: 82,
+    transversalDeg: 27,
+    parallel: true,
+    relation: 'מתחלפות',
+    equalityConclusion: 'כן',
+    marks: [
+      { intersection: 'top', sector: 2, tone: 'primary' },
+      { intersection: 'bottom', sector: 0, tone: 'primary' },
+    ],
+  },
+  {
+    orientationDeg: -18,
+    transversalDeg: 51,
+    parallel: false,
+    relation: 'מתחלפות',
+    equalityConclusion: 'לא ניתן לקבוע',
+    marks: [
+      { intersection: 'top', sector: 0, tone: 'primary' },
+      { intersection: 'bottom', sector: 2, tone: 'primary' },
+    ],
+  },
+];
 
+function RelationTable() {
   return (
     <table className="data-table relation-table">
       <thead><tr><th>שרטוט</th><th>סוג הזוג</th><th>האם ניתן לקבוע שהזוויות שוות?</th></tr></thead>
       <tbody>
-        {diagrams.map((item, index) => (
+        {unit1RelationTableCases.map((item, index) => (
           <tr key={index}>
             <td>
               <ParallelLinesDiagram
