@@ -1,0 +1,82 @@
+{
+  "sourceRepository": "yanivmizrachiy/bbb",
+  "sourceBranch": "main",
+  "mode": "verbatim",
+  "selectionScope": "questions materially related to angle relationships between parallel lines or proving parallelism",
+  "mutationPolicy": {
+    "wording": "forbidden",
+    "numbers": "forbidden",
+    "labels": "forbidden",
+    "subparts": "forbidden",
+    "questionOrderWithinBlock": "forbidden",
+    "diagramContent": "forbidden",
+    "technicalRenderingAdaptation": "allowed-only-if-semantically-identical"
+  },
+  "blocks": [
+    {
+      "id": "BBB-G8-T02-PARALLEL-Q1",
+      "file": "geometry8/topics/t02_angles.py",
+      "sourceSha": "7902f00caa849e5e43f7d91c3c8ffb0debe3e25b",
+      "section": "ישרים מקבילים — זוויות בין מקבילים",
+      "question": 1,
+      "reason": "זיהוי זוגות זוויות מתאימות בין מקבילים"
+    },
+    {
+      "id": "BBB-G8-T02-PARALLEL-Q2",
+      "file": "geometry8/topics/t02_angles.py",
+      "sourceSha": "7902f00caa849e5e43f7d91c3c8ffb0debe3e25b",
+      "section": "ישרים מקבילים — זוויות בין מקבילים",
+      "question": 2,
+      "reason": "זיהוי זוויות מתחלפות וחד-צדדיות בין מקבילים"
+    },
+    {
+      "id": "BBB-G8-T02-PARALLEL-Q3",
+      "file": "geometry8/topics/t02_angles.py",
+      "sourceSha": "7902f00caa849e5e43f7d91c3c8ffb0debe3e25b",
+      "section": "ישרים מקבילים — זוויות בין מקבילים",
+      "question": 3,
+      "reason": "יישום זוויות מתחלפות בהקשר חזותי"
+    },
+    {
+      "id": "BBB-G8-T02-PARALLEL-Q4",
+      "file": "geometry8/topics/t02_angles.py",
+      "sourceSha": "7902f00caa849e5e43f7d91c3c8ffb0debe3e25b",
+      "section": "ישרים מקבילים — זוויות בין מקבילים",
+      "question": 4,
+      "reason": "סימון זוויות מתחלפות ומתאימות בהקשר חזותי"
+    },
+    {
+      "id": "BBB-G8-T02-PARALLEL-Q5",
+      "file": "geometry8/topics/t02_angles.py",
+      "sourceSha": "7902f00caa849e5e43f7d91c3c8ffb0debe3e25b",
+      "section": "ישרים מקבילים — זוויות בין מקבילים",
+      "question": 5,
+      "reason": "חישוב זווית באמצעות שני זוגות ישרים מקבילים"
+    },
+    {
+      "id": "BBB-G8-T02-TRIANGLE-Q2",
+      "file": "geometry8/topics/t02_angles.py",
+      "sourceSha": "7902f00caa849e5e43f7d91c3c8ffb0debe3e25b",
+      "section": "סכום הזוויות במשולש",
+      "question": 2,
+      "reason": "שילוב נתון של ישרים מקבילים בחישוב זוויות"
+    },
+    {
+      "id": "BBB-G8-T02-TRIANGLE-Q3",
+      "file": "geometry8/topics/t02_angles.py",
+      "sourceSha": "7902f00caa849e5e43f7d91c3c8ffb0debe3e25b",
+      "section": "סכום הזוויות במשולש",
+      "question": 3,
+      "reason": "חישוב x+y במערכת עם ישרים מקבילים"
+    },
+    {
+      "id": "BBB-G8-T03-CONGRUENCE-USE-Q1",
+      "file": "geometry8/topics/t03_congruence.py",
+      "sourceSha": "0b1261cd29ad905aaf46c9a5db6b6f632823708e",
+      "section": "שימושים בחפיפת משולשים",
+      "question": 1,
+      "reason": "הוכחת מקבילות באמצעות זוויות מתחלפות לאחר חפיפה"
+    }
+  ],
+  "identifiedQuestionBlocks": 8
+}
