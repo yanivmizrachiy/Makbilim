@@ -7,7 +7,9 @@
     "sync:curriculum": "node scripts/sync-curriculum-source.mjs",
     "validate:curriculum": "node scripts/validate-curriculum-source-integrity.mjs",
     "validate:numbering": "node scripts/validate-numbering-markers.mjs",
-    "validate": "npm run validate:curriculum && npm run validate:numbering",
+    "validate:question-plan": "node scripts/validate-question-plan.mjs",
+    "validate:progression": "node scripts/validate-forward-progress.mjs",
+    "validate": "npm run validate:curriculum && npm run validate:numbering && npm run validate:question-plan && npm run validate:progression",
     "ci": "npm run sync:curriculum && npm run validate"
   },
   "engines": {
