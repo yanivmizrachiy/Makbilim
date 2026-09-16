@@ -9,21 +9,46 @@ const shotsDir = path.join(root, 'artifacts', 'screenshots');
 await fs.mkdir(pdfDir, { recursive: true });
 await fs.mkdir(shotsDir, { recursive: true });
 
-const server = spawn(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', '4173'], {
+const viteBin = path.join(root, 'node_modules', 'vite', 'bin', 'vite.js');
+const server = spawn(process.execPath, [viteBin, 'preview', '--host', '127.0.0.1', '--port', '4173'], {
   cwd: root,
   stdio: ['ignore', 'pipe', 'pipe'],
 });
 
+let serverStdout = '';
+let serverStderr = '';
+server.stdout?.on('data', chunk => { serverStdout += String(chunk); });
+server.stderr?.on('data', chunk => { serverStderr += String(chunk); });
+
 const waitForServer = async () => {
   const deadline = Date.now() + 30000;
   while (Date.now() < deadline) {
+    if (server.exitCode != null) {
+      throw new Error(`Vite preview exited early with code ${server.exitCode}\nSTDOUT:\n${serverStdout}\nSTDERR:\n${serverStderr}`);
+    }
     try {
       const response = await fetch('http://127.0.0.1:4173/');
       if (response.ok) return;
     } catch {}
     await new Promise(resolve => setTimeout(resolve, 250));
   }
-  throw new Error('Vite preview did not become ready within 30 seconds');
+  throw new Error(`Vite preview did not become ready within 30 seconds\nSTDOUT:\n${serverStdout}\nSTDERR:\n${serverStderr}`);
+};
+
+const stopServer = async () => {
+  if (server.exitCode != null) return;
+  server.kill('SIGTERM');
+  const exited = await Promise.race([
+    new Promise(resolve => server.once('exit', () => resolve(true))),
+    new Promise(resolve => setTimeout(() => resolve(false), 3000)),
+  ]);
+  if (!exited && server.exitCode == null) {
+    server.kill('SIGKILL');
+    await Promise.race([
+      new Promise(resolve => server.once('exit', () => resolve(true))),
+      new Promise(resolve => setTimeout(() => resolve(false), 2000)),
+    ]);
+  }
 };
 
 let browser;
@@ -154,5 +179,5 @@ try {
   console.log(`pdf-visual: PASS — ${pageCount} A4 pages, utilization + grayscale snapshots generated`);
 } finally {
   if (browser) await browser.close();
-  server.kill('SIGTERM');
+  await stopServer();
 }
