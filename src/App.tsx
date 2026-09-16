@@ -5,6 +5,7 @@ import { ParallelLinesDiagram } from './geometry/ParallelLinesDiagram';
 import { unit1Questions } from './content/questions-unit1';
 import { Unit1Continuation } from './pages/Unit1Continuation';
 import { Unit2Pages } from './pages/Unit2Pages';
+import { Unit3Pages } from './pages/Unit3Pages';
 import './styles/print.css';
 
 const byId = (id: string) => {
@@ -41,76 +42,28 @@ function Unit1Page1() {
 
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={1}>
-      <QuestionBlock
-        compact
-        diagram={
-          <ParallelLinesDiagram
-            lineLabels={['p', 'q']}
-            transversalLabel="r"
-            orientationDeg={0}
-            transversalDeg={58}
-            showParallelMarks={false}
-            ariaLabel="שני ישרים וישר נוסף החותך את שניהם"
-          />
-        }
-      >
+      <QuestionBlock compact diagram={<ParallelLinesDiagram lineLabels={['p', 'q']} transversalLabel="r" orientationDeg={0} transversalDeg={58} showParallelMarks={false} ariaLabel="שני ישרים וישר נוסף החותך את שניהם" />}>
         {a.stem}
       </QuestionBlock>
 
-      <QuestionBlock
-        compact
-        diagram={
-          <ParallelLinesDiagram
-            lineLabels={['k', 'm']}
-            transversalLabel="t"
-            orientationDeg={4}
-            transversalDeg={63}
-            showParallelMarks={false}
-            angleMarks={[{ intersection: 'top', sector: 0, tone: 'primary' }]}
-            ariaLabel="זווית אחת מסומנת במפגש העליון"
-          />
-        }
-      >
+      <QuestionBlock compact diagram={<ParallelLinesDiagram lineLabels={['k', 'm']} transversalLabel="t" orientationDeg={4} transversalDeg={63} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 0, tone: 'primary' }]} ariaLabel="זווית אחת מסומנת במפגש העליון" />}>
         {b.stem}
       </QuestionBlock>
 
-      <QuestionBlock
-        compact
-        diagram={
-          <ParallelLinesDiagram
-            lineLabels={['a', 'b']}
-            transversalLabel="s"
-            orientationDeg={-7}
-            transversalDeg={116}
-            showParallelMarks={false}
-            angleMarks={[{ intersection: 'top', sector: 1, tone: 'secondary' }]}
-            ariaLabel="זווית אחת מסומנת; יש לזהות את הזווית המתחלפת לה"
-          />
-        }
-      >
+      <QuestionBlock compact diagram={<ParallelLinesDiagram lineLabels={['a', 'b']} transversalLabel="s" orientationDeg={-7} transversalDeg={116} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 1, tone: 'secondary' }]} ariaLabel="זווית אחת מסומנת; יש לזהות את הזווית המתחלפת לה" />}>
         {c.stem}
       </QuestionBlock>
 
       <QuestionBlock
         compact
-        diagram={
-          <ParallelLinesDiagram
-            lineLabels={['u', 'v']}
-            transversalLabel="w"
-            orientationDeg={11}
-            transversalDeg={71}
-            showParallelMarks={false}
-            angleMarks={[
-              { intersection: 'top', sector: 0, tone: 'primary', arcStyle: 'single' },
-              { intersection: 'bottom', sector: 0, tone: 'primary', arcStyle: 'single' },
-              { intersection: 'top', sector: 2, tone: 'secondary', arcStyle: 'double' },
-              { intersection: 'bottom', sector: 1, tone: 'secondary', arcStyle: 'double' },
-              { intersection: 'top', sector: 3, tone: 'neutral', arcStyle: 'dashed' },
-              { intersection: 'bottom', sector: 3, tone: 'neutral', arcStyle: 'dashed' },
-            ]}
-            ariaLabel="שלושה זוגות זוויות מסומנים בצבע ובסוג קשת שונה"
-          />
-        }
+        diagram={<ParallelLinesDiagram lineLabels={['u', 'v']} transversalLabel="w" orientationDeg={11} transversalDeg={71} showParallelMarks={false} angleMarks={[
+          { intersection: 'top', sector: 0, tone: 'primary', arcStyle: 'single' },
+          { intersection: 'bottom', sector: 0, tone: 'primary', arcStyle: 'single' },
+          { intersection: 'top', sector: 2, tone: 'secondary', arcStyle: 'double' },
+          { intersection: 'bottom', sector: 1, tone: 'secondary', arcStyle: 'double' },
+          { intersection: 'top', sector: 3, tone: 'neutral', arcStyle: 'dashed' },
+          { intersection: 'bottom', sector: 3, tone: 'neutral', arcStyle: 'dashed' },
+        ]} ariaLabel="שלושה זוגות זוויות מסומנים בצבע ובסוג קשת שונה" />}
         subparts={(d.subparts ?? []).map(text => <>{text} ____________________</>)}
       >
         {d.stem}
@@ -119,26 +72,16 @@ function Unit1Page1() {
 
       <QuestionBlock
         compact
-        diagram={
-          <ParallelLinesDiagram
-            lineLabels={['c', 'd']}
-            transversalLabel="h"
-            orientationDeg={-3}
-            transversalDeg={52}
-            showParallelMarks={false}
-            angleMarks={[
-              { intersection: 'top', sector: 0, label: '1', tone: 'neutral' },
-              { intersection: 'top', sector: 1, label: '2', tone: 'neutral' },
-              { intersection: 'top', sector: 2, label: '3', tone: 'neutral' },
-              { intersection: 'top', sector: 3, label: '4', tone: 'neutral' },
-              { intersection: 'bottom', sector: 0, label: '5', tone: 'neutral' },
-              { intersection: 'bottom', sector: 1, label: '6', tone: 'neutral' },
-              { intersection: 'bottom', sector: 2, label: '7', tone: 'neutral' },
-              { intersection: 'bottom', sector: 3, label: '8', tone: 'neutral' },
-            ]}
-            ariaLabel="שמונה זוויות ממוספרות בשני החיתוכים"
-          />
-        }
+        diagram={<ParallelLinesDiagram lineLabels={['c', 'd']} transversalLabel="h" orientationDeg={-3} transversalDeg={52} showParallelMarks={false} angleMarks={[
+          { intersection: 'top', sector: 0, label: '1', tone: 'neutral' },
+          { intersection: 'top', sector: 1, label: '2', tone: 'neutral' },
+          { intersection: 'top', sector: 2, label: '3', tone: 'neutral' },
+          { intersection: 'top', sector: 3, label: '4', tone: 'neutral' },
+          { intersection: 'bottom', sector: 0, label: '5', tone: 'neutral' },
+          { intersection: 'bottom', sector: 1, label: '6', tone: 'neutral' },
+          { intersection: 'bottom', sector: 2, label: '7', tone: 'neutral' },
+          { intersection: 'bottom', sector: 3, label: '8', tone: 'neutral' },
+        ]} ariaLabel="שמונה זוויות ממוספרות בשני החיתוכים" />}
       >
         {e.stem}
         <MatchingColumns />
@@ -153,6 +96,7 @@ export default function App() {
       <Unit1Page1 />
       <Unit1Continuation />
       <Unit2Pages />
+      <Unit3Pages />
     </div>
   );
 }
