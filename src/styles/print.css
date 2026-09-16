@@ -208,8 +208,12 @@ body { direction: rtl; }
   vector-effect: non-scaling-stroke;
 }
 
+/* Color is supplementary: primary/secondary remain distinguishable in grayscale. */
 .angle-mark--primary path { stroke: var(--teal); }
-.angle-mark--secondary path { stroke: var(--amber); }
+.angle-mark--secondary path {
+  stroke: var(--amber);
+  stroke-dasharray: 8 2.5;
+}
 .angle-mark--neutral path { stroke: var(--muted); }
 .angle-mark--dashed path { stroke-dasharray: 5 4; }
 
