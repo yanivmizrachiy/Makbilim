@@ -46,9 +46,9 @@ export const unit1Questions: Unit1Question[] = [
   },
   {
     id: 'U1-P2-B', page: 2,
-    stem: 'כתבו ליד כל זוג זוויות אם הן מתאימות, מתחלפות או אינן שייכות לאחד משני הסוגים.',
-    subparts: ['הזוג המסומן בקשת אחת.', 'הזוג המסומן בשתי קשתות.', 'הזוג המסומן בקשת מקווקוות.'],
-    diagram: { topology: 'rotated-three-pair-classification', lineLabels: ['ℓ₁', 'ℓ₂', 'r'], pointLabels: ['P', 'R'], orientationDeg: 78, transversalDeg: 24, parallelGiven: false, highlights: ['single-arc', 'double-arc', 'dashed-arc'] }
+    stem: 'בשרטוט המסובב שלפניכם סמנו בעצמכם זוג אחד של זוויות מתאימות וזוג אחד של זוויות מתחלפות.',
+    subparts: ['רשמו זוג אחד של זוויות מתאימות.', 'רשמו זוג אחד של זוויות מתחלפות.', 'הסבירו בקצרה כיצד זיהיתם כל זוג לפי מיקומו ביחס לישרים ולישר החותך.'],
+    diagram: { topology: 'rotated-eight-angle-construction', lineLabels: ['ℓ₁', 'ℓ₂', 'r'], pointLabels: ['P', 'R'], orientationDeg: 78, transversalDeg: 24, parallelGiven: false }
   },
   {
     id: 'U1-P2-C', page: 2, stem: 'השלימו את המשפט: אם שני ישרים ______ נחתכים על ידי ישר שלישי, אז כל זוג זוויות מתאימות ______ זו לזו.',
