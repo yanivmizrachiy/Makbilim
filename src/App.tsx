@@ -65,7 +65,7 @@ function Unit1Page1() {
           { intersection: 'bottom', sector: 1, tone: 'secondary', arcStyle: 'double' },
           { intersection: 'top', sector: 3, tone: 'neutral', arcStyle: 'dashed' },
           { intersection: 'bottom', sector: 3, tone: 'neutral', arcStyle: 'dashed' },
-        ]} aria-label="שלושה זוגות זוויות מסומנים בצבע ובסוג קשת שונה" />}
+        ]} ariaLabel="שלושה זוגות זוויות מסומנים בצבע ובסוג קשת שונה" />}
         subparts={(d.subparts ?? []).map(text => <>{text} ____________________</>)}
       >
         {d.stem}
@@ -83,7 +83,7 @@ function Unit1Page1() {
           { intersection: 'bottom', sector: 1, label: '6', tone: 'neutral' },
           { intersection: 'bottom', sector: 2, label: '7', tone: 'neutral' },
           { intersection: 'bottom', sector: 3, label: '8', tone: 'neutral' },
-        ]} aria-label="שמונה זוויות ממוספרות בשני החיתוכים" />}
+        ]} ariaLabel="שמונה זוויות ממוספרות בשני החיתוכים" />}
       >
         {e.stem}
         <MatchingColumns />
