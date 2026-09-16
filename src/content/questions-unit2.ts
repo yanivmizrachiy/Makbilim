@@ -462,6 +462,7 @@ export const unit2Questions: Unit2Question[] = [
       givens: ['∠A = 41°', '∠C = 68°'],
       targets: ['α corresponding to ∠A', 'β adjacent to angle corresponding to ∠C', 'α + β']
     },
+    justificationLane: true,
     expected: {
       values: { 'α': 41, 'β': 112, 'α + β': 153 },
       justification: ['זוויות מתאימות בין ישרים מקבילים שוות זו לזו.', 'זוויות צמודות על ישר משלימות ל־180°.']
