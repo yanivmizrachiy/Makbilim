@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import './styles/dense-overrides.css';
 import './styles/bbb-source.css';
+import './styles/page-tuning.css';
 
 const root = document.getElementById('root');
 if (!root) throw new Error('Root element not found');
