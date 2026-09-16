@@ -2,15 +2,15 @@ import React, { type ReactNode } from 'react';
 
 export type QuestionBlockProps = {
   children: ReactNode;
-  diagram?: ReactNode;
-  subparts?: ReactNode[];
-  answerLines?: number;
-  justificationLabel?: string;
-  justificationLane?: boolean;
-  compact?: boolean;
+  diagram?: ReactNode | undefined;
+  subparts?: ReactNode[] | undefined;
+  answerLines?: number | undefined;
+  justificationLabel?: string | undefined;
+  justificationLane?: boolean | undefined;
+  compact?: boolean | undefined;
 };
 
-function AnswerLines({ count = 1 }: { count?: number }) {
+function AnswerLines({ count = 1 }: { count?: number | undefined }) {
   return (
     <div className="answer-lines" aria-hidden="true">
       {Array.from({ length: count }, (_, index) => <span key={index} />)}
