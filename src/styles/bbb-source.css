@@ -1,0 +1,230 @@
+.curriculum-source-page .page-content {
+  padding-top: 3mm;
+}
+
+.bbb-source {
+  min-height: 0;
+  height: 100%;
+  display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 4mm;
+  direction: rtl;
+  font-size: 10.6pt;
+  line-height: 1.42;
+  color: #1f2a44;
+}
+
+.bbb-source-block {
+  min-height: 0;
+  overflow: hidden;
+  border-bottom: 0.28mm solid #cbd5e1;
+  padding-bottom: 2.2mm;
+  break-inside: avoid;
+}
+
+.bbb-source-block:last-child {
+  border-bottom: 0;
+}
+
+.bbb-source .q {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 1.8mm;
+  border: 0.32mm solid #e1e5ec;
+  border-radius: 3mm;
+  padding: 3mm 4mm;
+  background: #fff;
+}
+
+.bbb-source .qhead {
+  display: flex;
+  align-items: center;
+  gap: 2.5mm;
+}
+
+.bbb-source .qnum {
+  min-width: 8mm;
+  height: 8mm;
+  padding-inline: 2.2mm;
+  border-radius: 4mm;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #0b2e4f;
+  color: #fff;
+  font-weight: 800;
+  font-size: 10.8pt;
+}
+
+.bbb-source .qtags {
+  display: flex;
+  gap: 1.5mm;
+}
+
+.bbb-source .qbody {
+  min-height: 0;
+  font-size: 10.6pt;
+  line-height: 1.42;
+}
+
+.bbb-source [dir="ltr"],
+.bbb-source .math {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+}
+
+.bbb-source ol.parts {
+  list-style: none;
+  margin: 1.8mm 0 0;
+  padding: 0;
+}
+
+.bbb-source ol.parts > li {
+  display: flex;
+  align-items: flex-start;
+  gap: 2mm;
+  margin: 1.4mm 0;
+}
+
+.bbb-source .plab {
+  flex: 0 0 auto;
+  min-width: 7mm;
+  font-weight: 800;
+  color: #0f6b78;
+}
+
+.bbb-source .ptext {
+  flex: 1;
+  min-width: 0;
+}
+
+.bbb-source .figure {
+  margin: 1.8mm auto;
+  text-align: center;
+  break-inside: avoid;
+}
+
+.bbb-source svg.chart {
+  display: block;
+  max-width: 100%;
+  max-height: 49mm;
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+}
+
+.bbb-source svg.chart text {
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 2.6px;
+  stroke-linejoin: round;
+}
+
+.bbb-source img.embed {
+  display: block;
+  max-height: 43mm;
+  width: auto;
+  max-width: 100% !important;
+  margin: 0 auto;
+  object-fit: contain;
+  border: 0.28mm solid #e1e5ec;
+  border-radius: 2mm;
+  padding: 1.5mm;
+  background: #fff;
+}
+
+.bbb-source .mc {
+  margin: 1.8mm 0 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.4mm 5mm;
+}
+
+.bbb-source .opt {
+  display: flex;
+  gap: 2mm;
+  align-items: baseline;
+}
+
+.bbb-source .ol {
+  width: 6mm;
+  height: 6mm;
+  border: 0.42mm solid #aab2c2;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8.6pt;
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+.bbb-source .lines {
+  margin: 1.5mm 0 0;
+}
+
+.bbb-source .ln {
+  height: 5.5mm;
+  border-bottom: 0.28mm dotted #aab2c2;
+}
+
+.bbb-source .ansrow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2mm;
+  margin: 1.6mm 0 0;
+}
+
+.bbb-source .abox {
+  display: inline-block;
+  min-width: 18mm;
+  height: 7mm;
+  border: 0.34mm solid #9aa3b8;
+  border-radius: 1.4mm;
+  background: #fff;
+}
+
+.bbb-source .just {
+  margin-top: 1.6mm;
+}
+
+.bbb-source .jlab,
+.bbb-source .alab {
+  font-weight: 700;
+  color: #0b2e4f;
+}
+
+.bbb-source table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.8mm auto;
+  font-size: 9.8pt;
+}
+
+.bbb-source th,
+.bbb-source td {
+  border: 0.28mm solid #aab2c2;
+  padding: 1.3mm 1.8mm;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.bbb-source th {
+  background: #eef4f7;
+  color: #0b2e4f;
+  font-weight: 800;
+}
+
+@media print and (monochrome) {
+  .bbb-source .qnum {
+    background: #111;
+  }
+  .bbb-source .plab,
+  .bbb-source .jlab,
+  .bbb-source .alab {
+    color: #222;
+  }
+}
