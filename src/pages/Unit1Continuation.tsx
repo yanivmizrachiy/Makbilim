@@ -1,7 +1,7 @@
 import React from 'react';
 import { A4Page } from '../components/A4Page';
 import { QuestionBlock } from '../components/QuestionBlock';
-import { ParallelLinesDiagram } from '../geometry/ParallelLinesDiagram';
+import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
 import { unit1Questions } from '../content/questions-unit1';
 
 const byId = (id: string) => {
@@ -107,12 +107,50 @@ function Unit1Page2() {
 }
 
 function RelationTable() {
-  const diagrams = [
-    { orientationDeg: 0, transversalDeg: 59, parallel: true, marks: [{ intersection: 'top' as const, sector: 0 as const }, { intersection: 'bottom' as const, sector: 0 as const }] },
-    { orientationDeg: 31, transversalDeg: 122, parallel: false, marks: [{ intersection: 'top' as const, sector: 1 as const }, { intersection: 'bottom' as const, sector: 2 as const }] },
-    { orientationDeg: 82, transversalDeg: 27, parallel: true, marks: [{ intersection: 'top' as const, sector: 2 as const }, { intersection: 'bottom' as const, sector: 2 as const }] },
-    { orientationDeg: -18, transversalDeg: 51, parallel: false, marks: [{ intersection: 'top' as const, sector: 0 as const }, { intersection: 'bottom' as const, sector: 1 as const }] },
+  const diagrams: Array<{
+    orientationDeg: number;
+    transversalDeg: number;
+    parallel: boolean;
+    marks: AngleMark[];
+  }> = [
+    {
+      orientationDeg: 0,
+      transversalDeg: 59,
+      parallel: true,
+      marks: [
+        { intersection: 'top', sector: 0, tone: 'primary' },
+        { intersection: 'bottom', sector: 0, tone: 'primary' },
+      ],
+    },
+    {
+      orientationDeg: 31,
+      transversalDeg: 122,
+      parallel: false,
+      marks: [
+        { intersection: 'top', sector: 1, tone: 'primary' },
+        { intersection: 'bottom', sector: 2, tone: 'primary' },
+      ],
+    },
+    {
+      orientationDeg: 82,
+      transversalDeg: 27,
+      parallel: true,
+      marks: [
+        { intersection: 'top', sector: 2, tone: 'primary' },
+        { intersection: 'bottom', sector: 2, tone: 'primary' },
+      ],
+    },
+    {
+      orientationDeg: -18,
+      transversalDeg: 51,
+      parallel: false,
+      marks: [
+        { intersection: 'top', sector: 0, tone: 'primary' },
+        { intersection: 'bottom', sector: 1, tone: 'primary' },
+      ],
+    },
   ];
+
   return (
     <table className="data-table relation-table">
       <thead><tr><th>שרטוט</th><th>סוג הזוג</th><th>האם ניתן לקבוע שהזוויות שוות?</th></tr></thead>
@@ -126,7 +164,7 @@ function RelationTable() {
                 orientationDeg={item.orientationDeg}
                 transversalDeg={item.transversalDeg}
                 showParallelMarks={item.parallel}
-                angleMarks={item.marks.map(mark => ({ ...mark, tone: 'primary' as const }))}
+                angleMarks={item.marks}
               />
             </td>
             <td className="write-cell" />
