@@ -133,7 +133,7 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P2-C',
     page: 2,
-    stem: 'בסרטוט הישרים c ו־d מקבילים. נתון כי ∠F = 72°. מצאו את δ.',
+    stem: 'בשרטוט הישרים c ו־d מקבילים. נתון כי ∠F = 72°. מצאו את δ.',
     diagram: {
       topology: 'alternate-then-adjacent-rotated',
       lineLabels: ['c', 'd', 'w'],
@@ -378,7 +378,7 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P5-D',
     page: 5,
-    stem: 'שתי הזוויות המסומנות בסרטוט צמודות. תלמיד כתב את המשוואה 2x + 20 = 3x + 35. קבעו אם המשוואה מתאימה לנתונים. אם לא, תקנו אותה, נמקו ומצאו את x.',
+    stem: 'שתי הזוויות המסומנות בשרטוט צמודות. תלמיד כתב את המשוואה 2x + 20 = 3x + 35. קבעו אם המשוואה מתאימה לנתונים. אם לא, תקנו אותה, נמקו ומצאו את x.',
     diagram: {
       topology: 'adjacent-angles-error-analysis-with-parallel-context',
       lineLabels: ['a', 'b', 't'],
