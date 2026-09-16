@@ -86,8 +86,12 @@ try {
   const layout = await page.locator('.a4-page').evaluateAll((pages) => pages.map((node, index) => {
     const el = node;
     const rect = el.getBoundingClientRect();
+    const header = el.querySelector('.page-header');
+    const headerRect = header?.getBoundingClientRect();
     const content = el.querySelector('.page-content');
     const contentRect = content?.getBoundingClientRect();
+    const footer = el.querySelector('.page-footer');
+    const footerRect = footer?.getBoundingClientRect();
     const unit = Number(el.getAttribute('data-unit'));
     const localPage = Number(el.getAttribute('data-page'));
     const isVerbatimCurriculum = unit === 5;
@@ -98,6 +102,10 @@ try {
     const subpartMarkerCount = el.querySelectorAll('.subpart-marker').length;
     const sourceNumberCount = el.querySelectorAll('.bbb-source .qnum').length;
     const sourceShaCount = el.querySelectorAll('.bbb-source-block[data-source-sha256]').length;
+    const projectTitleText = el.querySelector('.page-title-group h1')?.textContent?.trim() ?? '';
+    const unitTitleText = el.querySelector('.unit-title')?.textContent?.trim() ?? '';
+    const pageNumberText = el.querySelector('.page-number')?.textContent?.trim() ?? '';
+    const footerLines = [...el.querySelectorAll('.page-footer > div')].map(n => n.textContent?.trim() ?? '');
     const overflowingQuestions = questions.filter(q => {
       const qRect = q.getBoundingClientRect();
       return qRect.bottom > rect.bottom + 1 || qRect.top < rect.top - 1 || qRect.right > rect.right + 1 || qRect.left < rect.left - 1;
@@ -112,6 +120,11 @@ try {
     const interQuestionGaps = contentRects.slice(1).map((current, i) => Math.max(0, current.top - contentRects[i].bottom));
     const maxInterQuestionGapPx = interQuestionGaps.length ? Math.max(...interQuestionGaps) : 0;
     const maxInterQuestionGapRatio = contentRect && contentRect.height > 0 ? maxInterQuestionGapPx / contentRect.height : 0;
+    const aspectRatio = rect.height > 0 ? rect.width / rect.height : 0;
+    const expectedA4Ratio = 210 / 297;
+    const a4RatioError = Math.abs(aspectRatio - expectedA4Ratio);
+    const headerContentOverlap = Boolean(headerRect && contentRect && contentRect.top < headerRect.bottom - 1);
+    const footerContentOverlap = Boolean(footerRect && contentRect && contentRect.bottom > footerRect.top + 1);
     return {
       renderIndex: index + 1,
       unit,
@@ -119,6 +132,8 @@ try {
       isVerbatimCurriculum,
       widthPx: rect.width,
       heightPx: rect.height,
+      aspectRatio,
+      a4RatioError,
       scrollOverflow: el.scrollHeight - el.clientHeight,
       overflowingQuestions,
       internallyOverflowingQuestions,
@@ -132,6 +147,12 @@ try {
       subpartMarkerCount,
       sourceNumberCount,
       sourceShaCount,
+      projectTitleText,
+      unitTitleText,
+      pageNumberText,
+      footerLines,
+      headerContentOverlap,
+      footerContentOverlap,
     };
   }));
 
@@ -142,6 +163,11 @@ try {
     [4,1],[4,2],
     [5,1],[5,2],[5,3],[5,4],
   ];
+  const canonicalProjectTitle = 'זוויות בין ישרים מקבילים';
+  const canonicalFooter = [
+    'יניב רז - מדריך מחוזי חט"ב בעיר ירושלים',
+    'הדרכה במחוז ירושלים והעיר ירושלים - מנח"י, בהובלת איילת קריספין',
+  ];
 
   const failures = layout.filter((item, index) => {
     const authoredMarkerFailure = !item.isVerbatimCurriculum && (
@@ -150,6 +176,17 @@ try {
     const curriculumFidelityFailure = item.isVerbatimCurriculum && (
       item.questionCount !== 2 || item.sourceNumberCount !== 2 || item.sourceShaCount !== 2
     );
+    const pageChromeFailure = (
+      item.projectTitleText !== canonicalProjectTitle ||
+      !item.unitTitleText.includes(`יחידה ${item.unit}`) ||
+      item.pageNumberText !== `עמוד ${item.localPage}` ||
+      item.footerLines.length !== 2 ||
+      item.footerLines[0] !== canonicalFooter[0] ||
+      item.footerLines[1] !== canonicalFooter[1] ||
+      item.headerContentOverlap ||
+      item.footerContentOverlap ||
+      item.a4RatioError > 0.005
+    );
     return (
       item.scrollOverflow > 2 ||
       item.overflowingQuestions > 0 ||
@@ -157,6 +194,7 @@ try {
       item.questionCount === 0 ||
       authoredMarkerFailure ||
       curriculumFidelityFailure ||
+      pageChromeFailure ||
       (item.bottomGapRatio != null && item.bottomGapRatio > 0.12) ||
       item.maxInterQuestionGapRatio > 0.19 ||
       item.unit !== expectedPages[index][0] ||
@@ -199,7 +237,7 @@ try {
   });
 
   await fs.writeFile(path.join(root, 'artifacts', 'layout-report.json'), `${JSON.stringify({ pageCount, expectedPages, layout }, null, 2)}\n`, 'utf8');
-  console.log(`pdf-visual: PASS — ${pageCount} A4 pages, utilization + grayscale snapshots generated`);
+  console.log(`pdf-visual: PASS — ${pageCount} A4 pages, canonical chrome + utilization + grayscale snapshots generated`);
 } finally {
   clearTimeout(hardWatchdog);
   await closeBrowser();
