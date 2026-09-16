@@ -96,6 +96,25 @@
         "short-parallelism-proof",
         "combined-direct-and-converse"
       ]
+    },
+    {
+      "unit": 5,
+      "title": "שאלות מתוך תוכנית הלימודים",
+      "pageStart": 1,
+      "sourceMode": "verbatim",
+      "sourceRepository": "yanivmizrachiy/bbb",
+      "sourceFiles": [
+        "geometry8/topics/t02_angles.py",
+        "geometry8/topics/t03_congruence.py"
+      ],
+      "selectionRule": "all question blocks materially related to angle relationships between parallel lines or proving parallelism",
+      "contentMutation": "forbidden",
+      "wordingMutation": "forbidden",
+      "numberMutation": "forbidden",
+      "labelMutation": "forbidden",
+      "diagramMutation": "forbidden",
+      "layoutPolicy": "preserve source content faithfully; only technical adaptation required to render/print is allowed",
+      "identifiedQuestionBlocks": 8
     }
   ]
 }
