@@ -19,7 +19,7 @@ export const unit1Questions: Unit1Question[] = [
   {
     id: 'U1-P1-A',
     page: 1,
-    stem: 'בסרטוט שלפניכם שני ישרים וישר נוסף החותך את שניהם. סמנו את הישר החותך.',
+    stem: 'בשרטוט שלפניכם שני ישרים וישר נוסף החותך את שניהם. סמנו את הישר החותך.',
     diagram: { topology: 'two-lines-one-transversal', lineLabels: ['p', 'q', 'r'], orientationDeg: 0, transversalDeg: 58, parallelGiven: false }
   },
   {
