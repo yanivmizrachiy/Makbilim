@@ -70,6 +70,7 @@ function Unit1Page2() {
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={2}>
       <QuestionBlock
+        compact
         diagram={<EightAngleDiagram lineLabels={['c', 'd']} transversalLabel="h" orientationDeg={-3} transversalDeg={52} />}
       >
         {corresponding.stem}
@@ -77,6 +78,7 @@ function Unit1Page2() {
       </QuestionBlock>
 
       <QuestionBlock
+        compact
         diagram={<EightAngleDiagram lineLabels={['g', 'j']} transversalLabel="n" orientationDeg={19} transversalDeg={101} />}
       >
         {alternate.stem}
@@ -84,6 +86,7 @@ function Unit1Page2() {
       </QuestionBlock>
 
       <QuestionBlock
+        compact
         diagram={<EightAngleDiagram lineLabels={['ℓ₁', 'ℓ₂']} transversalLabel="r" orientationDeg={78} transversalDeg={24} />}
         subparts={(rotated.subparts ?? []).map(text => <>{text} ______________________________</>)}
       >
@@ -91,6 +94,7 @@ function Unit1Page2() {
       </QuestionBlock>
 
       <QuestionBlock
+        compact
         answerLines={1}
         diagram={<ParallelLinesDiagram lineLabels={['e', 'f']} transversalLabel="z" orientationDeg={8} transversalDeg={67} showParallelMarks />}
       >
@@ -223,12 +227,13 @@ function Unit1Page4() {
 
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={4}>
-      <QuestionBlock subparts={(table.subparts ?? []).map(text => <>{text}</>)}>
+      <QuestionBlock compact subparts={(table.subparts ?? []).map(text => <>{text}</>)}>
         {table.stem}
         <RelationTable />
       </QuestionBlock>
 
       <QuestionBlock
+        compact
         diagram={
           <ParallelLinesDiagram
             lineLabels={['b', 'd']}
@@ -256,6 +261,7 @@ function Unit1Page4() {
       </QuestionBlock>
 
       <QuestionBlock
+        compact
         answerLines={4}
         diagram={
           <div className="paired-diagrams">
