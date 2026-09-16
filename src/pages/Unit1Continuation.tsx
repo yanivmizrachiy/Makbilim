@@ -76,10 +76,10 @@ function Unit1Page2() {
             angleMarks={[
               { intersection: 'top', sector: 0, tone: 'primary', arcStyle: 'single' },
               { intersection: 'bottom', sector: 0, tone: 'primary', arcStyle: 'single' },
-              { intersection: 'top', sector: 2, tone: 'secondary', arcStyle: 'double' },
-              { intersection: 'bottom', sector: 1, tone: 'secondary', arcStyle: 'double' },
-              { intersection: 'top', sector: 3, tone: 'neutral', arcStyle: 'dashed' },
-              { intersection: 'bottom', sector: 3, tone: 'neutral', arcStyle: 'dashed' },
+              { intersection: 'top', sector: 1, tone: 'secondary', arcStyle: 'double' },
+              { intersection: 'bottom', sector: 3, tone: 'secondary', arcStyle: 'double' },
+              { intersection: 'top', sector: 2, tone: 'neutral', arcStyle: 'dashed' },
+              { intersection: 'bottom', sector: 1, tone: 'neutral', arcStyle: 'dashed' },
             ]}
           />
         }
