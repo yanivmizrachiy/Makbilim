@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { unit1Questions } from '../../src/content/questions-unit1';
-import { alternateInteriorPairs, correspondingPair } from '../../src/geometry/relations';
+import { unit1RelationTableCases } from '../../src/pages/Unit1Continuation';
+import { alternateInteriorPairs, alternatePairs, correspondingPair } from '../../src/geometry/relations';
 
 describe('Unit 1 conceptual integrity', () => {
   it('contains 14 progressively structured questions', () => {
@@ -55,5 +56,26 @@ describe('Unit 1 conceptual integrity', () => {
       { intersection: 'top', sector: 2 },
       { intersection: 'bottom', sector: 1 },
     ]);
+  });
+
+  it('covers all four combinations of relation type and parallel condition in the relation table', () => {
+    expect(unit1RelationTableCases.map(({ relation, parallel, equalityConclusion }) => ({ relation, parallel, equalityConclusion }))).toEqual([
+      { relation: 'מתאימות', parallel: true, equalityConclusion: 'כן' },
+      { relation: 'מתאימות', parallel: false, equalityConclusion: 'לא ניתן לקבוע' },
+      { relation: 'מתחלפות', parallel: true, equalityConclusion: 'כן' },
+      { relation: 'מתחלפות', parallel: false, equalityConclusion: 'לא ניתן לקבוע' },
+    ]);
+  });
+
+  it('uses structurally valid angle pairs in every relation-table row', () => {
+    const allAlternates = alternatePairs();
+    for (const item of unit1RelationTableCases) {
+      const normalized = item.marks.map(mark => ({ intersection: mark.intersection, sector: mark.sector }));
+      if (item.relation === 'מתאימות') {
+        expect(normalized).toEqual(correspondingPair(normalized[0]!.sector));
+      } else {
+        expect(allAlternates).toContainEqual(normalized);
+      }
+    }
   });
 });
