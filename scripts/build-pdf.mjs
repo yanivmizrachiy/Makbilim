@@ -75,7 +75,7 @@ try {
 
   await page.goto('http://127.0.0.1:4173/', { waitUntil: 'domcontentloaded', timeout: 20000 });
   await page.waitForSelector('[data-curriculum-ready="true"]', { timeout: 15000 });
-  await page.waitForFunction(() => document.querySelectorAll('.a4-page').length === 18, null, { timeout: 15000 });
+  await page.waitForFunction(() => document.querySelectorAll('.a4-page').length === 19, null, { timeout: 15000 });
   await page.evaluate(async () => { if (document.fonts?.ready) await document.fonts.ready; });
   await page.waitForFunction(() => {
     const mathNodes = [...document.querySelectorAll('.mathjax-inline > span')];
@@ -99,7 +99,7 @@ try {
   await page.emulateMedia({ media: 'print' });
 
   const pageCount = await page.locator('.a4-page').count();
-  if (pageCount !== 18) throw new Error(`Expected 18 A4 pages across units 1-5, found ${pageCount}`);
+  if (pageCount !== 19) throw new Error(`Expected 19 A4 pages across units 1-5, found ${pageCount}`);
 
   const layout = await page.locator('.a4-page').evaluateAll((pages) => pages.map((node, index) => {
     const el = node;
@@ -175,7 +175,7 @@ try {
   }));
 
   const expectedPages = [
-    [1,1],[1,2],[1,3],
+    [1,1],[1,2],[1,3],[1,4],
     [2,1],[2,2],[2,3],[2,4],[2,5],[2,6],
     [3,1],[3,2],[3,3],
     [4,1],[4,2],
