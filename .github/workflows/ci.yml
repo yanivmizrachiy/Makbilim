@@ -31,9 +31,23 @@ jobs:
       - name: Validate canonical contracts and content
         run: npm run validate
 
-      - name: Build print preview
-        run: npm run build
-
       - name: Ensure generated curriculum has eight immutable blocks
         run: |
           node -e "const fs=require('fs');const p='src/content/generated/curriculum-source.json';const j=JSON.parse(fs.readFileSync(p,'utf8'));if(j.blockCount!==8||j.immutable!==true)process.exit(1);console.log('generated curriculum PASS')"
+
+      - name: Install Chromium for print QA
+        run: npx playwright install --with-deps chromium
+
+      - name: Build PDF and visual QA
+        run: npm run pdf
+
+      - name: Upload workbook artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: makbilim-workbook
+          path: |
+            artifacts/pdf/*.pdf
+            artifacts/screenshots/*.png
+            artifacts/layout-report.json
+          if-no-files-found: error
+          retention-days: 30
