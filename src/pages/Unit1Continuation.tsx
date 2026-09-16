@@ -191,14 +191,11 @@ function RelationTable() {
 function Unit1Page3() {
   const a = byId('U1-P3-A');
   const b = byId('U1-P3-B');
-  const c = byId('U1-P3-C');
-  const d = byId('U1-P3-D');
 
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={3}>
       <QuestionBlock
-        compact
-        answerLines={2}
+        answerLines={3}
         diagram={
           <div className="paired-diagrams">
             <ParallelLinesDiagram lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={13} transversalDeg={73} showParallelMarks />
@@ -209,13 +206,21 @@ function Unit1Page3() {
         {a.stem}
       </QuestionBlock>
 
-      <QuestionBlock compact subparts={(b.subparts ?? []).map(text => <>{text}</>)}>
+      <QuestionBlock subparts={(b.subparts ?? []).map(text => <>{text}</>)}>
         {b.stem}
         <RelationTable />
       </QuestionBlock>
+    </A4Page>
+  );
+}
 
+function Unit1Page4() {
+  const c = byId('U1-P3-C');
+  const d = byId('U1-P3-D');
+
+  return (
+    <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={4}>
       <QuestionBlock
-        compact
         diagram={
           <ParallelLinesDiagram
             lineLabels={['b', 'd']}
@@ -243,7 +248,6 @@ function Unit1Page3() {
       </QuestionBlock>
 
       <QuestionBlock
-        compact
         answerLines={5}
         diagram={
           <div className="paired-diagrams">
@@ -259,5 +263,5 @@ function Unit1Page3() {
 }
 
 export function Unit1Continuation() {
-  return <><Unit1Page2 /><Unit1Page3 /></>;
+  return <><Unit1Page2 /><Unit1Page3 /><Unit1Page4 /></>;
 }
