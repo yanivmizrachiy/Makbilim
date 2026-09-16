@@ -32,21 +32,28 @@ try {
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1280, height: 1800 }, deviceScaleFactor: 1 });
   await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+  await page.waitForSelector('[data-curriculum-ready="true"]', { timeout: 20000 });
+  await page.waitForFunction(() => document.querySelectorAll('.a4-page').length === 18, null, { timeout: 20000 });
   await page.emulateMedia({ media: 'print' });
 
   const pageCount = await page.locator('.a4-page').count();
-  if (pageCount !== 14) throw new Error(`Expected 14 A4 pages for units 1-4, found ${pageCount}`);
+  if (pageCount !== 18) throw new Error(`Expected 18 A4 pages across units 1-5, found ${pageCount}`);
 
   const layout = await page.locator('.a4-page').evaluateAll((pages) => pages.map((node, index) => {
     const el = node;
     const rect = el.getBoundingClientRect();
     const content = el.querySelector('.page-content');
     const contentRect = content?.getBoundingClientRect();
-    const questions = [...el.querySelectorAll('.question-block')];
-    const questionContents = [...el.querySelectorAll('.question-content')];
+    const unit = Number(el.getAttribute('data-unit'));
+    const localPage = Number(el.getAttribute('data-page'));
+    const isVerbatimCurriculum = unit === 5;
+    const questions = [...el.querySelectorAll(isVerbatimCurriculum ? '.bbb-source-block' : '.question-block')];
+    const questionContents = [...el.querySelectorAll(isVerbatimCurriculum ? '.bbb-source-block' : '.question-content')];
     const markerCount = el.querySelectorAll('.question-marker').length;
     const subpartCount = el.querySelectorAll('.subpart').length;
     const subpartMarkerCount = el.querySelectorAll('.subpart-marker').length;
+    const sourceNumberCount = el.querySelectorAll('.bbb-source .qnum').length;
+    const sourceShaCount = el.querySelectorAll('.bbb-source-block[data-source-sha256]').length;
     const overflowingQuestions = questions.filter(q => {
       const qRect = q.getBoundingClientRect();
       return qRect.bottom > rect.bottom + 1 || qRect.top < rect.top - 1 || qRect.right > rect.right + 1 || qRect.left < rect.left - 1;
@@ -58,12 +65,11 @@ try {
     const interQuestionGaps = contentRects.slice(1).map((current, i) => Math.max(0, current.top - contentRects[i].bottom));
     const maxInterQuestionGapPx = interQuestionGaps.length ? Math.max(...interQuestionGaps) : 0;
     const maxInterQuestionGapRatio = contentRect && contentRect.height > 0 ? maxInterQuestionGapPx / contentRect.height : 0;
-    const unit = Number(el.getAttribute('data-unit'));
-    const localPage = Number(el.getAttribute('data-page'));
     return {
       renderIndex: index + 1,
       unit,
       localPage,
+      isVerbatimCurriculum,
       widthPx: rect.width,
       heightPx: rect.height,
       scrollOverflow: el.scrollHeight - el.clientHeight,
@@ -76,6 +82,8 @@ try {
       markerCount,
       subpartCount,
       subpartMarkerCount,
+      sourceNumberCount,
+      sourceShaCount,
     };
   }));
 
@@ -84,19 +92,28 @@ try {
     [2,1],[2,2],[2,3],[2,4],[2,5],[2,6],
     [3,1],[3,2],[3,3],
     [4,1],[4,2],
+    [5,1],[5,2],[5,3],[5,4],
   ];
 
-  const failures = layout.filter((item, index) =>
-    item.scrollOverflow > 2 ||
-    item.overflowingQuestions > 0 ||
-    item.questionCount === 0 ||
-    item.markerCount !== item.questionCount ||
-    item.subpartMarkerCount !== item.subpartCount ||
-    (item.bottomGapRatio != null && item.bottomGapRatio > 0.12) ||
-    item.maxInterQuestionGapRatio > 0.19 ||
-    item.unit !== expectedPages[index][0] ||
-    item.localPage !== expectedPages[index][1]
-  );
+  const failures = layout.filter((item, index) => {
+    const authoredMarkerFailure = !item.isVerbatimCurriculum && (
+      item.markerCount !== item.questionCount || item.subpartMarkerCount !== item.subpartCount
+    );
+    const curriculumFidelityFailure = item.isVerbatimCurriculum && (
+      item.questionCount !== 2 || item.sourceNumberCount !== 2 || item.sourceShaCount !== 2
+    );
+    return (
+      item.scrollOverflow > 2 ||
+      item.overflowingQuestions > 0 ||
+      item.questionCount === 0 ||
+      authoredMarkerFailure ||
+      curriculumFidelityFailure ||
+      (item.bottomGapRatio != null && item.bottomGapRatio > 0.12) ||
+      item.maxInterQuestionGapRatio > 0.19 ||
+      item.unit !== expectedPages[index][0] ||
+      item.localPage !== expectedPages[index][1]
+    );
+  });
   if (failures.length) throw new Error(`A4 layout QA failed: ${JSON.stringify(failures)}`);
 
   for (let index = 0; index < pageCount; index += 1) {
