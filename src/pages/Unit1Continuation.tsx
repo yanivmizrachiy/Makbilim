@@ -128,7 +128,7 @@ function RelationTable() {
       parallel: false,
       marks: [
         { intersection: 'top', sector: 1, tone: 'primary' },
-        { intersection: 'bottom', sector: 2, tone: 'primary' },
+        { intersection: 'bottom', sector: 3, tone: 'primary' },
       ],
     },
     {
@@ -146,7 +146,7 @@ function RelationTable() {
       parallel: false,
       marks: [
         { intersection: 'top', sector: 0, tone: 'primary' },
-        { intersection: 'bottom', sector: 1, tone: 'primary' },
+        { intersection: 'bottom', sector: 2, tone: 'primary' },
       ],
     },
   ];
