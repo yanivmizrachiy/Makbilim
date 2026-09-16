@@ -92,7 +92,7 @@ body { direction: rtl; }
   display: grid;
   align-content: stretch;
   grid-auto-rows: minmax(min-content, 1fr);
-  gap: 3.2mm;
+  gap: 2.6mm;
 }
 
 .question-block {
@@ -101,14 +101,14 @@ body { direction: rtl; }
   grid-template-columns: 6mm minmax(0, 1fr);
   gap: 2mm;
   align-items: start;
-  padding: 2.7mm 0 2.9mm;
+  padding: 2.4mm 0 2.6mm;
   border-bottom: 0.28mm solid var(--line);
   break-inside: avoid;
   page-break-inside: avoid;
 }
 
 .question-block:last-child { border-bottom: 0; }
-.question-block--compact { padding-block: 1.8mm; }
+.question-block--compact { padding-block: 1.35mm; }
 
 .question-marker {
   color: #000;
@@ -121,7 +121,7 @@ body { direction: rtl; }
 .question-content {
   min-width: 0;
   display: grid;
-  gap: 2mm;
+  gap: 1.6mm;
 }
 
 .question-stem,
@@ -141,7 +141,7 @@ body { direction: rtl; }
 
 .subparts {
   display: grid;
-  gap: 1.4mm;
+  gap: 1.2mm;
   padding-inline-start: 4mm;
 }
 
@@ -162,16 +162,20 @@ body { direction: rtl; }
 
 .question-diagram {
   width: 100%;
-  min-height: 42mm;
+  min-height: 36mm;
   display: grid;
   place-items: center;
 }
 
+.question-block--compact .question-diagram { min-height: 23mm; }
+
 .geometry-diagram {
   width: min(100%, 148mm);
-  max-height: 58mm;
+  max-height: 52mm;
   overflow: visible;
 }
+
+.question-block--compact .geometry-diagram { max-height: 31mm; }
 
 .geometry-lines line {
   stroke: var(--ink);
@@ -206,7 +210,8 @@ body { direction: rtl; }
 
 .angle-mark--primary path { stroke: var(--teal); }
 .angle-mark--secondary path { stroke: var(--amber); }
-.angle-mark--neutral path { stroke: var(--muted); stroke-dasharray: 5 4; }
+.angle-mark--neutral path { stroke: var(--muted); }
+.angle-mark--dashed path { stroke-dasharray: 5 4; }
 
 .answer-lines {
   display: grid;
@@ -238,8 +243,8 @@ body { direction: rtl; }
 .choice-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2mm 7mm;
-  margin-top: 1mm;
+  gap: 1.7mm 7mm;
+  margin-top: 0.8mm;
 }
 
 .choice {
@@ -256,17 +261,54 @@ body { direction: rtl; }
   line-height: 1;
 }
 
+.matching-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18mm;
+  width: min(100%, 112mm);
+  margin: 1mm auto 0;
+}
+
+.matching-columns > div {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6mm;
+  text-align: center;
+  font-size: 9.8pt;
+}
+
+.matching-columns strong { color: var(--navy); font-size: 9pt; }
+
+.true-false-list { display: grid; gap: 1mm; }
+.true-false-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4mm;
+  align-items: baseline;
+  font-size: 9.8pt;
+}
+.true-false-options { display: flex; gap: 4mm; white-space: nowrap; }
+
+.paired-diagrams {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5mm;
+  align-items: center;
+}
+.paired-diagrams .geometry-diagram { max-height: 29mm; }
+
 .data-table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: 10.4pt;
+  font-size: 10.2pt;
 }
 
 .data-table th,
 .data-table td {
   border: 0.3mm solid #94a3b8;
-  padding: 2.1mm 2.4mm;
+  padding: 1.5mm 1.8mm;
   text-align: center;
   vertical-align: middle;
 }
@@ -276,6 +318,10 @@ body { direction: rtl; }
   color: var(--navy);
   font-weight: 800;
 }
+
+.relation-table td:first-child { width: 38%; padding: 0.5mm; }
+.relation-table .geometry-diagram { max-height: 20mm; }
+.write-cell { min-height: 9mm; }
 
 .page-footer {
   align-self: end;
