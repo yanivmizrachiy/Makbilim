@@ -335,6 +335,55 @@ body { direction: rtl; }
   line-height: 1.2;
 }
 
+/* Dense-page tuning is deliberately page-scoped: preserve the normal book scale elsewhere. */
+.a4-page[data-unit="1"] {
+  --header-height: 20mm;
+  --footer-height: 11mm;
+}
+.a4-page[data-unit="1"] .page-content { padding-top: 2.4mm; gap: 1.1mm; }
+.a4-page[data-unit="1"] .question-block--compact { padding-block: 0.65mm; }
+.a4-page[data-unit="1"] .question-content { gap: 0.85mm; }
+.a4-page[data-unit="1"] .question-block--compact .question-diagram { min-height: 17mm; }
+.a4-page[data-unit="1"] .question-block--compact .geometry-diagram { max-height: 24mm; }
+.a4-page[data-unit="1"] .subparts { gap: 0.6mm; }
+.a4-page[data-unit="1"] .answer-lines { gap: 1.8mm; padding-top: 0.3mm; }
+.a4-page[data-unit="1"] .answer-lines span { height: 2.5mm; }
+.a4-page[data-unit="1"][data-page="3"] .paired-diagrams .geometry-diagram { max-height: 20mm; }
+.a4-page[data-unit="1"][data-page="3"] .relation-table .geometry-diagram { max-height: 14mm; }
+.a4-page[data-unit="1"][data-page="3"] .data-table th,
+.a4-page[data-unit="1"][data-page="3"] .data-table td { padding: 0.8mm 1.1mm; }
+.a4-page[data-unit="1"][data-page="3"] .write-cell { min-height: 6mm; }
+
+.a4-page[data-unit="2"][data-page="3"] .page-content,
+.a4-page[data-unit="4"][data-page="2"] .page-content { gap: 1.5mm; padding-top: 3mm; }
+.a4-page[data-unit="2"][data-page="3"] .question-block--compact,
+.a4-page[data-unit="4"][data-page="2"] .question-block--compact { padding-block: 0.9mm; }
+.a4-page[data-unit="2"][data-page="3"] .question-content,
+.a4-page[data-unit="4"][data-page="2"] .question-content { gap: 1mm; }
+
+.a4-page[data-unit="3"][data-page="1"],
+.a4-page[data-unit="3"][data-page="2"] {
+  --header-height: 20mm;
+  --footer-height: 11mm;
+}
+.a4-page[data-unit="3"][data-page="1"] .page-content,
+.a4-page[data-unit="3"][data-page="2"] .page-content { gap: 1mm; padding-top: 2.4mm; }
+.a4-page[data-unit="3"][data-page="1"] .question-block--compact,
+.a4-page[data-unit="3"][data-page="2"] .question-block--compact { padding-block: 0.55mm; }
+.a4-page[data-unit="3"][data-page="1"] .question-content,
+.a4-page[data-unit="3"][data-page="2"] .question-content { gap: 0.75mm; }
+.a4-page[data-unit="3"][data-page="1"] .question-block--compact .question-diagram,
+.a4-page[data-unit="3"][data-page="2"] .question-block--compact .question-diagram { min-height: 16mm; }
+.a4-page[data-unit="3"][data-page="1"] .question-block--compact .geometry-diagram,
+.a4-page[data-unit="3"][data-page="2"] .question-block--compact .geometry-diagram { max-height: 21mm; }
+.a4-page[data-unit="3"][data-page="1"] .answer-lines,
+.a4-page[data-unit="3"][data-page="2"] .answer-lines { gap: 1.4mm; padding-top: 0.2mm; }
+.a4-page[data-unit="3"][data-page="1"] .answer-lines span,
+.a4-page[data-unit="3"][data-page="2"] .answer-lines span { height: 2.2mm; }
+.a4-page[data-unit="3"][data-page="2"] .proof-table { font-size: 9.5pt; }
+.a4-page[data-unit="3"][data-page="2"] .proof-table th,
+.a4-page[data-unit="3"][data-page="2"] .proof-table td { padding: 0.8mm 1mm; }
+
 @media print {
   html, body, #root { background: #fff; }
   .preview-stack { display: block; padding: 0; }
