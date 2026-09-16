@@ -77,6 +77,24 @@ try {
   await page.waitForSelector('[data-curriculum-ready="true"]', { timeout: 15000 });
   await page.waitForFunction(() => document.querySelectorAll('.a4-page').length === 18, null, { timeout: 15000 });
   await page.evaluate(async () => { if (document.fonts?.ready) await document.fonts.ready; });
+  await page.waitForFunction(() => {
+    const mathNodes = [...document.querySelectorAll('.mathjax-inline > span')];
+    return mathNodes.length > 0 && mathNodes.every(node => node.getAttribute('data-mathjax') === 'svg');
+  }, null, { timeout: 20000 });
+
+  const mathJaxStatus = await page.locator('.mathjax-inline > span').evaluateAll(nodes => ({
+    total: nodes.length,
+    rendered: nodes.filter(node => node.getAttribute('data-mathjax') === 'svg').length,
+    svgNodes: nodes.filter(node => node.querySelector('mjx-container svg')).length,
+  }));
+  if (
+    mathJaxStatus.total === 0 ||
+    mathJaxStatus.rendered !== mathJaxStatus.total ||
+    mathJaxStatus.svgNodes !== mathJaxStatus.total
+  ) {
+    throw new Error(`MathJax SVG QA failed: ${JSON.stringify(mathJaxStatus)}`);
+  }
+
   await page.addStyleTag({ content: '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}' });
   await page.emulateMedia({ media: 'print' });
 
@@ -236,8 +254,12 @@ try {
     margin: { top: '0', right: '0', bottom: '0', left: '0' },
   });
 
-  await fs.writeFile(path.join(root, 'artifacts', 'layout-report.json'), `${JSON.stringify({ pageCount, expectedPages, layout }, null, 2)}\n`, 'utf8');
-  console.log(`pdf-visual: PASS — ${pageCount} A4 pages, canonical chrome + utilization + grayscale snapshots generated`);
+  await fs.writeFile(
+    path.join(root, 'artifacts', 'layout-report.json'),
+    `${JSON.stringify({ pageCount, expectedPages, mathJaxStatus, layout }, null, 2)}\n`,
+    'utf8',
+  );
+  console.log(`pdf-visual: PASS — ${pageCount} A4 pages, ${mathJaxStatus.rendered}/${mathJaxStatus.total} MathJax SVG tokens, canonical chrome + utilization + grayscale snapshots generated`);
 } finally {
   clearTimeout(hardWatchdog);
   await closeBrowser();
