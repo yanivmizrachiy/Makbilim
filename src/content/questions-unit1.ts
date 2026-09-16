@@ -37,7 +37,7 @@ export const unit1Questions: Unit1Question[] = [
     diagram: { topology: 'three-marked-angle-pairs', lineLabels: ['u', 'v', 'w'], pointLabels: ['E', 'F'], orientationDeg: 11, transversalDeg: 71, parallelGiven: false, highlights: ['single-arc', 'double-arc', 'dashed-arc'] }
   },
   {
-    id: 'U1-P1-E', page: 1, stem: 'התאימו לכל זווית בטור הימני את הזווית המתאימה לה בטור השמאלי.',
+    id: 'U1-P1-E', page: 2, stem: 'התאימו לכל זווית בטור הימני את הזווית המתאימה לה בטור השמאלי.',
     diagram: { topology: 'eight-angle-labeled-grid', lineLabels: ['c', 'd', 'h'], pointLabels: ['K', 'L'], orientationDeg: -3, transversalDeg: 52, parallelGiven: false }
   },
   {
@@ -55,11 +55,11 @@ export const unit1Questions: Unit1Question[] = [
     diagram: { topology: 'minimal-theorem-support', lineLabels: ['e', 'f', 'z'], orientationDeg: 8, transversalDeg: 67, parallelGiven: true }
   },
   {
-    id: 'U1-P2-D', page: 2, stem: 'השלימו את המשפט: אם שני ישרים ______ נחתכים על ידי ישר שלישי, אז כל זוג זוויות מתחלפות ______ זו לזו.',
+    id: 'U1-P2-D', page: 3, stem: 'השלימו את המשפט: אם שני ישרים ______ נחתכים על ידי ישר שלישי, אז כל זוג זוויות מתחלפות ______ זו לזו.',
     diagram: { topology: 'minimal-theorem-support', lineLabels: ['x', 'y', 'v'], orientationDeg: -14, transversalDeg: 109, parallelGiven: true }
   },
   {
-    id: 'U1-P2-E', page: 2, stem: 'קבעו אם הטענה נכונה או לא נכונה. נמקו.',
+    id: 'U1-P2-E', page: 3, stem: 'קבעו אם הטענה נכונה או לא נכונה. נמקו.',
     subparts: ['כל שתי זוויות מתחלפות שוות זו לזו.', 'אם שני ישרים מקבילים נחתכים על ידי ישר שלישי, הזוויות המתחלפות שוות זו לזו.', 'אם שני ישרים מקבילים נחתכים על ידי ישר שלישי, הזוויות המתאימות שוות זו לזו.'],
     diagram: { topology: 'statement-only-with-small-reference-diagram', lineLabels: ['r', 's', 't'], orientationDeg: 0, transversalDeg: 64, parallelGiven: true }
   },
@@ -68,17 +68,17 @@ export const unit1Questions: Unit1Question[] = [
     diagram: { topology: 'claim-analysis-two-configurations', lineLabels: ['m', 'n', 'q'], orientationDeg: 13, transversalDeg: 73, parallelGiven: false }
   },
   {
-    id: 'U1-P3-B', page: 3, stem: 'השלימו את הטבלה לפי השרטוטים.',
+    id: 'U1-P3-B', page: 4, stem: 'השלימו את הטבלה לפי השרטוטים.',
     subparts: ['קבעו בכל שורה אם הזוג המסומן הוא זוג זוויות מתאימות או זוג זוויות מתחלפות.', 'קבעו אם ניתן להסיק שהזוויות שוות על סמך הנתונים שבשרטוט.'],
     diagram: { topology: 'four-mini-diagrams-table', lineLabels: ['a', 'c', 'p'], orientationDeg: 32, transversalDeg: 122, parallelGiven: false }
   },
   {
-    id: 'U1-P3-C', page: 3, stem: 'בחרו את זוג הזוויות המתחלפות.',
+    id: 'U1-P3-C', page: 4, stem: 'בחרו את זוג הזוויות המתחלפות.',
     choices: ['הזוג המסומן א', 'הזוג המסומן ב', 'הזוג המסומן ג', 'הזוג המסומן ד'],
     diagram: { topology: 'rotated-four-option-angle-pairs', lineLabels: ['b', 'd', 'f'], pointLabels: ['S', 'T'], orientationDeg: 84, transversalDeg: 29, parallelGiven: false, highlights: ['option-a', 'option-b', 'option-c', 'option-d'] }
   },
   {
-    id: 'U1-P3-D', page: 3, stem: 'במשפט שלפניכם חסר תנאי הכרחי: „זוויות מתאימות שוות זו לזו.” כתבו את המשפט המלא והמדויק.',
+    id: 'U1-P3-D', page: 4, stem: 'במשפט שלפניכם חסר תנאי הכרחי: „זוויות מתאימות שוות זו לזו.” כתבו את המשפט המלא והמדויק.',
     diagram: { topology: 'two-configurations-one-parallel-one-not', lineLabels: ['h', 'k', 's'], orientationDeg: -21, transversalDeg: 48, parallelGiven: false }
   }
 ];
