@@ -4,22 +4,22 @@ import { arcPath, lineIntersection, offsetPoint, pointOnRay, segmentThrough, typ
 export type AngleMark = {
   intersection: 'top' | 'bottom' | 'top-secondary' | 'bottom-secondary';
   sector: 0 | 1 | 2 | 3;
-  label?: string;
-  value?: string;
-  tone?: 'primary' | 'secondary' | 'neutral';
-  arcStyle?: 'single' | 'double' | 'dashed';
+  label?: string | undefined;
+  value?: string | undefined;
+  tone?: 'primary' | 'secondary' | 'neutral' | undefined;
+  arcStyle?: 'single' | 'double' | 'dashed' | undefined;
 };
 
 export type ParallelLinesDiagramProps = {
-  lineLabels?: [string, string];
-  transversalLabel?: string;
-  secondaryTransversalLabel?: string;
-  orientationDeg?: number;
-  transversalDeg?: number;
-  secondaryTransversalDeg?: number;
-  showParallelMarks?: boolean;
-  angleMarks?: AngleMark[];
-  ariaLabel?: string;
+  lineLabels?: [string, string] | undefined;
+  transversalLabel?: string | undefined;
+  secondaryTransversalLabel?: string | undefined;
+  orientationDeg?: number | undefined;
+  transversalDeg?: number | undefined;
+  secondaryTransversalDeg?: number | undefined;
+  showParallelMarks?: boolean | undefined;
+  angleMarks?: AngleMark[] | undefined;
+  ariaLabel?: string | undefined;
 };
 
 const W = 520;
