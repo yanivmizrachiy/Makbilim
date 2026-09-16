@@ -98,7 +98,7 @@ body { direction: rtl; }
   padding-top: 3mm;
   display: grid;
   align-content: stretch;
-  grid-auto-rows: minmax(0, 1fr);
+  grid-auto-rows: minmax(min-content, 1fr);
   gap: 1.6mm;
 }
 
@@ -168,9 +168,7 @@ body { direction: rtl; }
   font-weight: 400;
 }
 
-.question-stem {
-  min-width: 0;
-}
+.question-stem { min-width: 0; }
 
 .math,
 [dir="ltr"] {
@@ -223,9 +221,9 @@ body { direction: rtl; }
 }
 
 .question-content--split .geometry-diagram {
-  width: 100%;
-  height: auto;
-  max-height: var(--diagram-compact-height);
+  width: auto;
+  height: var(--diagram-compact-height);
+  max-width: 100%;
 }
 
 .geometry-lines line {
@@ -420,7 +418,7 @@ body { direction: rtl; }
   border: 0;
 }
 
-/* Pages with data-heavy tables keep the same book scale; only tables become tighter. */
+/* Data-heavy pages keep the same typography and diagram scale; only cell padding is tightened. */
 .a4-page[data-unit="1"][data-page="3"] .data-table,
 .a4-page[data-unit="2"][data-page="3"] .data-table,
 .a4-page[data-unit="3"][data-page="2"] .data-table {
