@@ -1,0 +1,111 @@
+{
+  "projectTitle": "זוויות בין ישרים מקבילים",
+  "canonicalSpec": "SPEC.md",
+  "studentVisibleQuestionNumbers": false,
+  "questionMarker": "●",
+  "subpartMarker": "•",
+  "originalTaskCount": 58,
+  "curriculumSourceTaskBlocks": 8,
+  "units": [
+    {
+      "unit": 1,
+      "title": "מושגים בסיסיים",
+      "pages": 3,
+      "taskCount": 14,
+      "tasks": [
+        {"id":"U1-P1-A","page":1,"difficulty":"D1","visualDemand":"V1","format":"mark-on-diagram","skill":"identify-transversal","theoremIds":[],"instructionVerb":"סמנו","learningObjective":"לזהות שני ישרים וישר חותך","misconceptionTarget":"בלבול בין ישר חותך לאחד הישרים","progressionGain":"first-identification"},
+        {"id":"U1-P1-B","page":1,"difficulty":"D1","visualDemand":"V1","format":"mark-on-diagram","skill":"identify-corresponding-pair","theoremIds":[],"instructionVerb":"סמנו","learningObjective":"לזהות זוג זוויות מתאימות לפי מיקום","misconceptionTarget":"בחירת זוג באותו קודקוד","progressionGain":"angle-pair-identification"},
+        {"id":"U1-P1-C","page":1,"difficulty":"D1","visualDemand":"V1","format":"mark-on-diagram","skill":"identify-alternate-pair","theoremIds":[],"instructionVerb":"סמנו","learningObjective":"לזהות זוג זוויות מתחלפות לפי מיקום","misconceptionTarget":"בלבול מתאימות ומתחלפות","progressionGain":"second-angle-relation"},
+        {"id":"U1-P1-D","page":1,"difficulty":"D1","visualDemand":"V2","format":"classification","skill":"classify-angle-pairs","theoremIds":[],"instructionVerb":"כתבו","learningObjective":"למיין זוגות למתאימות, מתחלפות או אחר","misconceptionTarget":"הנחה שכל זוג בשני חיתוכים הוא מיוחד","progressionGain":"classification"},
+        {"id":"U1-P1-E","page":1,"difficulty":"D1","visualDemand":"V2","format":"matching","skill":"match-given-angle","theoremIds":[],"instructionVerb":"התאימו","learningObjective":"להתאים לזווית נתונה את הזווית המתאימה לה","misconceptionTarget":"תלות בכיוון אופקי קבוע","progressionGain":"inverse-identification"},
+
+        {"id":"U1-P2-A","page":2,"difficulty":"D1","visualDemand":"V2","format":"matching","skill":"match-alternate-angle","theoremIds":[],"instructionVerb":"התאימו","learningObjective":"להתאים לזווית נתונה את הזווית המתחלפת לה","misconceptionTarget":"בלבול צד החותך","progressionGain":"alternate-inverse-identification"},
+        {"id":"U1-P2-B","page":2,"difficulty":"D1","visualDemand":"V3","format":"classification","skill":"classify-rotated","theoremIds":[],"instructionVerb":"קבעו","learningObjective":"לזהות קשרי זוויות בתצורה מסובבת","misconceptionTarget":"זיהוי לפי למעלה/למטה במקום לפי מבנה","progressionGain":"rotation-transfer"},
+        {"id":"U1-P2-C","page":2,"difficulty":"D1","visualDemand":"V2","format":"sentence-completion","skill":"complete-direct-corresponding-theorem","theoremIds":["T1"],"instructionVerb":"השלימו","learningObjective":"לשלוף את משפט הזוויות המתאימות במלואו","misconceptionTarget":"השמטת תנאי המקבילות","progressionGain":"formal-language"},
+        {"id":"U1-P2-D","page":2,"difficulty":"D1","visualDemand":"V2","format":"sentence-completion","skill":"complete-direct-alternate-theorem","theoremIds":["T2"],"instructionVerb":"השלימו","learningObjective":"לשלוף את משפט הזוויות המתחלפות במלואו","misconceptionTarget":"השמטת תנאי המקבילות","progressionGain":"second-formal-theorem"},
+        {"id":"U1-P2-E","page":2,"difficulty":"D2","visualDemand":"V2","format":"true-false","skill":"parallel-condition","theoremIds":["T1","T2"],"instructionVerb":"קבעו","learningObjective":"להבחין בין סיווג זוויות לבין שוויון זוויות","misconceptionTarget":"זוויות מתחלפות תמיד שוות","progressionGain":"condition-awareness"},
+
+        {"id":"U1-P3-A","page":3,"difficulty":"D2","visualDemand":"V2","format":"claim-comparison","skill":"student-claim-analysis","theoremIds":["T2"],"instructionVerb":"קבעו","learningObjective":"להכריע בין ניסוח מלא לניסוח חסר","misconceptionTarget":"אמירה כללית זוויות מתחלפות שוות","progressionGain":"metacognitive-check"},
+        {"id":"U1-P3-B","page":3,"difficulty":"D2","visualDemand":"V3","format":"table","skill":"relation-table","theoremIds":[],"instructionVerb":"השלימו","learningObjective":"לשלוף סוג קשר מכמה תצורות","misconceptionTarget":"הסתמכות על כיוון השרטוט","progressionGain":"multi-representation"},
+        {"id":"U1-P3-C","page":3,"difficulty":"D2","visualDemand":"V3","format":"multiple-choice","skill":"choose-correct-pair","theoremIds":[],"instructionVerb":"בחרו","learningObjective":"לבחור זוג נכון מתוך מסיחים קרובים","misconceptionTarget":"בחירת קודקודיות במקום מתאימות/מתחלפות","progressionGain":"distractor-discrimination"},
+        {"id":"U1-P3-D","page":3,"difficulty":"D2","visualDemand":"V3","format":"error-correction","skill":"fix-incomplete-theorem","theoremIds":["T1","T2"],"instructionVerb":"תקנו","learningObjective":"לתקן ניסוח מתמטי לא מדויק","misconceptionTarget":"שכחת ישרים מקבילים","progressionGain":"independent-language-control"}
+      ]
+    },
+    {
+      "unit": 2,
+      "title": "תרגילי חישוב",
+      "pages": 6,
+      "taskCount": 24,
+      "tasks": [
+        {"id":"U2-P1-A","page":1,"difficulty":"D1","visualDemand":"V1","format":"numeric-direct","skill":"corresponding-transfer","theoremIds":["T1"],"instructionVerb":"חשבו","numericBeforeAlgebra":true,"progressionGain":"first-numeric-application"},
+        {"id":"U2-P1-B","page":1,"difficulty":"D1","visualDemand":"V2","format":"numeric-direct","skill":"alternate-transfer","theoremIds":["T2"],"instructionVerb":"חשבו","numericBeforeAlgebra":true,"progressionGain":"second-direct-theorem"},
+        {"id":"U2-P1-C","page":1,"difficulty":"D1","visualDemand":"V2","format":"multiple-choice","skill":"choose-angle-value","theoremIds":["T1"],"instructionVerb":"בחרו","numericBeforeAlgebra":true,"progressionGain":"value-selection"},
+        {"id":"U2-P1-D","page":1,"difficulty":"D2","visualDemand":"V2","format":"numeric-reason","skill":"calculate-and-name-theorem","theoremIds":["T2"],"instructionVerb":"חשבו ונמקו","numericBeforeAlgebra":true,"progressionGain":"explicit-reason"},
+
+        {"id":"U2-P2-A","page":2,"difficulty":"D2","visualDemand":"V2","format":"two-step-numeric","skill":"corresponding-then-vertical","theoremIds":["T1"],"instructionVerb":"חשבו","numericBeforeAlgebra":true,"progressionGain":"two-step-chain"},
+        {"id":"U2-P2-B","page":2,"difficulty":"D2","visualDemand":"V2","format":"two-step-numeric","skill":"straight-then-alternate","theoremIds":["T2"],"instructionVerb":"חשבו","numericBeforeAlgebra":true,"progressionGain":"different-helper-relation"},
+        {"id":"U2-P2-C","page":2,"difficulty":"D2","visualDemand":"V3","format":"two-step-numeric","skill":"alternate-then-adjacent","theoremIds":["T2"],"instructionVerb":"מצאו","numericBeforeAlgebra":true,"progressionGain":"rotated-two-step"},
+        {"id":"U2-P2-D","page":2,"difficulty":"D3","visualDemand":"V3","format":"route-choice","skill":"compare-solution-routes","theoremIds":["T1","T2"],"instructionVerb":"בחרו ונמקו","numericBeforeAlgebra":true,"progressionGain":"strategy-choice"},
+
+        {"id":"U2-P3-A","page":3,"difficulty":"D2","visualDemand":"V2","format":"table","skill":"complete-angle-table","theoremIds":["T1","T2"],"instructionVerb":"השלימו","numericBeforeAlgebra":true,"progressionGain":"table-representation"},
+        {"id":"U2-P3-B","page":3,"difficulty":"D2","visualDemand":"V3","format":"table-lookup","skill":"retrieve-from-table-and-diagram","theoremIds":["T1"],"instructionVerb":"מצאו","numericBeforeAlgebra":true,"progressionGain":"cross-representation"},
+        {"id":"U2-P3-C","page":3,"difficulty":"D3","visualDemand":"V3","format":"redundant-data","skill":"identify-unneeded-datum","theoremIds":["T1","T2"],"instructionVerb":"קבעו","numericBeforeAlgebra":true,"progressionGain":"data-selection"},
+        {"id":"U2-P3-D","page":3,"difficulty":"D3","visualDemand":"V4","format":"two-transversals","skill":"transfer-across-two-transversals","theoremIds":["T1","T2"],"instructionVerb":"חשבו","numericBeforeAlgebra":true,"progressionGain":"second-transversal"},
+
+        {"id":"U2-P4-A","page":4,"difficulty":"D3","visualDemand":"V2","format":"simple-algebra","skill":"corresponding-equation","theoremIds":["T1"],"instructionVerb":"מצאו","numericBeforeAlgebra":false,"requiresJustificationLane":true,"progressionGain":"first-algebra"},
+        {"id":"U2-P4-B","page":4,"difficulty":"D3","visualDemand":"V2","format":"simple-algebra","skill":"alternate-equation","theoremIds":["T2"],"instructionVerb":"מצאו","numericBeforeAlgebra":false,"requiresJustificationLane":true,"progressionGain":"second-algebra-theorem"},
+        {"id":"U2-P4-C","page":4,"difficulty":"D3","visualDemand":"V3","format":"algebra-then-angle","skill":"solve-x-then-angle","theoremIds":["T1"],"instructionVerb":"מצאו","numericBeforeAlgebra":false,"requiresJustificationLane":true,"progressionGain":"two-output-algebra"},
+        {"id":"U2-P4-D","page":4,"difficulty":"D3","visualDemand":"V3","format":"equation-choice","skill":"choose-correct-equation","theoremIds":["T1","T2"],"instructionVerb":"בחרו ונמקו","numericBeforeAlgebra":false,"requiresJustificationLane":true,"progressionGain":"equation-model-selection"},
+
+        {"id":"U2-P5-A","page":5,"difficulty":"D4","visualDemand":"V3","format":"two-expression-algebra","skill":"corresponding-two-expressions","theoremIds":["T1"],"instructionVerb":"מצאו","numericBeforeAlgebra":false,"requiresJustificationLane":true,"progressionGain":"expression-complexity"},
+        {"id":"U2-P5-B","page":5,"difficulty":"D4","visualDemand":"V3","format":"two-expression-algebra","skill":"alternate-two-expressions","theoremIds":["T2"],"instructionVerb":"מצאו","numericBeforeAlgebra":false,"requiresJustificationLane":true,"progressionGain":"alternate-expression-complexity"},
+        {"id":"U2-P5-C","page":5,"difficulty":"D4","visualDemand":"V4","format":"two-variable-light","skill":"two-pairs-two-unknowns","theoremIds":["T1","T2"],"instructionVerb":"מצאו","numericBeforeAlgebra":false,"requiresJustificationLane":true,"progressionGain":"multi-relation-algebra"},
+        {"id":"U2-P5-D","page":5,"difficulty":"D4","visualDemand":"V4","format":"error-analysis","skill":"incorrect-equation-analysis","theoremIds":["T1","T2"],"instructionVerb":"תקנו ונמקו","numericBeforeAlgebra":false,"requiresJustificationLane":true,"progressionGain":"algebra-error-analysis"},
+
+        {"id":"U2-P6-A","page":6,"difficulty":"D3","visualDemand":"V3","format":"context-numeric","skill":"real-context-corresponding","theoremIds":["T1"],"instructionVerb":"חשבו","numericBeforeAlgebra":true,"progressionGain":"context-transfer"},
+        {"id":"U2-P6-B","page":6,"difficulty":"D3","visualDemand":"V3","format":"context-numeric","skill":"real-context-alternate","theoremIds":["T2"],"instructionVerb":"חשבו","numericBeforeAlgebra":true,"progressionGain":"second-context-transfer"},
+        {"id":"U2-P6-C","page":6,"difficulty":"D4","visualDemand":"V4","format":"mixed-calculation","skill":"choose-route-with-extra-data","theoremIds":["T1","T2"],"instructionVerb":"חשבו ונמקו","numericBeforeAlgebra":true,"progressionGain":"independent-strategy"},
+        {"id":"U2-P6-D","page":6,"difficulty":"D4","visualDemand":"V4","format":"mixed-algebra","skill":"final-calculation-synthesis","theoremIds":["T1","T2"],"instructionVerb":"מצאו ונמקו","numericBeforeAlgebra":false,"requiresJustificationLane":true,"progressionGain":"calculation-synthesis"}
+      ]
+    },
+    {
+      "unit": 3,
+      "title": "תרגילי הוכחה",
+      "pages": 3,
+      "taskCount": 12,
+      "tasks": [
+        {"id":"U3-P1-A","page":1,"difficulty":"D2","visualDemand":"V2","format":"choose-reason","skill":"theorem-selection","theoremIds":["T1","T2"],"instructionVerb":"בחרו","progressionGain":"reason-recognition"},
+        {"id":"U3-P1-B","page":1,"difficulty":"D2","visualDemand":"V2","format":"fill-reason","skill":"complete-missing-reason","theoremIds":["T1"],"instructionVerb":"השלימו","progressionGain":"reason-recall"},
+        {"id":"U3-P1-C","page":1,"difficulty":"D3","visualDemand":"V3","format":"match-claim-reason","skill":"claim-reason-matching","theoremIds":["T1","T2"],"instructionVerb":"התאימו","progressionGain":"reason-mapping"},
+        {"id":"U3-P1-D","page":1,"difficulty":"D3","visualDemand":"V3","format":"determine-justify","skill":"short-deduction","theoremIds":["T1","T2"],"instructionVerb":"קבעו ונמקו","progressionGain":"independent-deduction"},
+
+        {"id":"U3-P2-A","page":2,"difficulty":"D3","visualDemand":"V3","format":"proof-error","skill":"find-proof-error","theoremIds":["T1","T2"],"instructionVerb":"מצאו ותקנו","progressionGain":"proof-critique"},
+        {"id":"U3-P2-B","page":2,"difficulty":"D3","visualDemand":"V3","format":"order-proof","skill":"sequence-proof-lines","theoremIds":["T1"],"instructionVerb":"סדרו","progressionGain":"proof-structure"},
+        {"id":"U3-P2-C","page":2,"difficulty":"D4","visualDemand":"V3","format":"fill-proof-line","skill":"complete-assertion-and-reason","theoremIds":["T2"],"instructionVerb":"השלימו","progressionGain":"proof-gap"},
+        {"id":"U3-P2-D","page":2,"difficulty":"D4","visualDemand":"V4","format":"sufficient-data","skill":"proof-data-selection","theoremIds":["T1","T2"],"instructionVerb":"קבעו ונמקו","progressionGain":"proof-data-judgment"},
+
+        {"id":"U3-P3-A","page":3,"difficulty":"D4","visualDemand":"V3","format":"short-proof","skill":"two-step-proof","theoremIds":["T1"],"instructionVerb":"הוכיחו","progressionGain":"first-full-proof"},
+        {"id":"U3-P3-B","page":3,"difficulty":"D4","visualDemand":"V3","format":"short-proof","skill":"alternate-helper-proof","theoremIds":["T2"],"instructionVerb":"הוכיחו","progressionGain":"second-full-proof-route"},
+        {"id":"U3-P3-C","page":3,"difficulty":"D5","visualDemand":"V4","format":"proof-with-extra-data","skill":"select-relevant-proof-data","theoremIds":["T1","T2"],"instructionVerb":"הוכיחו","progressionGain":"proof-independence"},
+        {"id":"U3-P3-D","page":3,"difficulty":"D5","visualDemand":"V4","format":"proof-comparison","skill":"compare-two-proofs","theoremIds":["T1","T2"],"instructionVerb":"קבעו ונמקו","progressionGain":"proof-evaluation"}
+      ]
+    },
+    {
+      "unit": 4,
+      "title": "משפטים הפוכים",
+      "pages": 2,
+      "taskCount": 8,
+      "tasks": [
+        {"id":"U4-P1-A","page":1,"difficulty":"D3","visualDemand":"V2","format":"sentence-completion","skill":"complete-converse-corresponding","theoremIds":["T3"],"instructionVerb":"השלימו","progressionGain":"first-converse-language"},
+        {"id":"U4-P1-B","page":1,"difficulty":"D3","visualDemand":"V2","format":"sentence-completion","skill":"complete-converse-alternate","theoremIds":["T4"],"instructionVerb":"השלימו","progressionGain":"second-converse-language"},
+        {"id":"U4-P1-C","page":1,"difficulty":"D3","visualDemand":"V3","format":"direct-vs-converse","skill":"classify-theorem-direction","theoremIds":["T1","T2","T3","T4"],"instructionVerb":"קבעו","progressionGain":"direction-control"},
+        {"id":"U4-P1-D","page":1,"difficulty":"D4","visualDemand":"V3","format":"numeric-parallelism","skill":"infer-parallel-lines-from-equality","theoremIds":["T3"],"instructionVerb":"קבעו ונמקו","progressionGain":"first-converse-application"},
+
+        {"id":"U4-P2-A","page":2,"difficulty":"D4","visualDemand":"V3","format":"numeric-parallelism","skill":"infer-parallel-lines-alternate","theoremIds":["T4"],"instructionVerb":"קבעו ונמקו","progressionGain":"second-converse-application"},
+        {"id":"U4-P2-B","page":2,"difficulty":"D4","visualDemand":"V3","format":"data-sufficiency","skill":"is-equality-sufficient","theoremIds":["T3","T4"],"instructionVerb":"קבעו ונמקו","progressionGain":"converse-sufficiency"},
+        {"id":"U4-P2-C","page":2,"difficulty":"D4","visualDemand":"V3","format":"algebra-for-parallelism","skill":"find-x-to-guarantee-parallelism","theoremIds":["T3","T4"],"instructionVerb":"מצאו ונמקו","requiresJustificationLane":true,"progressionGain":"converse-algebra"},
+        {"id":"U4-P2-D","page":2,"difficulty":"D5","visualDemand":"V4","format":"short-parallelism-proof","skill":"combined-direct-converse-proof","theoremIds":["T1","T2","T3","T4"],"instructionVerb":"הוכיחו","progressionGain":"final-synthesis"}
+      ]
+    }
+  ]
+}
