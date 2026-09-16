@@ -20,6 +20,38 @@ function MatchingColumns({ mode }: { mode: 'corresponding' | 'alternate' }) {
   );
 }
 
+function EightAngleDiagram({
+  lineLabels,
+  transversalLabel,
+  orientationDeg,
+  transversalDeg,
+}: {
+  lineLabels: [string, string];
+  transversalLabel: string;
+  orientationDeg: number;
+  transversalDeg: number;
+}) {
+  return (
+    <ParallelLinesDiagram
+      lineLabels={lineLabels}
+      transversalLabel={transversalLabel}
+      orientationDeg={orientationDeg}
+      transversalDeg={transversalDeg}
+      showParallelMarks={false}
+      angleMarks={[
+        { intersection: 'top', sector: 0, label: '1', tone: 'neutral' },
+        { intersection: 'top', sector: 1, label: '2', tone: 'neutral' },
+        { intersection: 'top', sector: 2, label: '3', tone: 'neutral' },
+        { intersection: 'top', sector: 3, label: '4', tone: 'neutral' },
+        { intersection: 'bottom', sector: 0, label: '5', tone: 'neutral' },
+        { intersection: 'bottom', sector: 1, label: '6', tone: 'neutral' },
+        { intersection: 'bottom', sector: 2, label: '7', tone: 'neutral' },
+        { intersection: 'bottom', sector: 3, label: '8', tone: 'neutral' },
+      ]}
+    />
+  );
+}
+
 function TrueFalseRow({ text }: { text: string }) {
   return (
     <div className="true-false-row">
@@ -30,79 +62,39 @@ function TrueFalseRow({ text }: { text: string }) {
 }
 
 function Unit1Page2() {
-  const a = byId('U1-P2-A');
-  const b = byId('U1-P2-B');
-  const c = byId('U1-P2-C');
-  const d = byId('U1-P2-D');
-  const e = byId('U1-P2-E');
+  const corresponding = byId('U1-P1-E');
+  const alternate = byId('U1-P2-A');
+  const rotated = byId('U1-P2-B');
+  const theorem = byId('U1-P2-C');
 
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={2}>
       <QuestionBlock
-        compact
-        diagram={
-          <ParallelLinesDiagram
-            lineLabels={['g', 'j']}
-            transversalLabel="n"
-            orientationDeg={19}
-            transversalDeg={101}
-            showParallelMarks={false}
-            angleMarks={[
-              { intersection: 'top', sector: 0, label: '1', tone: 'neutral' },
-              { intersection: 'top', sector: 1, label: '2', tone: 'neutral' },
-              { intersection: 'top', sector: 2, label: '3', tone: 'neutral' },
-              { intersection: 'top', sector: 3, label: '4', tone: 'neutral' },
-              { intersection: 'bottom', sector: 0, label: '5', tone: 'neutral' },
-              { intersection: 'bottom', sector: 1, label: '6', tone: 'neutral' },
-              { intersection: 'bottom', sector: 2, label: '7', tone: 'neutral' },
-              { intersection: 'bottom', sector: 3, label: '8', tone: 'neutral' },
-            ]}
-          />
-        }
+        diagram={<EightAngleDiagram lineLabels={['c', 'd']} transversalLabel="h" orientationDeg={-3} transversalDeg={52} />}
       >
-        {a.stem}
+        {corresponding.stem}
+        <MatchingColumns mode="corresponding" />
+      </QuestionBlock>
+
+      <QuestionBlock
+        diagram={<EightAngleDiagram lineLabels={['g', 'j']} transversalLabel="n" orientationDeg={19} transversalDeg={101} />}
+      >
+        {alternate.stem}
         <MatchingColumns mode="alternate" />
       </QuestionBlock>
 
       <QuestionBlock
-        compact
-        diagram={
-          <ParallelLinesDiagram
-            lineLabels={['ℓ₁', 'ℓ₂']}
-            transversalLabel="r"
-            orientationDeg={78}
-            transversalDeg={24}
-            showParallelMarks={false}
-            angleMarks={[
-              { intersection: 'top', sector: 0, label: '1', tone: 'neutral' },
-              { intersection: 'top', sector: 1, label: '2', tone: 'neutral' },
-              { intersection: 'top', sector: 2, label: '3', tone: 'neutral' },
-              { intersection: 'top', sector: 3, label: '4', tone: 'neutral' },
-              { intersection: 'bottom', sector: 0, label: '5', tone: 'neutral' },
-              { intersection: 'bottom', sector: 1, label: '6', tone: 'neutral' },
-              { intersection: 'bottom', sector: 2, label: '7', tone: 'neutral' },
-              { intersection: 'bottom', sector: 3, label: '8', tone: 'neutral' },
-            ]}
-          />
-        }
-        subparts={(b.subparts ?? []).map(text => <>{text} ______________________________</>)}
+        diagram={<EightAngleDiagram lineLabels={['ℓ₁', 'ℓ₂']} transversalLabel="r" orientationDeg={78} transversalDeg={24} />}
+        subparts={(rotated.subparts ?? []).map(text => <>{text} ______________________________</>)}
       >
-        {b.stem}
+        {rotated.stem}
       </QuestionBlock>
 
-      <QuestionBlock compact answerLines={1} diagram={<ParallelLinesDiagram lineLabels={['e', 'f']} transversalLabel="z" orientationDeg={8} transversalDeg={67} showParallelMarks />}>
-        {c.stem}
-      </QuestionBlock>
-
-      <QuestionBlock compact answerLines={1} diagram={<ParallelLinesDiagram lineLabels={['x', 'y']} transversalLabel="v" orientationDeg={-14} transversalDeg={109} showParallelMarks />}>
-        {d.stem}
-      </QuestionBlock>
-
-      <QuestionBlock compact>
-        {e.stem}
-        <div className="true-false-list">
-          {(e.subparts ?? []).map((text, index) => <TrueFalseRow key={index} text={text} />)}
-        </div>
+      <QuestionBlock
+        answerLines={1}
+        diagram={<ParallelLinesDiagram lineLabels={['e', 'f']} transversalLabel="z" orientationDeg={8} transversalDeg={67} showParallelMarks />}
+      >
+        {theorem.stem}
       </QuestionBlock>
     </A4Page>
   );
@@ -189,13 +181,28 @@ function RelationTable() {
 }
 
 function Unit1Page3() {
-  const a = byId('U1-P3-A');
-  const b = byId('U1-P3-B');
+  const theorem = byId('U1-P2-D');
+  const trueFalse = byId('U1-P2-E');
+  const claim = byId('U1-P3-A');
 
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={3}>
       <QuestionBlock
-        answerLines={3}
+        answerLines={1}
+        diagram={<ParallelLinesDiagram lineLabels={['x', 'y']} transversalLabel="v" orientationDeg={-14} transversalDeg={109} showParallelMarks />}
+      >
+        {theorem.stem}
+      </QuestionBlock>
+
+      <QuestionBlock>
+        {trueFalse.stem}
+        <div className="true-false-list">
+          {(trueFalse.subparts ?? []).map((text, index) => <TrueFalseRow key={index} text={text} />)}
+        </div>
+      </QuestionBlock>
+
+      <QuestionBlock
+        answerLines={4}
         diagram={
           <div className="paired-diagrams">
             <ParallelLinesDiagram lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={13} transversalDeg={73} showParallelMarks />
@@ -203,23 +210,24 @@ function Unit1Page3() {
           </div>
         }
       >
-        {a.stem}
-      </QuestionBlock>
-
-      <QuestionBlock subparts={(b.subparts ?? []).map(text => <>{text}</>)}>
-        {b.stem}
-        <RelationTable />
+        {claim.stem}
       </QuestionBlock>
     </A4Page>
   );
 }
 
 function Unit1Page4() {
-  const c = byId('U1-P3-C');
-  const d = byId('U1-P3-D');
+  const table = byId('U1-P3-B');
+  const choice = byId('U1-P3-C');
+  const correction = byId('U1-P3-D');
 
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={4}>
+      <QuestionBlock subparts={(table.subparts ?? []).map(text => <>{text}</>)}>
+        {table.stem}
+        <RelationTable />
+      </QuestionBlock>
+
       <QuestionBlock
         diagram={
           <ParallelLinesDiagram
@@ -241,14 +249,14 @@ function Unit1Page4() {
           />
         }
       >
-        {c.stem}
+        {choice.stem}
         <div className="choice-grid">
-          {(c.choices ?? []).map(choice => <div className="choice" key={choice}>{choice}</div>)}
+          {(choice.choices ?? []).map(item => <div className="choice" key={item}>{item}</div>)}
         </div>
       </QuestionBlock>
 
       <QuestionBlock
-        answerLines={5}
+        answerLines={4}
         diagram={
           <div className="paired-diagrams">
             <ParallelLinesDiagram lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={-21} transversalDeg={48} showParallelMarks />
@@ -256,7 +264,7 @@ function Unit1Page4() {
           </div>
         }
       >
-        {d.stem}
+        {correction.stem}
       </QuestionBlock>
     </A4Page>
   );
