@@ -1,0 +1,31 @@
+{
+  "name": "makbilim",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "sync:curriculum": "node scripts/sync-curriculum-source.mjs",
+    "validate:curriculum": "node scripts/validate-curriculum-source-integrity.mjs",
+    "validate:numbering": "node scripts/validate-numbering-markers.mjs",
+    "validate": "npm run validate:curriculum && npm run validate:numbering",
+    "ci": "npm run sync:curriculum && npm run validate"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@mathjax/src": "^4.0.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.4",
+    "vitest": "^3.2.4"
+  }
+}
