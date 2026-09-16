@@ -9,13 +9,16 @@ describe('Unit 1 conceptual integrity', () => {
     expect(new Set(unit1Questions.map(q => q.id)).size).toBe(14);
   });
 
-  it('uses grayscale-safe arc wording rather than color-only wording', () => {
-    for (const id of ['U1-P1-D', 'U1-P2-B']) {
-      const q = unit1Questions.find(item => item.id === id)!;
-      const copy = [q.stem, ...(q.subparts ?? [])].join(' ');
-      expect(copy).toContain('קשת');
-      expect(copy).not.toMatch(/אדום|כחול|אפור/);
-    }
+  it('uses grayscale-safe non-color cues for visual identification', () => {
+    const arcQuestion = unit1Questions.find(item => item.id === 'U1-P1-D')!;
+    const arcCopy = [arcQuestion.stem, ...(arcQuestion.subparts ?? [])].join(' ');
+    expect(arcCopy).toContain('קשת');
+    expect(arcCopy).not.toMatch(/אדום|כחול|אפור/);
+
+    const rotatedQuestion = unit1Questions.find(item => item.id === 'U1-P2-B')!;
+    const rotatedCopy = [rotatedQuestion.stem, ...(rotatedQuestion.subparts ?? [])].join(' ');
+    expect(rotatedCopy).toMatch(/מיקום|מיקומו/);
+    expect(rotatedCopy).not.toMatch(/אדום|כחול|אפור/);
   });
 
   it('keeps the parallel-lines condition explicit in theorem recall', () => {
