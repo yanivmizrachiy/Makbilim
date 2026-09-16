@@ -27,10 +27,21 @@ export function QuestionBlock({
   justificationLane = false,
   compact = false,
 }: QuestionBlockProps) {
+  const blockClass = [
+    'question-block',
+    compact ? 'question-block--compact' : '',
+    diagram ? 'question-block--with-diagram' : '',
+  ].filter(Boolean).join(' ');
+
+  const contentClass = [
+    'question-content',
+    compact && diagram ? 'question-content--split' : '',
+  ].filter(Boolean).join(' ');
+
   return (
-    <section className={`question-block${compact ? ' question-block--compact' : ''}`}>
+    <section className={blockClass}>
       <div className="question-marker" aria-hidden="true">●</div>
-      <div className="question-content">
+      <div className={contentClass}>
         <div className="question-stem">{children}</div>
         {diagram && <div className="question-diagram">{diagram}</div>}
         {subparts && subparts.length > 0 && (
