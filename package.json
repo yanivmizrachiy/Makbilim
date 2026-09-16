@@ -4,7 +4,10 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "prepare:mathjax": "node scripts/prepare-mathjax.mjs",
+    "predev": "npm run prepare:mathjax",
     "dev": "vite",
+    "prebuild": "npm run prepare:mathjax",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
