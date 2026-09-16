@@ -17,7 +17,7 @@ const allQuestions = [
 
 const plannedTasks = questionPlan.units
   .filter(unit => unit.unit <= 4)
-  .flatMap(unit => unit.tasks.map(task => ({ ...task, unit: unit.unit })));
+  .flatMap(unit => (unit.tasks ?? []).map(task => ({ ...task, unit: unit.unit })));
 
 const difficultyValue = (value: string) => Number(value.replace(/\D/g, ''));
 const visualValue = (value: string) => Number(value.replace(/\D/g, ''));
@@ -89,9 +89,10 @@ describe('canonical deep workbook contract', () => {
 
   it('prevents sharp didactic regressions or jumps inside each authored unit', () => {
     for (const unit of questionPlan.units.filter(item => item.unit <= 4)) {
-      for (let i = 1; i < unit.tasks.length; i += 1) {
-        const prev = unit.tasks[i - 1];
-        const curr = unit.tasks[i];
+      const tasks = unit.tasks ?? [];
+      for (let i = 1; i < tasks.length; i += 1) {
+        const prev = tasks[i - 1];
+        const curr = tasks[i];
         const difficultyDelta = difficultyValue(curr.difficulty) - difficultyValue(prev.difficulty);
         const visualDelta = visualValue(curr.visualDemand) - visualValue(prev.visualDemand);
         expect(Math.abs(difficultyDelta), `${prev.id} → ${curr.id}: difficulty jump`).toBeLessThanOrEqual(1);
@@ -105,9 +106,10 @@ describe('canonical deep workbook contract', () => {
     const comparedKeys = ['format', 'responseMode', 'reasoningSteps', 'difficulty', 'visualDemand', 'instructionVerb'] as const;
 
     for (const unit of questionPlan.units.filter(item => item.unit <= 4)) {
-      for (let i = 1; i < unit.tasks.length; i += 1) {
-        const prevTask = unit.tasks[i - 1];
-        const currTask = unit.tasks[i];
+      const tasks = unit.tasks ?? [];
+      for (let i = 1; i < tasks.length; i += 1) {
+        const prevTask = tasks[i - 1];
+        const currTask = tasks[i];
         const prev = profileById.get(prevTask.id);
         const curr = profileById.get(currTask.id);
         expect(prev).toBeTruthy();
