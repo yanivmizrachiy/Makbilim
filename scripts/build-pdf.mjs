@@ -9,6 +9,10 @@ const shotsDir = path.join(root, 'artifacts', 'screenshots');
 await fs.mkdir(pdfDir, { recursive: true });
 await fs.mkdir(shotsDir, { recursive: true });
 
+const HARD_TIMEOUT_MS = 4 * 60 * 1000;
+let browser;
+let hardTimedOut = false;
+
 const viteBin = path.join(root, 'node_modules', 'vite', 'bin', 'vite.js');
 const server = spawn(process.execPath, [viteBin, 'preview', '--host', '127.0.0.1', '--port', '4173'], {
   cwd: root,
@@ -20,8 +24,35 @@ let serverStderr = '';
 server.stdout?.on('data', chunk => { serverStdout += String(chunk); });
 server.stderr?.on('data', chunk => { serverStderr += String(chunk); });
 
+const stopServer = async () => {
+  if (server.exitCode != null) return;
+  server.kill('SIGTERM');
+  const exited = await Promise.race([
+    new Promise(resolve => server.once('exit', () => resolve(true))),
+    new Promise(resolve => setTimeout(() => resolve(false), 2500)),
+  ]);
+  if (!exited && server.exitCode == null) server.kill('SIGKILL');
+};
+
+const closeBrowser = async () => {
+  if (!browser) return;
+  await Promise.race([
+    browser.close().catch(() => undefined),
+    new Promise(resolve => setTimeout(resolve, 2500)),
+  ]);
+};
+
+const hardWatchdog = setTimeout(() => {
+  hardTimedOut = true;
+  console.error(`pdf-visual: HARD TIMEOUT after ${HARD_TIMEOUT_MS / 1000}s`);
+  try { server.kill('SIGKILL'); } catch {}
+  process.exitCode = 124;
+  setTimeout(() => process.exit(124), 500).unref();
+}, HARD_TIMEOUT_MS);
+hardWatchdog.unref();
+
 const waitForServer = async () => {
-  const deadline = Date.now() + 30000;
+  const deadline = Date.now() + 20000;
   while (Date.now() < deadline) {
     if (server.exitCode != null) {
       throw new Error(`Vite preview exited early with code ${server.exitCode}\nSTDOUT:\n${serverStdout}\nSTDERR:\n${serverStderr}`);
@@ -30,35 +61,23 @@ const waitForServer = async () => {
       const response = await fetch('http://127.0.0.1:4173/');
       if (response.ok) return;
     } catch {}
-    await new Promise(resolve => setTimeout(resolve, 250));
+    await new Promise(resolve => setTimeout(resolve, 200));
   }
-  throw new Error(`Vite preview did not become ready within 30 seconds\nSTDOUT:\n${serverStdout}\nSTDERR:\n${serverStderr}`);
+  throw new Error(`Vite preview did not become ready within 20 seconds\nSTDOUT:\n${serverStdout}\nSTDERR:\n${serverStderr}`);
 };
 
-const stopServer = async () => {
-  if (server.exitCode != null) return;
-  server.kill('SIGTERM');
-  const exited = await Promise.race([
-    new Promise(resolve => server.once('exit', () => resolve(true))),
-    new Promise(resolve => setTimeout(() => resolve(false), 3000)),
-  ]);
-  if (!exited && server.exitCode == null) {
-    server.kill('SIGKILL');
-    await Promise.race([
-      new Promise(resolve => server.once('exit', () => resolve(true))),
-      new Promise(resolve => setTimeout(() => resolve(false), 2000)),
-    ]);
-  }
-};
-
-let browser;
 try {
   await waitForServer();
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1280, height: 1800 }, deviceScaleFactor: 1 });
-  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
-  await page.waitForSelector('[data-curriculum-ready="true"]', { timeout: 20000 });
-  await page.waitForFunction(() => document.querySelectorAll('.a4-page').length === 18, null, { timeout: 20000 });
+  page.setDefaultTimeout(15000);
+  page.setDefaultNavigationTimeout(20000);
+
+  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'domcontentloaded', timeout: 20000 });
+  await page.waitForSelector('[data-curriculum-ready="true"]', { timeout: 15000 });
+  await page.waitForFunction(() => document.querySelectorAll('.a4-page').length === 18, null, { timeout: 15000 });
+  await page.evaluate(async () => { if (document.fonts?.ready) await document.fonts.ready; });
+  await page.addStyleTag({ content: '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}' });
   await page.emulateMedia({ media: 'print' });
 
   const pageCount = await page.locator('.a4-page').count();
@@ -146,12 +165,21 @@ try {
   });
   if (failures.length) throw new Error(`A4 layout QA failed: ${JSON.stringify(failures)}`);
 
-  for (let index = 0; index < pageCount; index += 1) {
-    const locator = page.locator('.a4-page').nth(index);
-    const item = layout[index];
-    const stem = `u${item.unit}-p${item.localPage}`;
-    await locator.screenshot({ path: path.join(shotsDir, `${stem}-color.png`) });
-  }
+  const screenshotPageSet = async (suffix) => {
+    for (let index = 0; index < pageCount; index += 1) {
+      const locator = page.locator('.a4-page').nth(index);
+      const item = layout[index];
+      const stem = `u${item.unit}-p${item.localPage}`;
+      await locator.screenshot({
+        path: path.join(shotsDir, `${stem}-${suffix}.png`),
+        animations: 'disabled',
+        caret: 'hide',
+        timeout: 7000,
+      });
+    }
+  };
+
+  await screenshotPageSet('color');
 
   await page.evaluate(() => {
     const style = document.createElement('style');
@@ -159,12 +187,7 @@ try {
     style.textContent = 'html { filter: grayscale(1) !important; }';
     document.head.appendChild(style);
   });
-  for (let index = 0; index < pageCount; index += 1) {
-    const locator = page.locator('.a4-page').nth(index);
-    const item = layout[index];
-    const stem = `u${item.unit}-p${item.localPage}`;
-    await locator.screenshot({ path: path.join(shotsDir, `${stem}-grayscale.png`) });
-  }
+  await screenshotPageSet('grayscale');
   await page.evaluate(() => document.getElementById('grayscale-qa')?.remove());
 
   await page.pdf({
@@ -178,6 +201,8 @@ try {
   await fs.writeFile(path.join(root, 'artifacts', 'layout-report.json'), `${JSON.stringify({ pageCount, expectedPages, layout }, null, 2)}\n`, 'utf8');
   console.log(`pdf-visual: PASS — ${pageCount} A4 pages, utilization + grayscale snapshots generated`);
 } finally {
-  if (browser) await browser.close();
+  clearTimeout(hardWatchdog);
+  await closeBrowser();
   await stopServer();
+  if (hardTimedOut) process.exitCode = 124;
 }
