@@ -5,19 +5,58 @@ on:
     branches:
       - main
   pull_request:
+  workflow_dispatch:
 
 concurrency:
-  group: makbilim-ci-${{ github.workflow }}-${{ github.ref }}
+  group: makbilim-ci-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: read
 
+env:
+  NODE_VERSION: '22'
+
 jobs:
+  freshness:
+    name: Verify latest commit
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      run_heavy: ${{ steps.guard.outputs.run_heavy }}
+    steps:
+      - name: Checkout minimal history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Skip stale push runs before expensive work
+        id: guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_EVENT_NAME}" != "push" ]; then
+            echo "run_heavy=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          latest="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          if [ -z "$latest" ]; then
+            echo "Unable to resolve latest main SHA" >&2
+            exit 1
+          fi
+          if [ "$latest" = "$GITHUB_SHA" ]; then
+            echo "run_heavy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Stale run: $GITHUB_SHA; latest main: $latest"
+            echo "run_heavy=false" >> "$GITHUB_OUTPUT"
+          fi
+
   validate:
     name: Validate workbook
+    needs: freshness
+    if: needs.freshness.outputs.run_heavy == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 7
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,10 +64,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --no-audit --no-fund
 
       - name: Sync pinned curriculum source
         run: npm run sync:curriculum
@@ -40,6 +79,36 @@ jobs:
         run: |
           node -e "const fs=require('fs');const p='src/content/generated/curriculum-source.json';const j=JSON.parse(fs.readFileSync(p,'utf8'));if(j.blockCount!==8||j.immutable!==true)process.exit(1);console.log('generated curriculum PASS')"
 
+  render:
+    name: Build PDF and visual QA
+    needs: [freshness, validate]
+    if: needs.freshness.outputs.run_heavy == 'true' && needs.validate.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - name: Checkout exact validated commit
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Re-check latest main before expensive render
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_EVENT_NAME}" = "push" ]; then
+            latest="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+            test "$latest" = "$GITHUB_SHA" || { echo "A newer main commit exists; stopping stale render."; exit 78; }
+          fi
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Sync pinned curriculum source
+        run: npm run sync:curriculum
+
       - name: Install Chromium for print QA
         run: npx playwright install --with-deps chromium
 
@@ -50,7 +119,7 @@ jobs:
       - name: Upload workbook artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: makbilim-workbook
+          name: makbilim-workbook-${{ github.sha }}
           path: |
             artifacts/pdf/*.pdf
             artifacts/screenshots/*.png
