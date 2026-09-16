@@ -60,8 +60,16 @@ const texCharacters: Record<string, string> = {
   '−': '-',
 };
 
-function toTeX(value: string) {
+export function toTeX(value: string) {
   return [...value].map(character => texCharacters[character] ?? character).join('').trim();
+}
+
+export function tokenizeMathText(text: string) {
+  return text.split(mathToken).filter(part => part.length > 0);
+}
+
+export function isMathToken(value: string) {
+  return mathTokenCheck.test(value);
 }
 
 function ensureMathJax(): Promise<MathJaxRuntime> {
@@ -151,11 +159,11 @@ function MathInline({ source }: { source: string }) {
 }
 
 export function MathText({ text }: { text: string }) {
-  const parts = text.split(mathToken).filter(part => part.length > 0);
+  const parts = tokenizeMathText(text);
   return (
     <>
       {parts.map((part, index) => (
-        mathTokenCheck.test(part)
+        isMathToken(part)
           ? <MathInline source={part} key={`${index}-${part}`} />
           : <React.Fragment key={`${index}-${part}`}>{part}</React.Fragment>
       ))}
