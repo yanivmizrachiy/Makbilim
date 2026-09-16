@@ -58,6 +58,9 @@ try {
       const qRect = q.getBoundingClientRect();
       return qRect.bottom > rect.bottom + 1 || qRect.top < rect.top - 1 || qRect.right > rect.right + 1 || qRect.left < rect.left - 1;
     }).length;
+    const internallyOverflowingQuestions = questions.filter(q =>
+      q.scrollHeight - q.clientHeight > 2 || q.scrollWidth - q.clientWidth > 2
+    ).length;
     const contentRects = questionContents.map(q => q.getBoundingClientRect());
     const lastContentRect = contentRects.at(-1);
     const bottomGapPx = contentRect && lastContentRect ? Math.max(0, contentRect.bottom - lastContentRect.bottom) : null;
@@ -74,6 +77,7 @@ try {
       heightPx: rect.height,
       scrollOverflow: el.scrollHeight - el.clientHeight,
       overflowingQuestions,
+      internallyOverflowingQuestions,
       bottomGapPx,
       bottomGapRatio,
       maxInterQuestionGapPx,
@@ -105,6 +109,7 @@ try {
     return (
       item.scrollOverflow > 2 ||
       item.overflowingQuestions > 0 ||
+      item.internallyOverflowingQuestions > 0 ||
       item.questionCount === 0 ||
       authoredMarkerFailure ||
       curriculumFidelityFailure ||
