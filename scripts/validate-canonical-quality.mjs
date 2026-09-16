@@ -41,17 +41,26 @@ for (const t of originalTasks) {
 const exactDuplicates = [...signatureCounts.entries()].filter(([, count]) => count > 1);
 gate('duplicates', exactDuplicates.length === 0, exactDuplicates.map(([sig, count]) => `${count}× ${sig}`).join('; '));
 
+// Local variety rejects actual repetition, not legitimate progression that happens to
+// reuse a familiar worksheet format. Three adjacent tasks fail only when both the
+// response format and the mathematical skill repeat across all three.
 let localVarietyOk = true;
+const localVarietyFailures = [];
 for (const unit of plan.units ?? []) {
   if (unit.unit > 4) continue;
   const tasks = unit.tasks ?? [];
   for (let i = 2; i < tasks.length; i += 1) {
     const trio = tasks.slice(i - 2, i + 1);
-    if (trio.every(t => t.format === trio[0].format)) localVarietyOk = false;
-    if (trio.every(t => t.skill === trio[0].skill)) localVarietyOk = false;
+    const sameFormat = trio.every(t => t.format === trio[0].format);
+    const sameSkill = trio.every(t => t.skill === trio[0].skill);
+    if (sameFormat && sameSkill) {
+      localVarietyOk = false;
+      localVarietyFailures.push(trio.map(t => t.id).join(' → '));
+    }
   }
 }
-gate('local-variety', localVarietyOk, 'no three consecutive original tasks may repeat the same format or skill');
+gate('local-variety', localVarietyOk,
+  localVarietyFailures.length ? `repeated format+skill: ${localVarietyFailures.join('; ')}` : 'no three consecutive original tasks may repeat both format and skill');
 
 const unit2 = (plan.units ?? []).find(u => u.unit === 2);
 const u2Tasks = unit2?.tasks ?? [];
@@ -74,8 +83,13 @@ const badJustifications = [...allQuestionText.matchAll(/justification:\s*['"]([^
   .filter(text => /זוויות\s+(מתאימות|מתחלפות)/.test(text) && !/בין ישרים מקבילים/.test(text));
 gate('theorem-wording', badJustifications.length === 0, badJustifications.join(' | '));
 
-const requiresLane = u2Tasks.filter(t => t.requiresJustificationLane === true);
-const laneCount = (questionText['src/content/questions-unit2.ts'].match(/justificationLane:\s*true/g) ?? []).length;
+// Equation justification is a cross-unit contract: Unit 2 introduces algebra and
+// Unit 4 contains one converse-algebra task. Count the plan and authored content
+// across both units so the gate verifies the real requirement instead of only U2.
+const requiresLane = originalTasks.filter(t => t.requiresJustificationLane === true);
+const laneCount = [2, 4]
+  .map(unit => (questionText[`src/content/questions-unit${unit}.ts`].match(/justificationLane:\s*true/g) ?? []).length)
+  .reduce((sum, count) => sum + count, 0);
 gate('equation-justification', laneCount === requiresLane.length && laneCount > 0,
   `plan requires ${requiresLane.length} justification lanes; content defines ${laneCount}`);
 
