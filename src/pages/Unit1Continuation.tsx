@@ -74,16 +74,18 @@ function Unit1Page2() {
             transversalDeg={24}
             showParallelMarks={false}
             angleMarks={[
-              { intersection: 'top', sector: 0, tone: 'primary', arcStyle: 'single' },
-              { intersection: 'bottom', sector: 0, tone: 'primary', arcStyle: 'single' },
-              { intersection: 'top', sector: 1, tone: 'secondary', arcStyle: 'double' },
-              { intersection: 'bottom', sector: 3, tone: 'secondary', arcStyle: 'double' },
-              { intersection: 'top', sector: 2, tone: 'neutral', arcStyle: 'dashed' },
-              { intersection: 'bottom', sector: 1, tone: 'neutral', arcStyle: 'dashed' },
+              { intersection: 'top', sector: 0, label: '1', tone: 'neutral' },
+              { intersection: 'top', sector: 1, label: '2', tone: 'neutral' },
+              { intersection: 'top', sector: 2, label: '3', tone: 'neutral' },
+              { intersection: 'top', sector: 3, label: '4', tone: 'neutral' },
+              { intersection: 'bottom', sector: 0, label: '5', tone: 'neutral' },
+              { intersection: 'bottom', sector: 1, label: '6', tone: 'neutral' },
+              { intersection: 'bottom', sector: 2, label: '7', tone: 'neutral' },
+              { intersection: 'bottom', sector: 3, label: '8', tone: 'neutral' },
             ]}
           />
         }
-        subparts={(b.subparts ?? []).map(text => <>{text} ____________________</>)}
+        subparts={(b.subparts ?? []).map(text => <>{text} ______________________________</>)}
       >
         {b.stem}
       </QuestionBlock>
