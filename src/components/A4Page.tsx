@@ -19,7 +19,13 @@ export function A4Page({
   className = '',
 }: A4PageProps) {
   return (
-    <article className={`a4-page ${className}`.trim()} data-unit={unitNumber} data-page={pageNumber} dir="rtl">
+    <article
+      className={`a4-page ${className}`.trim()}
+      data-unit={unitNumber}
+      data-page={pageNumber}
+      data-layout-quality="premium"
+      dir="rtl"
+    >
       <header className="page-header">
         <div className="page-title-group">
           <h1>{projectTitle}</h1>
