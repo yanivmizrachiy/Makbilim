@@ -1,0 +1,131 @@
+.geometry-diagram--premium {
+  overflow: visible;
+  isolation: isolate;
+  text-rendering: geometricPrecision;
+}
+
+.geometry-diagram--premium .geometry-line-underlay line {
+  stroke: #ffffff;
+  stroke-width: 6.6;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.geometry-diagram--premium .geometry-lines line {
+  stroke: #101820;
+  stroke-width: 2.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.geometry-diagram--premium .geometry-intersections circle {
+  fill: #101820;
+  stroke: #ffffff;
+  stroke-width: 1.15;
+  vector-effect: non-scaling-stroke;
+}
+
+.geometry-diagram--premium .parallel-mark--chevrons polyline {
+  fill: none;
+  stroke: #101820;
+  stroke-width: 1.85;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.geometry-diagram--premium .angle-sector-fill {
+  stroke: none !important;
+  opacity: 1;
+}
+
+.geometry-diagram--premium .angle-sector-fill.angle-mark--primary {
+  fill: rgb(15 111 120 / 16%);
+}
+
+.geometry-diagram--premium .angle-sector-fill.angle-mark--secondary {
+  fill: rgb(164 90 22 / 11%);
+}
+
+.geometry-diagram--premium .angle-sector-fill.angle-mark--neutral {
+  fill: rgb(74 85 96 / 9%);
+}
+
+.geometry-diagram--premium .angle-arc {
+  fill: none !important;
+  stroke-width: 3.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.geometry-diagram--premium .angle-mark--primary .angle-arc {
+  stroke: #0f6f78;
+}
+
+.geometry-diagram--premium .angle-mark--secondary .angle-arc {
+  stroke: #a45a16;
+  stroke-dasharray: 8 3;
+}
+
+.geometry-diagram--premium .angle-mark--neutral .angle-arc {
+  stroke: #4a5560;
+}
+
+.geometry-diagram--premium .angle-mark--dashed .angle-arc {
+  stroke-dasharray: 5 4;
+}
+
+.geometry-diagram--premium .angle-label-plate rect {
+  fill: rgb(255 255 255 / 94%);
+  stroke: rgb(16 24 32 / 16%);
+  stroke-width: 0.9;
+  vector-effect: non-scaling-stroke;
+}
+
+.geometry-diagram--premium .geometry-labels text,
+.geometry-diagram--premium .angle-label-text {
+  fill: #101820;
+  font-family: Arial, "Noto Sans Hebrew", sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0;
+  paint-order: stroke fill;
+  stroke: #ffffff;
+  stroke-width: 4.8px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.geometry-diagram--premium .angle-label-text {
+  font-size: 18.5px;
+  font-weight: 800;
+}
+
+@media print {
+  .geometry-diagram--premium .geometry-line-underlay line {
+    stroke-width: 5.8;
+  }
+
+  .geometry-diagram--premium .geometry-lines line {
+    stroke-width: 2.15;
+  }
+
+  .geometry-diagram--premium .angle-label-plate rect {
+    fill: #ffffff;
+    stroke: rgb(16 24 32 / 20%);
+  }
+}
+
+@media (forced-colors: active) {
+  .geometry-diagram--premium .angle-sector-fill {
+    fill: transparent !important;
+  }
+
+  .geometry-diagram--premium .angle-arc,
+  .geometry-diagram--premium .geometry-lines line,
+  .geometry-diagram--premium .parallel-mark--chevrons polyline {
+    stroke: CanvasText !important;
+  }
+}
