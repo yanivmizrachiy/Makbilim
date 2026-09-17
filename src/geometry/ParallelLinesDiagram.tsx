@@ -44,23 +44,58 @@ function sectorAngles(lineDeg: number, transversalDeg: number, sector: AngleMark
   return { start, end: next };
 }
 
-function ParallelMark({ center, lineDeg }: { center: Point; lineDeg: number }) {
-  const firstCenter = pointOnRay(center, lineDeg, -7);
-  const secondCenter = pointOnRay(center, lineDeg, 7);
-  const tickDeg = lineDeg + 58;
-  const first = segmentThrough(firstCenter, 16, tickDeg);
-  const second = segmentThrough(secondCenter, 16, tickDeg);
+function angleSectorPath(center: Point, radius: number, startDeg: number, endDeg: number) {
+  const start = pointOnRay(center, startDeg, radius);
+  const end = pointOnRay(center, endDeg, radius);
+  const delta = Math.max(0, endDeg - startDeg);
+  const largeArc = delta > 180 ? 1 : 0;
+  return [
+    `M ${center.x.toFixed(2)} ${center.y.toFixed(2)}`,
+    `L ${start.x.toFixed(2)} ${start.y.toFixed(2)}`,
+    `A ${radius} ${radius} 0 ${largeArc} 1 ${end.x.toFixed(2)} ${end.y.toFixed(2)}`,
+    'Z',
+  ].join(' ');
+}
 
+function ParallelMark({ center, lineDeg }: { center: Point; lineDeg: number }) {
   return (
-    <g className="parallel-mark" aria-hidden="true">
-      <line x1={first.a.x} y1={first.a.y} x2={first.b.x} y2={first.b.y} />
-      <line x1={second.a.x} y1={second.a.y} x2={second.b.x} y2={second.b.y} />
+    <g
+      className="parallel-mark parallel-mark--chevrons"
+      transform={`translate(${center.x.toFixed(2)} ${center.y.toFixed(2)}) rotate(${lineDeg})`}
+      aria-hidden="true"
+    >
+      <polyline points="-10,-6 -2,0 -10,6" />
+      <polyline points="2,-6 10,0 2,6" />
     </g>
   );
 }
 
 function labelPoint(center: Point, lineDeg: number, along: number, normal: number): Point {
   return offsetPoint(pointOnRay(center, lineDeg, along), lineDeg, normal);
+}
+
+function labelRadiusFor(text: string, start: number, end: number) {
+  const span = Math.max(12, Math.min(170, end - start));
+  const textAllowance = Math.min(14, Math.max(0, text.length - 2) * 2.6);
+  const spanAllowance = span < 45 ? 12 : span < 70 ? 7 : 0;
+  return 48 + textAllowance + spanAllowance;
+}
+
+function LabelPlate({ point, label }: { point: Point; label: string }) {
+  const width = Math.max(28, Math.min(82, 17 + label.length * 10.4));
+  const height = 27;
+  return (
+    <g className="angle-label-plate" aria-hidden="true">
+      <rect
+        x={point.x - width / 2}
+        y={point.y - height / 2}
+        width={width}
+        height={height}
+        rx={7}
+        ry={7}
+      />
+    </g>
+  );
 }
 
 export function ParallelLinesDiagram({
@@ -106,15 +141,59 @@ export function ParallelLinesDiagram({
   const primaryLabel = labelPoint(CENTER, transversalDeg, 138, -13);
   const secondaryLabel = secondary ? labelPoint(secondaryCenter, secondaryTransversalDeg!, 138, 13) : null;
 
+  const renderedMarks = angleMarks.map((mark, index) => {
+    const intersection = intersections[mark.intersection];
+    if (!intersection) return null;
+    const { start, end } = sectorAngles(orientationDeg, intersection.transDeg, mark.sector);
+    const safeStart = start + 5;
+    const safeEnd = end - 5;
+    const mid = start + (end - start) / 2;
+    const label = mark.label ?? mark.value;
+    const angleLabelPoint = label
+      ? pointOnRay(intersection.point, mid, labelRadiusFor(label, start, end))
+      : null;
+    return { mark, index, intersection, start: safeStart, end: safeEnd, label, angleLabelPoint };
+  }).filter(Boolean) as Array<{
+    mark: AngleMark;
+    index: number;
+    intersection: { point: Point; transDeg: number };
+    start: number;
+    end: number;
+    label: string | undefined;
+    angleLabelPoint: Point | null;
+  }>;
+
   return (
     <svg
-      className="geometry-diagram"
+      className="geometry-diagram geometry-diagram--premium"
       viewBox={`0 0 ${W} ${H}`}
       role="img"
       aria-label={ariaLabel}
       preserveAspectRatio="xMidYMid meet"
       shapeRendering="geometricPrecision"
+      data-geometry-quality="premium"
+      focusable="false"
     >
+      <title>{ariaLabel}</title>
+      <desc>שרטוט וקטורי מדויק עם סימוני מקבילות, הדגשת זוויות ותוויות סמנטיות.</desc>
+
+      <g className="angle-sectors" aria-hidden="true">
+        {renderedMarks.map(({ mark, index, intersection, start, end }) => (
+          <path
+            key={`fill-${mark.intersection}-${mark.sector}-${index}`}
+            className={`${classForMark(mark)} angle-sector-fill`}
+            d={angleSectorPath(intersection.point, 34, start, end)}
+          />
+        ))}
+      </g>
+
+      <g className="geometry-line-underlay" aria-hidden="true">
+        <line x1={top.a.x} y1={top.a.y} x2={top.b.x} y2={top.b.y} />
+        <line x1={bottom.a.x} y1={bottom.a.y} x2={bottom.b.x} y2={bottom.b.y} />
+        <line x1={primary.a.x} y1={primary.a.y} x2={primary.b.x} y2={primary.b.y} />
+        {secondary && <line x1={secondary.a.x} y1={secondary.a.y} x2={secondary.b.x} y2={secondary.b.y} />}
+      </g>
+
       <g className="geometry-lines">
         <line x1={top.a.x} y1={top.a.y} x2={top.b.x} y2={top.b.y} />
         <line x1={bottom.a.x} y1={bottom.a.y} x2={bottom.b.x} y2={bottom.b.y} />
@@ -129,6 +208,13 @@ export function ParallelLinesDiagram({
         </>
       )}
 
+      <g className="geometry-intersections" aria-hidden="true">
+        <circle cx={topIntersection.x} cy={topIntersection.y} r="2.55" />
+        <circle cx={bottomIntersection.x} cy={bottomIntersection.y} r="2.55" />
+        {topSecondaryIntersection && <circle cx={topSecondaryIntersection.x} cy={topSecondaryIntersection.y} r="2.55" />}
+        {bottomSecondaryIntersection && <circle cx={bottomSecondaryIntersection.x} cy={bottomSecondaryIntersection.y} r="2.55" />}
+      </g>
+
       <g className="geometry-labels" aria-hidden="true" direction="ltr">
         <text x={topLabel.x} y={topLabel.y} textAnchor="middle" dominantBaseline="middle">{lineLabels[0]}</text>
         <text x={bottomLabel.x} y={bottomLabel.y} textAnchor="middle" dominantBaseline="middle">{lineLabels[1]}</text>
@@ -138,31 +224,28 @@ export function ParallelLinesDiagram({
         )}
       </g>
 
-      {angleMarks.map((mark, index) => {
-        const intersection = intersections[mark.intersection];
-        if (!intersection) return null;
-
-        const { start, end } = sectorAngles(orientationDeg, intersection.transDeg, mark.sector);
-        const mid = start + (end - start) / 2;
-        const label = mark.label ?? mark.value;
-        const labelRadius = label ? 48 : 0;
-        const angleLabelPoint = label ? pointOnRay(intersection.point, mid, labelRadius) : null;
+      {renderedMarks.map(({ mark, index, intersection, start, end, label, angleLabelPoint }) => {
         const style = mark.arcStyle ?? 'single';
-
         return (
           <g key={`${mark.intersection}-${mark.sector}-${index}`} className={classForMark(mark)}>
-            <path d={arcPath(intersection.point, 29, start + 5, end - 5)} />
-            {style === 'double' && <path d={arcPath(intersection.point, 36, start + 6, end - 6)} />}
+            <path className="angle-arc angle-arc--inner" d={arcPath(intersection.point, 29, start, end)} />
+            {style === 'double' && (
+              <path className="angle-arc angle-arc--outer" d={arcPath(intersection.point, 36, start + 1, end - 1)} />
+            )}
             {label && angleLabelPoint && (
-              <text
-                x={angleLabelPoint.x}
-                y={angleLabelPoint.y}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                direction="ltr"
-              >
-                {label}
-              </text>
+              <>
+                <LabelPlate point={angleLabelPoint} label={label} />
+                <text
+                  className="angle-label-text"
+                  x={angleLabelPoint.x}
+                  y={angleLabelPoint.y}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  direction="ltr"
+                >
+                  {label}
+                </text>
+              </>
             )}
           </g>
         );
