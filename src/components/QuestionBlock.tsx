@@ -39,7 +39,7 @@ export function QuestionBlock({
   ].filter(Boolean).join(' ');
 
   return (
-    <section className={blockClass}>
+    <section className={blockClass} data-question-surface="premium">
       <div className="question-marker" aria-hidden="true">●</div>
       <div className={contentClass}>
         <div className="question-stem">{children}</div>
