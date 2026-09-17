@@ -103,6 +103,46 @@
   font-weight: 800;
 }
 
+.geometry-diagram--premium .three-line-angle-mark .angle-callout {
+  stroke-width: 1.45;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.geometry-diagram--premium .three-line-angle-mark.angle-mark--primary .angle-callout {
+  stroke: #0f6f78;
+}
+
+.geometry-diagram--premium .three-line-angle-mark.angle-mark--secondary .angle-callout {
+  stroke: #a45a16;
+  stroke-dasharray: 5 3;
+}
+
+.geometry-diagram--premium .three-line-angle-mark.angle-mark--neutral .angle-callout {
+  stroke: #4a5560;
+}
+
+.geometry-diagram--premium .three-line-angle-mark .angle-badge {
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.geometry-diagram--premium .three-line-angle-mark.angle-mark--primary .angle-badge {
+  fill: rgb(15 111 120 / 13%);
+  stroke: #0f6f78;
+}
+
+.geometry-diagram--premium .three-line-angle-mark.angle-mark--secondary .angle-badge {
+  fill: rgb(164 90 22 / 10%);
+  stroke: #a45a16;
+  stroke-dasharray: 4 2;
+}
+
+.geometry-diagram--premium .three-line-angle-mark.angle-mark--neutral .angle-badge {
+  fill: rgb(74 85 96 / 8%);
+  stroke: #4a5560;
+}
+
 @media print {
   .geometry-diagram--premium .geometry-line-underlay line {
     stroke-width: 5.8;
@@ -116,16 +156,23 @@
     fill: #ffffff;
     stroke: rgb(16 24 32 / 20%);
   }
+
+  .geometry-diagram--premium .three-line-angle-mark .angle-badge {
+    fill: #ffffff;
+  }
 }
 
 @media (forced-colors: active) {
-  .geometry-diagram--premium .angle-sector-fill {
+  .geometry-diagram--premium .angle-sector-fill,
+  .geometry-diagram--premium .three-line-angle-mark .angle-badge {
     fill: transparent !important;
   }
 
   .geometry-diagram--premium .angle-arc,
   .geometry-diagram--premium .geometry-lines line,
-  .geometry-diagram--premium .parallel-mark--chevrons polyline {
+  .geometry-diagram--premium .parallel-mark--chevrons polyline,
+  .geometry-diagram--premium .three-line-angle-mark .angle-callout,
+  .geometry-diagram--premium .three-line-angle-mark .angle-badge {
     stroke: CanvasText !important;
   }
 }
