@@ -205,6 +205,7 @@ export function ParallelLinesDiagram({
       preserveAspectRatio="xMidYMid meet"
       shapeRendering="geometricPrecision"
       data-geometry-quality="premium"
+      data-label-placement="collision-aware"
       focusable="false"
     >
       <title>{ariaLabel}</title>
