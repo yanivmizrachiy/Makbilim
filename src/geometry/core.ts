@@ -135,6 +135,7 @@ export function chooseRadialLabelPoint({
   minGap = 6,
   radii = [],
   angleOffsets = [0, 6, -6, 12, -12, 18, -18, 24, -24, 30, -30],
+  labelOptions = {},
 }: {
   origin: Point;
   angleDeg: number;
@@ -146,6 +147,7 @@ export function chooseRadialLabelPoint({
   minGap?: number;
   radii?: number[];
   angleOffsets?: number[];
+  labelOptions?: { minWidth?: number; maxWidth?: number; charWidth?: number; height?: number; baseWidth?: number };
 }): { point: Point; rect: Rect } {
   const radiusCandidates = [
     preferredRadius,
@@ -165,7 +167,7 @@ export function chooseRadialLabelPoint({
   for (const radius of radiusCandidates) {
     for (const offset of angleOffsets) {
       const point = pointOnRay(origin, angleDeg + offset, radius);
-      const rect = estimateLabelRect(point, text);
+      const rect = estimateLabelRect(point, text, labelOptions);
       const outOfBounds = rectWithinBounds(rect, bounds, inset) ? 0 : 10_000;
       const collisions = occupied.filter(other => rectsOverlap(rect, other, minGap)).length;
       const displacement = Math.abs(radius - preferredRadius) + Math.abs(offset) * 0.6;
@@ -181,7 +183,7 @@ export function chooseRadialLabelPoint({
 
   if (!fallback) {
     const point = pointOnRay(origin, angleDeg, preferredRadius);
-    return { point, rect: estimateLabelRect(point, text) };
+    return { point, rect: estimateLabelRect(point, text, labelOptions) };
   }
   return fallback;
 }
