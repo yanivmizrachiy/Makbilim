@@ -304,6 +304,12 @@ try {
     }
     return '<!doctype html>\n' + root.outerHTML;
   });
+  if (/<script\b/i.test(vivliostyleSnapshot)) {
+    throw new Error('Vivliostyle snapshot must be script-free');
+  }
+  if (!/data-vivliostyle-snapshot="true"/.test(vivliostyleSnapshot)) {
+    throw new Error('Vivliostyle snapshot marker missing');
+  }
   await fs.writeFile(path.join(vivliostyleDir, 'index.html'), vivliostyleSnapshot, 'utf8');
 
   const snapshotStats = await page.evaluate(() => ({
