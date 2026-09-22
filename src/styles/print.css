@@ -51,6 +51,8 @@ body { direction: rtl; }
   background: var(--paper);
   padding: 9mm 10mm 8mm;
   box-shadow: 0 1.5mm 5mm rgb(15 23 42 / 14%);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
   display: grid;
   grid-template-rows: var(--header-height) minmax(0, 1fr) var(--footer-height);
   break-after: page;
