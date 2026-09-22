@@ -26,14 +26,15 @@ describe('dual-engine publication pipeline contract', () => {
 
   it('typesets the frozen validated DOM snapshot as canonical A4 through Vivliostyle', () => {
     expect(config).toContain("size: 'A4'");
-    expect(config).toContain("'/': 'artifacts/vivliostyle'");
+    expect(config).toContain("entry: ['artifacts/vivliostyle/index.html']");
+    expect(config).toContain("entryContext: '.'");
     expect(config).toContain("'/assets': 'dist/assets'");
-    expect(config).toContain("entry: ['/index.html']");
     expect(config).toContain('viteConfigFile: false');
     expect(config).toContain("output: 'artifacts/pdf/זוויות-בין-ישרים-מקבילים.pdf'");
     expect(buildPdf).toContain('data-vivliostyle-snapshot');
     expect(buildPdf).toContain("vivliostyleDir, 'index.html'");
     expect(buildPdf).toContain('Vivliostyle snapshot incomplete');
+    expect(buildPdf).toContain('Vivliostyle snapshot must be script-free');
   });
 
   it('keeps Chromium as an independent renderer and visual QA engine', () => {
