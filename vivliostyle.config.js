@@ -13,6 +13,7 @@ export default defineConfig({
   },
   static: {
     '/': 'dist',
+    '/__vivliostyle-viewer/assets': 'dist/assets',
   },
   entry: ['/index.html'],
   output: 'artifacts/pdf/זוויות-בין-ישרים-מקבילים.pdf',
