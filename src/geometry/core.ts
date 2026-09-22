@@ -117,7 +117,7 @@ export function chooseRadialLabelPoint({
   inset = 10,
   minGap = 6,
   radii = [],
-  angleOffsets = [0, 7, -7, 14, -14, 21, -21],
+  angleOffsets = [0, 6, -6, 12, -12, 18, -18, 24, -24, 30, -30],
 }: {
   origin: Point;
   angleDeg: number;
@@ -133,10 +133,14 @@ export function chooseRadialLabelPoint({
   const radiusCandidates = [
     preferredRadius,
     ...radii,
-    preferredRadius + 10,
-    preferredRadius + 20,
+    preferredRadius + 8,
+    preferredRadius + 16,
+    preferredRadius + 24,
+    preferredRadius + 32,
+    preferredRadius + 42,
     Math.max(30, preferredRadius - 8),
-  ].filter((value, index, all) => all.indexOf(value) === index);
+    Math.max(30, preferredRadius - 16),
+  ].filter((value, index, all) => value > 0 && all.indexOf(value) === index);
 
   let fallback: { point: Point; rect: Rect } | null = null;
   let fallbackPenalty = Number.POSITIVE_INFINITY;
