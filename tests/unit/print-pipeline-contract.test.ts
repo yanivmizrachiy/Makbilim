@@ -28,6 +28,8 @@ describe('dual-engine publication pipeline contract', () => {
     expect(config).toContain("size: 'A4'");
     expect(config).toContain("'/': 'dist'");
     expect(config).toContain("'/__vivliostyle-viewer/assets': 'dist/assets'");
+    expect(config).toContain("'/__vivliostyle-viewer/generated': 'dist/generated'");
+    expect(config).toContain("'/__vivliostyle-viewer/vendor': 'dist/vendor'");
     expect(config).toContain("entry: ['/index.html']");
     expect(config).toContain('viteConfigFile: false');
     expect(config).toContain("base: '/'");
