@@ -149,21 +149,21 @@ export function ParallelLinesDiagram({
   const labelBounds = { minX: 0, minY: 0, maxX: W, maxY: H };
   const lineLabelOptions = { minWidth: 32, charWidth: 11.5, height: 30, baseWidth: 18 };
   const topLabel = clampLabelPoint(
-    labelPoint(topCenter, orientationDeg, 126, -14),
+    labelPoint(topCenter, orientationDeg, 142, -18),
     lineLabels[0],
     labelBounds,
     lineLabelOptions,
     12,
   );
   const bottomLabel = clampLabelPoint(
-    labelPoint(bottomCenter, orientationDeg, 126, 14),
+    labelPoint(bottomCenter, orientationDeg, 142, 18),
     lineLabels[1],
     labelBounds,
     lineLabelOptions,
     12,
   );
   const primaryLabel = clampLabelPoint(
-    labelPoint(CENTER, transversalDeg, 138, -13),
+    labelPoint(CENTER, transversalDeg, 154, -18),
     transversalLabel,
     labelBounds,
     lineLabelOptions,
@@ -171,7 +171,7 @@ export function ParallelLinesDiagram({
   );
   const secondaryLabel = secondary
     ? clampLabelPoint(
-        labelPoint(secondaryCenter, secondaryTransversalDeg!, 138, 13),
+        labelPoint(secondaryCenter, secondaryTransversalDeg!, 154, 18),
         secondaryTransversalLabel,
         labelBounds,
         lineLabelOptions,
@@ -213,10 +213,12 @@ export function ParallelLinesDiagram({
           preferredRadius + 34,
           preferredRadius + 46,
           preferredRadius + 58,
+          preferredRadius + 72,
+          preferredRadius + 86,
         ],
         inset: 14,
         minGap: 8,
-        angleOffsets: [0, 6, -6, 12, -12, 18, -18, 24, -24, 30, -30],
+        angleOffsets: [0, 5, -5, 10, -10, 15, -15, 20, -20, 25, -25, 30, -30],
       });
       angleLabelPoint = placed.point;
       occupiedLabelRects.push(placed.rect);
