@@ -24,16 +24,16 @@ describe('dual-engine publication pipeline contract', () => {
     expect(pdfScript.indexOf('pdf:vivliostyle')).toBeLessThan(pdfScript.indexOf('pdf:crosscheck'));
   });
 
-  it('typesets the static Vite build as canonical A4 through Vivliostyle', () => {
+  it('typesets the frozen validated DOM snapshot as canonical A4 through Vivliostyle', () => {
     expect(config).toContain("size: 'A4'");
-    expect(config).toContain("'/': 'dist'");
-    expect(config).toContain("'/__vivliostyle-viewer/assets': 'dist/assets'");
-    expect(config).toContain("'/__vivliostyle-viewer/generated': 'dist/generated'");
-    expect(config).toContain("'/__vivliostyle-viewer/vendor': 'dist/vendor'");
+    expect(config).toContain("'/': 'artifacts/vivliostyle'");
+    expect(config).toContain("'/assets': 'dist/assets'");
     expect(config).toContain("entry: ['/index.html']");
     expect(config).toContain('viteConfigFile: false');
-    expect(config).toContain("base: '/'");
     expect(config).toContain("output: 'artifacts/pdf/זוויות-בין-ישרים-מקבילים.pdf'");
+    expect(buildPdf).toContain('data-vivliostyle-snapshot');
+    expect(buildPdf).toContain("vivliostyleDir, 'index.html'");
+    expect(buildPdf).toContain('Vivliostyle snapshot incomplete');
   });
 
   it('keeps Chromium as an independent renderer and visual QA engine', () => {
