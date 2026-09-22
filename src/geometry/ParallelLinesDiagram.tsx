@@ -2,6 +2,7 @@ import React from 'react';
 import {
   arcPath,
   chooseRadialLabelPoint,
+  clampLabelPoint,
   estimateLabelRect,
   lineIntersection,
   offsetPoint,
@@ -145,18 +146,45 @@ export function ParallelLinesDiagram({
       : null,
   };
 
-  const topLabel = labelPoint(topCenter, orientationDeg, 126, -14);
-  const bottomLabel = labelPoint(bottomCenter, orientationDeg, 126, 14);
-  const primaryLabel = labelPoint(CENTER, transversalDeg, 138, -13);
-  const secondaryLabel = secondary ? labelPoint(secondaryCenter, secondaryTransversalDeg!, 138, 13) : null;
-
   const labelBounds = { minX: 0, minY: 0, maxX: W, maxY: H };
+  const lineLabelOptions = { minWidth: 32, charWidth: 11.5, height: 30, baseWidth: 18 };
+  const topLabel = clampLabelPoint(
+    labelPoint(topCenter, orientationDeg, 126, -14),
+    lineLabels[0],
+    labelBounds,
+    lineLabelOptions,
+    12,
+  );
+  const bottomLabel = clampLabelPoint(
+    labelPoint(bottomCenter, orientationDeg, 126, 14),
+    lineLabels[1],
+    labelBounds,
+    lineLabelOptions,
+    12,
+  );
+  const primaryLabel = clampLabelPoint(
+    labelPoint(CENTER, transversalDeg, 138, -13),
+    transversalLabel,
+    labelBounds,
+    lineLabelOptions,
+    12,
+  );
+  const secondaryLabel = secondary
+    ? clampLabelPoint(
+        labelPoint(secondaryCenter, secondaryTransversalDeg!, 138, 13),
+        secondaryTransversalLabel,
+        labelBounds,
+        lineLabelOptions,
+        12,
+      )
+    : null;
+
   const occupiedLabelRects = [
-    estimateLabelRect(topLabel, lineLabels[0], { minWidth: 24, charWidth: 9.5, height: 25 }),
-    estimateLabelRect(bottomLabel, lineLabels[1], { minWidth: 24, charWidth: 9.5, height: 25 }),
-    estimateLabelRect(primaryLabel, transversalLabel, { minWidth: 24, charWidth: 9.5, height: 25 }),
+    estimateLabelRect(topLabel, lineLabels[0], lineLabelOptions),
+    estimateLabelRect(bottomLabel, lineLabels[1], lineLabelOptions),
+    estimateLabelRect(primaryLabel, transversalLabel, lineLabelOptions),
     ...(secondary && secondaryLabel
-      ? [estimateLabelRect(secondaryLabel, secondaryTransversalLabel, { minWidth: 24, charWidth: 9.5, height: 25 })]
+      ? [estimateLabelRect(secondaryLabel, secondaryTransversalLabel, lineLabelOptions)]
       : []),
   ];
 
@@ -178,9 +206,17 @@ export function ParallelLinesDiagram({
         preferredRadius,
         bounds: labelBounds,
         occupied: occupiedLabelRects,
-        radii: [preferredRadius + 8, preferredRadius + 16, preferredRadius + 26],
-        inset: 11,
-        minGap: 5,
+        radii: [
+          preferredRadius + 8,
+          preferredRadius + 16,
+          preferredRadius + 24,
+          preferredRadius + 34,
+          preferredRadius + 46,
+          preferredRadius + 58,
+        ],
+        inset: 14,
+        minGap: 8,
+        angleOffsets: [0, 6, -6, 12, -12, 18, -18, 24, -24, 30, -30],
       });
       angleLabelPoint = placed.point;
       occupiedLabelRects.push(placed.rect);
