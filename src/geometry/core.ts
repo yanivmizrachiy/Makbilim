@@ -66,3 +66,101 @@ export function arcPath(
   const sweep = 1;
   return `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} A ${radius} ${radius} 0 ${largeArc} ${sweep} ${end.x.toFixed(2)} ${end.y.toFixed(2)}`;
 }
+
+
+export type Rect = { left: number; top: number; right: number; bottom: number };
+export type Bounds = { minX: number; minY: number; maxX: number; maxY: number };
+
+export function estimateLabelRect(
+  point: Point,
+  text: string,
+  options: { minWidth?: number; maxWidth?: number; charWidth?: number; height?: number } = {},
+): Rect {
+  const minWidth = options.minWidth ?? 28;
+  const maxWidth = options.maxWidth ?? 82;
+  const charWidth = options.charWidth ?? 10.4;
+  const height = options.height ?? 27;
+  const width = Math.max(minWidth, Math.min(maxWidth, 17 + text.length * charWidth));
+  return {
+    left: point.x - width / 2,
+    top: point.y - height / 2,
+    right: point.x + width / 2,
+    bottom: point.y + height / 2,
+  };
+}
+
+export function rectsOverlap(first: Rect, second: Rect, gap = 0): boolean {
+  return !(
+    first.right + gap <= second.left ||
+    second.right + gap <= first.left ||
+    first.bottom + gap <= second.top ||
+    second.bottom + gap <= first.top
+  );
+}
+
+export function rectWithinBounds(rect: Rect, bounds: Bounds, inset = 0): boolean {
+  return (
+    rect.left >= bounds.minX + inset &&
+    rect.top >= bounds.minY + inset &&
+    rect.right <= bounds.maxX - inset &&
+    rect.bottom <= bounds.maxY - inset
+  );
+}
+
+export function chooseRadialLabelPoint({
+  origin,
+  angleDeg,
+  text,
+  preferredRadius,
+  bounds,
+  occupied,
+  inset = 10,
+  minGap = 6,
+  radii = [],
+  angleOffsets = [0, 7, -7, 14, -14, 21, -21],
+}: {
+  origin: Point;
+  angleDeg: number;
+  text: string;
+  preferredRadius: number;
+  bounds: Bounds;
+  occupied: Rect[];
+  inset?: number;
+  minGap?: number;
+  radii?: number[];
+  angleOffsets?: number[];
+}): { point: Point; rect: Rect } {
+  const radiusCandidates = [
+    preferredRadius,
+    ...radii,
+    preferredRadius + 10,
+    preferredRadius + 20,
+    Math.max(30, preferredRadius - 8),
+  ].filter((value, index, all) => all.indexOf(value) === index);
+
+  let fallback: { point: Point; rect: Rect } | null = null;
+  let fallbackPenalty = Number.POSITIVE_INFINITY;
+
+  for (const radius of radiusCandidates) {
+    for (const offset of angleOffsets) {
+      const point = pointOnRay(origin, angleDeg + offset, radius);
+      const rect = estimateLabelRect(point, text);
+      const outOfBounds = rectWithinBounds(rect, bounds, inset) ? 0 : 10_000;
+      const collisions = occupied.filter(other => rectsOverlap(rect, other, minGap)).length;
+      const displacement = Math.abs(radius - preferredRadius) + Math.abs(offset) * 0.6;
+      const penalty = outOfBounds + collisions * 1_000 + displacement;
+
+      if (penalty === 0) return { point, rect };
+      if (penalty < fallbackPenalty) {
+        fallbackPenalty = penalty;
+        fallback = { point, rect };
+      }
+    }
+  }
+
+  if (!fallback) {
+    const point = pointOnRay(origin, angleDeg, preferredRadius);
+    return { point, rect: estimateLabelRect(point, text) };
+  }
+  return fallback;
+}
