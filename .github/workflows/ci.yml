@@ -18,7 +18,7 @@ jobs:
   build:
     name: Validate and build workbook
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     permissions:
       contents: read
     steps:
@@ -47,7 +47,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Build PDF and visual QA
-        timeout-minutes: 7
+        timeout-minutes: 10
         run: npm run pdf
 
       - name: Upload workbook artifacts
@@ -58,6 +58,7 @@ jobs:
             artifacts/pdf/*.pdf
             artifacts/screenshots/*.png
             artifacts/layout-report.json
+            artifacts/pdf-crosscheck.json
           if-no-files-found: error
           retention-days: 30
 
