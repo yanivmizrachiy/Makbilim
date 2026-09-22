@@ -6,8 +6,10 @@ import path from 'node:path';
 const root = process.cwd();
 const pdfDir = path.join(root, 'artifacts', 'pdf');
 const shotsDir = path.join(root, 'artifacts', 'screenshots');
+const vivliostyleDir = path.join(root, 'artifacts', 'vivliostyle');
 await fs.mkdir(pdfDir, { recursive: true });
 await fs.mkdir(shotsDir, { recursive: true });
+await fs.mkdir(vivliostyleDir, { recursive: true });
 
 const HARD_TIMEOUT_MS = 4 * 60 * 1000;
 let browser;
@@ -284,6 +286,35 @@ try {
   });
   if (failures.length) throw new Error(`A4 layout QA failed: ${JSON.stringify(failures)}`);
 
+  const vivliostyleSnapshot = await page.evaluate(() => {
+    const root = document.documentElement.cloneNode(true);
+    root.querySelectorAll('script, link[rel="modulepreload"]').forEach(node => node.remove());
+    root.querySelectorAll('[src], [href]').forEach(node => {
+      for (const attribute of ['src', 'href']) {
+        const value = node.getAttribute(attribute);
+        if (!value) continue;
+        if (value.startsWith('./assets/')) node.setAttribute(attribute, value.replace('./assets/', '/assets/'));
+        if (value.startsWith('/assets/')) node.setAttribute(attribute, value);
+      }
+    });
+    const body = root.querySelector('body');
+    if (body) {
+      body.removeAttribute('data-curriculum-ready');
+      body.setAttribute('data-vivliostyle-snapshot', 'true');
+    }
+    return '<!doctype html>\n' + root.outerHTML;
+  });
+  await fs.writeFile(path.join(vivliostyleDir, 'index.html'), vivliostyleSnapshot, 'utf8');
+
+  const snapshotStats = await page.evaluate(() => ({
+    pages: document.querySelectorAll('.a4-page').length,
+    mathSvg: document.querySelectorAll('.mathjax-inline svg').length,
+    geometrySvg: document.querySelectorAll('svg.geometry-diagram').length,
+  }));
+  if (snapshotStats.pages !== 19 || snapshotStats.mathSvg < 1 || snapshotStats.geometrySvg < 1) {
+    throw new Error(`Vivliostyle snapshot incomplete: ${JSON.stringify(snapshotStats)}`);
+  }
+
   const screenshotPageSet = async (suffix) => {
     for (let index = 0; index < pageCount; index += 1) {
       const locator = page.locator('.a4-page').nth(index);
@@ -326,7 +357,7 @@ try {
     `${JSON.stringify({ pageCount, expectedPages, mathJaxStatus, layout }, null, 2)}\n`,
     'utf8',
   );
-  console.log(`pdf-visual: PASS — ${pageCount} A4 pages, ${mathJaxStatus.rendered}/${mathJaxStatus.total} MathJax SVG tokens, canonical chrome + utilization + collision-safe geometry + color/grayscale/forced-colors snapshots generated`);
+  console.log(`pdf-visual: PASS — ${pageCount} A4 pages, ${mathJaxStatus.rendered}/${mathJaxStatus.total} MathJax SVG tokens, canonical chrome + utilization + collision-safe geometry + static Vivliostyle snapshot + color/grayscale/forced-colors snapshots generated`);
 } finally {
   clearTimeout(hardWatchdog);
   await closeBrowser();
