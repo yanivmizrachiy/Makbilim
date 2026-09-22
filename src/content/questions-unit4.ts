@@ -23,6 +23,7 @@ export type Unit4Question = {
     conclusion?: string;
     proof?: string[];
     reason?: string | string[];
+    justification?: string | string[];
   };
 };
 
@@ -130,6 +131,7 @@ export const unit4Questions: Unit4Question[] = [
     justificationLane: true,
     expected: {
       values: { x: 20, 'זווית': 74 },
+      justification: 'כדי להבטיח שהישרים p ו־q מקבילים, הזוויות המתאימות חייבות להיות שוות; לכן משווים 3x + 14 = 5x − 26 ומפעילים את המשפט ההפוך של זוויות מתאימות.',
       conclusion: 'p ∥ q',
       reason: [
         'כדי להפעיל את המשפט ההפוך יש להשוות את הזוויות המתאימות.',
