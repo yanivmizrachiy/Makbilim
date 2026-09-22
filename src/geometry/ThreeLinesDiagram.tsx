@@ -74,18 +74,24 @@ export function ThreeLinesDiagram({
       12,
     );
   });
-  const transversalLabelPoint = clampLabelPoint(
-    offsetPoint(pointOnRay(CENTER, transversalDeg, 176), transversalDeg, -13),
-    transversalLabel,
-    labelBounds,
-    lineLabelOptions,
-    12,
+  const occupiedLabelRects = lineLabelPoints.map((point, index) =>
+    estimateLabelRect(point, lineLabels[index] ?? '', lineLabelOptions),
   );
-  const occupiedLabelRects = [
-    ...lineLabelPoints.map((point, index) =>
-      estimateLabelRect(point, lineLabels[index] ?? '', lineLabelOptions)),
-    estimateLabelRect(transversalLabelPoint, transversalLabel, lineLabelOptions),
-  ];
+  const transversalPlaced = chooseRadialLabelPoint({
+    origin: CENTER,
+    angleDeg: transversalDeg,
+    text: transversalLabel,
+    preferredRadius: 176,
+    bounds: labelBounds,
+    occupied: occupiedLabelRects,
+    radii: [188, 200, 212],
+    inset: 12,
+    minGap: 8,
+    angleOffsets: [0, 5, -5, 10, -10, 15, -15],
+    labelOptions: lineLabelOptions,
+  });
+  const transversalLabelPoint = transversalPlaced.point;
+  occupiedLabelRects.push(transversalPlaced.rect);
 
   const renderedMarks = angleMarks.map((mark, index) => {
     const p = intersections[mark.line]!;
