@@ -16,10 +16,6 @@ const MIN_BYTES = 100_000;
 
 async function inspect(filePath, renderer) {
   const bytes = await fs.readFile(filePath);
-  if (bytes.byteLength < MIN_BYTES) {
-    throw new Error(`${renderer} PDF is suspiciously small: ${bytes.byteLength} bytes`);
-  }
-
   const doc = await PDFDocument.load(bytes, { updateMetadata: false });
   const pages = doc.getPages();
   const dimensions = pages.map((page, index) => {
@@ -36,7 +32,10 @@ async function inspect(filePath, renderer) {
   });
 
   if (pages.length !== EXPECTED_PAGES) {
-    throw new Error(`${renderer} PDF expected ${EXPECTED_PAGES} pages, found ${pages.length}`);
+    throw new Error(`${renderer} PDF expected ${EXPECTED_PAGES} pages, found ${pages.length}; size=${bytes.byteLength} bytes`);
+  }
+  if (bytes.byteLength < MIN_BYTES) {
+    throw new Error(`${renderer} PDF has ${pages.length} pages but is suspiciously small: ${bytes.byteLength} bytes`);
   }
   const invalid = dimensions.filter(page => !page.a4);
   if (invalid.length) {
