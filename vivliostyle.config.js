@@ -7,11 +7,13 @@ export default defineConfig({
   language: 'he',
   size: 'A4',
   workspaceDir: '.vivliostyle',
-  entry: ['dist/index.html'],
-  entryContext: '.',
+  viteConfigFile: false,
+  vite: {
+    base: '/',
+  },
   static: {
     '/': 'dist',
   },
-  viteConfigFile: false,
+  entry: ['/index.html'],
   output: 'artifacts/pdf/זוויות-בין-ישרים-מקבילים.pdf',
 });
