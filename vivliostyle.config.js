@@ -8,10 +8,10 @@ export default defineConfig({
   size: 'A4',
   workspaceDir: '.vivliostyle',
   viteConfigFile: false,
+  entry: ['artifacts/vivliostyle/index.html'],
+  entryContext: '.',
   static: {
-    '/': 'artifacts/vivliostyle',
     '/assets': 'dist/assets',
   },
-  entry: ['/index.html'],
   output: 'artifacts/pdf/זוויות-בין-ישרים-מקבילים.pdf',
 });
