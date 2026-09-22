@@ -147,7 +147,7 @@ export function ParallelLinesDiagram({
   };
 
   const labelBounds = { minX: 0, minY: 0, maxX: W, maxY: H };
-  const lineLabelOptions = { minWidth: 32, charWidth: 11.5, height: 30, baseWidth: 18 };
+  const lineLabelOptions = { minWidth: 32, maxWidth: 190, charWidth: 11.5, height: 30, baseWidth: 18 };
   const topLabel = clampLabelPoint(
     labelPoint(topCenter, orientationDeg, 142, -18),
     lineLabels[0],
