@@ -12,6 +12,7 @@ const config = read('vivliostyle.config.js');
 const buildPdf = read('scripts/build-pdf.mjs');
 const crosscheck = read('scripts/validate-pdf-crosscheck.mjs');
 const printCss = read('src/styles/print.css');
+const pdfScript = pkg.scripts.pdf ?? '';
 
 describe('dual-engine publication pipeline contract', () => {
   it('pins Vivliostyle and runs both PDF renderers before cross-check', () => {
@@ -19,8 +20,8 @@ describe('dual-engine publication pipeline contract', () => {
     expect(pkg.scripts['pdf:chromium']).toContain('build-pdf.mjs');
     expect(pkg.scripts['pdf:vivliostyle']).toBe('vivliostyle build');
     expect(pkg.scripts['pdf:crosscheck']).toContain('validate-pdf-crosscheck.mjs');
-    expect(pkg.scripts.pdf.indexOf('pdf:chromium')).toBeLessThan(pkg.scripts.pdf.indexOf('pdf:vivliostyle'));
-    expect(pkg.scripts.pdf.indexOf('pdf:vivliostyle')).toBeLessThan(pkg.scripts.pdf.indexOf('pdf:crosscheck'));
+    expect(pdfScript.indexOf('pdf:chromium')).toBeLessThan(pdfScript.indexOf('pdf:vivliostyle'));
+    expect(pdfScript.indexOf('pdf:vivliostyle')).toBeLessThan(pdfScript.indexOf('pdf:crosscheck'));
   });
 
   it('typesets the static Vite build as canonical A4 through Vivliostyle', () => {
