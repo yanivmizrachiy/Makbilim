@@ -74,13 +74,14 @@ export type Bounds = { minX: number; minY: number; maxX: number; maxY: number };
 export function estimateLabelRect(
   point: Point,
   text: string,
-  options: { minWidth?: number; maxWidth?: number; charWidth?: number; height?: number } = {},
+  options: { minWidth?: number; maxWidth?: number; charWidth?: number; height?: number; baseWidth?: number } = {},
 ): Rect {
   const minWidth = options.minWidth ?? 28;
   const maxWidth = options.maxWidth ?? 82;
   const charWidth = options.charWidth ?? 10.4;
   const height = options.height ?? 27;
-  const width = Math.max(minWidth, Math.min(maxWidth, 17 + text.length * charWidth));
+  const baseWidth = options.baseWidth ?? 17;
+  const width = Math.max(minWidth, Math.min(maxWidth, baseWidth + text.length * charWidth));
   return {
     left: point.x - width / 2,
     top: point.y - height / 2,
@@ -105,6 +106,22 @@ export function rectWithinBounds(rect: Rect, bounds: Bounds, inset = 0): boolean
     rect.right <= bounds.maxX - inset &&
     rect.bottom <= bounds.maxY - inset
   );
+}
+
+export function clampLabelPoint(
+  point: Point,
+  text: string,
+  bounds: Bounds,
+  options: { minWidth?: number; maxWidth?: number; charWidth?: number; height?: number; baseWidth?: number } = {},
+  inset = 10,
+): Point {
+  const rect = estimateLabelRect(point, text, options);
+  const halfWidth = (rect.right - rect.left) / 2;
+  const halfHeight = (rect.bottom - rect.top) / 2;
+  return {
+    x: Math.min(bounds.maxX - inset - halfWidth, Math.max(bounds.minX + inset + halfWidth, point.x)),
+    y: Math.min(bounds.maxY - inset - halfHeight, Math.max(bounds.minY + inset + halfHeight, point.y)),
+  };
 }
 
 export function chooseRadialLabelPoint({
