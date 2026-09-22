@@ -18,6 +18,8 @@ describe('premium geometry rendering contract', () => {
     expect(parallel).toContain('geometry-line-underlay');
     expect(parallel).toContain('geometry-intersections');
     expect(parallel).toContain('parallel-mark--chevrons');
+    expect(parallel).toContain('data-label-placement="collision-aware"');
+    expect(parallel).toContain('chooseRadialLabelPoint');
   });
 
   it('upgrades the three-line authored geometry engine too', () => {
@@ -27,6 +29,8 @@ describe('premium geometry rendering contract', () => {
     expect(threeLines).toContain('parallel-mark--chevrons');
     expect(threeLines).toContain('angle-callout');
     expect(threeLines).toContain('angle-badge');
+    expect(threeLines).toContain('data-label-placement="collision-aware"');
+    expect(threeLines).toContain('chooseRadialLabelPoint');
   });
 
   it('keeps premium geometry vector-based and print aware', () => {
