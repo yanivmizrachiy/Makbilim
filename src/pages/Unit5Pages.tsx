@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { A4Page } from '../components/A4Page';
-import '../styles/bbb-source.css';
 
 type CurriculumBlock = {
   id: string;
