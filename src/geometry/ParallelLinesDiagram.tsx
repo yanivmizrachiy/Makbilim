@@ -1,5 +1,14 @@
 import React from 'react';
-import {\n  arcPath,\n  chooseRadialLabelPoint,\n  estimateLabelRect,\n  lineIntersection,\n  offsetPoint,\n  pointOnRay,\n  segmentThrough,\n  type Point,\n} from './core';
+import {
+  arcPath,
+  chooseRadialLabelPoint,
+  estimateLabelRect,
+  lineIntersection,
+  offsetPoint,
+  pointOnRay,
+  segmentThrough,
+  type Point,
+} from './core';
 
 export type AngleMark = {
   intersection: 'top' | 'bottom' | 'top-secondary' | 'bottom-secondary';
