@@ -1,0 +1,147 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { z } from 'zod';
+
+const root = process.cwd();
+const readJson = relativePath => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
+const PROJECT = 'זוויות בין ישרים מקבילים';
+
+const pageUnitSchema = z.object({
+  unit: z.number().int().min(1).max(4),
+  title: z.string().min(1),
+  pages: z.number().int().positive(),
+  pageNumbers: z.array(z.number().int().positive()).min(1),
+});
+
+const pageManifestSchema = z.object({
+  projectTitle: z.literal(PROJECT),
+  canonicalSpec: z.literal('SPEC.md'),
+  pageNumbering: z.literal('reset-per-unit'),
+  originalUnits: z.array(pageUnitSchema).length(4),
+  originalPageCount: z.literal(15),
+  curriculumUnit: z.object({
+    unit: z.literal(5),
+    title: z.string().min(1),
+    sourceMode: z.literal('verbatim'),
+    identifiedQuestionBlocks: z.literal(8),
+    pages: z.literal(4),
+    pageNumbers: z.array(z.number().int().positive()).length(4),
+    questionsPerPage: z.literal(2),
+    firstPage: z.literal(1),
+  }),
+  studentPageCount: z.literal(19),
+  studentFacingRules: z.object({
+    originalUnitsQuestionMarker: z.literal('●'),
+    originalUnitsSubpartMarker: z.literal('•'),
+    originalUnitsQuestionNumbering: z.literal(false),
+    originalUnitsSubpartNumbering: z.literal(false),
+    curriculumUnitPreservesSourceNumbering: z.literal(true),
+    footerRequired: z.literal(true),
+    projectTitleRequired: z.literal(true),
+  }),
+});
+
+const unitPlanSchema = z.object({
+  projectTitle: z.literal(PROJECT),
+  canonicalSpec: z.literal('SPEC.md'),
+  numbering: z.object({
+    pageNumbering: z.literal('reset-per-unit'),
+    firstPageInEveryUnit: z.literal(1),
+    globalContinuousPageNumbering: z.literal(false),
+    questionNumbering: z.literal('none'),
+    subpartNumbering: z.literal('none'),
+    questionMarker: z.literal('●'),
+    subpartMarker: z.literal('•'),
+  }).passthrough(),
+  units: z.array(z.object({
+    unit: z.number().int().min(1).max(5),
+    title: z.string().min(1),
+    pageStart: z.literal(1),
+  }).passthrough()).length(5),
+});
+
+const taskSchema = z.object({
+  id: z.string().regex(/^U[1-4]-P[1-6]-[A-Z]$/),
+  page: z.number().int().positive(),
+  difficulty: z.string().regex(/^D[1-5]$/),
+  visualDemand: z.string().regex(/^V[1-4]$/),
+  format: z.string().min(1),
+  skill: z.string().min(1),
+  theoremIds: z.array(z.string().regex(/^T[1-4]$/)),
+  instructionVerb: z.string().min(1),
+  progressionGain: z.string().min(1),
+}).passthrough();
+
+const questionUnitSchema = z.object({
+  unit: z.number().int().min(1).max(4),
+  title: z.string().min(1),
+  pages: z.number().int().positive(),
+  taskCount: z.number().int().positive(),
+  tasks: z.array(taskSchema).min(1),
+});
+
+const questionPlanSchema = z.object({
+  projectTitle: z.literal(PROJECT),
+  canonicalSpec: z.literal('SPEC.md'),
+  studentVisibleQuestionNumbers: z.literal(false),
+  questionMarker: z.literal('●'),
+  subpartMarker: z.literal('•'),
+  originalTaskCount: z.literal(58),
+  curriculumSourceTaskBlocks: z.literal(8),
+  units: z.array(questionUnitSchema).length(4),
+});
+
+const sourceItemSchema = z.object({
+  id: z.string().min(10),
+  title: z.string().min(1),
+  mimeType: z.string().min(1),
+  category: z.enum(['web-reference', 'visual-task-reference', 'instructional-source', 'worksheet-source', 'core-source']),
+  storageStatus: z.string().min(1),
+});
+
+const sourceManifestSchema = z.object({
+  canonicalSpec: z.literal('SPEC.md'),
+  sourceRoot: z.string().min(1),
+  sourceCount: z.literal(30),
+  policy: z.object({
+    role: z.string().min(1),
+    requirementsSource: z.literal(false),
+    preserveOriginals: z.literal(true),
+  }).passthrough(),
+  items: z.array(sourceItemSchema).length(30),
+});
+
+const pageManifest = pageManifestSchema.parse(readJson('src/content/page-manifest.json'));
+const unitPlan = unitPlanSchema.parse(readJson('src/content/unit-plan.json'));
+const questionPlan = questionPlanSchema.parse(readJson('src/content/question-plan.json'));
+const sourceManifest = sourceManifestSchema.parse(readJson('sources/manifest.json'));
+
+const assert = (condition, message) => {
+  if (!condition) throw new Error(`schema-crosscheck: ${message}`);
+};
+
+assert(pageManifest.originalUnits.map(x => x.unit).join(',') === '1,2,3,4', 'page-manifest units must be 1–4 in order');
+assert(unitPlan.units.map(x => x.unit).join(',') === '1,2,3,4,5', 'unit-plan units must be 1–5 in order');
+assert(questionPlan.units.map(x => x.unit).join(',') === '1,2,3,4', 'question-plan units must be 1–4 in order');
+assert(pageManifest.originalUnits.reduce((sum, x) => sum + x.pages, 0) === pageManifest.originalPageCount, 'original page subtotal mismatch');
+assert(pageManifest.originalPageCount + pageManifest.curriculumUnit.pages === pageManifest.studentPageCount, 'student page total mismatch');
+assert(questionPlan.units.reduce((sum, x) => sum + x.taskCount, 0) === questionPlan.originalTaskCount, 'task-count subtotal mismatch');
+
+const ids = questionPlan.units.flatMap(unit => unit.tasks.map(task => task.id));
+assert(new Set(ids).size === ids.length, 'question IDs must be unique');
+
+for (const unit of questionPlan.units) {
+  assert(unit.tasks.length === unit.taskCount, `unit ${unit.unit} taskCount mismatch`);
+  for (const task of unit.tasks) {
+    assert(task.page <= unit.pages, `${task.id} points outside unit page range`);
+  }
+  const manifestUnit = pageManifest.originalUnits.find(x => x.unit === unit.unit);
+  assert(Boolean(manifestUnit), `unit ${unit.unit} missing from page manifest`);
+  assert(manifestUnit.pages === unit.pages, `unit ${unit.unit} page count differs between manifests`);
+}
+
+const sourceIds = sourceManifest.items.map(item => item.id);
+assert(new Set(sourceIds).size === sourceIds.length, 'source IDs must be unique');
+assert(sourceManifest.items.length === sourceManifest.sourceCount, 'sourceCount mismatch');
+
+console.log('schema-validation: PASS — Zod validated page/unit/question/source manifests and cross-file invariants');
