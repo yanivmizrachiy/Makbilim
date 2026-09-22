@@ -528,79 +528,81 @@ Point, Vector, Line, Segment, ישרים מקבילים, חותך אחד/יות�
 
 # 15. ארכיטקטורת הריפו
 
+העץ הבא מתאר את המבנה הקנוני בפועל. אין לשמור ב־repo תיקיות build/generated כמו `dist/`, `artifacts/`, `node_modules/`, `.vivliostyle/` או `src/content/generated/`; הן נוצרות בזמן build ונשארות מחוץ ל־Git.
+
 ```text
 Makbilim/
 ├─ SPEC.md
 ├─ README.md
-├─ sources/
-│  ├─ originals/
-│  ├─ references/
-│  ├─ curriculum/
-│  │  └─ bbb-parallel-lines.manifest.json
-│  └─ manifest.json
 ├─ package.json
 ├─ tsconfig.json
 ├─ vite.config.ts
-├─ vitest.config.ts
-├─ playwright.config.ts
+├─ vivliostyle.config.js
 ├─ index.html
+├─ sources/
+│  ├─ manifest.json
+│  ├─ curriculum/
+│  │  └─ bbb-parallel-lines.manifest.json
+│  └─ references/
+│     └─ core-zaviyot-ben-makbilim.txt
 ├─ src/
-│  ├─ app/
-│  ├─ domain/
+│  ├─ App.tsx
+│  ├─ main.tsx
+│  ├─ components/
+│  │  ├─ A4Page.tsx
+│  │  ├─ MathText.tsx
+│  │  └─ QuestionBlock.tsx
 │  ├─ content/
 │  │  ├─ unit-plan.json
 │  │  ├─ question-plan.json
-│  │  ├─ questions.ts
-│  │  ├─ curriculum-questions.ts
+│  │  ├─ page-manifest.json
+│  │  ├─ questions-unit1.ts
+│  │  ├─ questions-unit2.ts
+│  │  ├─ questions-unit3.ts
+│  │  ├─ questions-unit4.ts
+│  │  ├─ questions-unit5.ts
 │  │  ├─ theorems.ts
 │  │  └─ answer-key.ts
 │  ├─ didactics/
-│  │  ├─ difficulty.ts
-│  │  ├─ coverage.ts
-│  │  ├─ fingerprint.ts
-│  │  ├─ misconceptions.ts
-│  │  └─ wording.ts
-│  ├─ math/
+│  │  └─ profile.ts
 │  ├─ geometry/
-│  ├─ components/
+│  │  ├─ core.ts
+│  │  ├─ relations.ts
+│  │  ├─ ParallelLinesDiagram.tsx
+│  │  └─ ThreeLinesDiagram.tsx
 │  ├─ pages/
+│  │  ├─ Unit1Continuation.tsx
+│  │  ├─ Unit2Pages.tsx
+│  │  ├─ Unit3Pages.tsx
+│  │  ├─ Unit4Pages.tsx
+│  │  └─ Unit5Pages.tsx
 │  └─ styles/
-├─ python/
-│  └─ validate_math.py
+│     ├─ tokens.ts
+│     ├─ print.css
+│     ├─ bbb-source.css
+│     ├─ geometry-premium.css
+│     ├─ premium-layout.css
+│     └─ page-tuning.css
 ├─ scripts/
-│  ├─ validate-single-source.mjs
-│  ├─ validate-source-corpus.mjs
+│  ├─ prepare-mathjax.mjs
+│  ├─ sync-curriculum-source.mjs
+│  ├─ render-bbb-curriculum.py
+│  ├─ validate-schemas.mjs
+│  ├─ validate-source-manifest.mjs
 │  ├─ validate-curriculum-source-integrity.mjs
-│  ├─ validate-question-plan.mjs
-│  ├─ validate-duplicates.mjs
-│  ├─ validate-didactics.mjs
-│  ├─ validate-progression.mjs
-│  ├─ validate-forward-progress.mjs
-│  ├─ validate-local-variety.mjs
-│  ├─ validate-numeric-before-algebra.mjs
-│  ├─ validate-theorem-conditions.mjs
-│  ├─ validate-equation-justification.mjs
-│  ├─ validate-student-facing-copy.mjs
+│  ├─ validate-curriculum-rendered.mjs
 │  ├─ validate-numbering-markers.mjs
-│  ├─ validate-no-demo-copy.mjs
-│  ├─ validate-hebrew.mjs
-│  ├─ validate-wording-style.mjs
-│  ├─ validate-math.mjs
-│  ├─ validate-svg.mjs
-│  ├─ validate-page-utilization.mjs
-│  ├─ validate-grayscale.mjs
-│  ├─ validate-pages.mjs
+│  ├─ validate-question-plan.mjs
+│  ├─ validate-forward-progress.mjs
+│  ├─ validate-canonical-quality.mjs
+│  ├─ validate-page-contract.mjs
 │  ├─ build-pdf.mjs
-│  └─ crosscheck-pdf.mjs
+│  └─ validate-pdf-crosscheck.mjs
 ├─ tests/
-│  ├─ unit/
-│  ├─ visual/
-│  └─ e2e/
-├─ artifacts/
-│  ├─ pdf/
-│  ├─ screenshots/
-│  └─ reports/
-└─ .github/workflows/ci.yml
+│  └─ unit/
+└─ .github/
+   └─ workflows/
+      └─ ci.yml
 ```
 
 ---
