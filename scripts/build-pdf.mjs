@@ -127,6 +127,39 @@ try {
       const label = svg.getAttribute('aria-label')?.trim() ?? '';
       return role !== 'img' || label.length < 3;
     }).length;
+    const geometryCollisionReport = geometrySvgs.map((svg, svgIndex) => {
+      const svgRect = svg.getBoundingClientRect();
+      const labelRects = [
+        ...svg.querySelectorAll('.geometry-labels text, .angle-label-plate rect, .three-line-angle-mark .angle-badge'),
+      ].map((label, labelIndex) => ({
+        labelIndex,
+        rect: label.getBoundingClientRect(),
+      }));
+      let collisions = 0;
+      for (let i = 0; i < labelRects.length; i += 1) {
+        for (let j = i + 1; j < labelRects.length; j += 1) {
+          const a = labelRects[i].rect;
+          const b = labelRects[j].rect;
+          const gap = 2;
+          const overlap = !(
+            a.right + gap <= b.left ||
+            b.right + gap <= a.left ||
+            a.bottom + gap <= b.top ||
+            b.bottom + gap <= a.top
+          );
+          if (overlap) collisions += 1;
+        }
+      }
+      const outOfBounds = labelRects.filter(({ rect }) =>
+        rect.left < svgRect.left - 1 ||
+        rect.top < svgRect.top - 1 ||
+        rect.right > svgRect.right + 1 ||
+        rect.bottom > svgRect.bottom + 1
+      ).length;
+      return { svgIndex, labels: labelRects.length, collisions, outOfBounds };
+    });
+    const geometryCollisionCount = geometryCollisionReport.reduce((sum, item) => sum + item.collisions, 0);
+    const geometryOutOfBoundsCount = geometryCollisionReport.reduce((sum, item) => sum + item.outOfBounds, 0);
     const projectTitleText = el.querySelector('.page-title-group h1')?.textContent?.trim() ?? '';
     const unitTitleText = el.querySelector('.unit-title')?.textContent?.trim() ?? '';
     const pageNumberText = el.querySelector('.page-number')?.textContent?.trim() ?? '';
@@ -183,6 +216,9 @@ try {
       sourceShaCount,
       geometrySvgCount,
       unlabeledGeometrySvgCount,
+      geometryCollisionCount,
+      geometryOutOfBoundsCount,
+      geometryCollisionReport,
       projectTitleText,
       unitTitleText,
       pageNumberText,
@@ -210,7 +246,10 @@ try {
       item.markerCount !== item.questionCount || item.subpartMarkerCount !== item.subpartCount
     );
     const authoredGeometryFailure = !item.isVerbatimCurriculum && (
-      item.geometrySvgCount < 1 || item.unlabeledGeometrySvgCount > 0
+      item.geometrySvgCount < 1 ||
+      item.unlabeledGeometrySvgCount > 0 ||
+      item.geometryCollisionCount > 0 ||
+      item.geometryOutOfBoundsCount > 0
     );
     const curriculumFidelityFailure = item.isVerbatimCurriculum && (
       item.questionCount !== 2 || item.sourceNumberCount !== 2 || item.sourceShaCount !== 2
@@ -270,8 +309,12 @@ try {
   await screenshotPageSet('grayscale');
   await page.evaluate(() => document.getElementById('grayscale-qa')?.remove());
 
+  await page.emulateMedia({ media: 'print', forcedColors: 'active' });
+  await screenshotPageSet('forced-colors');
+  await page.emulateMedia({ media: 'print', forcedColors: 'none' });
+
   await page.pdf({
-    path: path.join(pdfDir, 'זוויות-בין-ישרים-מקבילים.pdf'),
+    path: path.join(pdfDir, 'זוויות-בין-ישרים-מקבילים-chromium.pdf'),
     format: 'A4',
     printBackground: true,
     preferCSSPageSize: true,
@@ -283,7 +326,7 @@ try {
     `${JSON.stringify({ pageCount, expectedPages, mathJaxStatus, layout }, null, 2)}\n`,
     'utf8',
   );
-  console.log(`pdf-visual: PASS — ${pageCount} A4 pages, ${mathJaxStatus.rendered}/${mathJaxStatus.total} MathJax SVG tokens, canonical chrome + utilization + labeled geometry + grayscale snapshots generated`);
+  console.log(`pdf-visual: PASS — ${pageCount} A4 pages, ${mathJaxStatus.rendered}/${mathJaxStatus.total} MathJax SVG tokens, canonical chrome + utilization + collision-safe geometry + color/grayscale/forced-colors snapshots generated`);
 } finally {
   clearTimeout(hardWatchdog);
   await closeBrowser();
