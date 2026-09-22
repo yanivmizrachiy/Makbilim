@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   chooseRadialLabelPoint,
+  clampLabelPoint,
   estimateLabelRect,
   lineIntersection,
   offsetPoint,
@@ -59,17 +60,31 @@ export function ThreeLinesDiagram({
   const transversal = segmentThrough(CENTER, 390, transversalDeg);
   const intersections = lines.map((line, index) => lineIntersection(line, transversal) ?? centers[index]!);
 
+  const labelBounds = { minX: 0, minY: 0, maxX: W, maxY: H };
+  const lineLabelOptions = { minWidth: 32, charWidth: 11.5, height: 30, baseWidth: 18 };
+  const angleBadgeOptions = { minWidth: 34, maxWidth: 120, charWidth: 11, height: 28, baseWidth: 18 };
   const lineLabelPoints = centers.map((center, index) => {
     const onLine = pointOnRay(center, orientationDeg, 186);
     const normal = index === 2 ? 13 : -13;
-    return offsetPoint(onLine, orientationDeg, normal);
+    return clampLabelPoint(
+      offsetPoint(onLine, orientationDeg, normal),
+      lineLabels[index] ?? '',
+      labelBounds,
+      lineLabelOptions,
+      12,
+    );
   });
-  const transversalLabelPoint = offsetPoint(pointOnRay(CENTER, transversalDeg, 176), transversalDeg, -13);
-  const labelBounds = { minX: 0, minY: 0, maxX: W, maxY: H };
+  const transversalLabelPoint = clampLabelPoint(
+    offsetPoint(pointOnRay(CENTER, transversalDeg, 176), transversalDeg, -13),
+    transversalLabel,
+    labelBounds,
+    lineLabelOptions,
+    12,
+  );
   const occupiedLabelRects = [
     ...lineLabelPoints.map((point, index) =>
-      estimateLabelRect(point, lineLabels[index] ?? '', { minWidth: 24, charWidth: 9.5, height: 25 })),
-    estimateLabelRect(transversalLabelPoint, transversalLabel, { minWidth: 24, charWidth: 9.5, height: 25 }),
+      estimateLabelRect(point, lineLabels[index] ?? '', lineLabelOptions)),
+    estimateLabelRect(transversalLabelPoint, transversalLabel, lineLabelOptions),
   ];
 
   const renderedMarks = angleMarks.map((mark, index) => {
@@ -82,14 +97,15 @@ export function ThreeLinesDiagram({
       origin: p,
       angleDeg: baseAngle,
       text: label,
-      preferredRadius: 40,
+      preferredRadius: 42,
       bounds: labelBounds,
       occupied: occupiedLabelRects,
-      radii: [48, 56, 64],
-      inset: 11,
-      minGap: 6,
-      angleOffsets: [0, 9, -9, 18, -18, 27, -27],
+      radii: [50, 58, 66, 76, 88, 100],
+      inset: 14,
+      minGap: 8,
+      angleOffsets: [0, 7, -7, 14, -14, 21, -21, 28, -28, 35, -35],
     });
+    placed.rect = estimateLabelRect(placed.point, label, angleBadgeOptions);
     occupiedLabelRects.push(placed.rect);
     return { mark, index, p, labelPoint: placed.point, label };
   });
@@ -161,7 +177,7 @@ export function ThreeLinesDiagram({
               className="angle-badge"
               x={labelPoint.x - Math.max(17, 9 + label.length * 5.5)}
               y={labelPoint.y - 14}
-              width={Math.max(34, 18 + label.length * 11)}
+              width={Math.max(34, Math.min(120, 18 + label.length * 11))}
               height="28"
               rx="8"
               ry="8"
