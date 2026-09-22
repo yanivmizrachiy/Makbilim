@@ -1,5 +1,5 @@
 import React from 'react';
-import { arcPath, lineIntersection, offsetPoint, pointOnRay, segmentThrough, type Point } from './core';
+import {\n  arcPath,\n  chooseRadialLabelPoint,\n  estimateLabelRect,\n  lineIntersection,\n  offsetPoint,\n  pointOnRay,\n  segmentThrough,\n  type Point,\n} from './core';
 
 export type AngleMark = {
   intersection: 'top' | 'bottom' | 'top-secondary' | 'bottom-secondary';
@@ -141,6 +141,16 @@ export function ParallelLinesDiagram({
   const primaryLabel = labelPoint(CENTER, transversalDeg, 138, -13);
   const secondaryLabel = secondary ? labelPoint(secondaryCenter, secondaryTransversalDeg!, 138, 13) : null;
 
+  const labelBounds = { minX: 0, minY: 0, maxX: W, maxY: H };
+  const occupiedLabelRects = [
+    estimateLabelRect(topLabel, lineLabels[0], { minWidth: 24, charWidth: 9.5, height: 25 }),
+    estimateLabelRect(bottomLabel, lineLabels[1], { minWidth: 24, charWidth: 9.5, height: 25 }),
+    estimateLabelRect(primaryLabel, transversalLabel, { minWidth: 24, charWidth: 9.5, height: 25 }),
+    ...(secondary && secondaryLabel
+      ? [estimateLabelRect(secondaryLabel, secondaryTransversalLabel, { minWidth: 24, charWidth: 9.5, height: 25 })]
+      : []),
+  ];
+
   const renderedMarks = angleMarks.map((mark, index) => {
     const intersection = intersections[mark.intersection];
     if (!intersection) return null;
@@ -149,9 +159,23 @@ export function ParallelLinesDiagram({
     const safeEnd = end - 5;
     const mid = start + (end - start) / 2;
     const label = mark.label ?? mark.value;
-    const angleLabelPoint = label
-      ? pointOnRay(intersection.point, mid, labelRadiusFor(label, start, end))
-      : null;
+    let angleLabelPoint: Point | null = null;
+    if (label) {
+      const preferredRadius = labelRadiusFor(label, start, end);
+      const placed = chooseRadialLabelPoint({
+        origin: intersection.point,
+        angleDeg: mid,
+        text: label,
+        preferredRadius,
+        bounds: labelBounds,
+        occupied: occupiedLabelRects,
+        radii: [preferredRadius + 8, preferredRadius + 16, preferredRadius + 26],
+        inset: 11,
+        minGap: 5,
+      });
+      angleLabelPoint = placed.point;
+      occupiedLabelRects.push(placed.rect);
+    }
     return { mark, index, intersection, start: safeStart, end: safeEnd, label, angleLabelPoint };
   }).filter(Boolean) as Array<{
     mark: AngleMark;
