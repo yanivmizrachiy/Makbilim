@@ -1,5 +1,5 @@
 import React from 'react';
-import { lineIntersection, offsetPoint, pointOnRay, segmentThrough, type Point } from './core';
+import {\n  chooseRadialLabelPoint,\n  estimateLabelRect,\n  lineIntersection,\n  offsetPoint,\n  pointOnRay,\n  segmentThrough,\n  type Point,\n} from './core';
 
 export type ThreeLineAngleMark = {
   line: 0 | 1 | 2;
@@ -57,6 +57,34 @@ export function ThreeLinesDiagram({
     return offsetPoint(onLine, orientationDeg, normal);
   });
   const transversalLabelPoint = offsetPoint(pointOnRay(CENTER, transversalDeg, 176), transversalDeg, -13);
+  const labelBounds = { minX: 0, minY: 0, maxX: W, maxY: H };
+  const occupiedLabelRects = [
+    ...lineLabelPoints.map((point, index) =>
+      estimateLabelRect(point, lineLabels[index] ?? '', { minWidth: 24, charWidth: 9.5, height: 25 })),
+    estimateLabelRect(transversalLabelPoint, transversalLabel, { minWidth: 24, charWidth: 9.5, height: 25 }),
+  ];
+
+  const renderedMarks = angleMarks.map((mark, index) => {
+    const p = intersections[mark.line]!;
+    const label = mark.label ?? mark.value ?? '';
+    const baseAngle = mark.side === 'left'
+      ? 155 + (mark.line === 0 ? 8 : mark.line === 2 ? -8 : 0)
+      : 25 + (mark.line === 0 ? 8 : mark.line === 2 ? -8 : 0);
+    const placed = chooseRadialLabelPoint({
+      origin: p,
+      angleDeg: baseAngle,
+      text: label,
+      preferredRadius: 40,
+      bounds: labelBounds,
+      occupied: occupiedLabelRects,
+      radii: [48, 56, 64],
+      inset: 11,
+      minGap: 6,
+      angleOffsets: [0, 9, -9, 18, -18, 27, -27],
+    });
+    occupiedLabelRects.push(placed.rect);
+    return { mark, index, p, labelPoint: placed.point, label };
+  });
 
   return (
     <svg
@@ -110,20 +138,14 @@ export function ThreeLinesDiagram({
         </text>
       </g>
 
-      {angleMarks.map((mark, index) => {
-        const p = intersections[mark.line]!;
-        const dx = mark.side === 'left' ? -31 : 31;
-        const dy = mark.line === 0 ? 20 : mark.line === 2 ? -20 : 20;
-        const labelPoint = { x: p.x + dx, y: p.y + dy };
-        const label = mark.label ?? mark.value ?? '';
-        return (
+      {renderedMarks.map(({ mark, index, p, labelPoint, label }) => (
           <g key={index} className={`angle-mark angle-mark--${mark.tone ?? 'primary'} three-line-angle-mark`}>
             <line
               className="angle-callout"
               x1={p.x}
               y1={p.y}
-              x2={p.x + dx * 0.58}
-              y2={p.y + dy * 0.58}
+              x2={p.x + (labelPoint.x - p.x) * 0.58}
+              y2={p.y + (labelPoint.y - p.y) * 0.58}
               aria-hidden="true"
             />
             <rect
@@ -147,8 +169,7 @@ export function ThreeLinesDiagram({
               {label}
             </text>
           </g>
-        );
-      })}
+      ))}
     </svg>
   );
 }
