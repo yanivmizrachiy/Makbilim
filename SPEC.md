@@ -493,18 +493,17 @@ Point, Vector, Line, Segment, ישרים מקבילים, חותך אחד/יות�
 
 יש להשתמש בטכנולוגיה החזקה והמתאימה ביותר כאשר היא משפרת דיוק, איכות, אחידות או בדיקות:
 
-- **TypeScript strict** — מודלים, generator ו־validators.
+- **TypeScript strict** — מודלים, לוגיקת תוכן ו־validators.
 - **React + Vite** — preview וקומפוזיציית עמודים.
-- **SVG** — שרטוטים.
-- **MathJax 4** — מתמטיקה.
-- **Vivliostyle + CSS Paged Media** — A4/PDF.
-- **Zod** — schema validation.
-- **Vitest** — unit/integration tests.
-- **Playwright** — browser, print, screenshots, visual regression, grayscale QA.
-- **Python + SymPy** — אימות אלגברי/סמלי עצמאי.
-- **Python analytics** — קושי, כיסוי, מספרים, אותיות ודמיון.
+- **SVG** — שרטוטים וקטוריים.
+- **MathJax 4** — מתמטיקה ב־SVG.
+- **Vivliostyle + CSS Paged Media** — מנוע PDF קנוני.
+- **Chromium דרך Playwright** — מנוע PDF עצמאי נוסף, browser QA וצילומי color / grayscale / forced-colors.
+- **Zod** — schema validation של manifests ותוכניות התוכן.
+- **Vitest** — unit/integration contracts.
+- **Python 3** — rendering טכני של חומר המקור הקנוני ביחידה 5 בלבד; אין תלות ב־SymPy.
 - **Git + GitHub** — versioning.
-- **GitHub Actions** — CI.
+- **GitHub Actions** — CI, הפקת artifacts ו־cross-check של שני מנועי PDF.
 
 ---
 
