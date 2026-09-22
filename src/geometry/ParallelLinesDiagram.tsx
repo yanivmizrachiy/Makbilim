@@ -162,31 +162,46 @@ export function ParallelLinesDiagram({
     lineLabelOptions,
     12,
   );
-  const primaryLabel = clampLabelPoint(
-    labelPoint(CENTER, transversalDeg, 154, -18),
-    transversalLabel,
-    labelBounds,
-    lineLabelOptions,
-    12,
-  );
-  const secondaryLabel = secondary
-    ? clampLabelPoint(
-        labelPoint(secondaryCenter, secondaryTransversalDeg!, 154, 18),
-        secondaryTransversalLabel,
-        labelBounds,
-        lineLabelOptions,
-        12,
-      )
-    : null;
 
   const occupiedLabelRects = [
     estimateLabelRect(topLabel, lineLabels[0], lineLabelOptions),
     estimateLabelRect(bottomLabel, lineLabels[1], lineLabelOptions),
-    estimateLabelRect(primaryLabel, transversalLabel, lineLabelOptions),
-    ...(secondary && secondaryLabel
-      ? [estimateLabelRect(secondaryLabel, secondaryTransversalLabel, lineLabelOptions)]
-      : []),
   ];
+
+  const primaryPlaced = chooseRadialLabelPoint({
+    origin: CENTER,
+    angleDeg: transversalDeg,
+    text: transversalLabel,
+    preferredRadius: 154,
+    bounds: labelBounds,
+    occupied: occupiedLabelRects,
+    radii: [166, 178, 190, 202],
+    inset: 12,
+    minGap: 8,
+    angleOffsets: [0, 5, -5, 10, -10, 15, -15],
+    labelOptions: lineLabelOptions,
+  });
+  const primaryLabel = primaryPlaced.point;
+  occupiedLabelRects.push(primaryPlaced.rect);
+
+  let secondaryLabel: Point | null = null;
+  if (secondary && secondaryTransversalDeg != null) {
+    const secondaryPlaced = chooseRadialLabelPoint({
+      origin: secondaryCenter,
+      angleDeg: secondaryTransversalDeg,
+      text: secondaryTransversalLabel,
+      preferredRadius: 154,
+      bounds: labelBounds,
+      occupied: occupiedLabelRects,
+      radii: [166, 178, 190, 202],
+      inset: 12,
+      minGap: 8,
+      angleOffsets: [0, 5, -5, 10, -10, 15, -15, 20, -20],
+      labelOptions: lineLabelOptions,
+    });
+    secondaryLabel = secondaryPlaced.point;
+    occupiedLabelRects.push(secondaryPlaced.rect);
+  }
 
   const renderedMarks = angleMarks.map((mark, index) => {
     const intersection = intersections[mark.intersection];
