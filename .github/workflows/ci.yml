@@ -59,6 +59,7 @@ jobs:
             artifacts/screenshots/*.png
             artifacts/layout-report.json
             artifacts/pdf-crosscheck.json
+            package-lock.json
           if-no-files-found: error
           retention-days: 30
 
