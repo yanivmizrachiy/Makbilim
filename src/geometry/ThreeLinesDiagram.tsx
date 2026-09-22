@@ -1,5 +1,13 @@
 import React from 'react';
-import {\n  chooseRadialLabelPoint,\n  estimateLabelRect,\n  lineIntersection,\n  offsetPoint,\n  pointOnRay,\n  segmentThrough,\n  type Point,\n} from './core';
+import {
+  chooseRadialLabelPoint,
+  estimateLabelRect,
+  lineIntersection,
+  offsetPoint,
+  pointOnRay,
+  segmentThrough,
+  type Point,
+} from './core';
 
 export type ThreeLineAngleMark = {
   line: 0 | 1 | 2;
