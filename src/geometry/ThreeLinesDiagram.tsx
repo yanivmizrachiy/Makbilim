@@ -61,7 +61,7 @@ export function ThreeLinesDiagram({
   const intersections = lines.map((line, index) => lineIntersection(line, transversal) ?? centers[index]!);
 
   const labelBounds = { minX: 0, minY: 0, maxX: W, maxY: H };
-  const lineLabelOptions = { minWidth: 32, charWidth: 11.5, height: 30, baseWidth: 18 };
+  const lineLabelOptions = { minWidth: 32, maxWidth: 190, charWidth: 11.5, height: 30, baseWidth: 18 };
   const angleBadgeOptions = { minWidth: 34, maxWidth: 120, charWidth: 11, height: 28, baseWidth: 18 };
   const lineLabelPoints = centers.map((center, index) => {
     const onLine = pointOnRay(center, orientationDeg, 186);
