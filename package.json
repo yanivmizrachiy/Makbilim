@@ -22,12 +22,13 @@
     "validate:quality": "node scripts/validate-canonical-quality.mjs",
     "validate:pages": "node scripts/validate-page-contract.mjs",
     "test": "vitest run",
-    "validate": "npm run validate:sources && npm run validate:curriculum && npm run validate:numbering && npm run validate:question-plan && npm run validate:progression && npm run validate:quality && npm run validate:pages && npm run typecheck && npm run test",
+    "validate": "npm run validate:schema && npm run validate:sources && npm run validate:curriculum && npm run validate:numbering && npm run validate:question-plan && npm run validate:progression && npm run validate:quality && npm run validate:pages && npm run typecheck && npm run test",
     "pdf": "npm run sync:curriculum:rendered && npm run validate:curriculum:rendered && npm run build && npm run pdf:chromium && npm run pdf:vivliostyle && npm run pdf:crosscheck",
     "ci": "npm run sync:curriculum && npm run validate && npm run pdf",
     "pdf:chromium": "node scripts/build-pdf.mjs",
     "pdf:vivliostyle": "vivliostyle build",
-    "pdf:crosscheck": "node scripts/validate-pdf-crosscheck.mjs"
+    "pdf:crosscheck": "node scripts/validate-pdf-crosscheck.mjs",
+    "validate:schema": "node scripts/validate-schemas.mjs"
   },
   "engines": {
     "node": ">=22"
