@@ -3,3 +3,4 @@ dist/
 artifacts/
 src/content/generated/
 *.log
+.vivliostyle/
