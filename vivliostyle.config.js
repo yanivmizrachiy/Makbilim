@@ -14,6 +14,8 @@ export default defineConfig({
   static: {
     '/': 'dist',
     '/__vivliostyle-viewer/assets': 'dist/assets',
+    '/__vivliostyle-viewer/generated': 'dist/generated',
+    '/__vivliostyle-viewer/vendor': 'dist/vendor',
   },
   entry: ['/index.html'],
   output: 'artifacts/pdf/זוויות-בין-ישרים-מקבילים.pdf',
