@@ -104,8 +104,8 @@ export function ThreeLinesDiagram({
       inset: 14,
       minGap: 8,
       angleOffsets: [0, 7, -7, 14, -14, 21, -21, 28, -28, 35, -35],
+      labelOptions: angleBadgeOptions,
     });
-    placed.rect = estimateLabelRect(placed.point, label, angleBadgeOptions);
     occupiedLabelRects.push(placed.rect);
     return { mark, index, p, labelPoint: placed.point, label };
   });
