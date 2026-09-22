@@ -27,7 +27,8 @@ describe('dual-engine publication pipeline contract', () => {
   it('typesets the static Vite build as canonical A4 through Vivliostyle', () => {
     expect(config).toContain("size: 'A4'");
     expect(config).toContain("'/': 'dist'");
-    expect(config).toContain("entry: ['/index.html']");
+    expect(config).toContain("entry: ['dist/index.html']");
+    expect(config).toContain('viteConfigFile: false');
     expect(config).toContain("output: 'artifacts/pdf/זוויות-בין-ישרים-מקבילים.pdf'");
   });
 
