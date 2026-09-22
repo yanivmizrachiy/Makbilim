@@ -166,14 +166,15 @@ export function chooseRadialLabelPoint({
 
   for (const radius of radiusCandidates) {
     for (const offset of angleOffsets) {
-      const point = pointOnRay(origin, angleDeg + offset, radius);
+      const rawPoint = pointOnRay(origin, angleDeg + offset, radius);
+      const point = clampLabelPoint(rawPoint, text, bounds, labelOptions, inset);
       const rect = estimateLabelRect(point, text, labelOptions);
-      const outOfBounds = rectWithinBounds(rect, bounds, inset) ? 0 : 10_000;
       const collisions = occupied.filter(other => rectsOverlap(rect, other, minGap)).length;
-      const displacement = Math.abs(radius - preferredRadius) + Math.abs(offset) * 0.6;
-      const penalty = outOfBounds + collisions * 1_000 + displacement;
+      const clampDistance = Math.hypot(point.x - rawPoint.x, point.y - rawPoint.y);
+      const displacement = Math.abs(radius - preferredRadius) + Math.abs(offset) * 0.6 + clampDistance * 0.8;
+      const penalty = collisions * 1_000 + displacement;
 
-      if (penalty === 0) return { point, rect };
+      if (collisions === 0 && clampDistance < 0.01 && displacement === 0) return { point, rect };
       if (penalty < fallbackPenalty) {
         fallbackPenalty = penalty;
         fallback = { point, rect };
@@ -182,7 +183,8 @@ export function chooseRadialLabelPoint({
   }
 
   if (!fallback) {
-    const point = pointOnRay(origin, angleDeg, preferredRadius);
+    const rawPoint = pointOnRay(origin, angleDeg, preferredRadius);
+    const point = clampLabelPoint(rawPoint, text, bounds, labelOptions, inset);
     return { point, rect: estimateLabelRect(point, text, labelOptions) };
   }
   return fallback;
