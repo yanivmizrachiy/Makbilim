@@ -477,6 +477,32 @@ Point, Vector, Line, Segment, ישרים מקבילים, חותך אחד/יות�
 
 שער: `pdf-dual-engine` + `pdf-crosscheck` + `forced-colors`.
 
+## 11.10 רגרסיה חזותית קנונית
+- `qa/visual-baseline.json` הוא baseline מאושר של כל 19 דפי התלמיד.
+- לאחר הפקת Chromium נמדדים מבנה העמוד, מספר שאלות/סעיפים/שרטוטים, MathJax, ניצול שטח, gaps ומידות A4.
+- שדות מבניים מושווים באופן קשיח; מדדי layout מושווים בטולרנסים קטנים ומפורשים כדי למנוע כשלי רעש של renderer.
+- שינוי שחורג מן ה־baseline מפיל CI. עדכון baseline מותר רק לאחר בדיקה מכוונת של השינוי החזותי.
+
+שער: `visual-baseline`.
+
+## 11.11 מדריך מורה מבודד
+- מופק PDF מורה נפרד מתוך `src/content/answer-key.ts` בלבד; אין מקור תשובות כפול.
+- build המורה נוצר ב־`dist-teacher/` ואינו נכלל ב־`dist/` שמיועד ל־GitHub Pages של התלמידים.
+- מפתח המורה מכסה את 58 המשימות המקוריות ביחידות 1–4.
+- ביחידה 5 אין להמציא תשובות: מוצגת מדיניות המקור עד להימצאות פתרונות מפורשים ומאומתים.
+- PDF המורה חייב לעבור בדיקת ספירת תשובות, MathJax, גודל קובץ ו־A4 לכל עמוד.
+
+שער: `teacher-pdf`.
+
+## 11.12 דטרמיניזם, שלמות ו־Release
+- `package-lock.json` tracked ומחייב; CI משתמש ב־`npm ci` וב־npm cache המבוסס על lockfile.
+- כל build מפיק `SHA256SUMS.txt` ו־`build-manifest.json` לכל קובצי ה־PDF.
+- Release נוצר אוטומטית רק ב־push של tag התואם `v*`, ורק לאחר build ו־QA מלאים מאותו tag.
+- Release כולל את שלושת ה־PDF, checksums, manifest ודוחות ה־PDF המאמתים.
+- אין ליצור Release אוטומטי מכל commit ל־main.
+
+שער: `deterministic-install` + `checksums` + `release-contract`.
+
 ---
 
 # 12. מקוריות ומניעת כפילויות
@@ -503,7 +529,9 @@ Point, Vector, Line, Segment, ישרים מקבילים, חותך אחד/יות�
 - **Vitest** — unit/integration contracts.
 - **Python 3** — rendering טכני של חומר המקור הקנוני ביחידה 5 בלבד; אין תלות ב־SymPy.
 - **Git + GitHub** — versioning.
-- **GitHub Actions** — CI, הפקת artifacts ו־cross-check של שני מנועי PDF.
+- **npm lockfile + npm ci** — התקנה דטרמיניסטית ושחזור build.
+- **GitHub Actions** — CI, הפקת artifacts, visual baseline, cross-check של מנועי PDF ו־Release מתגים.
+- **SHA-256** — אימות שלמות של תוצרי PDF.
 
 ---
 
@@ -527,17 +555,22 @@ Point, Vector, Line, Segment, ישרים מקבילים, חותך אחד/יות�
 
 # 15. ארכיטקטורת הריפו
 
-העץ הבא מתאר את המבנה הקנוני בפועל. אין לשמור ב־repo תיקיות build/generated כמו `dist/`, `artifacts/`, `node_modules/`, `.vivliostyle/` או `src/content/generated/`; הן נוצרות בזמן build ונשארות מחוץ ל־Git.
+העץ הבא מתאר את המבנה הקנוני בפועל. אין לשמור ב־repo תיקיות build/generated כמו `dist/`, `dist-teacher/`, `artifacts/`, `node_modules/`, `.vivliostyle/` או `src/content/generated/`; הן נוצרות בזמן build ונשארות מחוץ ל־Git.
 
 ```text
 Makbilim/
 ├─ SPEC.md
 ├─ README.md
 ├─ package.json
+├─ package-lock.json
 ├─ tsconfig.json
 ├─ vite.config.ts
+├─ vite.teacher.config.ts
 ├─ vivliostyle.config.js
 ├─ index.html
+├─ teacher.html
+├─ qa/
+│  └─ visual-baseline.json
 ├─ sources/
 │  ├─ manifest.json
 │  ├─ curriculum/
@@ -546,7 +579,9 @@ Makbilim/
 │     └─ core-zaviyot-ben-makbilim.txt
 ├─ src/
 │  ├─ App.tsx
+│  ├─ TeacherApp.tsx
 │  ├─ main.tsx
+│  ├─ teacher-main.tsx
 │  ├─ components/
 │  │  ├─ A4Page.tsx
 │  │  ├─ MathText.tsx
@@ -578,6 +613,7 @@ Makbilim/
 │  └─ styles/
 │     ├─ tokens.ts
 │     ├─ print.css
+│     ├─ teacher-print.css
 │     ├─ bbb-source.css
 │     ├─ geometry-premium.css
 │     ├─ premium-layout.css
@@ -595,13 +631,17 @@ Makbilim/
 │  ├─ validate-forward-progress.mjs
 │  ├─ validate-canonical-quality.mjs
 │  ├─ validate-page-contract.mjs
+│  ├─ validate-visual-baseline.mjs
 │  ├─ build-pdf.mjs
-│  └─ validate-pdf-crosscheck.mjs
+│  ├─ validate-pdf-crosscheck.mjs
+│  ├─ build-teacher-pdf.mjs
+│  └─ write-checksums.mjs
 ├─ tests/
 │  └─ unit/
 └─ .github/
    └─ workflows/
-      └─ ci.yml
+      ├─ ci.yml
+      └─ release.yml
 ```
 
 ---
@@ -635,9 +675,14 @@ Makbilim/
 24. `visual`
 25. `geometry-collision`
 26. `forced-colors`
-27. `pdf-dual-engine`
-28. `pdf-crosscheck`
-29. `pdf`
+27. `visual-baseline`
+28. `pdf-dual-engine`
+29. `pdf-crosscheck`
+30. `teacher-pdf`
+31. `deterministic-install`
+32. `checksums`
+33. `release-contract`
+34. `pdf`
 
 Validators של מקוריות/הדרגתיות/markers פועלים על יחידות 1–4. validator של `curriculum-source-integrity` פועל על יחידה 5 ומוודא שאין שינוי בתוכן המקור.
 
@@ -684,7 +729,12 @@ Validators של מקוריות/הדרגתיות/markers פועלים על יחי
 - כל הפונטים והשרטוטים המקוריים אחידים ברמת ספר לימוד.
 - כל 8 בלוקי שאלות תוכנית הלימודים שאותרו ב־`bbb` נכללים ביחידה 5 ונשמרים ללא שינוי תוכני.
 - קיים מפתח תשובות מלא ליחידות המקוריות, וביחידה 5 נשמרת מדיניות המקור כפי שהיא.
-- קיים PDF A4 סופי תקין.
+- קיים PDF תלמיד A4 קנוני ו־PDF Chromium עצמאי עם cross-check.
+- קיים PDF מורה A4 נפרד, מבודד מ־Pages, שמופק ישירות ממפתח התשובות.
+- קיים visual baseline קנוני לכל 19 דפי התלמיד.
+- כל PDF מקבל SHA-256 ו־build manifest.
+- התקנת CI דטרמיניסטית באמצעות `package-lock.json` ו־`npm ci`.
+- Release מתג גרסה נבנה מחדש ועובר את אותם שערי QA לפני פרסום.
 - כל שערי האיכות הרלוונטיים עוברים.
 
 ---
