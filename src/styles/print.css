@@ -18,6 +18,7 @@
   --body-leading: 1.42;
   --header-height: 19mm;
   --footer-height: 10.5mm;
+  --cloze-blank-width: 30mm;
   --diagram-compact-height: 40mm;
   --diagram-full-height: 54mm;
 }
@@ -184,6 +185,16 @@ body { direction: rtl; }
   unicode-bidi: isolate;
   display: inline-block;
   font-variant-numeric: tabular-nums;
+}
+
+/* Write-in slot for a missing word or value (components/ClozeText.tsx). */
+.cloze-blank {
+  display: inline-block;
+  width: var(--cloze-blank-width);
+  height: 1em;
+  margin-inline: 0.8mm;
+  border-bottom: 0.3mm solid currentColor;
+  vertical-align: -0.2em;
 }
 
 /* One MathText island is one unbreakable unit (see MathText: linebreaks.inline = false).

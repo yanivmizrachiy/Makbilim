@@ -1,3 +1,4 @@
+import { CLOZE_BLANK, fillBlank } from './cloze';
 import { unit2Questions } from './questions-unit2';
 import { unit3Questions } from './questions-unit3';
 import { unit4Questions, type Unit4Question } from './questions-unit4';
@@ -98,15 +99,13 @@ const unit3AnswerKey: TeacherAnswerEntry[] = unit3Questions.map(question => ({
   answer: question.expected,
 }));
 
-const CLOZE_BLANK = /_{3,}/;
-
 // For a one-word-per-line completion task, the sentence every completed line forms
 // (all lines of such a task complete to the same theorem), shown to the teacher.
 const completedClozeSentence = (question: Unit4Question): string | null => {
   const lines = question.subparts ?? [];
   const words = question.expected.completions ?? [];
   if (lines.length === 0 || words.length !== lines.length || !lines.every(line => CLOZE_BLANK.test(line))) return null;
-  const sentences = new Set(lines.map((line, index) => line.replace(CLOZE_BLANK, words[index] ?? '')));
+  const sentences = new Set(lines.map((line, index) => fillBlank(line, words[index] ?? '')));
   return sentences.size === 1 ? [...sentences][0] ?? null : null;
 };
 

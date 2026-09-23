@@ -1,5 +1,5 @@
-import { Fragment } from 'react';
 import { A4Page } from '../components/A4Page';
+import { ClozeText } from '../components/ClozeText';
 import { MathText } from '../components/MathText';
 import { QuestionBlock } from '../components/QuestionBlock';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
@@ -67,24 +67,6 @@ function EightAngleDiagram({
         { intersection: 'bottom', sector: 3, label: '8', tone: 'neutral' },
       ]}
     />
-  );
-}
-
-// A completion line stores its missing word as a short underscore run; on the page
-// the blank is widened so a Hebrew word fits by hand, and announced to screen readers.
-const CLOZE_BLANK = /_{3,}/;
-const CLOZE_WRITE_SPACE = '_'.repeat(18);
-
-function ClozeText({ text }: { text: string }) {
-  return (
-    <>
-      {text.split(CLOZE_BLANK).map((part, index) => (
-        <Fragment key={index}>
-          {index > 0 && <><span aria-hidden="true">{CLOZE_WRITE_SPACE}</span><span className="sr-only">מילה חסרה</span></>}
-          {part}
-        </Fragment>
-      ))}
-    </>
   );
 }
 

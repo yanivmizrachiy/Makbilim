@@ -1,6 +1,8 @@
 import { Fragment } from 'react';
 import { A4Page } from '../components/A4Page';
+import { ClozeText } from '../components/ClozeText';
 import { MathText } from '../components/MathText';
+import { CLOZE_BLANK } from '../content/cloze';
 import { QuestionBlock } from '../components/QuestionBlock';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
 import { ThreeLinesDiagram } from '../geometry/ThreeLinesDiagram';
@@ -67,29 +69,12 @@ function ConverseDiagram({ q }: { q: Unit4Question }) {
   );
 }
 
-// A completion line stores its missing word as a short underscore run; on the page
-// the blank is widened so a Hebrew word fits by hand, and announced to screen readers.
-const CLOZE_BLANK = /_{3,}/;
-const CLOZE_WRITE_SPACE = '_'.repeat(18);
 // Converse theorems read "אם …, אז …": each completion line breaks before "אז" so the
 // premise and the conclusion sit on their own rows (and no single word is orphaned).
 const CONCLUSION_BREAK = /\s+(?=אז\s)/;
 
 const isTheoremCompletion = (q: Unit4Question) =>
   (q.subparts ?? []).length > 0 && (q.subparts ?? []).every(line => CLOZE_BLANK.test(line));
-
-function ClozeText({ text }: { text: string }) {
-  return (
-    <>
-      {text.split(CLOZE_BLANK).map((part, index) => (
-        <Fragment key={index}>
-          {index > 0 && <><span aria-hidden="true">{CLOZE_WRITE_SPACE}</span><span className="sr-only">מילה חסרה</span></>}
-          <MathText text={part} />
-        </Fragment>
-      ))}
-    </>
-  );
-}
 
 function ClozeLine({ line }: { line: string }) {
   return (

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { CLOZE_BLANK } from '../content/cloze';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MathText — inline mathematics inside Hebrew (RTL) prose.
@@ -276,7 +277,7 @@ export const MATH_OPERAND_RULES: readonly MathOperandRule[] = [
   regexOperand(
     'blank',
     'A fill-in blank inside an expression (x = ____, ∠B = ____°), kept in the same LTR run as its expression. A blank alone is not mathematics.',
-    /_{3,}/y,
+    new RegExp(CLOZE_BLANK.source, 'y'),
     () => '\\underline{\\hspace{2em}}',
     false,
   ),
