@@ -130,6 +130,9 @@
 .question-content--split:has(> .question-diagram > .geometry-diagram[data-diagram-size="mark"]) {
   --diagram-col: var(--diagram-col-mark);
 }
+.question-content--split:has(> .question-diagram > .geometry-diagram[data-diagram-size="markLarge"]) {
+  --diagram-col: var(--diagram-col-mark-large);
+}
 
 /* Figures in a side-by-side pair or a table row are centred in their cell. */
 .paired-diagrams > .geometry-diagram,

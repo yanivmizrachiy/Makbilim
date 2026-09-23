@@ -70,9 +70,11 @@ function buildCorpus(): Entry[] {
     if (text !== undefined && text !== '') entries.push({ key, text, audience, renderer });
   };
 
-  // Unit 1 pages print their copy verbatim (App.tsx, Unit1Continuation.tsx).
+  // Unit 1 pages print their copy verbatim (App.tsx, Unit1Continuation.tsx), except the stems that
+  // name lines and go through <MathText> (U1-P3-A: "הישרים m ו־n").
+  const unit1MathTextStems = new Set(['U1-P3-A']);
   for (const q of unit1Questions) {
-    add(`${q.id}.stem`, q.stem, 'raw');
+    add(`${q.id}.stem`, q.stem, unit1MathTextStems.has(q.id) ? 'MathText' : 'raw');
     q.subparts?.forEach((text, i) => add(`${q.id}.subparts[${i}]`, text, 'raw'));
     q.choices?.forEach((text, i) => add(`${q.id}.choices[${i}]`, text, 'raw'));
   }
@@ -259,7 +261,7 @@ describe('MathText regression over the whole booklet corpus', () => {
     expect([legacyCount, currentCount]).toContain(baseline.mathJaxStatus.total);
     expect({ legacyCount, currentCount }).toMatchInlineSnapshot(`
       {
-        "currentCount": 178,
+        "currentCount": 180,
         "legacyCount": 167,
       }
     `);
@@ -275,7 +277,10 @@ describe('MathText regression over the whole booklet corpus', () => {
       differences.push(`${key}${scope}\n  − ${before}\n  + ${after}`);
     }
     expect(differences.join('\n')).toMatchInlineSnapshot(`
-      "U2-P1-A.stem
+      "U1-P3-A.stem
+        − בכל אחד משני השרטוטים מסומן זוג זוויות מתחלפות. בשרטוט אחד הישרים m ו־n מקבילים (מסומנים בחצים), ובשרטוט השני הם אינם מקבילים. דניאל אמר: „בשני השרטוטים הזוויות המסומנות שוות, כי זוויות מתחלפות שוות.” נועה אמרה: „זה לא מדויק: זוויות מתחלפות בין ישרים מקבילים שוות.” קבעו מי צודק. ציינו באיזה שרטוט אפשר לקבוע שהזוויות המסומנות שוות, ונמקו.
+        + בכל אחד משני השרטוטים מסומן זוג זוויות מתחלפות. בשרטוט אחד הישרים ⟦m⟧ ו־⟦n⟧ מקבילים (מסומנים בחצים), ובשרטוט השני הם אינם מקבילים. דניאל אמר: „בשני השרטוטים הזוויות המסומנות שוות, כי זוויות מתחלפות שוות.” נועה אמרה: „זה לא מדויק: זוויות מתחלפות בין ישרים מקבילים שוות.” קבעו מי צודק. ציינו באיזה שרטוט אפשר לקבוע שהזוויות המסומנות שוות, ונמקו.
+      U2-P1-A.stem
         − בשרטוט שלפניכם הישרים p ו־q מקבילים. נתון כי ⟦∠A = 68°⟧. חשבו את גודלה של ⟦∠B⟧.
         + בשרטוט שלפניכם הישרים ⟦p⟧ ו־⟦q⟧ מקבילים. נתון כי ⟦∠A = 68°⟧. חשבו את גודלה של ⟦∠B⟧.
       U2-P1-B.stem
@@ -416,36 +421,51 @@ describe('MathText regression over the whole booklet corpus', () => {
       teacher U1-P1-A.answer (teacher guide)
         − הישר r הוא הישר החותך.
         + הישר ⟦r⟧ הוא הישר החותך.
+      teacher U1-P1-B.answer (teacher guide)
+        − במפגש של הישר t עם הישר m יש לסמן את הזווית שמתחת לישר m ומימין לישר t.
+        + במפגש של הישר ⟦t⟧ עם הישר ⟦m⟧ יש לסמן את הזווית שמתחת לישר ⟦m⟧ ומימין לישר ⟦t⟧.
+      teacher U1-P1-C.answer (teacher guide)
+        − במפגש של הישר s עם הישר b יש לסמן את הזווית שמעל הישר b ומימין לישר s — בין שני הישרים ובצד השני של הישר החותך.
+        + במפגש של הישר ⟦s⟧ עם הישר ⟦b⟧ יש לסמן את הזווית שמעל הישר ⟦b⟧ ומימין לישר ⟦s⟧ — בין שני הישרים ובצד השני של הישר החותך.
+      teacher U1-P1-C.note (teacher guide)
+        − הזווית המסומנת נמצאת במפגש העליון, מתחת לישר העליון ומשמאל לישר החותך. הזווית המתחלפת לה נמצאת במפגש התחתון, מעל הישר התחתון ומימין לחותך — שתיהן בין הישרים, בצדדים שונים של החותך. תלמיד שסימן את הזווית שמתחת ל־b ומשמאל ל־s בלבל בין מתחלפות למתאימות.
+        + הזווית המסומנת נמצאת במפגש העליון, מתחת לישר העליון ומשמאל לישר החותך. הזווית המתחלפת לה נמצאת במפגש התחתון, מעל הישר התחתון ומימין לחותך — שתיהן בין הישרים, בצדדים שונים של החותך. תלמיד שסימן את הזווית שמתחת ל־⟦b⟧ ומשמאל ל־⟦s⟧ בלבל בין מתחלפות למתאימות.
       teacher U1-P1-E.answer[0] (teacher guide)
-        − ∠1 ↔ ∠5
-        + ⟦∠1 ↔ ∠5⟧
-      teacher U1-P1-E.answer[1] (teacher guide)
-        − ∠2 ↔ ∠6
-        + ⟦∠2 ↔ ∠6⟧
-      teacher U1-P1-E.answer[2] (teacher guide)
-        − ∠3 ↔ ∠7
-        + ⟦∠3 ↔ ∠7⟧
-      teacher U1-P1-E.answer[3] (teacher guide)
-        − ∠4 ↔ ∠8
-        + ⟦∠4 ↔ ∠8⟧
-      teacher U1-P2-A.answer[0] (teacher guide)
         − ∠1 ↔ ∠7
         + ⟦∠1 ↔ ∠7⟧
-      teacher U1-P2-A.answer[1] (teacher guide)
-        − ∠2 ↔ ∠8
-        + ⟦∠2 ↔ ∠8⟧
-      teacher U1-P2-A.answer[2] (teacher guide)
-        − ∠3 ↔ ∠5
-        + ⟦∠3 ↔ ∠5⟧
-      teacher U1-P2-A.answer[3] (teacher guide)
+      teacher U1-P1-E.answer[1] (teacher guide)
+        − ∠2 ↔ ∠5
+        + ⟦∠2 ↔ ∠5⟧
+      teacher U1-P1-E.answer[2] (teacher guide)
+        − ∠3 ↔ ∠8
+        + ⟦∠3 ↔ ∠8⟧
+      teacher U1-P1-E.answer[3] (teacher guide)
         − ∠4 ↔ ∠6
         + ⟦∠4 ↔ ∠6⟧
+      teacher U1-P2-A.answer[0] (teacher guide)
+        − ∠1 ↔ ∠6
+        + ⟦∠1 ↔ ∠6⟧
+      teacher U1-P2-A.answer[1] (teacher guide)
+        − ∠2 ↔ ∠5
+        + ⟦∠2 ↔ ∠5⟧
+      teacher U1-P2-A.answer[2] (teacher guide)
+        − ∠3 ↔ ∠8
+        + ⟦∠3 ↔ ∠8⟧
+      teacher U1-P2-A.answer[3] (teacher guide)
+        − ∠4 ↔ ∠7
+        + ⟦∠4 ↔ ∠7⟧
       teacher U1-P2-B.answer[0] (teacher guide)
-        − דוגמה לזוג מתאימות: ∠1 ו־∠5.
-        + דוגמה לזוג מתאימות: ⟦∠1⟧ ו־⟦∠5⟧.
+        − דוגמה לזוג מתאימות: ∠1 ו־∠6.
+        + דוגמה לזוג מתאימות: ⟦∠1⟧ ו־⟦∠6⟧.
       teacher U1-P2-B.answer[1] (teacher guide)
-        − דוגמה לזוג מתחלפות: ∠1 ו־∠7.
-        + דוגמה לזוג מתחלפות: ⟦∠1⟧ ו־⟦∠7⟧.
+        − דוגמה לזוג מתחלפות: ∠1 ו־∠5.
+        + דוגמה לזוג מתחלפות: ⟦∠1⟧ ו־⟦∠5⟧.
+      teacher U1-P3-A.answer (teacher guide)
+        − נועה צודקת. בשרטוט שבו הישרים m ו־n מקבילים (מסומנים בחצים) הזוויות המתחלפות המסומנות שוות, כי „זוויות מתחלפות בין ישרים מקבילים שוות.” בשרטוט השני הישרים אינם מקבילים, ולכן אי אפשר לקבוע שהזוויות שוות — ואכן אחת מהן גדולה מהשנייה. היותן זוויות מתחלפות אינה מספיקה; דניאל שכח את תנאי המקבילות.
+        + נועה צודקת. בשרטוט שבו הישרים ⟦m⟧ ו־⟦n⟧ מקבילים (מסומנים בחצים) הזוויות המתחלפות המסומנות שוות, כי „זוויות מתחלפות בין ישרים מקבילים שוות.” בשרטוט השני הישרים אינם מקבילים, ולכן אי אפשר לקבוע שהזוויות שוות — ואכן אחת מהן גדולה מהשנייה. היותן זוויות מתחלפות אינה מספיקה; דניאל שכח את תנאי המקבילות.
+      teacher U1-P3-D.answer[1] (teacher guide)
+        − חסר התנאי שהישרים מקבילים. בשרטוט השני הישרים h ו־k אינם מקבילים, והזוויות המתאימות המסומנות אינן שוות — לכן המשפט של מאיה, בלי תנאי המקבילות, אינו נכון.
+        + חסר התנאי שהישרים מקבילים. בשרטוט השני הישרים ⟦h⟧ ו־⟦k⟧ אינם מקבילים, והזוויות המתאימות המסומנות אינן שוות — לכן המשפט של מאיה, בלי תנאי המקבילות, אינו נכון.
       teacher U2-P5-D.answer.justification (teacher guide)
         − הזוויות צמודות על ישר ולכן סכומן ⟦180°⟧; המשוואה הנכונה היא ⟦(2x + 20)⟧ + ⟦(3x + 35)⟧ = 180.
         + הזוויות צמודות על ישר ולכן סכומן ⟦180°⟧; המשוואה הנכונה היא ⟦(2x + 20) + (3x + 35) = 180⟧.

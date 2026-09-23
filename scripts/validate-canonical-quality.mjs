@@ -110,7 +110,8 @@ const bannedHits = bannedStudentCopy.flatMap(re => {
 });
 gate('student-facing-copy', bannedHits.length === 0, bannedHits.join('; '));
 
-const stemValues = [...allQuestionText.matchAll(/stem:\s*'([^']+)'/g)].map(m => m[1]);
+// Stems are single-quoted literals, or template literals when they quote a canonical sentence from theorems.ts.
+const stemValues = [...allQuestionText.matchAll(/stem:\s*(?:'([^']+)'|`([^`]+)`)/g)].map(m => m[1] ?? m[2]);
 gate('hebrew', stemValues.length >= 58 && stemValues.every(s => /[\u0590-\u05FF]/.test(s)), `found ${stemValues.length} Hebrew stems`);
 
 const normalizedStemCounts = new Map();

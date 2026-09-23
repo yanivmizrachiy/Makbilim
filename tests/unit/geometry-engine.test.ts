@@ -131,7 +131,7 @@ describe('geometry engine — fixed physical scale (E1)', () => {
       expect(size, task).toBe(diagramSizeFor({ taskId: task, kind: taskKindById(task), compact }));
     }
     const sizes = new Set(diagrams.map(d => attr(d.open, 'data-diagram-size')));
-    for (const size of ['mark', 'compact', 'dense', 'pair', 'densePair', 'table']) expect(sizes.has(size)).toBe(true);
+    for (const size of ['mark', 'markLarge', 'compact', 'dense', 'pair', 'densePair', 'table']) expect(sizes.has(size)).toBe(true);
   });
 });
 

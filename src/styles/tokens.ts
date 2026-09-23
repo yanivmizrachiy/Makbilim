@@ -47,6 +47,8 @@ export const geometryTokens = {
    *  - compact: diagram column of the split question layout (61 mm column)
    *  - full:    diagram below a full-width stem
    *  - mark:    identification / mark-on-diagram tasks: the diagram IS the answer surface (78 mm column)
+   *  - markLarge: an identification task on a page with room to spare (MARK_SIZE_BY_TASK): the
+   *             student marks on a larger figure instead of the page ending in empty space
    *  - pair:    each of two side-by-side figures (claim / counterexample)
    *  - densePair: a side-by-side figure in a dense question
    *  - table:   a figure inside a table row
@@ -56,6 +58,7 @@ export const geometryTokens = {
     compact: { heightMm: 40, maxWidthMm: 61, nominalGapMm: 17, maxScale: 1.45 },
     full: { heightMm: 54, maxWidthMm: 92, nominalGapMm: 22, maxScale: 1.45 },
     mark: { heightMm: 50, maxWidthMm: 78, nominalGapMm: 21, maxScale: 1.45 },
+    markLarge: { heightMm: 61, maxWidthMm: 80, nominalGapMm: 26, maxScale: 1.45 },
     pair: { heightMm: 36, maxWidthMm: 70, nominalGapMm: 15, maxScale: 1.45 },
     densePair: { heightMm: 29, maxWidthMm: 70, nominalGapMm: 12, maxScale: 1.3 },
     table: { heightMm: 26, maxWidthMm: 50, nominalGapMm: 9, maxScale: 1.1 },

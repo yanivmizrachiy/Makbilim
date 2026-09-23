@@ -68,6 +68,7 @@
   --work-clearance: 3.5mm;      /* last writing rule → separator (≥ 3mm, never a 'double line') */
   --diagram-col: 62mm;          /* diagram column of the side-by-side question grid */
   --diagram-col-mark: 78mm;     /* identification tasks: the diagram is the answer surface (geometryTokens.size.mark) */
+  --diagram-col-mark-large: 80mm; /* identification tasks on a page with room (geometryTokens.size.markLarge) */
   --diagram-gap: 5mm;
   --verdict-col: 44mm;          /* per-statement verdict column beside a statement */
 
