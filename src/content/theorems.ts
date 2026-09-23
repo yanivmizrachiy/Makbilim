@@ -1,13 +1,13 @@
 export const THEOREMS = {
   correspondingDirect: {
     id: 'corresponding-direct',
-    text: 'אם שני ישרים מקבילים נחתכים על ידי ישר שלישי, אז כל זוג זוויות מתאימות שוות זו לזו.',
+    text: 'זוויות מתאימות בין ישרים מקבילים שוות.',
     requiresParallelGiven: true,
     direction: 'direct'
   },
   alternateDirect: {
     id: 'alternate-direct',
-    text: 'אם שני ישרים מקבילים נחתכים על ידי ישר שלישי, אז כל זוג זוויות מתחלפות שוות זו לזו.',
+    text: 'זוויות מתחלפות בין ישרים מקבילים שוות.',
     requiresParallelGiven: true,
     direction: 'direct'
   },
