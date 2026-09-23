@@ -46,6 +46,10 @@
  *
  * Unit-3 proofs are not computational, but every relation they rely on is checked against the
  * drawing the same way.
+ *
+ * Unit-1 identification keys (which angle / pair / location is the answer) are re-derived from
+ * the rendered unit-1 drawings too: arcs, arc forms, letter and number label positions, parallel
+ * marks and the drawn skew of every counterexample.
  */
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -59,6 +63,10 @@ import type { ThreeLinesDiagramProps } from '../../src/geometry/ThreeLinesDiagra
 import { Unit2Pages } from '../../src/pages/Unit2Pages';
 import { Unit3Pages } from '../../src/pages/Unit3Pages';
 import { Unit4Pages } from '../../src/pages/Unit4Pages';
+import { Unit1Page1 } from '../../src/App';
+import { unit1Questions } from '../../src/content/questions-unit1';
+import { teacherAnswerKey } from '../../src/content/answer-key';
+import { Unit1Continuation } from '../../src/pages/Unit1Continuation';
 
 // ---------------------------------------------------------------------------
 // Capture the props every page passes to the diagram engines, while still
@@ -1727,5 +1735,279 @@ describe('independent verification — unit 3 proof relations match the drawing'
     const proofB = (q.subparts ?? [])[1] ?? '';
     expect(proofB).toContain('מתחלפות');
     expect(proofB).not.toMatch(/מקביל|∥/);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Unit 1 — identification keys, re-derived from the RENDERED drawings.
+// Unit 1 has no computation, but every key names angles, pairs or locations; each one is read
+// back here from the SVG alone (drawn lines, crossings, arcs and label positions) and classified
+// from first principles with relationOf — never from the page's sector indices.
+// ---------------------------------------------------------------------------
+
+type Unit1Figure = { svg: string; props: ParallelLinesDiagramProps };
+
+function unit1Figures(): Map<string, Unit1Figure[]> {
+  const figures = new Map<string, Unit1Figure[]>();
+  for (const Page of [Unit1Page1, Unit1Continuation]) {
+    captured.diagrams.length = 0;
+    const html = renderToStaticMarkup(createElement(Page));
+    const starts = [...html.matchAll(/<svg class="geometry-diagram/g)].map(m => m.index);
+    if (starts.length !== captured.diagrams.length) throw new Error(`unit 1: ${starts.length} SVGs but ${captured.diagrams.length} captured diagrams`);
+    starts.forEach((start, index) => {
+      const entry = captured.diagrams[index]!;
+      if (entry.kind !== 'parallel') throw new Error('unit 1 draws only two-line figures');
+      const id = /data-task-id="([^"]+)"/.exec(html.slice(html.lastIndexOf('data-task-id="', start)))![1]!;
+      figures.set(id, [...(figures.get(id) ?? []), { svg: html.slice(start, html.indexOf('</svg>', start)), props: entry.props }]);
+    });
+  }
+  return figures;
+}
+
+const u1Figures = unit1Figures();
+const u1Figure = (id: string, index = 0) => {
+  const figure = u1Figures.get(id)?.[index];
+  if (!figure) throw new Error(`no unit-1 figure ${index} for ${id}`);
+  return figure;
+};
+const u1Drawing = (id: string, index = 0) => readParallelDrawing(u1Figure(id, index).svg, u1Figure(id, index).props);
+const u1Key = (id: string) => {
+  const entry = teacherAnswerKey.find(item => item.id === id);
+  if (!entry) throw new Error(`no key for ${id}`);
+  return entry;
+};
+const u1KeyText = (id: string) => [asList(u1Key(id).answer as string | string[]).join(' '), u1Key(id).note ?? ''].join(' ');
+
+/**
+ * Number-only angle labels (the eight-angle figures draw no arcs): the angle a number names is the
+ * sector of the nearest crossing that the number sits in — exactly how a student reads it.
+ */
+function indexLabelledAngles(svg: string): DrawnAngle[] {
+  const lines = drawnLines(svg);
+  const parallels = lines.slice(0, 2);
+  const transversal = lines[2]!;
+  const crossings = parallels.map(line => intersect(line, transversal));
+  const transDeg = direction(transversal.a, transversal.b);
+  // A 9 pt label's visual centre sits about a third of its size (≈ 4 px) above the baseline.
+  const baselineToCentre = 4;
+  return markChunks(svg).map(chunk => {
+    const m = /<text class="angle-label-text angle-label-text--index" x="(-?[\d.]+)" y="(-?[\d.]+)"[^>]*>([\s\S]*?)<\/text>/.exec(chunk);
+    if (!m) throw new Error('an eight-angle mark without a number label');
+    const at = { x: Number(m[1]), y: Number(m[2]) - baselineToCentre };
+    const parallelLine = Math.hypot(at.x - crossings[0]!.x, at.y - crossings[0]!.y) < Math.hypot(at.x - crossings[1]!.x, at.y - crossings[1]!.y) ? 0 : 1;
+    const vertex = crossings[parallelLine]!;
+    const lineDeg = direction(parallels[parallelLine]!.a, parallels[parallelLine]!.b);
+    const sector = locateSector(direction(vertex, at), lineDeg, transDeg);
+    const interior = dot(unitVector(sector.transRay.deg), minus(crossings[1 - parallelLine]!, vertex)) > 0;
+    return {
+      vertex: parallelLine === 0 ? 'top' : 'bottom',
+      parallelLine,
+      transversal: 0,
+      lineSide: sector.lineRay.side,
+      transSide: sector.transRay.side,
+      interior,
+      span: sector.width,
+      label: drawnText(m[3]!),
+      margin: sector.margin,
+      arcInside: true,
+    };
+  });
+}
+
+const RELATION_WORD: Partial<Record<Relation, string>> = {
+  corresponding: 'מתאימות',
+  alternate: 'מתחלפות',
+  'alternate-exterior': 'מתחלפות',
+};
+const isAlternate = (relation: Relation) => relation === 'alternate' || relation === 'alternate-exterior';
+
+/** Where an angle lies, in the words a key uses: above / below its line, right / left of the transversal. */
+function placeWords(bisectorDeg: number, lineDeg: number, transDeg: number, lineName: string, transName: string) {
+  const b = unitVector(bisectorDeg);
+  const u = unitVector(lineDeg);
+  const v = unitVector(transDeg);
+  // Normals pointing down the page (SVG y grows downward) and to the right of the page.
+  const down = u.x >= 0 ? { x: -u.y, y: u.x } : { x: u.y, y: -u.x };
+  const right = v.y >= 0 ? { x: v.y, y: -v.x } : { x: -v.y, y: v.x };
+  if (down.y <= 0 || right.x <= 0) throw new Error('a line is drawn vertical or horizontal: no above / right');
+  const below = dot(b, down) > 0;
+  const onRight = dot(b, right) > 0;
+  return `${below ? 'מתחת לישר' : 'מעל הישר'} ${lineName} ו${onRight ? 'מימין' : 'משמאל'} לישר ${transName}`;
+}
+
+describe('independent verification — unit 1 identification keys match the rendered drawings', () => {
+  it('every unit-1 task with a figure is read back here (U1-P2-E is statements only)', () => {
+    expect([...u1Figures.keys()].sort()).toEqual(unit1Questions.map(q => q.id).filter(id => id !== 'U1-P2-E').sort());
+  });
+
+  it('the place words are right on a hand-checkable figure (horizontal line, transversal rising to the right)', () => {
+    // SVG y grows down: 90° points down the page, 300° up and to the right.
+    expect(placeWords(90 + 45, 0, 300, 'm', 't')).toBe('מתחת לישר m ומשמאל לישר t');
+    expect(placeWords(-60 + 45, 0, 300, 'm', 't')).toBe('מעל הישר m ומימין לישר t');
+  });
+
+  it.each([
+    ['U1-P1-B', 'corresponding'],
+    ['U1-P1-C', 'alternate'],
+  ] as const)('%s: the key names the location of the %s mate of the marked angle, read from the drawing', (id, relation) => {
+    const { svg, props } = u1Figure(id);
+    const lines = drawnLines(svg);
+    const [top, bottom] = [lines[0]!, lines[1]!];
+    const transversal = lines[2]!;
+    // The page-1 figures carry no parallel marks but are drawn parallel: the mate is found by direction.
+    expect(lineAngleGap(direction(top.a, top.b), direction(bottom.a, bottom.b))).toBeLessThan(1e-6);
+    const arcs = drawnArcs(svg);
+    expect(arcs, `${id}: exactly one marked angle`).toHaveLength(1);
+    const drawn = readParallelDrawing(svg, props).angles[0]!;
+    expect(drawn.vertex).toBe('top');
+    // The first alternate-angle task starts from an angle BETWEEN the lines (easy → hard).
+    if (relation === 'alternate') expect(drawn.interior, `${id}: the given angle lies between the lines`).toBe(true);
+    const bisector = arcs[0]!.thetaStart + arcs[0]!.sweep / 2;
+    const mateBisector = relation === 'corresponding' ? bisector : bisector + 180;
+    const bottomName = (props.lineLabels ?? [])[1]!;
+    const words = placeWords(mateBisector, direction(bottom.a, bottom.b), direction(transversal.a, transversal.b), bottomName, props.transversalLabel!);
+    expect(typeof u1Key(id).answer).toBe('string');
+    expect(u1Key(id).answer as string, `${id}: the key must say where the mate is`).toContain(words);
+    // The mate the key describes stands in the asked relation to the marked angle.
+    const mate: DrawnAngle = {
+      ...drawn,
+      vertex: 'bottom',
+      parallelLine: 1,
+      lineSide: relation === 'corresponding' ? drawn.lineSide : ((1 - drawn.lineSide) as 0 | 1),
+      transSide: relation === 'corresponding' ? drawn.transSide : ((1 - drawn.transSide) as 0 | 1),
+    };
+    expect(relationOf(drawn, mate)).toBe(relation);
+  });
+
+  it('U1-P1-D: each arc form marks one pair, and the key classifies each pair as drawn', () => {
+    const { svg } = u1Figure('U1-P1-D');
+    const angles = u1Drawing('U1-P1-D').angles;
+    const forms = markChunks(svg).map(chunk => /angle-mark--(single|double|dashed)/.exec(chunk)![1]!);
+    expect(forms).toHaveLength(angles.length);
+    const keyByForm: Record<string, string> = { single: 'קשת אחת', double: 'שתי קשתות', dashed: 'קשת מקווקוות' };
+    const key = asList(u1Key('U1-P1-D').answer as string[]);
+    const words = new Set<string>();
+    for (const form of ['single', 'double', 'dashed']) {
+      const pair = angles.filter((_, i) => forms[i] === form);
+      expect(pair.map(a => a.vertex).sort(), `${form}: one angle at each crossing`).toEqual(['bottom', 'top']);
+      const word = RELATION_WORD[relationOf(pair[0]!, pair[1]!)] ?? 'אינן שייכות לאחד משני הסוגים';
+      words.add(word);
+      expect(key).toContain(`${keyByForm[form]!} — ${word}`);
+    }
+    expect(words.size, 'the three pairs are one of each kind').toBe(3);
+  });
+
+  it.each([
+    ['U1-P1-E', 'corresponding'],
+    ['U1-P2-A', 'alternate'],
+  ] as const)('%s: every matched pair is %s in the drawing, the matching is complete, and no pair sits on one printed row', (id, relation) => {
+    const angles = indexLabelledAngles(u1Figure(id).svg);
+    expect(angles.map(a => a.label).sort()).toEqual(['1', '2', '3', '4', '5', '6', '7', '8']);
+    for (const angle of angles) expect(angle.margin, `${id} ∠${angle.label ?? ''}: the number sits clearly inside one angle`).toBeGreaterThan(4);
+    const byLabel = new Map(angles.map(a => [a.label, a]));
+    const matches = (a: DrawnAngle, b: DrawnAngle) => (relation === 'corresponding' ? relationOf(a, b) === 'corresponding' : isAlternate(relationOf(a, b)));
+    const expected = ['1', '2', '3', '4'].map(top => {
+      expect(byLabel.get(top)!.vertex, `∠${top} is at the top crossing`).toBe('top');
+      const partners = angles.filter(b => b.vertex === 'bottom' && matches(byLabel.get(top)!, b)).map(b => b.label);
+      expect(partners, `${id}: ∠${top} has exactly one partner`).toHaveLength(1);
+      return `∠${top} ↔ ∠${partners[0]!}`;
+    });
+    expect(u1Key(id).answer).toEqual(expected);
+    // The printed columns are ∠1…∠4 against ∠5…∠8: reading straight across a row is never correct.
+    for (const pair of expected) expect(pair, `${id}: ${pair} lies on one printed row`).not.toMatch(/∠1 ↔ ∠5|∠2 ↔ ∠6|∠3 ↔ ∠7|∠4 ↔ ∠8/);
+  });
+
+  it('U1-P2-B: the example pairs in the key are a corresponding and an alternate pair in the rotated drawing', () => {
+    const byLabel = new Map(indexLabelledAngles(u1Figure('U1-P2-B').svg).map(a => [a.label, a]));
+    const [corresponding, alternate] = asList(u1Key('U1-P2-B').answer as string[]).map(line => /∠(\d) ו־∠(\d)/.exec(line));
+    expect(relationOf(byLabel.get(corresponding![1]!)!, byLabel.get(corresponding![2]!)!)).toBe('corresponding');
+    expect(isAlternate(relationOf(byLabel.get(alternate![1]!)!, byLabel.get(alternate![2]!)!))).toBe(true);
+  });
+
+  it.each(['U1-P2-C', 'U1-P2-D'])('%s: the angle-type word of line 1 is the relation of the pair marked on the given parallels', id => {
+    const drawing = u1Drawing(id);
+    expect(drawing.chevrons, `${id}: the lines are marked parallel`).toEqual([0, 1]);
+    expect(drawing.angles).toHaveLength(2);
+    const word = RELATION_WORD[relationOf(drawing.angles[0]!, drawing.angles[1]!)];
+    expect(word, `${id}: the marked pair is corresponding or alternate`).toBeDefined();
+    const q = unit1Questions.find(item => item.id === id)!;
+    const first = (u1Key(id).answer as string[])[0]!;
+    expect(first).toBe(word);
+    const theorem = word === 'מתאימות' ? THEOREMS.correspondingDirect.text : THEOREMS.alternateDirect.text;
+    expect(q.subparts![0]!.replace(/_+/, first)).toBe(theorem);
+  });
+
+  it.each([
+    ['U1-P3-A', 'alternate'],
+    ['U1-P3-D', 'corresponding'],
+  ] as const)('%s: a %s pair on marked parallels (equal) and on visibly non-parallel lines (not equal), as the key says', (id, relation) => {
+    const figures = [u1Drawing(id, 0), u1Drawing(id, 1)];
+    const parallel = figures.filter(d => d.chevrons.length === 2);
+    const skewed = figures.filter(d => d.chevrons.length === 0);
+    expect(parallel).toHaveLength(1);
+    expect(skewed).toHaveLength(1);
+    const gapOf = (d: Drawing) => lineAngleGap(d.parallelDirs[0]!, d.parallelDirs[1]!);
+    expect(gapOf(parallel[0]!)).toBeLessThan(1e-6);
+    expect(gapOf(skewed[0]!), `${id}: the counterexample lines are visibly not parallel`).toBeGreaterThanOrEqual(4);
+    for (const d of figures) {
+      expect(d.angles).toHaveLength(2);
+      const drawn = relationOf(d.angles[0]!, d.angles[1]!);
+      expect(relation === 'alternate' ? isAlternate(drawn) : drawn === relation, `${id}: marked pair is ${relation}`).toBe(true);
+    }
+    const [p0, p1] = parallel[0]!.angles;
+    const [s0, s1] = skewed[0]!.angles;
+    expect(Math.abs(p0!.span - p1!.span)).toBeLessThan(1e-6);
+    expect(Math.abs(s0!.span - s1!.span), `${id}: the non-parallel pair is visibly unequal`).toBeGreaterThanOrEqual(4);
+    const key = u1KeyText(id);
+    expect(key).toContain('אינם מקבילים');
+    expect(key).toContain(relation === 'alternate' ? THEOREMS.alternateDirect.text : THEOREMS.correspondingDirect.text);
+    expect(key).toMatch(relation === 'alternate' ? /אחת מהן גדולה מהשנייה/ : /אינן שוות/);
+  });
+
+  it('U1-P3-B: each table row\'s relation and "can we tell they are equal" answer follow the drawn marks', () => {
+    const rows = u1Figures.get('U1-P3-B') ?? [];
+    expect(rows).toHaveLength(4);
+    const key = asList(u1Key('U1-P3-B').answer as string[]);
+    rows.forEach(({ svg, props }, index) => {
+      const d = readParallelDrawing(svg, props);
+      expect(d.angles).toHaveLength(2);
+      const word = RELATION_WORD[relationOf(d.angles[0]!, d.angles[1]!)];
+      expect(word).toBeDefined();
+      const given = d.chevrons.length === 2;
+      expect(key[index]).toMatch(new RegExp(`^שורה ${index + 1}: ${word!}; ${given ? 'כן' : 'לא ניתן לקבוע'}`));
+    });
+  });
+
+  it('U1-P3-C: four disjoint lettered pairs, exactly one of them alternate — the key; the note names every distractor\'s relation', () => {
+    const angles = u1Drawing('U1-P3-C').angles;
+    expect(angles).toHaveLength(8);
+    const where = (a: DrawnAngle) => `${a.vertex}/${a.lineSide}/${a.transSide}`;
+    expect(new Set(angles.map(where)).size, 'every drawn angle carries exactly one letter').toBe(8);
+    const phrase: Partial<Record<Relation, string>> = {
+      corresponding: 'זוויות מתאימות',
+      'same-side': 'באותו צד של החותך',
+      other: 'בצדדים שונים של החותך',
+      'alternate-exterior': 'זוויות מתחלפות (שתיהן מחוץ לישרים',
+      alternate: 'זוויות מתחלפות (שתיהן בין הישרים',
+    };
+    const alternates: string[] = [];
+    for (const letter of ['א', 'ב', 'ג', 'ד']) {
+      const pair = angles.filter(a => a.label === letter);
+      expect(pair.map(a => a.vertex).sort(), `pair ${letter}: one angle at each crossing`).toEqual(['bottom', 'top']);
+      const relation = relationOf(pair[0]!, pair[1]!);
+      if (isAlternate(relation)) alternates.push(letter);
+      expect(phrase[relation], `pair ${letter}: ${relation}`).toBeDefined();
+      const note = u1Key('U1-P3-C').note ?? '';
+      expect(note).toContain(`${letter} — ${phrase[relation]!}`);
+      // What the note says about "between the lines" is what the drawing shows.
+      const clause = note.slice(note.indexOf(`${letter} — `)).split('.')[0]!;
+      const inside = pair.filter(a => a.interior).length;
+      if (clause.includes('שתיהן בין הישרים')) expect(inside, `pair ${letter}`).toBe(2);
+      if (clause.includes('שתיהן מחוץ לישרים')) expect(inside, `pair ${letter}`).toBe(0);
+      if (clause.includes('אחת בין הישרים ואחת מחוצה להם')) expect(inside, `pair ${letter}`).toBe(1);
+    }
+    expect(alternates).toHaveLength(1);
+    expect(u1Key('U1-P3-C').answer).toBe(`הזוג המסומן ${alternates[0]!}.`);
+    expect(unit1Questions.find(q => q.id === 'U1-P3-C')!.choices).toContain(`הזוג המסומן ${alternates[0]!}`);
   });
 });

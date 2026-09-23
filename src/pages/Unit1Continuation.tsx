@@ -40,16 +40,34 @@ function MatchingColumns({ mode }: { mode: 'corresponding' | 'alternate' }) {
   );
 }
 
+type SectorLabels = readonly [string, string, string, string];
+
+/**
+ * Numbers of the four angles at the bottom crossing, by sector 0–3 (the top crossing is always
+ * 1–4 in sector order). Each task scrambles them differently, so that no correct pair sits on
+ * one row of the printed columns (∠1…∠4 against ∠5…∠8): the student must match by POSITION.
+ *  - U1-P1-E corresponding (top k ↔ bottom k):        1↔7, 2↔5, 3↔8, 4↔6
+ *  - U1-P2-A alternate (top k ↔ bottom (k + 2) % 4):   1↔6, 2↔5, 3↔8, 4↔7
+ *  - U1-P2-B (student's own pairs):                    corresponding 1↔6, alternate 1↔5
+ */
+export const UNIT1_BOTTOM_LABELS: Readonly<Record<'U1-P1-E' | 'U1-P2-A' | 'U1-P2-B', SectorLabels>> = {
+  'U1-P1-E': ['7', '5', '8', '6'],
+  'U1-P2-A': ['8', '7', '6', '5'],
+  'U1-P2-B': ['6', '8', '5', '7'],
+};
+
 function EightAngleDiagram({
   lineLabels,
   transversalLabel,
   orientationDeg,
   transversalDeg,
+  bottomLabels,
 }: {
   lineLabels: [string, string];
   transversalLabel: string;
   orientationDeg: number;
   transversalDeg: number;
+  bottomLabels: SectorLabels;
 }) {
   return (
     <ParallelLinesDiagram
@@ -63,10 +81,7 @@ function EightAngleDiagram({
         { intersection: 'top', sector: 1, label: '2', role: 'marked' },
         { intersection: 'top', sector: 2, label: '3', role: 'marked' },
         { intersection: 'top', sector: 3, label: '4', role: 'marked' },
-        { intersection: 'bottom', sector: 0, label: '5', role: 'marked' },
-        { intersection: 'bottom', sector: 1, label: '6', role: 'marked' },
-        { intersection: 'bottom', sector: 2, label: '7', role: 'marked' },
-        { intersection: 'bottom', sector: 3, label: '8', role: 'marked' },
+        ...([0, 1, 2, 3] as const).map(sector => ({ intersection: 'bottom' as const, sector, label: bottomLabels[sector], role: 'marked' as const })),
       ]}
     />
   );
@@ -86,7 +101,7 @@ function Unit1Page2() {
       <QuestionBlock
         taskId={corresponding.id}
         compact
-        diagram={<EightAngleDiagram lineLabels={['c', 'd']} transversalLabel="h" orientationDeg={-3} transversalDeg={52} />}
+        diagram={<EightAngleDiagram lineLabels={['c', 'd']} transversalLabel="h" orientationDeg={-3} transversalDeg={52} bottomLabels={UNIT1_BOTTOM_LABELS['U1-P1-E']} />}
       >
         {corresponding.stem}
         <MatchingColumns mode="corresponding" />
@@ -95,7 +110,7 @@ function Unit1Page2() {
       <QuestionBlock
         taskId={alternate.id}
         compact
-        diagram={<EightAngleDiagram lineLabels={['g', 'j']} transversalLabel="n" orientationDeg={19} transversalDeg={95} />}
+        diagram={<EightAngleDiagram lineLabels={['g', 'j']} transversalLabel="n" orientationDeg={19} transversalDeg={95} bottomLabels={UNIT1_BOTTOM_LABELS['U1-P2-A']} />}
       >
         {alternate.stem}
         <MatchingColumns mode="alternate" />
@@ -104,7 +119,7 @@ function Unit1Page2() {
       <QuestionBlock
         taskId={rotated.id}
         compact
-        diagram={<EightAngleDiagram lineLabels={['ℓ₁', 'ℓ₂']} transversalLabel="r" orientationDeg={78} transversalDeg={21} />}
+        diagram={<EightAngleDiagram lineLabels={['ℓ₁', 'ℓ₂']} transversalLabel="r" orientationDeg={78} transversalDeg={21} bottomLabels={UNIT1_BOTTOM_LABELS['U1-P2-B']} />}
         items={(rotated.subparts ?? []).map((text, index, all) =>
           index < all.length - 1 ? { content: <>{text}<LineSlot /></>, inline: true } : { content: text })}
       >
@@ -181,7 +196,7 @@ function RelationTable() {
   return (
     <table className="data-table relation-table">
       <colgroup><col className="col-figure" /><col className="col-answer" /><col className="col-answer" /></colgroup>
-      <thead><tr><th>שרטוט</th><th>סוג הזוג</th><th>האם ניתן לקבוע שהזוויות שוות?</th></tr></thead>
+      <thead><tr><th>שרטוט</th><th>סוג הזוג: מתאימות או מתחלפות?</th><th>האם ניתן לקבוע שהזוויות שוות?</th></tr></thead>
       <tbody>
         {unit1RelationTableCases.map((item, index) => (
           <tr key={index}>
@@ -242,7 +257,7 @@ function Unit1Page3() {
           </div>
         }
       >
-        {claim.stem}
+        <MathText text={claim.stem} />
       </QuestionBlock>
     </A4Page>
   );
@@ -255,7 +270,7 @@ function Unit1Page4() {
 
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={4}>
-      <QuestionBlock taskId={table.id} compact subparts={table.subparts ?? []} response={<RelationTable />}>
+      <QuestionBlock taskId={table.id} compact response={<RelationTable />}>
         {table.stem}
       </QuestionBlock>
 

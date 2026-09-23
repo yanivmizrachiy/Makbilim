@@ -316,14 +316,14 @@ describe('ParallelLinesDiagram — second-line skew (genuinely non-parallel pair
 describe('Unit 1 teaching pairs — one parallel configuration, one NOT', () => {
   const markup = renderToStaticMarkup(createElement(Unit1Continuation));
   const sections = markup.split('<section ').slice(1);
-  const stemOf = (id: string) => {
-    const question = unit1Questions.find(item => item.id === id);
-    if (!question) throw new Error(`Missing unit 1 question: ${id}`);
-    return question.stem;
+  // The question's own section (its stem may be split into math islands, so find it by task id).
+  const sectionOf = (id: string) => {
+    if (!unit1Questions.some(item => item.id === id)) throw new Error(`Missing unit 1 question: ${id}`);
+    return `data-task-id="${id}"`;
   };
 
   it.each(['U1-P3-A', 'U1-P3-D'])('%s pairs a parallel diagram with a genuinely non-parallel one', id => {
-    const pairSections = sections.filter(section => section.includes('class="paired-diagrams"') && section.includes(stemOf(id)));
+    const pairSections = sections.filter(section => section.includes('class="paired-diagrams"') && section.includes(sectionOf(id)));
     expect(pairSections).toHaveLength(1);
     const svgs = pairSections[0]!.split('<svg').slice(1);
     expect(svgs).toHaveLength(2);

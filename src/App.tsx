@@ -19,7 +19,7 @@ const byId = (id: string) => {
 // The three classes the student writes beside each marked pair: a bank to write from, not a choice.
 const PAIR_CLASSES = ['מתאימות', 'מתחלפות', 'אינן שייכות לאחד משני הסוגים'];
 
-function Unit1Page1() {
+export function Unit1Page1() {
   const a = byId('U1-P1-A');
   const b = byId('U1-P1-B');
   const c = byId('U1-P1-C');
@@ -35,7 +35,7 @@ function Unit1Page1() {
         {b.stem}
       </QuestionBlock>
 
-      <QuestionBlock taskId={c.id} compact diagram={<ParallelLinesDiagram lineLabels={['a', 'b']} transversalLabel="s" orientationDeg={-7} transversalDeg={101} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 1, role: 'marked' }]} ariaLabel="זווית אחת מסומנת; יש לזהות את הזווית המתחלפת לה" />}>
+      <QuestionBlock taskId={c.id} compact diagram={<ParallelLinesDiagram lineLabels={['a', 'b']} transversalLabel="s" orientationDeg={-7} transversalDeg={101} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 0, role: 'marked' }]} ariaLabel="זווית אחת מסומנת בין שני הישרים; יש לזהות את הזווית המתחלפת לה" />}>
         {c.stem}
       </QuestionBlock>
 

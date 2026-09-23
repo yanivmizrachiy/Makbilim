@@ -1,3 +1,11 @@
+import { THEOREMS } from './theorems';
+
+/**
+ * The parallel-arrow convention, stated in words where the arrows first appear (U1-P2-C) and in
+ * every unit-1 task whose answer depends on reading them (U1-P3-B).
+ */
+export const PARALLEL_ARROWS_CONVENTION = 'חצים זהים על שני ישרים מסמנים שהישרים מקבילים.';
+
 export type Unit1Question = {
   id: string;
   page: number;
@@ -48,46 +56,47 @@ export const unit1Questions: Unit1Question[] = [
   },
   {
     id: 'U1-P2-B', page: 2,
-    stem: 'בשרטוט המסובב שלפניכם סמנו בעצמכם זוג אחד של זוויות מתאימות וזוג אחד של זוויות מתחלפות.',
+    stem: 'בשרטוט שלפניכם סמנו בעצמכם זוג אחד של זוויות מתאימות וזוג אחד של זוויות מתחלפות.',
     subparts: ['רשמו זוג אחד של זוויות מתאימות.', 'רשמו זוג אחד של זוויות מתחלפות.', 'הסבירו בקצרה כיצד זיהיתם כל זוג לפי מיקומו ביחס לישרים ולישר החותך.'],
     diagram: { topology: 'rotated-eight-angle-construction', lineLabels: ['ℓ₁', 'ℓ₂', 'r'], pointLabels: ['P', 'R'], orientationDeg: 78, transversalDeg: 21, parallelGiven: false }
   },
-  // Theorem-wording drills (SPEC 3.1): every line is the full canonical theorem with
-  // exactly ONE word missing, and the missing word rotates so that the student writes
-  // each key word — מתאימות, מתחלפות, מקבילים, שוות — at least once. The two sentences
-  // differ only in the angle-type word, so each task keeps a single theorem in all its
-  // lines; that is what makes the angle-type blank uniquely determined.
+  // Theorem-wording drills (SPEC 3.1): every line is one of the two canonical direct theorems
+  // with exactly ONE word missing, and the missing word rotates so that the student writes each
+  // key word — מתאימות, מתחלפות, מקבילים, שוות — at least once. Each task mixes BOTH theorems, so
+  // the other lines never give the angle-type word away: the first line's blank (the angle type)
+  // is decided only by the pair marked in the drawing, which the instruction points to.
   {
-    id: 'U1-P2-C', page: 2, stem: 'בשרטוט מסומן זוג זוויות. השלימו בכל שורה מילה אחת, כך שיתקבל המשפט המתאים לזוג המסומן.',
+    id: 'U1-P2-C', page: 2, stem: `בשרטוט מסומן זוג זוויות. ${PARALLEL_ARROWS_CONVENTION} השלימו בכל שורה מילה אחת. בשורה הראשונה השלימו את סוג הזוויות לפי הזוג המסומן בשרטוט.`,
     subparts: [
+      'זוויות ______ בין ישרים מקבילים שוות.',
       'זוויות מתאימות בין ישרים ______ שוות.',
-      'זוויות מתאימות בין ישרים מקבילים ______.',
-      'זוויות ______ בין ישרים מקבילים שוות.'
+      'זוויות מתחלפות בין ישרים מקבילים ______.'
     ],
     diagram: { topology: 'minimal-theorem-support', lineLabels: ['e', 'f', 'z'], orientationDeg: 8, transversalDeg: 138, parallelGiven: true }
   },
   {
-    id: 'U1-P2-D', page: 3, stem: 'השלימו את המילה החסרה בכל שורה, כך שכל שורה תתאר את זוג הזוויות המסומן בשרטוט.',
+    id: 'U1-P2-D', page: 3, stem: 'בשרטוט מסומן זוג זוויות. השלימו בכל שורה מילה אחת. בשורה הראשונה השלימו את סוג הזוויות לפי הזוג המסומן בשרטוט.',
     subparts: [
-      'זוויות מתחלפות בין ישרים מקבילים ______.',
       'זוויות ______ בין ישרים מקבילים שוות.',
-      'זוויות מתחלפות בין ישרים ______ שוות.'
+      'זוויות מתחלפות בין ישרים מקבילים ______.',
+      'זוויות מתאימות בין ישרים ______ שוות.'
     ],
     diagram: { topology: 'minimal-theorem-support', lineLabels: ['x', 'y', 'v'], orientationDeg: -14, transversalDeg: 109, parallelGiven: true }
   },
   {
-    id: 'U1-P2-E', page: 3, stem: 'קבעו אם הטענה נכונה או לא נכונה. נמקו.',
-    subparts: ['זוויות מתחלפות שוות.', 'זוויות מתחלפות בין ישרים מקבילים שוות.', 'זוויות מתאימות בין ישרים מקבילים שוות.'],
+    id: 'U1-P2-E', page: 3, stem: 'קבעו לגבי כל טענה אם היא נכונה או לא נכונה. נמקו.',
+    subparts: ['זוויות מתחלפות שוות.', THEOREMS.alternateDirect.text, THEOREMS.correspondingDirect.text],
     verdictOptions: ['נכון', 'לא נכון'],
     diagram: { topology: 'statement-only-with-small-reference-diagram', lineLabels: ['r', 's', 't'], orientationDeg: 0, transversalDeg: 64, parallelGiven: true }
   },
   {
-    id: 'U1-P3-A', page: 3, stem: 'בכל אחד משני השרטוטים מסומן זוג זוויות מתחלפות. דניאל אמר: „זוויות מתחלפות שוות.” נועה אמרה: „המשפט אינו מדויק; צריך לומר: זוויות מתחלפות בין ישרים מקבילים שוות.” קבעו מי צודק והסבירו מדוע.',
+    id: 'U1-P3-A', page: 3, stem: `בכל אחד משני השרטוטים מסומן זוג זוויות מתחלפות. בשרטוט אחד הישרים m ו־n מקבילים (מסומנים בחצים), ובשרטוט השני הם אינם מקבילים. דניאל אמר: „בשני השרטוטים הזוויות המסומנות שוות, כי זוויות מתחלפות שוות.” נועה אמרה: „זה לא מדויק: ${THEOREMS.alternateDirect.text}” קבעו מי צודק. ציינו באיזה שרטוט אפשר לקבוע שהזוויות המסומנות שוות, ונמקו.`,
     diagram: { topology: 'claim-analysis-two-configurations', lineLabels: ['m', 'n', 'q'], orientationDeg: 13, transversalDeg: 63, parallelGiven: false }
   },
   {
-    id: 'U1-P3-B', page: 4, stem: 'השלימו את הטבלה לפי השרטוטים.',
-    subparts: ['קבעו בכל שורה אם הזוג המסומן הוא זוג זוויות מתאימות או זוג זוויות מתחלפות.', 'קבעו אם ניתן להסיק שהזוויות שוות על סמך הנתונים שבשרטוט.'],
+    id: 'U1-P3-B', page: 4,
+    // The whole instruction sits above the table; the column headings name what each cell asks.
+    stem: `השלימו את הטבלה לפי השרטוטים. ${PARALLEL_ARROWS_CONVENTION} כשאין חצים — לא נתון שהישרים מקבילים, גם אם הם נראים מקבילים.`,
     diagram: { topology: 'four-mini-diagrams-table', lineLabels: ['a', 'c', 'p'], orientationDeg: 31, transversalDeg: 107, parallelGiven: false }
   },
   {
@@ -96,7 +105,7 @@ export const unit1Questions: Unit1Question[] = [
     diagram: { topology: 'rotated-four-option-angle-pairs', lineLabels: ['b', 'd', 'f'], pointLabels: ['S', 'T'], orientationDeg: 84, transversalDeg: 151, parallelGiven: false, highlights: ['option-a', 'option-b', 'option-c', 'option-d'] }
   },
   {
-    id: 'U1-P3-D', page: 4, stem: 'בכל אחד משני השרטוטים מסומן זוג זוויות מתאימות. מאיה אמרה: „זוויות מתאימות שוות.” יואב טען שחסר במשפט תנאי הכרחי. כתבו את המשפט המלא והמדויק והסבירו מה היה חסר.',
+    id: 'U1-P3-D', page: 4, stem: 'בכל אחד משני השרטוטים מסומן זוג זוויות מתאימות. מאיה אמרה: „זוויות מתאימות שוות.” יואב טען שחסר במשפט תנאי הכרחי. כתבו את המשפט המדויק והסבירו, בעזרת השרטוטים, מה היה חסר.',
     diagram: { topology: 'two-configurations-one-parallel-one-not', lineLabels: ['h', 'k', 's'], orientationDeg: -21, transversalDeg: 48, parallelGiven: false }
   }
 ];

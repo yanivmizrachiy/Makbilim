@@ -505,8 +505,8 @@ body { direction: rtl; }
 
 .data-table td.write-cell { height: var(--write-cell-h); }
 
-.relation-table .col-figure { width: 44%; }
-.relation-table .col-answer { width: 28%; }
+.relation-table .col-figure { width: 30%; }
+.relation-table .col-answer { width: 35%; }
 .relation-table td:first-child { padding: 0.5mm; }
 .relation-table td:first-child > * { margin-inline: auto; }
 
