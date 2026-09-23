@@ -1,0 +1,1217 @@
+{
+  "pageCount": 19,
+  "expectedPages": [
+    [
+      1,
+      1
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      1,
+      3
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      2,
+      1
+    ],
+    [
+      2,
+      2
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      2,
+      4
+    ],
+    [
+      2,
+      5
+    ],
+    [
+      2,
+      6
+    ],
+    [
+      3,
+      1
+    ],
+    [
+      3,
+      2
+    ],
+    [
+      3,
+      3
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      4,
+      2
+    ],
+    [
+      5,
+      1
+    ],
+    [
+      5,
+      2
+    ],
+    [
+      5,
+      3
+    ],
+    [
+      5,
+      4
+    ]
+  ],
+  "mathJaxStatus": {
+    "total": 167,
+    "rendered": 167,
+    "svgNodes": 167
+  },
+  "layout": [
+    {
+      "renderIndex": 1,
+      "unit": 1,
+      "localPage": 1,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 15.859375,
+      "topGapRatio": 0.016750556976648238,
+      "bottomGapPx": 4.546875,
+      "bottomGapRatio": 0.00480237643369915,
+      "usedSpanRatio": 0.9784470665896526,
+      "maxInterQuestionGapPx": 16.109375,
+      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "questionCount": 4,
+      "markerCount": 4,
+      "subpartCount": 3,
+      "subpartMarkerCount": 3,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 4,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 1,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 2,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 3,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 1 — מושגים בסיסיים",
+      "pageNumberText": "עמוד 1",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 2,
+      "unit": 1,
+      "localPage": 2,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 15.859375,
+      "topGapRatio": 0.016750556976648238,
+      "bottomGapPx": 4.53125,
+      "bottomGapRatio": 0.004785873421899497,
+      "usedSpanRatio": 0.9784635696014523,
+      "maxInterQuestionGapPx": 16.109375,
+      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "questionCount": 4,
+      "markerCount": 4,
+      "subpartCount": 3,
+      "subpartMarkerCount": 3,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 4,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 11,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 1,
+          "labels": 11,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 2,
+          "labels": 11,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 3,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 1 — מושגים בסיסיים",
+      "pageNumberText": "עמוד 2",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 3,
+      "unit": 1,
+      "localPage": 3,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 17.75,
+      "topGapRatio": 0.018747421404406304,
+      "bottomGapPx": 6.796875,
+      "bottomGapRatio": 0.007178810132849245,
+      "usedSpanRatio": 0.9740737684627444,
+      "maxInterQuestionGapPx": 20.265625,
+      "maxInterQuestionGapRatio": 0.021404406304150508,
+      "questionCount": 3,
+      "markerCount": 3,
+      "subpartCount": 0,
+      "subpartMarkerCount": 0,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 3,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 1,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 2,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 1 — מושגים בסיסיים",
+      "pageNumberText": "עמוד 3",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 4,
+      "unit": 1,
+      "localPage": 4,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 15.859375,
+      "topGapRatio": 0.016750556976648238,
+      "bottomGapPx": 0,
+      "bottomGapRatio": 0,
+      "usedSpanRatio": 1.032609951316115,
+      "maxInterQuestionGapPx": 16.109375,
+      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "questionCount": 3,
+      "markerCount": 3,
+      "subpartCount": 2,
+      "subpartMarkerCount": 2,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 7,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 1,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 2,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 3,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 4,
+          "labels": 11,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 5,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 6,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 1 — מושגים בסיסיים",
+      "pageNumberText": "עמוד 4",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 5,
+      "unit": 2,
+      "localPage": 1,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 15.859375,
+      "topGapRatio": 0.016750556976648238,
+      "bottomGapPx": 4.53125,
+      "bottomGapRatio": 0.004785873421899497,
+      "usedSpanRatio": 0.9784635696014523,
+      "maxInterQuestionGapPx": 16.109375,
+      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "questionCount": 4,
+      "markerCount": 4,
+      "subpartCount": 0,
+      "subpartMarkerCount": 0,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 4,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 1,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 2,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 3,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 2 — תרגילי חישוב",
+      "pageNumberText": "עמוד 1",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 6,
+      "unit": 2,
+      "localPage": 2,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 15.859375,
+      "topGapRatio": 0.016750556976648238,
+      "bottomGapPx": 4.53125,
+      "bottomGapRatio": 0.004785873421899497,
+      "usedSpanRatio": 0.9784635696014523,
+      "maxInterQuestionGapPx": 16.109375,
+      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "questionCount": 4,
+      "markerCount": 4,
+      "subpartCount": 0,
+      "subpartMarkerCount": 0,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 4,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 1,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 2,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 3,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 2 — תרגילי חישוב",
+      "pageNumberText": "עמוד 2",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 7,
+      "unit": 2,
+      "localPage": 3,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 15.859375,
+      "topGapRatio": 0.016750556976648238,
+      "bottomGapPx": 4.53125,
+      "bottomGapRatio": 0.004785873421899497,
+      "usedSpanRatio": 0.9784635696014523,
+      "maxInterQuestionGapPx": 16.109375,
+      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "questionCount": 4,
+      "markerCount": 4,
+      "subpartCount": 0,
+      "subpartMarkerCount": 0,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 4,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 8,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 1,
+          "labels": 6,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 2,
+          "labels": 7,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 3,
+          "labels": 8,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 2 — תרגילי חישוב",
+      "pageNumberText": "עמוד 3",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 8,
+      "unit": 2,
+      "localPage": 4,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 15.859375,
+      "topGapRatio": 0.016750556976648238,
+      "bottomGapPx": 4.53125,
+      "bottomGapRatio": 0.004785873421899497,
+      "usedSpanRatio": 0.9784635696014523,
+      "maxInterQuestionGapPx": 16.109375,
+      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "questionCount": 4,
+      "markerCount": 4,
+      "subpartCount": 0,
+      "subpartMarkerCount": 0,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 4,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 1,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 2,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 3,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 2 — תרגילי חישוב",
+      "pageNumberText": "עמוד 4",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 9,
+      "unit": 2,
+      "localPage": 5,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 15.859375,
+      "topGapRatio": 0.016750556976648238,
+      "bottomGapPx": 4.53125,
+      "bottomGapRatio": 0.004785873421899497,
+      "usedSpanRatio": 0.9784635696014523,
+      "maxInterQuestionGapPx": 16.109375,
+      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "questionCount": 4,
+      "markerCount": 4,
+      "subpartCount": 0,
+      "subpartMarkerCount": 0,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 4,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 1,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 2,
+          "labels": 8,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 3,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 2 — תרגילי חישוב",
+      "pageNumberText": "עמוד 5",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 10,
+      "unit": 2,
+      "localPage": 6,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 15.859375,
+      "topGapRatio": 0.016750556976648238,
+      "bottomGapPx": 4.53125,
+      "bottomGapRatio": 0.004785873421899497,
+      "usedSpanRatio": 0.9784635696014523,
+      "maxInterQuestionGapPx": 16.109375,
+      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "questionCount": 4,
+      "markerCount": 4,
+      "subpartCount": 0,
+      "subpartMarkerCount": 0,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 4,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 1,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 2,
+          "labels": 7,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 3,
+          "labels": 8,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 2 — תרגילי חישוב",
+      "pageNumberText": "עמוד 6",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 11,
+      "unit": 3,
+      "localPage": 1,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 15.859375,
+      "topGapRatio": 0.016750556976648238,
+      "bottomGapPx": 4.53125,
+      "bottomGapRatio": 0.004785873421899497,
+      "usedSpanRatio": 0.9784635696014523,
+      "maxInterQuestionGapPx": 16.109375,
+      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "questionCount": 4,
+      "markerCount": 4,
+      "subpartCount": 3,
+      "subpartMarkerCount": 3,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 4,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 1,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 2,
+          "labels": 9,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 3,
+          "labels": 6,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 3 — תרגילי הוכחה",
+      "pageNumberText": "עמוד 1",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 12,
+      "unit": 3,
+      "localPage": 2,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 15.859375,
+      "topGapRatio": 0.016750556976648238,
+      "bottomGapPx": 4.53125,
+      "bottomGapRatio": 0.004785873421899497,
+      "usedSpanRatio": 0.9784635696014523,
+      "maxInterQuestionGapPx": 16.109375,
+      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "questionCount": 4,
+      "markerCount": 4,
+      "subpartCount": 0,
+      "subpartMarkerCount": 0,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 4,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 1,
+          "labels": 6,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 2,
+          "labels": 6,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 3,
+          "labels": 6,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 3 — תרגילי הוכחה",
+      "pageNumberText": "עמוד 2",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 13,
+      "unit": 3,
+      "localPage": 3,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 15.859375,
+      "topGapRatio": 0.016750556976648238,
+      "bottomGapPx": 0,
+      "bottomGapRatio": 0,
+      "usedSpanRatio": 1.0243419424044888,
+      "maxInterQuestionGapPx": 16.109375,
+      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "questionCount": 4,
+      "markerCount": 4,
+      "subpartCount": 2,
+      "subpartMarkerCount": 2,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 4,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 6,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 1,
+          "labels": 6,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 2,
+          "labels": 8,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 3,
+          "labels": 6,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 3 — תרגילי הוכחה",
+      "pageNumberText": "עמוד 3",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 14,
+      "unit": 4,
+      "localPage": 1,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 15.859375,
+      "topGapRatio": 0.016750556976648238,
+      "bottomGapPx": 4.53125,
+      "bottomGapRatio": 0.004785873421899497,
+      "usedSpanRatio": 0.9784635696014523,
+      "maxInterQuestionGapPx": 16.109375,
+      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "questionCount": 4,
+      "markerCount": 4,
+      "subpartCount": 4,
+      "subpartMarkerCount": 4,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 1,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 4 — משפטים הפוכים",
+      "pageNumberText": "עמוד 1",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 15,
+      "unit": 4,
+      "localPage": 2,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 15.859375,
+      "topGapRatio": 0.016750556976648238,
+      "bottomGapPx": 4.546875,
+      "bottomGapRatio": 0.00480237643369915,
+      "usedSpanRatio": 0.9784470665896526,
+      "maxInterQuestionGapPx": 16.109375,
+      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "questionCount": 4,
+      "markerCount": 4,
+      "subpartCount": 0,
+      "subpartMarkerCount": 0,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 4,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 1,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 2,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 3,
+          "labels": 7,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 4 — משפטים הפוכים",
+      "pageNumberText": "עמוד 2",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 16,
+      "unit": 5,
+      "localPage": 1,
+      "isVerbatimCurriculum": true,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 11.328125,
+      "topGapRatio": 0.011964683554748742,
+      "bottomGapPx": 0,
+      "bottomGapRatio": 0,
+      "usedSpanRatio": 0.9880353164452512,
+      "maxInterQuestionGapPx": 15.109375,
+      "maxInterQuestionGapRatio": 0.015958412410264872,
+      "questionCount": 2,
+      "markerCount": 0,
+      "subpartCount": 0,
+      "subpartMarkerCount": 0,
+      "sourceNumberCount": 2,
+      "sourceShaCount": 2,
+      "geometrySvgCount": 0,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 5 — שאלות מתוך תוכנית הלימודים",
+      "pageNumberText": "עמוד 1",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 17,
+      "unit": 5,
+      "localPage": 2,
+      "isVerbatimCurriculum": true,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 11.328125,
+      "topGapRatio": 0.011964683554748742,
+      "bottomGapPx": 0,
+      "bottomGapRatio": 0,
+      "usedSpanRatio": 0.9880353164452512,
+      "maxInterQuestionGapPx": 15.109375,
+      "maxInterQuestionGapRatio": 0.015958412410264872,
+      "questionCount": 2,
+      "markerCount": 0,
+      "subpartCount": 0,
+      "subpartMarkerCount": 0,
+      "sourceNumberCount": 2,
+      "sourceShaCount": 2,
+      "geometrySvgCount": 0,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 5 — שאלות מתוך תוכנית הלימודים",
+      "pageNumberText": "עמוד 2",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 18,
+      "unit": 5,
+      "localPage": 3,
+      "isVerbatimCurriculum": true,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 11.328125,
+      "topGapRatio": 0.011964683554748742,
+      "bottomGapPx": 0,
+      "bottomGapRatio": 0,
+      "usedSpanRatio": 0.9880353164452512,
+      "maxInterQuestionGapPx": 15.109375,
+      "maxInterQuestionGapRatio": 0.015958412410264872,
+      "questionCount": 2,
+      "markerCount": 0,
+      "subpartCount": 0,
+      "subpartMarkerCount": 0,
+      "sourceNumberCount": 2,
+      "sourceShaCount": 2,
+      "geometrySvgCount": 0,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 5 — שאלות מתוך תוכנית הלימודים",
+      "pageNumberText": "עמוד 3",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    },
+    {
+      "renderIndex": 19,
+      "unit": 5,
+      "localPage": 4,
+      "isVerbatimCurriculum": true,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 11.328125,
+      "topGapRatio": 0.011964683554748742,
+      "bottomGapPx": 0,
+      "bottomGapRatio": 0,
+      "usedSpanRatio": 0.9982836867728361,
+      "maxInterQuestionGapPx": 15.109375,
+      "maxInterQuestionGapRatio": 0.015958412410264872,
+      "questionCount": 2,
+      "markerCount": 0,
+      "subpartCount": 0,
+      "subpartMarkerCount": 0,
+      "sourceNumberCount": 2,
+      "sourceShaCount": 2,
+      "geometrySvgCount": 0,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "unitTitleText": "יחידה 5 — שאלות מתוך תוכנית הלימודים",
+      "pageNumberText": "עמוד 4",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false
+    }
+  ]
+}
