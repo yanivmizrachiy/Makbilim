@@ -156,8 +156,8 @@ export const unit1RelationTableCases: Array<{
     relation: 'מתאימות',
     equalityConclusion: 'כן',
     marks: [
-      { intersection: 'top', sector: 0, tone: 'primary' },
-      { intersection: 'bottom', sector: 0, tone: 'primary' },
+      { intersection: 'top', sector: 0, role: 'marked' },
+      { intersection: 'bottom', sector: 0, role: 'marked' },
     ],
   },
   {
@@ -167,8 +167,8 @@ export const unit1RelationTableCases: Array<{
     relation: 'מתאימות',
     equalityConclusion: 'לא ניתן לקבוע',
     marks: [
-      { intersection: 'top', sector: 1, tone: 'primary' },
-      { intersection: 'bottom', sector: 1, tone: 'primary' },
+      { intersection: 'top', sector: 1, role: 'marked' },
+      { intersection: 'bottom', sector: 1, role: 'marked' },
     ],
   },
   {
@@ -178,8 +178,8 @@ export const unit1RelationTableCases: Array<{
     relation: 'מתחלפות',
     equalityConclusion: 'כן',
     marks: [
-      { intersection: 'top', sector: 2, tone: 'primary' },
-      { intersection: 'bottom', sector: 0, tone: 'primary' },
+      { intersection: 'top', sector: 2, role: 'marked' },
+      { intersection: 'bottom', sector: 0, role: 'marked' },
     ],
   },
   {
@@ -189,8 +189,8 @@ export const unit1RelationTableCases: Array<{
     relation: 'מתחלפות',
     equalityConclusion: 'לא ניתן לקבוע',
     marks: [
-      { intersection: 'top', sector: 0, tone: 'primary' },
-      { intersection: 'bottom', sector: 2, tone: 'primary' },
+      { intersection: 'top', sector: 0, role: 'marked' },
+      { intersection: 'bottom', sector: 2, role: 'marked' },
     ],
   },
 ];

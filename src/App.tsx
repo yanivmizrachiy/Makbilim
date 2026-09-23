@@ -37,11 +37,11 @@ function Unit1Page1() {
         {a.stem}
       </QuestionBlock>
 
-      <QuestionBlock taskId={b.id} compact diagram={<ParallelLinesDiagram lineLabels={['k', 'm']} transversalLabel="t" orientationDeg={4} transversalDeg={63} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 0, tone: 'primary' }]} ariaLabel="זווית אחת מסומנת במפגש העליון" />}>
+      <QuestionBlock taskId={b.id} compact diagram={<ParallelLinesDiagram lineLabels={['k', 'm']} transversalLabel="t" orientationDeg={4} transversalDeg={63} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 0, role: 'marked' }]} ariaLabel="זווית אחת מסומנת במפגש העליון" />}>
         {b.stem}
       </QuestionBlock>
 
-      <QuestionBlock taskId={c.id} compact diagram={<ParallelLinesDiagram lineLabels={['a', 'b']} transversalLabel="s" orientationDeg={-7} transversalDeg={116} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 1, tone: 'secondary' }]} ariaLabel="זווית אחת מסומנת; יש לזהות את הזווית המתחלפת לה" />}>
+      <QuestionBlock taskId={c.id} compact diagram={<ParallelLinesDiagram lineLabels={['a', 'b']} transversalLabel="s" orientationDeg={-7} transversalDeg={116} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 1, role: 'marked' }]} ariaLabel="זווית אחת מסומנת; יש לזהות את הזווית המתחלפת לה" />}>
         {c.stem}
       </QuestionBlock>
 
