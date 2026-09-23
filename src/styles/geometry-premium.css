@@ -10,26 +10,8 @@
  * single solid arc, the target a double arc, an auxiliary angle a thin dashed arc.
  */
 
-/* Label face: New Computer Modern — the very face MathJax sets the question text in — loaded
-   offline from the app bundle. Ascent/descent are pinned so a label's DOM box is its em box. */
-@font-face {
-  font-family: "Makbilim Math";
-  src: url("@mathjax/mathjax-newcm-font/chtml/woff2/mjx-ncm-n.woff2") format("woff2");
-  font-display: block;
-  ascent-override: 80.6%;
-  descent-override: 19.4%;
-  line-gap-override: 0%;
-}
-
-@font-face {
-  font-family: "Makbilim Math";
-  src: url("@mathjax/mathjax-newcm-font/chtml/woff2/mjx-ncm-s.woff2") format("woff2");
-  font-display: block;
-  unicode-range: U+2113;
-  ascent-override: 80.6%;
-  descent-override: 19.4%;
-  line-gap-override: 0%;
-}
+/* Label face: "Makbilim Math" (New Computer Modern, the face MathJax sets the question text in) —
+   declared with every other face in fonts.css. */
 
 .geometry-diagram {
   --geo-ink: #1a1f24;

@@ -17,7 +17,7 @@
   --preview-bg: #eef2f5;
 
   /* ── Type scale: two sizes for text the student reads, plus small labels ── */
-  --font-body: "Noto Sans Hebrew", "Arial Hebrew", Arial, sans-serif;
+  --font-body: "Noto Sans Hebrew", "Makbilim Symbols", "Arial Hebrew", Arial, sans-serif;
   --text-body: 11.7pt;          /* stems, statements, sub-items */
   --text-secondary: 11pt;       /* answer options, matching columns, tables, word banks */
   --text-label: 9.4pt;          /* answer-area labels: נימוק:, המשפט המתאים:, דרך ראשונה … */

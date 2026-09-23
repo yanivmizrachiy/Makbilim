@@ -19,6 +19,8 @@ import { geometryTokens as T, type DiagramSize } from '../../src/styles/tokens';
  */
 
 const css = fs.readFileSync(path.join(process.cwd(), 'src/styles/geometry-premium.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+/** Every @font-face of the booklet lives in fonts.css (offline, bundled). */
+const fontsCss = fs.readFileSync(path.join(process.cwd(), 'src/styles/fonts.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
 const html = renderToStaticMarkup(createElement(App));
 const sections = html.split('<section ').slice(1);
 
@@ -230,8 +232,9 @@ describe('geometry engine — textbook labels (E3)', () => {
     expect(shapeLabel('A').rtl).toBe(false);
     const hebrew = diagrams.flatMap(({ svg }) => [...svg.matchAll(/<text [^>]*direction="rtl"[^>]*data-label="([^"]*)"/g)].map(m => m[1]));
     expect(hebrew).toContain('מסילה 1');
-    expect(css).toMatch(/src:\s*url\("@mathjax\/mathjax-newcm-font\/chtml\/woff2\/mjx-ncm-n\.woff2"\)/);
-    expect(css).not.toMatch(/https?:\/\//);
+    expect(fontsCss).toMatch(/font-family:\s*"Makbilim Math";\s*src:\s*url\("@mathjax\/mathjax-newcm-font\/chtml\/woff2\/mjx-ncm-n\.woff2"\)/);
+    expect(css).toMatch(/font-family:\s*"Makbilim Math"/);
+    for (const sheet of [css, fontsCss]) expect(sheet).not.toMatch(/https?:\/\//);
   });
 });
 

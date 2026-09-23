@@ -11,7 +11,7 @@
   @bottom-right {
     content: "מדריך למורה · זוויות בין ישרים מקבילים";
     color: #5b6773;
-    font-family: "Noto Sans Hebrew", "Arial Hebrew", Arial, sans-serif;
+    font-family: "Noto Sans Hebrew", "Makbilim Symbols", "Arial Hebrew", Arial, sans-serif;
     font-size: 7.5pt;
     vertical-align: top;
     padding-top: 4mm;
@@ -20,7 +20,7 @@
   @bottom-left {
     content: counter(page);
     color: #5b6773;
-    font-family: "Noto Sans Hebrew", "Arial Hebrew", Arial, sans-serif;
+    font-family: "Noto Sans Hebrew", "Makbilim Symbols", "Arial Hebrew", Arial, sans-serif;
     font-size: 8pt;
     font-weight: 700;
     vertical-align: top;
@@ -58,7 +58,7 @@ body {
   direction: rtl;
   background: #edf2f4;
   color: var(--teacher-ink);
-  font-family: "Noto Sans Hebrew", "Arial Hebrew", Arial, sans-serif;
+  font-family: "Noto Sans Hebrew", "Makbilim Symbols", "Arial Hebrew", Arial, sans-serif;
   font-synthesis: none;
   font-kerning: normal;
   text-rendering: optimizeLegibility;
