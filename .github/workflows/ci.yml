@@ -41,6 +41,9 @@ jobs:
       - name: Validate canonical contracts and content
         run: npm run validate
 
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
       - name: Ensure generated curriculum has eight immutable blocks
         run: |
           node -e "const fs=require('fs');const p='src/content/generated/curriculum-source.json';const j=JSON.parse(fs.readFileSync(p,'utf8'));if(j.blockCount!==8||j.immutable!==true)process.exit(1);console.log('generated curriculum PASS')"
