@@ -69,6 +69,8 @@ const taskSchema = z.object({
   skill: z.string().min(1),
   theoremIds: z.array(z.string().regex(/^T[1-4]$/)),
   instructionVerb: z.string().min(1),
+  // SPEC 6.1: every original task carries an authored, Hebrew misconception target.
+  misconceptionTarget: z.string().trim().min(8).regex(/[\u0590-\u05FF]/, 'misconceptionTarget must be written in Hebrew'),
   progressionGain: z.string().min(1),
 }).passthrough();
 
