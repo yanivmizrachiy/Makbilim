@@ -98,8 +98,35 @@ function TheoremCompletion({ q }: { q: Unit4Question }) {
   );
 }
 
+// One written verdict per statement (e.g. ישיר / הפוך): the statements carry no blank of their
+// own, but the key holds one completion per line, so every line gets its own write-in slot.
+const isPerLineVerdict = (q: Unit4Question) =>
+  !isTheoremCompletion(q) && (q.subparts ?? []).length > 0 && q.expected.completions?.length === q.subparts?.length;
+
+function VerdictLine({ line }: { line: string }) {
+  return (
+    <>
+      <MathText text={line} />
+      <span className="line-verdict">
+        <span className="line-verdict-label">סוג המשפט:</span>
+        <span className="cloze-blank" aria-hidden="true" />
+        <span className="sr-only">מילה חסרה</span>
+      </span>
+    </>
+  );
+}
+
+function PerLineVerdict({ q }: { q: Unit4Question }) {
+  return (
+    <QuestionBlock taskId={q.id} compact subparts={(q.subparts ?? []).map(line => <VerdictLine line={line} />)}>
+      <MathText text={q.stem} />
+    </QuestionBlock>
+  );
+}
+
 function ConverseQuestion({ q }: { q: Unit4Question }) {
   if (isTheoremCompletion(q)) return <TheoremCompletion q={q} />;
+  if (isPerLineVerdict(q)) return <PerLineVerdict q={q} />;
   const fullProof = q.id === 'U4-P2-D';
   return (
     <QuestionBlock

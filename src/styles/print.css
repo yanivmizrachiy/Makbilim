@@ -197,6 +197,16 @@ body { direction: rtl; }
   vertical-align: -0.2em;
 }
 
+/* Per-statement verdict slot (e.g. ישיר / הפוך), on its own row at the end of the statement. */
+.line-verdict {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: 1mm;
+  margin-top: 0.6mm;
+  font-weight: 600;
+}
+
 /* One MathText island is one unbreakable unit (see MathText: linebreaks.inline = false).
    Scoped to MathText's own islands — unit 5's verbatim source markup is never restyled. */
 .math.mathjax-inline {

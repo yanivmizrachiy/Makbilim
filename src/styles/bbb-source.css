@@ -22,8 +22,11 @@
   break-inside: avoid;
 }
 
+/* The last block draws no separator, so it keeps no separator padding either: the two rows are
+   equal (1fr), and on the densest page that padding alone pushed the pair past the content box. */
 .bbb-source-block:last-child {
   border-bottom: 0;
+  padding-bottom: 0;
 }
 
 .bbb-source .q {
