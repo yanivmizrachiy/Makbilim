@@ -14,6 +14,8 @@ const checksumBuild = read('scripts/write-checksums.mjs');
 const sbomBuild = read('scripts/write-sbom.mjs');
 const ci = read('.github/workflows/ci.yml');
 const release = read('.github/workflows/release.yml');
+const pythonVersion = read('.python-version').trim();
+const nvmrc = read('.nvmrc').trim();
 const baseline = JSON.parse(read('qa/visual-baseline.json')) as {
   pageCount: number;
   layout: unknown[];
@@ -65,6 +67,17 @@ describe('publication hardening', () => {
     expect(release).toContain('input-fingerprint.json');
     expect(release).toContain('gh release create');
     expect(release).toContain('--verify-tag');
+  });
+
+  it('pins exact Node and Python runtimes', () => {
+    expect(nvmrc).toBe('22.23.2');
+    expect(pythonVersion).toBe('3.14.7');
+    expect(ci).toContain("NODE_VERSION: '22.23.2'");
+    expect(release).toContain("NODE_VERSION: '22.23.2'");
+    expect(ci).toContain("PYTHON_VERSION: '3.14.7'");
+    expect(release).toContain("PYTHON_VERSION: '3.14.7'");
+    expect(ci).toContain('actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97');
+    expect(release).toContain('actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97');
   });
 
   it('pins all external GitHub Actions to immutable commit SHAs', () => {

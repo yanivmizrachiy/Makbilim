@@ -70,6 +70,12 @@ const sbom = {
 };
 
 const packageJson = JSON.parse(await fs.readFile(path.join(root, 'package.json'), 'utf8'));
+const { stdout: pythonVersionStdout } = await execFileAsync('python3', ['--version'], {
+  cwd: root,
+  encoding: 'utf8',
+});
+const pythonRuntime = pythonVersionStdout.trim();
+
 const manifest = {
   schemaVersion: 3,
   project: 'Makbilim',
@@ -79,6 +85,7 @@ const manifest = {
   ref: process.env.GITHUB_REF ?? 'local',
   runId: process.env.GITHUB_RUN_ID ?? null,
   node: process.version,
+  python: pythonRuntime,
   aggregateInputSha256,
   trackedFileCount: inputs.length,
   inputs,

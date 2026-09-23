@@ -497,6 +497,7 @@ Point, Vector, Line, Segment, ישרים מקבילים, חותך אחד/יות�
 ## 11.12 דטרמיניזם, שלמות ו־Release
 - `package-lock.json` tracked ומחייב; CI משתמש ב־`npm ci` וב־npm cache המבוסס על lockfile.
 - סביבת Node pinned במפורש ל־Node `22.23.2` ב־CI, Release, `package.json` ו־`.nvmrc`; אין שימוש בגרסת major נעה.
+- סביבת Python pinned במפורש ל־Python `3.14.7` באמצעות `actions/setup-python` pinned ל־SHA וב־`.python-version`; אין הסתמכות על Python המתחלף של runner.
 - קבצי טקסט נשמרים ב־UTF-8 עם LF באמצעות `.editorconfig` ו־`.gitattributes`, גם ב־Windows; `.npmrc` אוכף `engine-strict` ו־`save-exact`.
 - כל dependency ישיר חייב להיות pinned לגרסה מדויקת; lockfile חייב להיות v3, עם registry ו־integrity תקינים.
 - CI ו־Release מריצים `npm audit --omit=dev --audit-level=high`; פגיעות production ברמת high/critical מפילות build.
@@ -602,6 +603,7 @@ Makbilim/
 ├─ package.json
 ├─ package-lock.json
 ├─ .nvmrc
+├─ .python-version
 ├─ .npmrc
 ├─ .gitattributes
 ├─ .editorconfig
