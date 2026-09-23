@@ -314,7 +314,7 @@ function LocatorExample() {
   if (!sample) throw new Error('The cover example needs a third question on a unit 2 page.');
   return (
     <figure className="teacher-locator-example">
-      <div className="teacher-locator-sample" aria-hidden="true">
+      <div className="teacher-locator-sample">
         <AnswerHeader location={sample} kindClassName="teacher-sample-kind" />
         <p className="teacher-answer-stem"><MathText text={sample.stemOpening} /></p>
       </div>
