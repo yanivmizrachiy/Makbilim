@@ -1,6 +1,7 @@
 import { A4Page } from '../components/A4Page';
 import { MathText } from '../components/MathText';
 import { QuestionBlock } from '../components/QuestionBlock';
+import { ChoiceGrid } from '../components/ResponseParts';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
 import { alternatePair, correspondingPair, type Sector } from '../geometry/relations';
 import { unit2Questions, type Unit2Question } from '../content/questions-unit2';
@@ -222,7 +223,7 @@ function TaskTable({ rows }: { rows: NonNullable<Unit2Question['tableRows']> }) 
           <tr key={index}>
             <td><MathText text={row.label} /></td>
             <td>{row.relation ? <MathText text={row.relation} /> : ''}</td>
-            <td>{row.value ? <MathText text={row.value} /> : <span className="table-write-line" />}</td>
+            <td className={row.value ? undefined : 'write-cell'}>{row.value ? <MathText text={row.value} /> : null}</td>
           </tr>
         ))}
       </tbody>
@@ -231,22 +232,10 @@ function TaskTable({ rows }: { rows: NonNullable<Unit2Question['tableRows']> }) 
 }
 
 function CalculationQuestion({ q }: { q: Unit2Question }) {
-  const outputCount = Object.keys(q.expected.values ?? {}).length;
   return (
-    <QuestionBlock
-      taskId={q.id}
-      compact
-      diagram={<QuestionDiagram q={q} />}
-      justificationLane={q.justificationLane}
-      justificationLabel="המשפט המתאים:"
-      answerLines={q.choices || q.tableRows ? 0 : Math.max(1, Math.min(2, outputCount))}
-    >
+    <QuestionBlock taskId={q.id} compact diagram={<QuestionDiagram q={q} />}>
       <MathText text={q.stem} />
-      {q.choices && (
-        <div className="choice-grid">
-          {q.choices.map(choice => <div className="choice" key={choice}><MathText text={choice} /></div>)}
-        </div>
-      )}
+      {q.choices && <ChoiceGrid options={q.choices} />}
       {q.tableRows && <TaskTable rows={q.tableRows} />}
     </QuestionBlock>
   );

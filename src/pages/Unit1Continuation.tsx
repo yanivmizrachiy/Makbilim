@@ -2,6 +2,8 @@ import { A4Page } from '../components/A4Page';
 import { ClozeText } from '../components/ClozeText';
 import { MathText } from '../components/MathText';
 import { QuestionBlock } from '../components/QuestionBlock';
+import { ChoiceGrid, ItemRows, LineSlot, VerdictOptions } from '../components/ResponseParts';
+import { answerSpecById } from '../content/answer-areas';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
 import { alternateInteriorPairs, correspondingPair, type AnglePair } from '../geometry/relations';
 import { unit1Questions } from '../content/questions-unit1';
@@ -70,29 +72,8 @@ function EightAngleDiagram({
   );
 }
 
-// Theorem-completion lines sit beside the reference diagram (in the stem column of
-// the split layout) and keep the canonical small-bullet subpart markers.
-function ClozeLines({ lines }: { lines: string[] }) {
-  return (
-    <div className="subparts">
-      {lines.map((line, index) => (
-        <div className="subpart" key={index}>
-          <span className="subpart-marker" aria-hidden="true">•</span>
-          <div className="subpart-content"><ClozeText text={line} /></div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function TrueFalseRow({ text }: { text: string }) {
-  return (
-    <div className="true-false-row">
-      <span>{text}</span>
-      <span className="true-false-options">○ נכון&nbsp;&nbsp;&nbsp;○ לא נכון</span>
-    </div>
-  );
-}
+// Theorem-completion lines: each is a sub-item (•) with its blank written in place.
+const clozeItems = (lines: string[]) => lines.map(line => ({ content: <ClozeText text={line} /> }));
 
 function Unit1Page2() {
   const corresponding = byId('U1-P1-E');
@@ -124,7 +105,8 @@ function Unit1Page2() {
         taskId={rotated.id}
         compact
         diagram={<EightAngleDiagram lineLabels={['ℓ₁', 'ℓ₂']} transversalLabel="r" orientationDeg={78} transversalDeg={24} />}
-        subparts={(rotated.subparts ?? []).map(text => <>{text} ______________________________</>)}
+        items={(rotated.subparts ?? []).map((text, index, all) =>
+          index < all.length - 1 ? { content: <>{text}<LineSlot /></>, inline: true } : { content: text })}
       >
         {rotated.stem}
       </QuestionBlock>
@@ -133,9 +115,9 @@ function Unit1Page2() {
         taskId={theorem.id}
         compact
         diagram={<ParallelLinesDiagram lineLabels={['e', 'f']} transversalLabel="z" orientationDeg={8} transversalDeg={67} showParallelMarks angleMarks={markedPair(correspondingPair(0))} />}
+        items={clozeItems(theorem.subparts ?? [])}
       >
         {theorem.stem}
-        <ClozeLines lines={theorem.subparts ?? []} />
       </QuestionBlock>
     </A4Page>
   );
@@ -198,6 +180,7 @@ export const unit1RelationTableCases: Array<{
 function RelationTable() {
   return (
     <table className="data-table relation-table">
+      <colgroup><col className="col-figure" /><col className="col-answer" /><col className="col-answer" /></colgroup>
       <thead><tr><th>שרטוט</th><th>סוג הזוג</th><th>האם ניתן לקבוע שהזוויות שוות?</th></tr></thead>
       <tbody>
         {unit1RelationTableCases.map((item, index) => (
@@ -232,21 +215,25 @@ function Unit1Page3() {
         taskId={theorem.id}
         compact
         diagram={<ParallelLinesDiagram lineLabels={['x', 'y']} transversalLabel="v" orientationDeg={-14} transversalDeg={109} showParallelMarks angleMarks={markedPair(alternateInteriorPair(-14, 109))} />}
+        items={clozeItems(theorem.subparts ?? [])}
       >
         {theorem.stem}
-        <ClozeLines lines={theorem.subparts ?? []} />
       </QuestionBlock>
 
-      <QuestionBlock taskId={trueFalse.id}>
+      <QuestionBlock
+        taskId={trueFalse.id}
+        items={(trueFalse.subparts ?? []).map(text => ({
+          content: text,
+          aside: <VerdictOptions options={trueFalse.verdictOptions ?? []} />,
+          after: <ItemRows label="נימוק:" rows={answerSpecById(trueFalse.id).itemRows ?? 1} />,
+        }))}
+      >
         {trueFalse.stem}
-        <div className="true-false-list">
-          {(trueFalse.subparts ?? []).map((text, index) => <TrueFalseRow key={index} text={text} />)}
-        </div>
       </QuestionBlock>
 
       <QuestionBlock
         taskId={claim.id}
-        answerLines={4}
+        diagramLayout="stacked"
         diagram={
           <div className="paired-diagrams">
             <ParallelLinesDiagram lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={13} transversalDeg={73} showParallelMarks angleMarks={markedPair(alternateInteriorPair(13, 73))} />
@@ -267,9 +254,8 @@ function Unit1Page4() {
 
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={4}>
-      <QuestionBlock taskId={table.id} compact subparts={(table.subparts ?? []).map(text => <>{text}</>)}>
+      <QuestionBlock taskId={table.id} compact subparts={table.subparts ?? []} response={<RelationTable />}>
         {table.stem}
-        <RelationTable />
       </QuestionBlock>
 
       <QuestionBlock
@@ -296,15 +282,13 @@ function Unit1Page4() {
         }
       >
         {choice.stem}
-        <div className="choice-grid">
-          {(choice.choices ?? []).map(item => <div className="choice" key={item}>{item}</div>)}
-        </div>
+        <ChoiceGrid options={choice.choices ?? []} />
       </QuestionBlock>
 
       <QuestionBlock
         taskId={correction.id}
         compact
-        answerLines={4}
+        diagramLayout="stacked"
         diagram={
           <div className="paired-diagrams">
             <ParallelLinesDiagram lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={-21} transversalDeg={48} showParallelMarks angleMarks={markedPair(correspondingPair(0))} />

@@ -1,0 +1,126 @@
+/* Design tokens — the ONE place where the booklet's layout custom properties are defined.
+   Imported first (src/main.tsx). Every other stylesheet only reads var(--…); the only other place
+   allowed to SET a custom property is a density preset in page-tuning.css
+   (tests/unit/layout-tokens.test.ts enforces both rules). */
+
+:root {
+  /* ── Colour (didactic only; every value has a grayscale / forced-colors mapping below) ── */
+  --ink: #111827;
+  --ink-soft: #1f2933;
+  --muted: #5b6673;
+  --navy: #183b56;
+  --teal: #0f6f78;
+  --amber: #a45a16;
+  --line: #d7dee7;
+  --soft: #f4f7f9;
+  --paper: #ffffff;
+  --preview-bg: #eef2f5;
+
+  /* ── Type scale: two sizes for text the student reads, plus small labels ── */
+  --font-body: "Noto Sans Hebrew", "Arial Hebrew", Arial, sans-serif;
+  --text-body: 11.7pt;          /* stems, statements, sub-items */
+  --text-secondary: 11pt;       /* answer options, matching columns, tables, word banks */
+  --text-label: 9.4pt;          /* answer-area labels: נימוק:, המשפט המתאים:, דרך ראשונה … */
+  --leading-body: 1.45;
+  --leading-cloze: 1.8;         /* fill-in lines: room to handwrite above the blank */
+  --leading-slot: 1.7;          /* final-answer slots */
+  --body-size: var(--text-body);
+  --body-leading: var(--leading-body);
+  --task-kind-size: 8.6pt;
+  --measure: 128mm;             /* prose line length where there is no diagram column */
+
+  /* ── Spacing scale (≈ ×1.5) ── */
+  --space-1: 1mm;
+  --space-2: 1.5mm;
+  --space-3: 2.5mm;
+  --space-4: 4mm;
+  --space-5: 6mm;
+  --space-6: 9mm;
+
+  /* ── Page frame ── */
+  --page-pad-top: 8mm;
+  --page-pad-inline: 10mm;
+  --page-pad-bottom: 7mm;
+  --header-height: 14mm;
+  --footer-height: 8mm;
+  --content-pad-top: 3.5mm;
+  --content-pad-bottom: var(--space-2);
+  --frame-rule-w: 0.3mm;
+  --frame-rule-color: #9aa8b6;
+  --header-accent-w: 22mm;
+  --header-accent-h: 0.8mm;
+  --running-head-size: 8.7pt;
+  --unit-title-size: 13.6pt;
+  --page-number-size: 10.6pt;
+  --footer-size: 7pt;
+  --footer-color: #7a8490;
+
+  /* ── Question rhythm ── */
+  --question-marker-size: 11pt;
+  --subpart-marker-size: 8.6pt;
+  --q-marker-col: 5.8mm;
+  --q-marker-gap: 2mm;
+  --sub-marker-col: 4mm;
+  --q-inner-gap: 2mm;           /* between stem, sub-items, answer slots and work area */
+  --q-sep-w: 0.22mm;            /* solid hairline between questions … */
+  --q-sep-color: #707d8b;       /* … darker than the dotted writing rules */
+  --q-sep-after: 3mm;           /* separator → next question's first line */
+  --work-clearance: 3.5mm;      /* last writing rule → separator (≥ 3mm, never a 'double line') */
+  --diagram-col: 62mm;          /* diagram column of the side-by-side question grid */
+  --diagram-gap: 5mm;
+  --verdict-col: 44mm;          /* per-statement verdict column beside a statement */
+
+  /* ── Answer system: one writing-line grammar ── */
+  --rule-pitch: 8mm;            /* handwriting line pitch; a density preset may use 7mm, never less */
+  --rule-w: 0.25mm;
+  --rule-style: dotted;
+  --rule-color: #98a2ad;
+  --slot-w: 0.3mm;              /* solid ink slots: final answers, cloze blanks, per-line slots */
+  --slot-color: var(--ink-soft);
+  --slot-value-w: 22mm;
+  --slot-word-w: 30mm;
+  --cloze-blank-width: var(--slot-word-w);
+  --write-cell-h: 8mm;          /* empty answer cells in tables */
+  --table-cell-pad: 1.2mm;
+  --order-col-w: 12mm;          /* 'סדר' column of an order-the-proof table */
+  --proof-claim-w: 40%;         /* טענה | נימוק split of a blank proof form */
+  --choice-bubble-size: 3.4mm;
+  --choice-bubble-stroke: 0.3mm;
+  --choice-gap: 2mm;
+
+  /* ── Diagram scale (owned by the geometry layer; values unchanged) ── */
+  --diagram-compact-height: 40mm;
+  --diagram-full-height: 54mm;
+}
+
+/* Unit accent: a restrained typographic accent on markers, labels and the header tick. */
+.a4-page[data-layout-quality="premium"] { --unit-accent: #0f6f78; --unit-accent-dark: #183b56; }
+.a4-page[data-unit="2"] { --unit-accent: #126782; --unit-accent-dark: #174968; }
+.a4-page[data-unit="3"] { --unit-accent: #315b7d; --unit-accent-dark: #213f5b; }
+.a4-page[data-unit="4"] { --unit-accent: #6b526f; --unit-accent-dark: #4c3b51; }
+.a4-page[data-unit="5"] { --unit-accent: #5d6670; --unit-accent-dark: #3f4851; }
+
+@media print and (monochrome) {
+  :root {
+    --navy: #111;
+    --teal: #333;
+    --amber: #555;
+    --soft: #f2f2f2;
+    --rule-color: #888;
+    --q-sep-color: #555;
+  }
+
+  .a4-page[data-layout-quality="premium"] {
+    --unit-accent: #222;
+    --unit-accent-dark: #111;
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --rule-color: CanvasText;
+    --q-sep-color: CanvasText;
+    --slot-color: CanvasText;
+    --frame-rule-color: CanvasText;
+  }
+}

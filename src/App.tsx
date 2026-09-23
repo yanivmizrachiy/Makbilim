@@ -1,5 +1,6 @@
 import { A4Page } from './components/A4Page';
 import { QuestionBlock } from './components/QuestionBlock';
+import { LineSlot, WordBank } from './components/ResponseParts';
 import { ParallelLinesDiagram } from './geometry/ParallelLinesDiagram';
 import { unit1Questions } from './content/questions-unit1';
 import { Unit1Continuation } from './pages/Unit1Continuation';
@@ -15,15 +16,8 @@ const byId = (id: string) => {
   return question;
 };
 
-function RelationChoices() {
-  return (
-    <div className="choice-grid" aria-label="אפשרויות תשובה">
-      <div className="choice">מתאימות</div>
-      <div className="choice">מתחלפות</div>
-      <div className="choice">אינן שייכות לאחד משני הסוגים</div>
-    </div>
-  );
-}
+// The three classes the student writes beside each marked pair: a bank to write from, not a choice.
+const PAIR_CLASSES = ['מתאימות', 'מתחלפות', 'אינן שייכות לאחד משני הסוגים'];
 
 function Unit1Page1() {
   const a = byId('U1-P1-A');
@@ -56,10 +50,10 @@ function Unit1Page1() {
           { intersection: 'top', sector: 2, tone: 'neutral', arcStyle: 'dashed' },
           { intersection: 'bottom', sector: 1, tone: 'neutral', arcStyle: 'dashed' },
         ]} ariaLabel="שלושה זוגות זוויות מסומנים בסוגי קשת שונים" />}
-        subparts={(d.subparts ?? []).map(text => <>{text} ____________________</>)}
+        items={(d.subparts ?? []).map(text => ({ content: <>{text}<LineSlot /></>, inline: true }))}
       >
         {d.stem}
-        <RelationChoices />
+        <WordBank items={PAIR_CLASSES} />
       </QuestionBlock>
     </A4Page>
   );

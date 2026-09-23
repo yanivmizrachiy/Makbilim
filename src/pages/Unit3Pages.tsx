@@ -1,6 +1,10 @@
 import { A4Page } from '../components/A4Page';
 import { MathText } from '../components/MathText';
 import { QuestionBlock } from '../components/QuestionBlock';
+import { ChoiceGrid, LineSlot, WordBank } from '../components/ResponseParts';
+import { PROOF_FORM_HEADINGS } from '../content/answer-areas';
+import { CLOZE_BLANK } from '../content/cloze';
+import { taskFormatById } from '../content/task-kinds';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
 import { alternatePair, correspondingPair, type Sector } from '../geometry/relations';
 import { unit3Questions, type Unit3Question } from '../content/questions-unit3';
@@ -109,15 +113,39 @@ function ProofDiagram({ q }: { q: Unit3Question }) {
   );
 }
 
-function ProofTable({ lines }: { lines: NonNullable<Unit3Question['proofLines']> }) {
+const isBlank = (text: string | undefined) => text === undefined || CLOZE_BLANK.test(text);
+
+/** A proof cell: its text, or an empty cell to write in when the line is missing. */
+function ProofCell({ text }: { text: string | undefined }) {
+  if (isBlank(text)) return <td className="write-cell"><span className="sr-only">מקום לכתיבה</span></td>;
+  return <td><MathText text={text ?? ''} /></td>;
+}
+
+/**
+ * טענה | נימוק table. With `orderColumn`, a first 'סדר' column holds an empty cell per row, where the
+ * student writes the position of that row in the proof.
+ */
+function ProofTable({ lines, orderColumn = false }: { lines: NonNullable<Unit3Question['proofLines']>; orderColumn?: boolean }) {
   return (
-    <table className="data-table proof-table">
-      <thead><tr><th>טענה</th><th>נימוק</th></tr></thead>
+    <table className={`data-table proof-table${orderColumn ? ' proof-table--order' : ''}`}>
+      <colgroup>
+        {orderColumn && <col className="col-order" />}
+        <col className="col-claim" />
+        <col className="col-reason" />
+      </colgroup>
+      <thead>
+        <tr>
+          {orderColumn && <th>{PROOF_FORM_HEADINGS.order}</th>}
+          <th>{PROOF_FORM_HEADINGS.claim}</th>
+          <th>{PROOF_FORM_HEADINGS.reason}</th>
+        </tr>
+      </thead>
       <tbody>
         {lines.map((line, index) => (
           <tr key={index}>
-            <td><MathText text={line.claim} /></td>
-            <td>{line.reason ? <MathText text={line.reason} /> : <span className="table-write-line" />}</td>
+            {orderColumn && <td className="write-cell write-cell--order"><span className="sr-only">מקום לכתיבה</span></td>}
+            <ProofCell text={line.claim} />
+            <ProofCell text={line.reason} />
           </tr>
         ))}
       </tbody>
@@ -126,22 +154,22 @@ function ProofTable({ lines }: { lines: NonNullable<Unit3Question['proofLines']>
 }
 
 function ProofQuestion({ q }: { q: Unit3Question }) {
-  const isFullProof = q.page === 3;
+  const format = taskFormatById(q.id);
+  // Claim → reason matching: the reasons form a bank (no bubbles); every claim gets a reason slot on its line.
+  const matching = format === 'match-claim-reason';
+  const claims = q.subparts ?? [];
   return (
     <QuestionBlock
       taskId={q.id}
       compact
       diagram={<ProofDiagram q={q} />}
-      subparts={(q.subparts ?? []).map(text => <MathText text={text} />)}
-      answerLines={isFullProof ? 3 : (q.proofLines || q.choices ? 1 : 2)}
+      {...(matching
+        ? { items: claims.map(claim => ({ content: <><MathText text={claim} /><LineSlot label="נימוק:" /></>, inline: true })) }
+        : { subparts: claims.map(text => <MathText text={text} />) })}
     >
       <MathText text={q.stem} />
-      {q.choices && (
-        <div className="choice-grid">
-          {q.choices.map(choice => <div className="choice" key={choice}><MathText text={choice} /></div>)}
-        </div>
-      )}
-      {q.proofLines && <ProofTable lines={q.proofLines} />}
+      {q.choices && (matching ? <WordBank items={q.choices} layout="list" /> : <ChoiceGrid options={q.choices} />)}
+      {q.proofLines && <ProofTable lines={q.proofLines} orderColumn={format === 'order-proof'} />}
     </QuestionBlock>
   );
 }

@@ -154,6 +154,32 @@ try {
   if (pageCount !== 19) throw new Error(`Expected 19 A4 pages across units 1-5, found ${pageCount}`);
 
   const layout = await page.locator('.a4-page').evaluateAll((pages) => pages.map((node, index) => {
+    const PX_PER_MM = 96 / 25.4;
+    const toMm = px => (px == null ? null : Math.round((px / PX_PER_MM) * 10) / 10);
+    // Lowest INK inside a block: glyph boxes, atomic graphics (svg, MathJax, tables, images) and drawn
+    // rules / slots (bordered leaves). Empty stretched containers are not ink.
+    const lowestInk = root => {
+      let lowest = -Infinity;
+      const range = document.createRange();
+      const walk = element => {
+        const style = getComputedStyle(element);
+        if (style.display === 'none' || style.visibility === 'hidden' || element.classList.contains('sr-only')) return;
+        const tag = element.tagName.toLowerCase();
+        const rect = element.getBoundingClientRect();
+        if (['svg', 'table', 'mjx-container', 'img'].includes(tag)) { lowest = Math.max(lowest, rect.bottom); return; }
+        if (rect.height <= 0) { [...element.children].forEach(walk); return; }
+        const bordered = ['Top', 'Right', 'Bottom', 'Left'].some(side => parseFloat(style[`border${side}Width`]) > 0 && style[`border${side}Style`] !== 'none');
+        if (bordered && element !== root && (element.children.length === 0 || style.display.startsWith('inline'))) lowest = Math.max(lowest, rect.bottom);
+        for (const child of element.childNodes) {
+          if (child.nodeType !== 3 || child.textContent.trim() === '') continue;
+          range.selectNodeContents(child);
+          for (const box of range.getClientRects()) if (box.height > 0) lowest = Math.max(lowest, box.bottom);
+        }
+        [...element.children].forEach(walk);
+      };
+      [...root.children].forEach(walk);
+      return lowest;
+    };
     const el = node;
     const rect = el.getBoundingClientRect();
     const header = el.querySelector('.page-header');
@@ -241,6 +267,31 @@ try {
     const a4RatioError = Math.abs(aspectRatio - expectedA4Ratio);
     const headerContentOverlap = Boolean(headerRect && contentRect && contentRect.top < headerRect.bottom - 1);
     const footerContentOverlap = Boolean(footerRect && contentRect && contentRect.bottom > footerRect.top + 1);
+    // Per-block answer-space metrics (report-only): dead space under the lowest ink, the writing-rule
+    // pitch, how many whole rules show, and the clearance between the last rule and the separator.
+    const blocks = isVerbatimCurriculum ? [] : questions.map((block, blockIndex) => {
+      const blockRect = block.getBoundingClientRect();
+      const padBottom = parseFloat(getComputedStyle(block).paddingBottom) || 0;
+      const rules = [...block.querySelectorAll('.answer-lines')].flatMap(area => {
+        const areaRect = area.getBoundingClientRect();
+        return [...area.querySelectorAll(':scope > .rule')].filter(rule => {
+          const ruleRect = rule.getBoundingClientRect();
+          return ruleRect.height > 0 && ruleRect.left >= areaRect.left - 1 && ruleRect.right <= areaRect.right + 1 && ruleRect.bottom <= areaRect.bottom + 1;
+        });
+      });
+      const next = questions[blockIndex + 1];
+      const lastRuleBottom = rules.length ? Math.max(...rules.map(rule => rule.getBoundingClientRect().bottom)) : null;
+      return {
+        taskId: block.getAttribute('data-task-id'),
+        answerMode: block.getAttribute('data-answer-mode'),
+        heightMm: toMm(blockRect.height),
+        blockDeadMm: toMm(Math.max(0, blockRect.bottom - padBottom - lowestInk(block))),
+        answerRuleCount: rules.length,
+        rulePitchMm: rules.length ? toMm(rules.at(-1).getBoundingClientRect().height) : null,
+        lastRuleToSeparatorMm: next && lastRuleBottom != null ? toMm(next.getBoundingClientRect().top - lastRuleBottom) : null,
+      };
+    });
+    const maxBlockDeadMm = blocks.length ? Math.max(...blocks.map(block => block.blockDeadMm)) : null;
     return {
       renderIndex: index + 1,
       unit,
@@ -277,6 +328,8 @@ try {
       footerLines,
       headerContentOverlap,
       footerContentOverlap,
+      maxBlockDeadMm,
+      blocks,
     };
   }));
 

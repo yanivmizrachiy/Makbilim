@@ -101,9 +101,14 @@ const FORMAT_BY_TASK_ID: ReadonlyMap<string, string> = new Map(
   plan.units.flatMap(unit => unit.tasks.map(task => [task.id, task.format] as const)),
 );
 
-/** Kind of an original task (units 1-4), looked up by its id in question-plan.json. */
-export function taskKindById(taskId: string): TaskKind {
+/** Didactic format of an original task (units 1-4), as question-plan.json records it. */
+export function taskFormatById(taskId: string): string {
   const format = FORMAT_BY_TASK_ID.get(taskId);
   if (!format) throw new Error(`Unknown task id "${taskId}" — it is not in question-plan.json.`);
-  return taskKindFor(taskId, format);
+  return format;
+}
+
+/** Kind of an original task (units 1-4), looked up by its id in question-plan.json. */
+export function taskKindById(taskId: string): TaskKind {
+  return taskKindFor(taskId, taskFormatById(taskId));
 }

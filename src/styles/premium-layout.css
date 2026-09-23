@@ -1,50 +1,22 @@
 /* Premium workbook presentation layer — flat, white, textbook-clean.
-   Adds a restrained typographic accent (unit colour on markers, labels and a
-   thin header rule) and full print / monochrome / forced-color support, WITHOUT
-   boxing content: every question sits directly on the white A4 page. No card
-   backgrounds, tinted fills, drop shadows or side-bars.
-   The canonical A4 grid and dimensions live in print.css and are never touched here. */
+   Adds a restrained typographic accent (unit colour on markers, labels and a square accent tick
+   under the unit title) and full print / monochrome / forced-color support, WITHOUT boxing content:
+   every question sits directly on the white A4 page. No card backgrounds, tinted fills, drop
+   shadows or side-bars. Values come from tokens.css; the A4 grid lives in print.css. */
 
-.a4-page[data-layout-quality="premium"] {
-  --unit-accent: #0f6f78;
-  --unit-accent-dark: #183b56;
-}
-
-.a4-page[data-unit="2"] { --unit-accent: #126782; --unit-accent-dark: #174968; }
-.a4-page[data-unit="3"] { --unit-accent: #315b7d; --unit-accent-dark: #213f5b; }
-.a4-page[data-unit="4"] { --unit-accent: #6b526f; --unit-accent-dark: #4c3b51; }
-.a4-page[data-unit="5"] { --unit-accent: #5d6670; --unit-accent-dark: #3f4851; }
-
-/* Page header: a clean rule with a short accent tick — no background fill. */
-.a4-page[data-layout-quality="premium"] .page-header {
-  position: relative;
-  border-bottom-color: #9aa8b6;
-}
-
+/* Page header: the unit leads. A square-ended accent tick sits on the header rule under it. */
 .a4-page[data-layout-quality="premium"] .page-header::after {
   content: "";
   position: absolute;
-  inset-inline-end: 0;
-  bottom: -0.32mm;
-  width: 28mm;
-  height: 0.7mm;
-  border-radius: 999px;
+  inset-inline-start: 0;
+  bottom: calc(-1 * var(--frame-rule-w));
+  width: var(--header-accent-w);
+  height: var(--header-accent-h);
   background: var(--unit-accent);
 }
 
-.a4-page[data-layout-quality="premium"] .page-title-group h1 {
-  color: #0f1720;
-  text-wrap: balance;
-}
-
-.a4-page[data-layout-quality="premium"] .unit-title {
+.a4-page[data-layout-quality="premium"] .unit-title .unit-no {
   color: var(--unit-accent-dark);
-}
-
-.a4-page[data-layout-quality="premium"] .page-number {
-  color: var(--unit-accent-dark);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
 }
 
 /* Questions sit directly on the white page: no card, no fill, no shadow, no side-bar. */
@@ -59,7 +31,7 @@
 }
 
 .question-block[data-question-surface="premium"] .question-stem {
-  color: #111820;
+  color: var(--ink);
 }
 
 /* Task-type label: a quiet typographic eyebrow at the start of the instruction, separated
@@ -70,7 +42,7 @@
   padding-inline-end: 1.8mm;
   border-inline-end: 0.3mm solid currentColor;
   color: var(--unit-accent);
-  font-size: 8.6pt;
+  font-size: var(--task-kind-size);
   font-weight: 800;
   line-height: 1.05;
   letter-spacing: 0.01em;
@@ -83,27 +55,14 @@
   box-shadow: none;
 }
 
-.question-block[data-question-surface="premium"] .subpart-marker {
-  color: var(--unit-accent-dark);
-}
-
-.question-block[data-question-surface="premium"] .answer-lines span,
-.question-block[data-question-surface="premium"] .justification-write-line {
-  background: transparent;
-  border-bottom-color: #4b5563;
-}
-
+/* Writing rules and lanes stay light and dotted: they must never read as the separator. */
+.question-block[data-question-surface="premium"] .answer-lines,
 .question-block[data-question-surface="premium"] .justification-lane {
   background: transparent;
   box-shadow: none;
 }
 
-.question-block[data-question-surface="premium"] .justification-label {
-  color: var(--unit-accent-dark);
-  font-weight: 700;
-}
-
-/* Answer choices and matching cells: plain options on white, accent glyph only. */
+/* Answer choices, banks and matching cells: plain on white, accent on the bubble only. */
 .a4-page[data-layout-quality="premium"] .choice {
   background: transparent;
   box-shadow: none;
@@ -111,7 +70,6 @@
 
 .a4-page[data-layout-quality="premium"] .choice::before {
   color: var(--unit-accent-dark);
-  font-weight: 700;
 }
 
 .a4-page[data-layout-quality="premium"] .matching-columns > div {
@@ -129,7 +87,7 @@
 }
 
 .a4-page[data-layout-quality="premium"] .page-footer {
-  border-top-color: var(--line);
+  background: transparent;
 }
 
 @media print {
@@ -139,11 +97,6 @@
 }
 
 @media print and (monochrome) {
-  .a4-page[data-layout-quality="premium"] {
-    --unit-accent: #222;
-    --unit-accent-dark: #111;
-  }
-
   .a4-page[data-layout-quality="premium"] .page-header::after {
     background: repeating-linear-gradient(90deg, #222 0 1.2mm, transparent 1.2mm 2mm);
   }
@@ -160,5 +113,10 @@
   .a4-page[data-layout-quality="premium"] .matching-columns > div,
   .a4-page[data-layout-quality="premium"] .page-footer {
     background: Canvas !important;
+  }
+
+  /* The accent tick is decoration: the header rule already carries the structure. */
+  .a4-page[data-layout-quality="premium"] .page-header::after {
+    background: CanvasText;
   }
 }
