@@ -77,6 +77,25 @@ describe('publication hardening', () => {
     expect(workflows).not.toMatch(/uses:\s+[^@\s]+@v\d+/);
   });
 
+
+  it('forbids scheduled automation and recurring dependency bots', () => {
+    const workflows = [ci, release].join('\n');
+    expect(workflows).not.toMatch(/\bschedule\s*:/);
+    expect(workflows).not.toMatch(/\bcron\s*:/);
+    expect(fs.existsSync(path.join(root, '.github', 'dependabot.yml'))).toBe(false);
+  });
+
+  it('enforces deterministic dependency policy and production audit', () => {
+    const policy = read('scripts/validate-dependency-policy.mjs');
+    expect(pkg.scripts['validate:dependencies']).toContain('validate-dependency-policy.mjs');
+    expect(pkg.scripts.validate).toContain('validate:dependencies');
+    expect(policy).toContain('direct dependencies must be exact versions');
+    expect(policy).toContain('lockfileVersion=3');
+    expect(policy).toContain('missing integrity');
+    expect(ci).toContain('npm audit --omit=dev --audit-level=high');
+    expect(release).toContain('npm audit --omit=dev --audit-level=high');
+  });
+
   it('tracks a canonical visual baseline for all 19 student pages', () => {
     expect(baseline.pageCount).toBe(19);
     expect(baseline.layout).toHaveLength(19);
