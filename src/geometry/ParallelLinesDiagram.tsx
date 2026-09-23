@@ -27,6 +27,15 @@ export type ParallelLinesDiagramProps = {
   transversalDeg?: number | undefined;
   secondaryTransversalDeg?: number | undefined;
   showParallelMarks?: boolean | undefined;
+  /**
+   * Rotates the second (bottom) line by this many degrees about its own
+   * centre, so the two lines are genuinely NOT parallel. 0 (the default)
+   * keeps the pair parallel and renders exactly as before. A non-zero skew
+   * always suppresses the parallel chevrons and the "parallel" wording in the
+   * accessible name/description, because the drawing is then a real
+   * counterexample: corresponding and alternate angles differ by |skew|.
+   */
+  secondLineSkewDeg?: number | undefined;
   angleMarks?: AngleMark[] | undefined;
   ariaLabel?: string | undefined;
 };
@@ -37,20 +46,78 @@ const CENTER: Point = { x: W / 2, y: H / 2 };
 const PARALLEL_DISTANCE = 62;
 const PARALLEL_LENGTH = 300;
 const TRANSVERSAL_LENGTH = 330;
+/**
+ * Angular clearance (degrees) kept between the skewed bottom line and every
+ * transversal. Sector arcs are trimmed by 5° on each side, so the skew must
+ * leave a visible sector on both sides of each ray after trimming.
+ */
+const SKEW_SECTOR_CLEARANCE = 12;
+/**
+ * Largest allowed skew. The lines then meet at least 2 * PARALLEL_DISTANCE /
+ * sin(20°) ≈ 363 units from the bottom line's centre, hence ≥ 363 − 62 ≈ 301
+ * units from the viewBox centre — beyond the 480×320 viewBox's half-diagonal
+ * (≈ 288). A skewed pair visibly converges but never crosses in the drawing.
+ */
+const MAX_SECOND_LINE_SKEW_DEG = 20;
+
+const PARALLEL_ARIA_LABEL = 'שרטוט של שני ישרים מקבילים וישר חותך';
+const NON_PARALLEL_ARIA_LABEL = 'שרטוט של שני ישרים שאינם מקבילים וישר חותך';
+const PARALLEL_DESC = 'שרטוט וקטורי מדויק עם סימוני מקבילות, הדגשת זוויות ותוויות סמנטיות.';
+const NON_PARALLEL_DESC = 'שרטוט וקטורי מדויק של שני ישרים שאינם מקבילים וישר החותך אותם, עם הדגשת זוויות ותוויות סמנטיות.';
 
 function classForMark(mark: AngleMark) {
   return `angle-mark angle-mark--${mark.tone ?? 'primary'} angle-mark--${mark.arcStyle ?? 'single'}`;
 }
 
-function sectorAngles(lineDeg: number, transversalDeg: number, sector: AngleMark['sector']) {
-  const rays = [lineDeg, transversalDeg, lineDeg + 180, transversalDeg + 180]
-    .map(angle => ((angle % 360) + 360) % 360)
-    .sort((a, b) => a - b);
+/**
+ * Start/end directions of angle sector `sector` at one intersection.
+ *
+ * Sectors are indexed by sorting the rays of the REFERENCE (top) line and the
+ * transversal, so index k denotes the same position at every intersection:
+ * top sector k and bottom sector k are corresponding angles, top k and
+ * bottom (k + 2) % 4 are alternate angles (see relations.ts). `lineSkewDeg`
+ * is how far this intersection's own line is rotated from the reference
+ * line; the arc is then drawn between that line's ACTUAL rays, so a mark sits
+ * exactly on the real angle even when the lines are not parallel.
+ */
+function sectorAngles(lineDeg: number, transversalDeg: number, sector: AngleMark['sector'], lineSkewDeg = 0) {
+  const rays = [
+    { base: lineDeg, skew: lineSkewDeg },
+    { base: transversalDeg, skew: 0 },
+    { base: lineDeg + 180, skew: lineSkewDeg },
+    { base: transversalDeg + 180, skew: 0 },
+  ]
+    .map(ray => ({ base: ((ray.base % 360) + 360) % 360, skew: ray.skew }))
+    .sort((a, b) => a.base - b.base);
 
-  const start = rays[sector]!;
-  const nextBase = rays[(sector + 1) % rays.length]!;
-  const next = nextBase + (sector === rays.length - 1 ? 360 : 0);
-  return { start, end: next };
+  const startRay = rays[sector]!;
+  const nextRay = rays[(sector + 1) % rays.length]!;
+  const next = nextRay.base + (sector === rays.length - 1 ? 360 : 0);
+  return { start: startRay.base + startRay.skew, end: next + nextRay.skew };
+}
+
+/** Smallest angle (0..90°) between two undirected line directions. */
+function lineGapDeg(firstDeg: number, secondDeg: number) {
+  const diff = (((firstDeg - secondDeg) % 180) + 180) % 180;
+  return Math.min(diff, 180 - diff);
+}
+
+function assertSkewKeepsSectorOrder(orientationDeg: number, skewDeg: number, transversals: number[]) {
+  if (!Number.isFinite(skewDeg) || Math.abs(skewDeg) > MAX_SECOND_LINE_SKEW_DEG) {
+    throw new RangeError(
+      `secondLineSkewDeg must be a finite number within ±${MAX_SECOND_LINE_SKEW_DEG}° (received ${skewDeg}).`,
+    );
+  }
+  for (const transversalDeg of transversals) {
+    const gap = lineGapDeg(orientationDeg, transversalDeg);
+    if (Math.abs(skewDeg) > gap - SKEW_SECTOR_CLEARANCE) {
+      throw new RangeError(
+        `secondLineSkewDeg=${skewDeg} is too large for a transversal at ${transversalDeg}° ` +
+        `(the lines at ${orientationDeg}° leave only ${gap.toFixed(1)}°); ` +
+        `the skewed line would cross the transversal's direction and scramble the angle sectors.`,
+      );
+    }
+  }
 }
 
 function angleSectorPath(center: Point, radius: number, startDeg: number, endDeg: number) {
@@ -115,13 +182,26 @@ export function ParallelLinesDiagram({
   transversalDeg = 62,
   secondaryTransversalDeg,
   showParallelMarks = true,
+  secondLineSkewDeg = 0,
   angleMarks = [],
-  ariaLabel = 'שרטוט של שני ישרים מקבילים וישר חותך',
+  ariaLabel,
 }: ParallelLinesDiagramProps) {
+  const isSkewed = secondLineSkewDeg !== 0;
+  if (isSkewed) {
+    assertSkewKeepsSectorOrder(
+      orientationDeg,
+      secondLineSkewDeg,
+      secondaryTransversalDeg == null ? [transversalDeg] : [transversalDeg, secondaryTransversalDeg],
+    );
+  }
+  const accessibleLabel = ariaLabel ?? (isSkewed ? NON_PARALLEL_ARIA_LABEL : PARALLEL_ARIA_LABEL);
+  const bottomLineDeg = orientationDeg + secondLineSkewDeg;
+
   const topCenter = offsetPoint(CENTER, orientationDeg, -PARALLEL_DISTANCE);
   const bottomCenter = offsetPoint(CENTER, orientationDeg, PARALLEL_DISTANCE);
   const top = segmentThrough(topCenter, PARALLEL_LENGTH, orientationDeg);
-  const bottom = segmentThrough(bottomCenter, PARALLEL_LENGTH, orientationDeg);
+  // The bottom line pivots about its own centre; with no skew it is parallel.
+  const bottom = segmentThrough(bottomCenter, PARALLEL_LENGTH, bottomLineDeg);
 
   const primary = segmentThrough(CENTER, TRANSVERSAL_LENGTH, transversalDeg);
   const topIntersection = lineIntersection(top, primary) ?? topCenter;
@@ -134,14 +214,16 @@ export function ParallelLinesDiagram({
   const topSecondaryIntersection = secondary ? lineIntersection(top, secondary) : null;
   const bottomSecondaryIntersection = secondary ? lineIntersection(bottom, secondary) : null;
 
-  const intersections: Record<AngleMark['intersection'], { point: Point; transDeg: number } | null> = {
-    top: { point: topIntersection, transDeg: transversalDeg },
-    bottom: { point: bottomIntersection, transDeg: transversalDeg },
+  // Each intersection records the skew of its OWN line relative to the top
+  // line, so angle sectors follow the line that actually passes through it.
+  const intersections: Record<AngleMark['intersection'], { point: Point; transDeg: number; lineSkewDeg: number } | null> = {
+    top: { point: topIntersection, transDeg: transversalDeg, lineSkewDeg: 0 },
+    bottom: { point: bottomIntersection, transDeg: transversalDeg, lineSkewDeg: secondLineSkewDeg },
     'top-secondary': topSecondaryIntersection && secondaryTransversalDeg != null
-      ? { point: topSecondaryIntersection, transDeg: secondaryTransversalDeg }
+      ? { point: topSecondaryIntersection, transDeg: secondaryTransversalDeg, lineSkewDeg: 0 }
       : null,
     'bottom-secondary': bottomSecondaryIntersection && secondaryTransversalDeg != null
-      ? { point: bottomSecondaryIntersection, transDeg: secondaryTransversalDeg }
+      ? { point: bottomSecondaryIntersection, transDeg: secondaryTransversalDeg, lineSkewDeg: secondLineSkewDeg }
       : null,
   };
 
@@ -155,7 +237,7 @@ export function ParallelLinesDiagram({
     12,
   );
   const bottomLabel = clampLabelPoint(
-    labelPoint(bottomCenter, orientationDeg, 142, 18),
+    labelPoint(bottomCenter, bottomLineDeg, 142, 18),
     lineLabels[1],
     labelBounds,
     lineLabelOptions,
@@ -205,7 +287,7 @@ export function ParallelLinesDiagram({
   const renderedMarks = angleMarks.map((mark, index) => {
     const intersection = intersections[mark.intersection];
     if (!intersection) return null;
-    const { start, end } = sectorAngles(orientationDeg, intersection.transDeg, mark.sector);
+    const { start, end } = sectorAngles(orientationDeg, intersection.transDeg, mark.sector, intersection.lineSkewDeg);
     const safeStart = start + 5;
     const safeEnd = end - 5;
     const mid = start + (end - start) / 2;
@@ -241,7 +323,7 @@ export function ParallelLinesDiagram({
   }).filter(Boolean) as Array<{
     mark: AngleMark;
     index: number;
-    intersection: { point: Point; transDeg: number };
+    intersection: { point: Point; transDeg: number; lineSkewDeg: number };
     start: number;
     end: number;
     label: string | undefined;
@@ -253,15 +335,17 @@ export function ParallelLinesDiagram({
       className="geometry-diagram geometry-diagram--premium"
       viewBox={`0 0 ${W} ${H}`}
       role="img"
-      aria-label={ariaLabel}
+      aria-label={accessibleLabel}
       preserveAspectRatio="xMidYMid meet"
       shapeRendering="geometricPrecision"
       data-geometry-quality="premium"
       data-label-placement="collision-aware"
+      data-line-relation={isSkewed ? 'non-parallel' : undefined}
+      data-second-line-skew={isSkewed ? secondLineSkewDeg : undefined}
       focusable="false"
     >
-      <title>{ariaLabel}</title>
-      <desc>שרטוט וקטורי מדויק עם סימוני מקבילות, הדגשת זוויות ותוויות סמנטיות.</desc>
+      <title>{accessibleLabel}</title>
+      <desc>{isSkewed ? NON_PARALLEL_DESC : PARALLEL_DESC}</desc>
 
       <g className="angle-sectors" aria-hidden="true">
         {renderedMarks.map(({ mark, index, intersection, start, end }) => (
@@ -287,10 +371,11 @@ export function ParallelLinesDiagram({
         {secondary && <line x1={secondary.a.x} y1={secondary.a.y} x2={secondary.b.x} y2={secondary.b.y} />}
       </g>
 
-      {showParallelMarks && (
+      {/* Chevrons assert parallelism, so a skewed (non-parallel) pair never gets them. */}
+      {showParallelMarks && !isSkewed && (
         <>
           <ParallelMark center={pointOnRay(topCenter, orientationDeg, -92)} lineDeg={orientationDeg} />
-          <ParallelMark center={pointOnRay(bottomCenter, orientationDeg, -92)} lineDeg={orientationDeg} />
+          <ParallelMark center={pointOnRay(bottomCenter, bottomLineDeg, -92)} lineDeg={bottomLineDeg} />
         </>
       )}
 
