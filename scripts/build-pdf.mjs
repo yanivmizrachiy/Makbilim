@@ -97,6 +97,56 @@ try {
     throw new Error(`MathJax SVG QA failed: ${JSON.stringify(mathJaxStatus)}`);
   }
 
+  const accessibilityStatus = await page.evaluate(() => {
+    const allIds = [...document.querySelectorAll('[id]')].map(node => node.id).filter(Boolean);
+    const duplicateIds = [...new Set(allIds.filter((id, index) => allIds.indexOf(id) !== index))];
+    const geometry = [...document.querySelectorAll('svg.geometry-diagram')];
+    const math = [...document.querySelectorAll('.mathjax-inline > span')];
+    const pages = [...document.querySelectorAll('.a4-page')];
+    const hiddenFocusable = document.querySelectorAll(
+      '[aria-hidden="true"] a[href], [aria-hidden="true"] button, [aria-hidden="true"] input, [aria-hidden="true"] select, [aria-hidden="true"] textarea, [aria-hidden="true"] [tabindex]:not([tabindex="-1"])'
+    ).length;
+
+    return {
+      lang: document.documentElement.lang,
+      dir: document.documentElement.dir,
+      title: document.title.trim(),
+      pageCount: pages.length,
+      mainLandmarkCount: document.querySelectorAll('main').length,
+      pagesWithRtl: pages.filter(node => node.getAttribute('dir') === 'rtl').length,
+      pagesWithSingleHeading: pages.filter(node => node.querySelectorAll('h1').length === 1).length,
+      geometryTotal: geometry.length,
+      geometryAccessible: geometry.filter(node =>
+        node.getAttribute('role') === 'img' &&
+        (node.getAttribute('aria-label')?.trim().length ?? 0) >= 3
+      ).length,
+      mathTotal: math.length,
+      mathAccessible: math.filter(node => (node.getAttribute('aria-label')?.trim().length ?? 0) >= 1).length,
+      duplicateIds,
+      hiddenFocusable,
+    };
+  });
+
+  const accessibilityFailures = [];
+  if (accessibilityStatus.lang !== 'he') accessibilityFailures.push(`html lang=${accessibilityStatus.lang}`);
+  if (accessibilityStatus.dir !== 'rtl') accessibilityFailures.push(`html dir=${accessibilityStatus.dir}`);
+  if (!accessibilityStatus.title) accessibilityFailures.push('document title missing');
+  if (accessibilityStatus.pageCount !== 19) accessibilityFailures.push(`pageCount=${accessibilityStatus.pageCount}`);
+  if (accessibilityStatus.mainLandmarkCount !== 0) accessibilityFailures.push(`mainLandmarkCount=${accessibilityStatus.mainLandmarkCount}`);
+  if (accessibilityStatus.pagesWithRtl !== 19) accessibilityFailures.push(`pagesWithRtl=${accessibilityStatus.pagesWithRtl}`);
+  if (accessibilityStatus.pagesWithSingleHeading !== 19) accessibilityFailures.push(`pagesWithSingleHeading=${accessibilityStatus.pagesWithSingleHeading}`);
+  if (accessibilityStatus.geometryTotal === 0 || accessibilityStatus.geometryAccessible !== accessibilityStatus.geometryTotal) {
+    accessibilityFailures.push(`geometryAccessible=${accessibilityStatus.geometryAccessible}/${accessibilityStatus.geometryTotal}`);
+  }
+  if (accessibilityStatus.mathTotal === 0 || accessibilityStatus.mathAccessible !== accessibilityStatus.mathTotal) {
+    accessibilityFailures.push(`mathAccessible=${accessibilityStatus.mathAccessible}/${accessibilityStatus.mathTotal}`);
+  }
+  if (accessibilityStatus.duplicateIds.length) accessibilityFailures.push(`duplicateIds=${accessibilityStatus.duplicateIds.join(',')}`);
+  if (accessibilityStatus.hiddenFocusable !== 0) accessibilityFailures.push(`hiddenFocusable=${accessibilityStatus.hiddenFocusable}`);
+  if (accessibilityFailures.length) {
+    throw new Error(`Accessibility QA failed: ${accessibilityFailures.join('; ')}`);
+  }
+
   await page.addStyleTag({ content: '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}' });
   await page.emulateMedia({ media: 'print' });
 
@@ -363,7 +413,12 @@ try {
     `${JSON.stringify({ pageCount, expectedPages, mathJaxStatus, layout }, null, 2)}\n`,
     'utf8',
   );
-  console.log(`pdf-visual: PASS — ${pageCount} A4 pages, ${mathJaxStatus.rendered}/${mathJaxStatus.total} MathJax SVG tokens, canonical chrome + utilization + collision-safe geometry + static Vivliostyle snapshot + color/grayscale/forced-colors snapshots generated`);
+  await fs.writeFile(
+    path.join(root, 'artifacts', 'accessibility-report.json'),
+    `${JSON.stringify({ status: 'PASS', ...accessibilityStatus }, null, 2)}\n`,
+    'utf8',
+  );
+  console.log(`pdf-visual: PASS — ${pageCount} A4 pages, ${mathJaxStatus.rendered}/${mathJaxStatus.total} MathJax SVG tokens, accessibility PASS, canonical chrome + utilization + collision-safe geometry + static Vivliostyle snapshot + color/grayscale/forced-colors snapshots generated`);
 } finally {
   clearTimeout(hardWatchdog);
   await closeBrowser();
