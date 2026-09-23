@@ -97,6 +97,9 @@ const sourceItemSchema = z.object({
   mimeType: z.string().min(1),
   category: z.enum(['web-reference', 'visual-task-reference', 'instructional-source', 'worksheet-source', 'core-source']),
   storageStatus: z.string().min(1),
+  sourceIdType: z.literal('google-drive-file-id'),
+  usageMode: z.enum(['external-reference', 'visual-reference', 'instructional-reference', 'worksheet-reference', 'core-reference']),
+  rightsStatus: z.literal('not-asserted'),
 });
 
 const sourceManifestSchema = z.object({
@@ -108,6 +111,13 @@ const sourceManifestSchema = z.object({
     requirementsSource: z.literal(false),
     preserveOriginals: z.literal(true),
   }).passthrough(),
+  provenancePolicy: z.object({
+    version: z.literal(1),
+    sourceIdType: z.literal('google-drive-file-id'),
+    rightsStatusDefault: z.literal('not-asserted'),
+    noLicenseInference: z.literal(true),
+    note: z.string().min(1),
+  }),
   items: z.array(sourceItemSchema).length(30),
 });
 
