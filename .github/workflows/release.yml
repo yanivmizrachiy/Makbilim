@@ -34,6 +34,11 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
+      - name: Verify tag matches package version
+        run: |
+          EXPECTED="v$(node -p "require('./package.json').version")"
+          test "$GITHUB_REF_NAME" = "$EXPECTED" || { echo "Tag $GITHUB_REF_NAME must equal package version $EXPECTED"; exit 1; }
+
       - name: Sync and validate canonical content
         run: |
           npm run sync:curriculum
@@ -49,4 +54,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${GITHUB_REF_NAME}"             artifacts/pdf/*.pdf             artifacts/SHA256SUMS.txt             artifacts/build-manifest.json             artifacts/pdf-crosscheck.json             artifacts/teacher-pdf-report.json             --verify-tag             --generate-notes             --title "Makbilim ${GITHUB_REF_NAME}"
+          gh release create "${GITHUB_REF_NAME}"             artifacts/pdf/*.pdf             artifacts/SHA256SUMS.txt             artifacts/build-manifest.json             artifacts/pdf-crosscheck.json             artifacts/teacher-pdf-report.json             artifacts/accessibility-report.json             artifacts/sbom.cdx.json             artifacts/input-fingerprint.json             sources/manifest.json             --verify-tag             --generate-notes             --title "Makbilim ${GITHUB_REF_NAME}"
