@@ -193,6 +193,8 @@ export type LabelRun = { text: string; sub: boolean };
 export type ShapedLabel = {
   /** The label as authored (e.g. "(4x + 6)°"). */
   source: string;
+  /** A Hebrew word label (e.g. "מדף עליון"): set as right-to-left text, not as mathematics. */
+  rtl: boolean;
   runs: LabelRun[];
   /** Advance width, em. */
   width: number;
@@ -216,7 +218,17 @@ const isOperand = (ch: string | undefined) => ch !== undefined && /[0-9A-Za-zα-
  * TeX-like shaping: letters become math-italic code points, "-" becomes a minus sign, and a
  * binary + / − / = gets medium math spaces on both sides (a leading sign stays tight).
  */
+const HEBREW = /[֐-׿]/;
+const WORD_SPACE_EM = 0.28;
+
 export function shapeLabel(source: string): ShapedLabel {
+  if (HEBREW.test(source) && [...source.trim()].length > 1) {
+    // Words are text, not mathematics: keep them (and their spaces) as written, right to left.
+    const text = source.trim().replace(/\s+/g, ' ');
+    const [, lo, hi] = FALLBACK_GLYPH;
+    const width = [...text].reduce((sum, ch) => sum + (ch === ' ' ? WORD_SPACE_EM : (GLYPHS[ch.codePointAt(0) ?? 0]?.[0] ?? FALLBACK_GLYPH[0]) / 1000), 0);
+    return { source, rtl: true, runs: [{ text, sub: false }], width, yMax: hi / 1000, yMin: lo / 1000 };
+  }
   const chars = [...source.replace(/\s+/g, '')];
   const runs: LabelRun[] = [];
   const push = (text: string, sub: boolean) => {
@@ -254,7 +266,7 @@ export function shapeLabel(source: string): ShapedLabel {
       }
     }
   }
-  return { source, runs, width, yMax, yMin };
+  return { source, rtl: false, runs, width, yMax, yMin };
 }
 
 /** The plain text a shaped label draws (tests read labels back through this inverse). */

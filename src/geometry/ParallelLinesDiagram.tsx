@@ -146,20 +146,30 @@ const unitVector = (deg: number): Point => ({ x: Math.cos((deg * Math.PI) / 180)
 /**
  * The secondary transversal passes through a point SECONDARY_OFFSET gaps along the lines from
  * the primary one — moved farther out when either of its crossings would come closer than
- * minIntersectionSpacingMm to the primary crossing on the same line (no near-concurrency).
+ * minIntersectionSpacingMm to the primary crossing on the same line (no near-concurrency), or
+ * when the two transversals would cross each other near a line or near their drawn ends
+ * (they must cross clearly between the lines, or well outside the drawing).
  */
 function secondaryAnchor(gap: number, orientationDeg: number, primaryDeg: number, secondaryDeg: number): Point {
   const along = unitVector(orientationDeg);
-  // Along-line position of a transversal's crossing with the line at normal offset side·gap/2.
-  const crossingAt = (deg: number, side: number) => {
+  const cot = (deg: number) => {
     const angle = ((deg - orientationDeg) * Math.PI) / 180;
-    return side * (gap / 2) * (Math.cos(angle) / Math.sin(angle));
+    return Math.cos(angle) / Math.sin(angle);
   };
+  // Along-line position of a transversal's crossing with the line at normal offset n.
+  const crossingAt = (offset: number, deg: number, n: number) => offset + n * cot(deg);
   const minSpacing = mm(T.minIntersectionSpacingMm);
+  const clearOfLines = (offset: number) => {
+    const slopeGap = cot(secondaryDeg) - cot(primaryDeg);
+    if (Math.abs(slopeGap) < 1e-9) return true;
+    // Normal offset where the two transversals meet.
+    const meet = -offset / slopeGap;
+    return Math.abs(meet) <= gap / 2 - mm(4) || Math.abs(meet) >= gap / 2 + mm(T.transversalOverhangMm + 4);
+  };
   for (let factor = SECONDARY_OFFSET; factor < SECONDARY_OFFSET + 3; factor += 0.05) {
     const offset = factor * gap;
-    const clear = [-1, 1].every(side => Math.abs(offset + crossingAt(secondaryDeg, side) - crossingAt(primaryDeg, side)) >= minSpacing);
-    if (clear) return { x: along.x * offset, y: along.y * offset };
+    const spaced = [-gap / 2, gap / 2].every(n => Math.abs(crossingAt(offset, secondaryDeg, n) - crossingAt(0, primaryDeg, n)) >= minSpacing);
+    if (spaced && clearOfLines(offset)) return { x: along.x * offset, y: along.y * offset };
   }
   return { x: along.x * SECONDARY_OFFSET * gap, y: along.y * SECONDARY_OFFSET * gap };
 }

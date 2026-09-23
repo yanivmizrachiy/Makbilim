@@ -108,13 +108,6 @@ const segmentRect = (s: Segment, pad: number): Rect => ({
   right: Math.max(s.a.x, s.b.x) + pad, bottom: Math.max(s.a.y, s.b.y) + pad,
 });
 
-/** Distance from a point to the infinite line through a segment. */
-function distanceToLine(p: Point, s: Segment) {
-  const dx = s.b.x - s.a.x;
-  const dy = s.b.y - s.a.y;
-  return Math.abs(dy * (p.x - s.a.x) - dx * (p.y - s.a.y)) / Math.hypot(dx, dy);
-}
-
 /** Whether direction `deg` lies in the sweep start → end (end > start), `margin` degrees inside. */
 function inSweep(deg: number, start: number, end: number, margin = 0) {
   const offset = normalizeAngle(deg - start);
@@ -370,8 +363,9 @@ function placeLineLabel(
     for (const { center, rank } of positions) {
       const boxes = labelBoxes(shaped, fontPx, center);
       if (!isClear(boxes, obstacles, frame)) continue;
-      const ownDistance = own ? distanceToLine(center, own) : 0;
-      const ambiguous = allLines.some(other => other !== line && distanceToLine(center, other) < ownDistance + mm(1.5) && distanceToSegment(center, other) < ownDistance + mm(4));
+      const ownDistance = own ? distanceToSegment(center, own) : 0;
+      // Unambiguous: clearly nearer to its own (drawn) line than to any other drawn line.
+      const ambiguous = allLines.some(other => other !== line && distanceToSegment(center, other) < ownDistance + mm(1.5));
       if (ambiguous) continue;
       return { label: { kind: 'line', shaped, fontPx, center, x: boxes.x, y: boxes.y, ink: boxes.ink, em: boxes.em }, rank };
     }

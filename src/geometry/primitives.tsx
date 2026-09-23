@@ -38,7 +38,7 @@ export function DiagramLabel({ label }: { label: PlacedLabel }) {
       x={round(label.x)}
       y={round(label.y)}
       textAnchor="middle"
-      direction="ltr"
+      direction={shaped.rtl ? 'rtl' : 'ltr'}
       data-label={shaped.source}
     >
       {content}
