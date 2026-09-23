@@ -84,6 +84,44 @@ try {
     }, null, { timeout: 20000 });
   }
 
+  const accessibilityStatus = await page.evaluate(() => {
+    const allIds = [...document.querySelectorAll('[id]')].map(node => node.id).filter(Boolean);
+    const duplicateIds = [...new Set(allIds.filter((id, index) => allIds.indexOf(id) !== index))];
+    const math = [...document.querySelectorAll('.mathjax-inline > span')];
+    const main = document.querySelectorAll('main');
+    const hiddenFocusable = document.querySelectorAll(
+      '[aria-hidden="true"] a[href], [aria-hidden="true"] button, [aria-hidden="true"] input, [aria-hidden="true"] select, [aria-hidden="true"] textarea, [aria-hidden="true"] [tabindex]:not([tabindex="-1"])'
+    ).length;
+    return {
+      lang: document.documentElement.lang,
+      dir: document.documentElement.dir,
+      title: document.title.trim(),
+      mainLandmarkCount: main.length,
+      h1Count: document.querySelectorAll('h1').length,
+      answerCards: document.querySelectorAll('.teacher-answer-card').length,
+      mathTotal: math.length,
+      mathAccessible: math.filter(node => (node.getAttribute('aria-label')?.trim().length ?? 0) >= 1).length,
+      duplicateIds,
+      hiddenFocusable,
+    };
+  });
+
+  const accessibilityFailures = [];
+  if (accessibilityStatus.lang !== 'he') accessibilityFailures.push(`html lang=${accessibilityStatus.lang}`);
+  if (accessibilityStatus.dir !== 'rtl') accessibilityFailures.push(`html dir=${accessibilityStatus.dir}`);
+  if (!accessibilityStatus.title) accessibilityFailures.push('document title missing');
+  if (accessibilityStatus.mainLandmarkCount !== 1) accessibilityFailures.push(`mainLandmarkCount=${accessibilityStatus.mainLandmarkCount}`);
+  if (accessibilityStatus.h1Count !== 1) accessibilityFailures.push(`h1Count=${accessibilityStatus.h1Count}`);
+  if (accessibilityStatus.answerCards !== answerCount) accessibilityFailures.push(`answerCards=${accessibilityStatus.answerCards}/${answerCount}`);
+  if (accessibilityStatus.mathAccessible !== accessibilityStatus.mathTotal) {
+    accessibilityFailures.push(`mathAccessible=${accessibilityStatus.mathAccessible}/${accessibilityStatus.mathTotal}`);
+  }
+  if (accessibilityStatus.duplicateIds.length) accessibilityFailures.push(`duplicateIds=${accessibilityStatus.duplicateIds.join(',')}`);
+  if (accessibilityStatus.hiddenFocusable !== 0) accessibilityFailures.push(`hiddenFocusable=${accessibilityStatus.hiddenFocusable}`);
+  if (accessibilityFailures.length) {
+    throw new Error(`Teacher accessibility QA failed: ${accessibilityFailures.join('; ')}`);
+  }
+
   await page.addStyleTag({ content: '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}' });
   await page.emulateMedia({ media: 'print' });
 
@@ -133,6 +171,7 @@ try {
     answerCount,
     unit5SourceBlocks: Number(unit5SourceBlocks),
     mathJaxTokens: mathCount,
+    accessibility: accessibilityStatus,
     bytes: bytes.byteLength,
     pages: pages.length,
     dimensions,
@@ -140,7 +179,7 @@ try {
   await fs.writeFile(reportPath, JSON.stringify(report, null, 2) + '\n', 'utf8');
 
   console.log(
-    `teacher-pdf: PASS — ${answerCount} answers, ${pages.length} A4 pages, ${mathCount} MathJax token(s)`,
+    `teacher-pdf: PASS — ${answerCount} answers, ${pages.length} A4 pages, ${mathCount} MathJax token(s), accessibility PASS`,
   );
 } finally {
   if (browser) await browser.close().catch(() => undefined);
