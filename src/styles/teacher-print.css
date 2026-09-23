@@ -1,0 +1,280 @@
+@page {
+  size: A4 portrait;
+  margin: 12mm 13mm 14mm;
+}
+
+:root {
+  --teacher-ink: #14212b;
+  --teacher-muted: #5b6773;
+  --teacher-line: #cfd8df;
+  --teacher-soft: #f4f8fa;
+  --teacher-accent: #0f6f78;
+  --teacher-navy: #183b56;
+}
+
+* { box-sizing: border-box; }
+
+html,
+body,
+#teacher-root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  direction: rtl;
+  background: #edf2f4;
+  color: var(--teacher-ink);
+  font-family: "Noto Sans Hebrew", "Arial Hebrew", Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+.teacher-document {
+  width: 210mm;
+  margin: 0 auto;
+  background: #fff;
+  padding: 12mm 13mm 14mm;
+  box-shadow: 0 2mm 8mm rgb(15 23 42 / 12%);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.teacher-cover {
+  min-height: 258mm;
+  display: grid;
+  align-content: center;
+  gap: 5mm;
+  text-align: center;
+  break-after: page;
+}
+
+.teacher-kicker {
+  color: var(--teacher-accent);
+  font-size: 11pt;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+
+.teacher-cover h1 {
+  margin: 0;
+  color: var(--teacher-navy);
+  font-size: 28pt;
+  line-height: 1.08;
+}
+
+.teacher-cover h2 {
+  margin: 0;
+  font-size: 19pt;
+  font-weight: 750;
+}
+
+.teacher-cover p {
+  width: min(145mm, 100%);
+  margin: 0 auto;
+  font-size: 11pt;
+  line-height: 1.55;
+}
+
+.teacher-summary-grid {
+  width: min(155mm, 100%);
+  margin: 5mm auto 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3mm;
+}
+
+.teacher-summary-grid > div {
+  display: grid;
+  gap: 1mm;
+  padding: 4mm 2mm;
+  border: .3mm solid var(--teacher-line);
+  border-radius: 2mm;
+  background: var(--teacher-soft);
+}
+
+.teacher-summary-grid strong {
+  color: var(--teacher-accent);
+  font-size: 18pt;
+}
+
+.teacher-summary-grid span {
+  font-size: 8.7pt;
+  line-height: 1.25;
+}
+
+.teacher-cover-note {
+  color: var(--teacher-muted);
+  font-size: 9.5pt !important;
+}
+
+.teacher-page-group {
+  margin-bottom: 8mm;
+}
+
+.teacher-page-group + .teacher-page-group {
+  padding-top: 2mm;
+}
+
+.teacher-page-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 6mm;
+  align-items: end;
+  margin-bottom: 3.2mm;
+  padding-bottom: 2.4mm;
+  border-bottom: .45mm solid var(--teacher-navy);
+  break-after: avoid;
+}
+
+.teacher-unit {
+  color: var(--teacher-accent);
+  font-size: 9.5pt;
+  font-weight: 800;
+}
+
+.teacher-page-heading h2 {
+  margin: .7mm 0 0;
+  font-size: 16pt;
+  color: var(--teacher-navy);
+}
+
+.teacher-page-count {
+  color: var(--teacher-muted);
+  font-size: 8.8pt;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.teacher-answer-grid {
+  display: grid;
+  gap: 3mm;
+}
+
+.teacher-answer-card {
+  border: .25mm solid var(--teacher-line);
+  border-radius: 1.8mm;
+  padding: 3mm 3.4mm;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.teacher-answer-card > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 5mm;
+  align-items: baseline;
+  margin-bottom: 2mm;
+}
+
+.teacher-answer-order {
+  font-size: 10pt;
+  font-weight: 800;
+  color: var(--teacher-navy);
+}
+
+.teacher-answer-id {
+  direction: ltr;
+  unicode-bidi: isolate;
+  color: var(--teacher-muted);
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 7.8pt;
+}
+
+.teacher-answer-body {
+  font-size: 10pt;
+  line-height: 1.48;
+}
+
+.teacher-answer-list {
+  margin: 0;
+  padding-inline-start: 6mm;
+  display: grid;
+  gap: 1mm;
+}
+
+.teacher-answer-object {
+  margin: 0;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 1.2mm 3mm;
+}
+
+.teacher-answer-object dt {
+  color: var(--teacher-accent);
+  font-size: 8.8pt;
+  font-weight: 800;
+}
+
+.teacher-answer-object dd {
+  margin: 0;
+}
+
+.teacher-answer-note {
+  margin-top: 2.5mm;
+  padding: 2mm 2.5mm;
+  border-inline-start: 1mm solid var(--teacher-accent);
+  background: var(--teacher-soft);
+  color: #33414d;
+  font-size: 8.8pt;
+  line-height: 1.45;
+}
+
+.teacher-source-policy {
+  margin-top: 8mm;
+  padding: 5mm;
+  border: .35mm solid var(--teacher-line);
+  background: var(--teacher-soft);
+  break-inside: avoid;
+}
+
+.teacher-source-policy h2 {
+  margin: 0 0 2mm;
+  color: var(--teacher-navy);
+  font-size: 14pt;
+}
+
+.teacher-source-policy p {
+  margin: 0 0 3mm;
+  font-size: 9.8pt;
+  line-height: 1.5;
+}
+
+.teacher-source-policy dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 1.2mm 3mm;
+  font-size: 9pt;
+}
+
+.teacher-source-policy dt {
+  font-weight: 800;
+  color: var(--teacher-accent);
+}
+
+.teacher-source-policy dd {
+  margin: 0;
+}
+
+.math,
+[dir="ltr"] {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+}
+
+@media print {
+  html,
+  body,
+  #teacher-root {
+    background: #fff;
+  }
+
+  .teacher-document {
+    width: auto;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+}
