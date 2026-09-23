@@ -24,11 +24,11 @@ export const unit1Questions: Unit1Question[] = [
   },
   {
     id: 'U1-P1-B', page: 1, stem: 'סמנו בשרטוט את הזווית המתאימה לזווית המסומנת.',
-    diagram: { topology: 'two-lines-one-transversal-one-angle-highlighted', lineLabels: ['k', 'm', 't'], pointLabels: ['A', 'B'], orientationDeg: 4, transversalDeg: 63, parallelGiven: false, highlights: ['given-angle'] }
+    diagram: { topology: 'two-lines-one-transversal-one-angle-highlighted', lineLabels: ['k', 'm', 't'], pointLabels: ['A', 'B'], orientationDeg: 4, transversalDeg: 142, parallelGiven: false, highlights: ['given-angle'] }
   },
   {
     id: 'U1-P1-C', page: 1, stem: 'סמנו בשרטוט את הזווית המתחלפת לזווית המסומנת.',
-    diagram: { topology: 'two-lines-one-transversal-one-angle-highlighted', lineLabels: ['a', 'b', 's'], pointLabels: ['C', 'D'], orientationDeg: -7, transversalDeg: 116, parallelGiven: false, highlights: ['given-angle'] }
+    diagram: { topology: 'two-lines-one-transversal-one-angle-highlighted', lineLabels: ['a', 'b', 's'], pointLabels: ['C', 'D'], orientationDeg: -7, transversalDeg: 101, parallelGiven: false, highlights: ['given-angle'] }
   },
   {
     id: 'U1-P1-D', page: 1,
@@ -38,11 +38,11 @@ export const unit1Questions: Unit1Question[] = [
   },
   {
     id: 'U1-P1-E', page: 2, stem: 'התאימו לכל זווית בטור הימני את הזווית המתאימה לה בטור השמאלי.',
-    diagram: { topology: 'eight-angle-labeled-grid', lineLabels: ['c', 'd', 'h'], pointLabels: ['K', 'L'], orientationDeg: -3, transversalDeg: 52, parallelGiven: false }
+    diagram: { topology: 'eight-angle-labeled-grid', lineLabels: ['c', 'd', 'h'], pointLabels: ['K', 'L'], orientationDeg: -3, transversalDeg: 36, parallelGiven: false }
   },
   {
     id: 'U1-P2-A', page: 2, stem: 'התאימו לכל זווית בטור הימני את הזווית המתחלפת לה בטור השמאלי.',
-    diagram: { topology: 'eight-angle-labeled-grid', lineLabels: ['g', 'j', 'n'], pointLabels: ['M', 'N'], orientationDeg: 19, transversalDeg: 101, parallelGiven: false }
+    diagram: { topology: 'eight-angle-labeled-grid', lineLabels: ['g', 'j', 'n'], pointLabels: ['M', 'N'], orientationDeg: 19, transversalDeg: 95, parallelGiven: false }
   },
   {
     id: 'U1-P2-B', page: 2,
@@ -62,7 +62,7 @@ export const unit1Questions: Unit1Question[] = [
       'זוויות מתאימות בין ישרים מקבילים ______.',
       'זוויות ______ בין ישרים מקבילים שוות.'
     ],
-    diagram: { topology: 'minimal-theorem-support', lineLabels: ['e', 'f', 'z'], orientationDeg: 8, transversalDeg: 67, parallelGiven: true }
+    diagram: { topology: 'minimal-theorem-support', lineLabels: ['e', 'f', 'z'], orientationDeg: 8, transversalDeg: 142, parallelGiven: true }
   },
   {
     id: 'U1-P2-D', page: 3, stem: 'השלימו את המילה החסרה בכל שורה, כך שכל שורה תתאר את זוג הזוויות המסומן בשרטוט.',
@@ -80,17 +80,17 @@ export const unit1Questions: Unit1Question[] = [
   },
   {
     id: 'U1-P3-A', page: 3, stem: 'בכל אחד משני השרטוטים מסומן זוג זוויות מתחלפות. דניאל אמר: „זוויות מתחלפות שוות.” נועה אמרה: „המשפט אינו מדויק; צריך לומר: זוויות מתחלפות בין ישרים מקבילים שוות.” קבעו מי צודק והסבירו מדוע.',
-    diagram: { topology: 'claim-analysis-two-configurations', lineLabels: ['m', 'n', 'q'], orientationDeg: 13, transversalDeg: 73, parallelGiven: false }
+    diagram: { topology: 'claim-analysis-two-configurations', lineLabels: ['m', 'n', 'q'], orientationDeg: 13, transversalDeg: 61, parallelGiven: false }
   },
   {
     id: 'U1-P3-B', page: 4, stem: 'השלימו את הטבלה לפי השרטוטים.',
     subparts: ['קבעו בכל שורה אם הזוג המסומן הוא זוג זוויות מתאימות או זוג זוויות מתחלפות.', 'קבעו אם ניתן להסיק שהזוויות שוות על סמך הנתונים שבשרטוט.'],
-    diagram: { topology: 'four-mini-diagrams-table', lineLabels: ['a', 'c', 'p'], orientationDeg: 32, transversalDeg: 122, parallelGiven: false }
+    diagram: { topology: 'four-mini-diagrams-table', lineLabels: ['a', 'c', 'p'], orientationDeg: 31, transversalDeg: 107, parallelGiven: false }
   },
   {
     id: 'U1-P3-C', page: 4, stem: 'בחרו את זוג הזוויות המתחלפות.',
     choices: ['הזוג המסומן א', 'הזוג המסומן ב', 'הזוג המסומן ג', 'הזוג המסומן ד'],
-    diagram: { topology: 'rotated-four-option-angle-pairs', lineLabels: ['b', 'd', 'f'], pointLabels: ['S', 'T'], orientationDeg: 84, transversalDeg: 29, parallelGiven: false, highlights: ['option-a', 'option-b', 'option-c', 'option-d'] }
+    diagram: { topology: 'rotated-four-option-angle-pairs', lineLabels: ['b', 'd', 'f'], pointLabels: ['S', 'T'], orientationDeg: 84, transversalDeg: 44, parallelGiven: false, highlights: ['option-a', 'option-b', 'option-c', 'option-d'] }
   },
   {
     id: 'U1-P3-D', page: 4, stem: 'בכל אחד משני השרטוטים מסומן זוג זוויות מתאימות. מאיה אמרה: „זוויות מתאימות שוות.” יואב טען שחסר במשפט תנאי הכרחי. כתבו את המשפט המלא והמדויק והסבירו מה היה חסר.',

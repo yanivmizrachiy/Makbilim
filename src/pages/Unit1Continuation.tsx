@@ -57,14 +57,14 @@ function EightAngleDiagram({
       transversalDeg={transversalDeg}
       showParallelMarks={false}
       angleMarks={[
-        { intersection: 'top', sector: 0, label: '1', tone: 'neutral' },
-        { intersection: 'top', sector: 1, label: '2', tone: 'neutral' },
-        { intersection: 'top', sector: 2, label: '3', tone: 'neutral' },
-        { intersection: 'top', sector: 3, label: '4', tone: 'neutral' },
-        { intersection: 'bottom', sector: 0, label: '5', tone: 'neutral' },
-        { intersection: 'bottom', sector: 1, label: '6', tone: 'neutral' },
-        { intersection: 'bottom', sector: 2, label: '7', tone: 'neutral' },
-        { intersection: 'bottom', sector: 3, label: '8', tone: 'neutral' },
+        { intersection: 'top', sector: 0, label: '1', role: 'marked' },
+        { intersection: 'top', sector: 1, label: '2', role: 'marked' },
+        { intersection: 'top', sector: 2, label: '3', role: 'marked' },
+        { intersection: 'top', sector: 3, label: '4', role: 'marked' },
+        { intersection: 'bottom', sector: 0, label: '5', role: 'marked' },
+        { intersection: 'bottom', sector: 1, label: '6', role: 'marked' },
+        { intersection: 'bottom', sector: 2, label: '7', role: 'marked' },
+        { intersection: 'bottom', sector: 3, label: '8', role: 'marked' },
       ]}
     />
   );
@@ -105,7 +105,7 @@ function Unit1Page2() {
       <QuestionBlock
         taskId={corresponding.id}
         compact
-        diagram={<EightAngleDiagram lineLabels={['c', 'd']} transversalLabel="h" orientationDeg={-3} transversalDeg={52} />}
+        diagram={<EightAngleDiagram lineLabels={['c', 'd']} transversalLabel="h" orientationDeg={-3} transversalDeg={36} />}
       >
         {corresponding.stem}
         <MatchingColumns mode="corresponding" />
@@ -114,7 +114,7 @@ function Unit1Page2() {
       <QuestionBlock
         taskId={alternate.id}
         compact
-        diagram={<EightAngleDiagram lineLabels={['g', 'j']} transversalLabel="n" orientationDeg={19} transversalDeg={101} />}
+        diagram={<EightAngleDiagram lineLabels={['g', 'j']} transversalLabel="n" orientationDeg={19} transversalDeg={95} />}
       >
         {alternate.stem}
         <MatchingColumns mode="alternate" />
@@ -132,7 +132,7 @@ function Unit1Page2() {
       <QuestionBlock
         taskId={theorem.id}
         compact
-        diagram={<ParallelLinesDiagram lineLabels={['e', 'f']} transversalLabel="z" orientationDeg={8} transversalDeg={67} showParallelMarks angleMarks={markedPair(correspondingPair(0))} />}
+        diagram={<ParallelLinesDiagram lineLabels={['e', 'f']} transversalLabel="z" orientationDeg={8} transversalDeg={142} showParallelMarks angleMarks={markedPair(correspondingPair(0))} />}
       >
         {theorem.stem}
         <ClozeLines lines={theorem.subparts ?? []} />
@@ -151,7 +151,7 @@ export const unit1RelationTableCases: Array<{
 }> = [
   {
     orientationDeg: 0,
-    transversalDeg: 59,
+    transversalDeg: 131,
     parallel: true,
     relation: 'מתאימות',
     equalityConclusion: 'כן',
@@ -162,7 +162,7 @@ export const unit1RelationTableCases: Array<{
   },
   {
     orientationDeg: 31,
-    transversalDeg: 122,
+    transversalDeg: 107,
     parallel: false,
     relation: 'מתאימות',
     equalityConclusion: 'לא ניתן לקבוע',
@@ -184,7 +184,7 @@ export const unit1RelationTableCases: Array<{
   },
   {
     orientationDeg: -18,
-    transversalDeg: 51,
+    transversalDeg: 112,
     parallel: false,
     relation: 'מתחלפות',
     equalityConclusion: 'לא ניתן לקבוע',
@@ -249,7 +249,7 @@ function Unit1Page3() {
         answerLines={4}
         diagram={
           <div className="paired-diagrams">
-            <ParallelLinesDiagram lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={13} transversalDeg={73} showParallelMarks angleMarks={markedPair(alternateInteriorPair(13, 73))} />
+            <ParallelLinesDiagram lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={13} transversalDeg={61} showParallelMarks angleMarks={markedPair(alternateInteriorPair(13, 61))} />
             <ParallelLinesDiagram lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={-9} transversalDeg={68} showParallelMarks={false} secondLineSkewDeg={8} angleMarks={markedPair(alternateInteriorPair(-9, 68))} />
           </div>
         }
@@ -280,17 +280,17 @@ function Unit1Page4() {
             lineLabels={['b', 'd']}
             transversalLabel="f"
             orientationDeg={84}
-            transversalDeg={29}
+            transversalDeg={44}
             showParallelMarks={false}
             angleMarks={[
-              { intersection: 'top', sector: 0, label: 'א', tone: 'primary' },
-              { intersection: 'bottom', sector: 1, label: 'א', tone: 'primary' },
-              { intersection: 'top', sector: 1, label: 'ב', tone: 'secondary' },
-              { intersection: 'bottom', sector: 1, label: 'ב', tone: 'secondary' },
-              { intersection: 'top', sector: 2, label: 'ג', tone: 'neutral' },
-              { intersection: 'bottom', sector: 0, label: 'ג', tone: 'neutral' },
-              { intersection: 'top', sector: 3, label: 'ד', tone: 'primary', arcStyle: 'double' },
-              { intersection: 'bottom', sector: 3, label: 'ד', tone: 'primary', arcStyle: 'double' },
+              { intersection: 'top', sector: 0, label: 'א', role: 'marked' },
+              { intersection: 'bottom', sector: 1, label: 'א', role: 'marked' },
+              { intersection: 'top', sector: 1, label: 'ב', role: 'marked' },
+              { intersection: 'bottom', sector: 2, label: 'ב', role: 'marked' },
+              { intersection: 'top', sector: 2, label: 'ג', role: 'marked' },
+              { intersection: 'bottom', sector: 0, label: 'ג', role: 'marked' },
+              { intersection: 'top', sector: 3, label: 'ד', role: 'marked' },
+              { intersection: 'bottom', sector: 3, label: 'ד', role: 'marked' },
             ]}
           />
         }
@@ -308,7 +308,7 @@ function Unit1Page4() {
         diagram={
           <div className="paired-diagrams">
             <ParallelLinesDiagram lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={-21} transversalDeg={48} showParallelMarks angleMarks={markedPair(correspondingPair(0))} />
-            <ParallelLinesDiagram lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={16} transversalDeg={62} showParallelMarks={false} secondLineSkewDeg={-8} angleMarks={markedPair(correspondingPair(0))} />
+            <ParallelLinesDiagram lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={16} transversalDeg={54} showParallelMarks={false} secondLineSkewDeg={-8} angleMarks={markedPair(correspondingPair(0))} />
           </div>
         }
       >

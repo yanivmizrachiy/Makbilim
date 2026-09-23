@@ -79,7 +79,7 @@ export const unit4Questions: Unit4Question[] = [
       lineLabels: ['p', 'q', 't'],
       pointLabels: ['A', 'B'],
       orientationDeg: 6,
-      transversalDeg: 61,
+      transversalDeg: 73,
       parallelGiven: false,
       givens: ['∠A = 67°', '∠B = 67°', '∠A and ∠B are corresponding'],
       target: 'determine p ∥ q'
@@ -122,7 +122,7 @@ export const unit4Questions: Unit4Question[] = [
       topology: 'converse-data-sufficiency-four-cases',
       lineLabels: ['p', 'q', 't'],
       orientationDeg: 78,
-      transversalDeg: 30,
+      transversalDeg: 38,
       parallelGiven: false,
       givens: ['four candidate angle relations'],
       target: 'select sufficient condition for p ∥ q'
@@ -139,8 +139,8 @@ export const unit4Questions: Unit4Question[] = [
     diagram: {
       topology: 'converse-algebra-corresponding',
       lineLabels: ['p', 'q', 't'],
-      orientationDeg: -7,
-      transversalDeg: 64,
+      orientationDeg: 8,
+      transversalDeg: 80,
       parallelGiven: false,
       givens: ['corresponding angles: (3x + 14)° and (5x − 26)°'],
       target: 'find x that guarantees p ∥ q'

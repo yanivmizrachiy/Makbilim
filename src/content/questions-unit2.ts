@@ -36,7 +36,7 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['p', 'q', 't'],
       pointLabels: ['A', 'B'],
       orientationDeg: 0,
-      transversalDeg: 57,
+      transversalDeg: 112,
       parallelGiven: true,
       givens: ['∠A = 68°'],
       targets: ['∠B corresponding to ∠A']
@@ -52,7 +52,7 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['k', 'm', 'r'],
       pointLabels: ['C', 'D'],
       orientationDeg: 7,
-      transversalDeg: 116,
+      transversalDeg: 63,
       parallelGiven: true,
       givens: ['∠C = 124°'],
       targets: ['∠D alternate to ∠C']
@@ -68,7 +68,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'parallel-lines-one-transversal-corresponding-choice',
       lineLabels: ['a', 'b', 's'],
       orientationDeg: -9,
-      transversalDeg: 62,
+      transversalDeg: 124,
       parallelGiven: true,
       givens: ['given angle = 47°'],
       targets: ['corresponding target angle']
@@ -84,7 +84,7 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['r', 's', 'u'],
       pointLabels: ['E'],
       orientationDeg: 13,
-      transversalDeg: 69,
+      transversalDeg: 77,
       parallelGiven: true,
       givens: ['∠E = 116°'],
       targets: ['α alternate to ∠E']
@@ -102,7 +102,7 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['p', 'q', 't'],
       pointLabels: ['A'],
       orientationDeg: 3,
-      transversalDeg: 52,
+      transversalDeg: 120,
       parallelGiven: true,
       givens: ['∠A = 63°'],
       targets: ['β vertical to the corresponding angle at second intersection']
@@ -120,7 +120,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'straight-angle-then-alternate',
       lineLabels: ['m', 'n', 'v'],
       orientationDeg: -5,
-      transversalDeg: 121,
+      transversalDeg: 45,
       parallelGiven: true,
       givens: ['given angle = 137°'],
       targets: ['γ alternate to the adjacent supplementary angle']
@@ -139,7 +139,7 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['c', 'd', 'w'],
       pointLabels: ['F'],
       orientationDeg: 77,
-      transversalDeg: 24,
+      transversalDeg: 149,
       parallelGiven: true,
       givens: ['∠F = 72°'],
       targets: ['δ adjacent to the angle alternate to ∠F']
@@ -158,7 +158,7 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['p', 'q', 'r'],
       pointLabels: ['A'],
       orientationDeg: -14,
-      transversalDeg: 40,
+      transversalDeg: 112,
       parallelGiven: true,
       givens: ['∠A = 54°'],
       targets: ['α reachable by corresponding→vertical or vertical→corresponding']
@@ -184,7 +184,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'eight-angles-table',
       lineLabels: ['p', 'q', 't'],
       orientationDeg: 6,
-      transversalDeg: 59,
+      transversalDeg: 136,
       parallelGiven: true,
       givens: ['reference angle = 38°'],
       targets: ['corresponding', 'alternate', 'vertical', 'adjacent']
@@ -205,7 +205,7 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['k', 'm', 's'],
       pointLabels: ['A', 'D', 'F'],
       orientationDeg: 84,
-      transversalDeg: 31,
+      transversalDeg: 136,
       parallelGiven: true,
       givens: ['∠A = 52°'],
       targets: ['∠D corresponding to ∠A', '∠F adjacent to ∠D']
@@ -221,8 +221,8 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['p', 'q', 't', 's'],
       pointLabels: ['A', 'C'],
       orientationDeg: 10,
-      transversalDeg: 56,
-      secondaryTransversalDeg: 118,
+      transversalDeg: 128,
+      secondaryTransversalDeg: 113,
       parallelGiven: true,
       givens: ['∠A = 62° on transversal t', '∠C = 77° on transversal s'],
       targets: ['β corresponding to ∠A on transversal t']
@@ -238,8 +238,8 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['a', 'b', 'r', 's'],
       pointLabels: ['A', 'C'],
       orientationDeg: -11,
-      transversalDeg: 48,
-      secondaryTransversalDeg: 123,
+      transversalDeg: 47,
+      secondaryTransversalDeg: 61,
       parallelGiven: true,
       givens: ['∠A = 49° on transversal r', '∠C = 73° on transversal s'],
       targets: ['α corresponding to ∠A', 'β alternate to ∠C']
@@ -259,7 +259,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'corresponding-two-expressions-simple',
       lineLabels: ['p', 'q', 't'],
       orientationDeg: 4,
-      transversalDeg: 61,
+      transversalDeg: 114,
       parallelGiven: true,
       givens: ['(4x + 6)°', '(2x + 38)°'],
       targets: ['x']
@@ -275,7 +275,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'alternate-two-expressions-simple',
       lineLabels: ['k', 'm', 'r'],
       orientationDeg: -8,
-      transversalDeg: 119,
+      transversalDeg: 58,
       parallelGiven: true,
       givens: ['(3x + 17)°', '(5x − 21)°'],
       targets: ['x']
@@ -291,7 +291,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'corresponding-expressions-solve-x-then-angle',
       lineLabels: ['a', 'b', 's'],
       orientationDeg: 71,
-      transversalDeg: 171,
+      transversalDeg: 173,
       parallelGiven: true,
       givens: ['(6x − 9)°', '(3x + 42)°'],
       targets: ['x', 'marked angle']
@@ -313,7 +313,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'alternate-equation-choice',
       lineLabels: ['r', 's', 'u'],
       orientationDeg: 15,
-      transversalDeg: 124,
+      transversalDeg: 80,
       parallelGiven: true,
       givens: ['(2x + 35)°', '(5x − 19)°'],
       targets: ['correct equation', 'x']
@@ -331,7 +331,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'corresponding-two-expressions-advanced',
       lineLabels: ['p', 'q', 'v'],
       orientationDeg: -17,
-      transversalDeg: 58,
+      transversalDeg: 85,
       parallelGiven: true,
       givens: ['(7x − 18)°', '(3x + 46)°'],
       targets: ['x', 'angle value']
@@ -347,7 +347,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'alternate-two-expressions-advanced',
       lineLabels: ['c', 'd', 'w'],
       orientationDeg: 82,
-      transversalDeg: 32,
+      transversalDeg: 141,
       parallelGiven: true,
       givens: ['(4x + 15)°', '(2x + 63)°'],
       targets: ['x', 'angle value']
@@ -363,8 +363,8 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'two-transversals-two-independent-equations',
       lineLabels: ['p', 'q', 'r', 's'],
       orientationDeg: 9,
-      transversalDeg: 113,
-      secondaryTransversalDeg: 95,
+      transversalDeg: 117,
+      secondaryTransversalDeg: 109,
       parallelGiven: true,
       givens: ['(3x + 12)° corresponds to 72°', '(2y + 18)° alternates with 94°'],
       targets: ['x', 'y']
@@ -383,7 +383,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'adjacent-angles-error-analysis-with-parallel-context',
       lineLabels: ['a', 'b', 't'],
       orientationDeg: -4,
-      transversalDeg: 64,
+      transversalDeg: 110,
       parallelGiven: true,
       givens: ['adjacent angles: (2x + 20)° and (3x + 35)°'],
       targets: ['correct equation', 'x']
@@ -404,7 +404,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'shelves-parallel-diagonal-support',
       lineLabels: ['מדף עליון', 'מדף תחתון', 'מוט'],
       orientationDeg: 2,
-      transversalDeg: 55,
+      transversalDeg: 66,
       parallelGiven: true,
       givens: ['upper angle = 64°'],
       targets: ['corresponding lower angle']
@@ -419,7 +419,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'parallel-rails-transversal',
       lineLabels: ['מסילה 1', 'מסילה 2', 'חותך'],
       orientationDeg: -12,
-      transversalDeg: 106,
+      transversalDeg: 116,
       parallelGiven: true,
       givens: ['given angle = 118°'],
       targets: ['alternate angle']
@@ -435,9 +435,9 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['p', 'q', 'r', 's'],
       pointLabels: ['A', 'C'],
       orientationDeg: 18,
-      // 243° / 273° are the same lines as 63° / 93°; the upper end carries the line label,
+      // 258° / 273° are the same lines as 78° / 93°; the upper end carries the line label,
       // away from where the two transversals meet below q.
-      transversalDeg: 243,
+      transversalDeg: 258,
       secondaryTransversalDeg: 273,
       parallelGiven: true,
       givens: ['∠A = 128° on transversal r', '∠C = 75° on transversal s'],
@@ -458,10 +458,10 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['k', 'm', 'r', 's'],
       pointLabels: ['A', 'C'],
       orientationDeg: 74,
-      // 204° / 186° (the lines through 24° / 6°): each line label sits at the end where the
+      // 202° / 189° (the lines through 22° / 9°): each line label sits at the end where the
       // two transversals spread apart.
-      transversalDeg: 204,
-      secondaryTransversalDeg: 186,
+      transversalDeg: 202,
+      secondaryTransversalDeg: 189,
       parallelGiven: true,
       givens: ['∠A = 41°', '∠C = 68°'],
       targets: ['α corresponding to ∠A', 'β adjacent to angle corresponding to ∠C', 'α + β']

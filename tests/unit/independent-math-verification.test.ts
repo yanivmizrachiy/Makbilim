@@ -645,13 +645,14 @@ const unit2Specs: Unit2Spec[] = [
     id: 'U2-P3-A',
     parallelText: 'p ∥ q',
     stemGivens: ['זווית שגודלה 38°'],
-    marks: ['ref', 'א', 'ב', 'ג', 'ד', 'ref*'],
+    // The 38° angle is marked ONCE (it used to carry a second, differently coloured mark). The
+    // letters deliberately do not follow the table's row order.
+    marks: ['ref', 'א', 'ב', 'ג', 'ד'],
     steps: [
-      ['ref', 'א', 'corresponding'],
-      ['ref', 'ב', 'alternate'],
-      ['ref', 'ג', 'vertical'],
-      ['ref', 'ד', 'adjacent'],
-      ['ref', 'ref*', 'same'],
+      ['ref', 'א', 'vertical'],
+      ['ref', 'ב', 'corresponding'],
+      ['ref', 'ג', 'adjacent'],
+      ['ref', 'ד', 'alternate'],
     ],
     derive: () => {
       const ref = 38;
@@ -661,7 +662,7 @@ const unit2Specs: Unit2Spec[] = [
       const adjacent = 180 - ref; // 142
       return {
         answer: { 'מתאימה': corresponding, 'מתחלפת': alternate, 'קודקודית': vertical, 'צמודה': adjacent },
-        measures: { ref, 'א': corresponding, 'ב': alternate, 'ג': vertical, 'ד': adjacent, 'ref*': ref },
+        measures: { ref, 'א': vertical, 'ב': corresponding, 'ג': adjacent, 'ד': alternate },
       };
     },
   },
@@ -1009,6 +1010,12 @@ describe('independent verification — rendered drawings faithfully show the dia
         expect(angle.span).toBeGreaterThan(0);
         expect(angle.span).toBeLessThan(180);
       }
+      // One mark per drawn angle (U2-P3-A once marked its 38° angle twice, in two colours).
+      const doubled: string[] = [];
+      drawing.angles.forEach((a, i) => drawing.angles.slice(i + 1).forEach((b, j) => {
+        if (relationOf(a, b) === 'same') doubled.push(`#${i} ${a.label ?? ''} ≡ #${i + 1 + j} ${b.label ?? ''}`);
+      }));
+      expect(doubled, `${id}: an angle is marked more than once`).toEqual([]);
     });
   }
 });
@@ -1223,14 +1230,30 @@ describe('independent verification — unit 2 algebra: unique, valid, justified'
     expect(new Set(q.choices).size).toBe(q.choices?.length);
   });
 
-  it('U2-P3-A: table rows, drawn letters א–ד and answer keys describe the same four relations in the same order', () => {
+  // The letters used to follow the table's row order (א = corresponding, ב = alternate, …), which
+  // handed the student the answer; they are now shuffled, so this checks the same consistency
+  // without fixing the order, and additionally that the order is NOT the row order.
+  it('U2-P3-A: table rows, drawn letters א–ד and answer keys describe the same four relations, and the letters do not give away the rows', () => {
     const q = byId(unit2Questions, 'U2-P3-A');
+    const rowRelation = { 'מתאימה': 'corresponding', 'מתחלפת': 'alternate', 'קודקודית': 'vertical', 'צמודה': 'adjacent' } as const;
     expect((q.tableRows ?? []).map(row => row.relation)).toEqual(['מתאימות', 'מתחלפות', 'קודקודיות', 'צמודות']);
-    expect(Object.keys(q.expected.values ?? {})).toEqual(['מתאימה', 'מתחלפת', 'קודקודית', 'צמודה']);
+    expect(Object.keys(q.expected.values ?? {})).toEqual(Object.keys(rowRelation));
     const drawing = drawingOf('U2-P3-A');
-    expect(drawing.angles.slice(1, 5).map(a => a.label)).toEqual(['א', 'ב', 'ג', 'ד']);
+    // The given angle once, then the four letters — no other mark.
+    expect(drawing.angles.map(a => a.label)).toEqual(['38°', 'א', 'ב', 'ג', 'ד']);
     const ref = drawing.angles[0]!;
-    expect(drawing.angles.slice(1, 5).map(a => relationOf(ref, a))).toEqual(['corresponding', 'alternate', 'vertical', 'adjacent']);
+    const letterOf = new Map(drawing.angles.slice(1).map(angle => [relationOf(ref, angle), angle.label]));
+    // Each relation of the table is drawn exactly once.
+    expect([...letterOf.keys()].sort()).toEqual(['adjacent', 'alternate', 'corresponding', 'vertical']);
+    // Each row's key value is the hand-derived measure of the letter drawn in that row's relation.
+    const { measures } = unit2Specs.find(spec => spec.id === 'U2-P3-A')!.derive();
+    for (const [row, relation] of Object.entries(rowRelation)) {
+      expect(q.expected.values?.[row], `U2-P3-A row ${row}`).toBe(measures[letterOf.get(relation)!]);
+    }
+    // No letter sits at the position of its own table row.
+    Object.values(rowRelation).forEach((relation, row) => {
+      expect(letterOf.get(relation), `U2-P3-A: the ${relation} angle is lettered in table-row order`).not.toBe(['א', 'ב', 'ג', 'ד'][row]);
+    });
   });
 
   it('U2-P3-B: the table states the same relations the drawing shows', () => {

@@ -41,7 +41,7 @@ export const unit3Questions: Unit3Question[] = [
       lineLabels: ['p', 'q', 't'],
       pointLabels: ['A', 'B'],
       orientationDeg: 0,
-      transversalDeg: 58,
+      transversalDeg: 117,
       parallelGivens: ['p ∥ q'],
       target: '∠A = ∠B'
     },
@@ -60,7 +60,7 @@ export const unit3Questions: Unit3Question[] = [
       lineLabels: ['p', 'q', 'r'],
       pointLabels: ['C', 'D'],
       orientationDeg: 8,
-      transversalDeg: 63,
+      transversalDeg: 55,
       parallelGivens: ['p ∥ q'],
       target: 'complete reason for ∠C = ∠D'
     },
@@ -87,9 +87,9 @@ export const unit3Questions: Unit3Question[] = [
       // vertical pair ∠E, ∠F sits on a second transversal t.
       lineLabels: ['k', 'm', 's', 't'],
       pointLabels: ['A', 'B', 'C', 'D', 'E', 'F'],
-      orientationDeg: -12,
-      transversalDeg: 101,
-      secondaryTransversalDeg: 63,
+      orientationDeg: -8,
+      transversalDeg: 116,
+      secondaryTransversalDeg: 102,
       parallelGivens: ['k ∥ m'],
       target: 'match each equality to its reason'
     },
@@ -134,7 +134,7 @@ export const unit3Questions: Unit3Question[] = [
       lineLabels: ['p', 'q', 't'],
       pointLabels: ['A', 'B'],
       orientationDeg: 14,
-      transversalDeg: 68,
+      transversalDeg: 118,
       parallelGivens: ['p ∥ q'],
       target: 'correct justification for ∠A = ∠B'
     },
@@ -155,7 +155,7 @@ export const unit3Questions: Unit3Question[] = [
       lineLabels: ['p', 'q', 'r'],
       pointLabels: ['A', 'B', 'C'],
       orientationDeg: -5,
-      transversalDeg: 55,
+      transversalDeg: 123,
       parallelGivens: ['p ∥ q'],
       target: 'prove ∠A = ∠C'
     },
@@ -183,7 +183,7 @@ export const unit3Questions: Unit3Question[] = [
       lineLabels: ['k', 'm', 's'],
       pointLabels: ['A', 'B', 'C'],
       orientationDeg: 81,
-      transversalDeg: 33,
+      transversalDeg: 157,
       parallelGivens: ['k ∥ m'],
       target: 'complete ∠A = ∠B'
     },
@@ -204,8 +204,8 @@ export const unit3Questions: Unit3Question[] = [
       lineLabels: ['p', 'q', 'r', 's'],
       pointLabels: ['A', 'B', 'C', 'D'],
       orientationDeg: 19,
-      transversalDeg: 62,
-      secondaryTransversalDeg: 124,
+      transversalDeg: 83,
+      secondaryTransversalDeg: 97,
       parallelGivens: [],
       givens: ['∠A and ∠B occupy corresponding positions relative to p, q and transversal r'],
       target: 'select sufficient given to prove ∠A = ∠B'
@@ -272,7 +272,7 @@ export const unit3Questions: Unit3Question[] = [
       pointLabels: ['A', 'B', 'D', 'E'],
       orientationDeg: 11,
       transversalDeg: 114,
-      secondaryTransversalDeg: 76,
+      secondaryTransversalDeg: 129,
       parallelGivens: ['a ∥ b'],
       givens: ['∠A corresponds to ∠B on transversal r', '∠B vertical to ∠D', '∠E = 35° on transversal s'],
       target: '∠A = ∠D'
@@ -299,7 +299,7 @@ export const unit3Questions: Unit3Question[] = [
       lineLabels: ['p', 'q', 't'],
       pointLabels: ['A', 'B', 'C'],
       orientationDeg: -9,
-      transversalDeg: 64,
+      transversalDeg: 41,
       parallelGivens: ['p ∥ q'],
       givens: ['∠A corresponds to ∠B', '∠B vertical to ∠C', '∠A and ∠C are alternate angles; proof B never states p ∥ q'],
       target: 'evaluate two proofs of ∠A = ∠C'
