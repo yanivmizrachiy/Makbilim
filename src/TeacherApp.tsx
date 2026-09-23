@@ -76,10 +76,10 @@ function groupByUnitAndPage(entries: TeacherAnswerEntry[]) {
     groups.set(key, group);
   }
 
-  return [...groups.entries()]
-    .map(([key, items]) => {
-      const [unit, page] = key.split('-').map(Number);
-      return { unit, page, items };
+  return [...groups.values()]
+    .map(items => {
+      const first = items[0]!;
+      return { unit: first.unit, page: first.page, items };
     })
     .sort((a, b) => a.unit - b.unit || a.page - b.page);
 }
