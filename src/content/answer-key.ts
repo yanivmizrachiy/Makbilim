@@ -44,8 +44,8 @@ const unit1AnswerKey: TeacherAnswerEntry[] = [
     ],
     note: 'ייתכנו זוגות נכונים נוספים בהתאם למספור שבשרטוט.',
   },
-  { id: 'U1-P2-C', unit: 1, page: 2, answer: ['מקבילים', 'שוות'] },
-  { id: 'U1-P2-D', unit: 1, page: 3, answer: ['מקבילים', 'שוות'] },
+  { id: 'U1-P2-C', unit: 1, page: 2, answer: 'מקבילים' },
+  { id: 'U1-P2-D', unit: 1, page: 3, answer: 'מתחלפות' },
   {
     id: 'U1-P2-E', unit: 1, page: 3,
     answer: [
