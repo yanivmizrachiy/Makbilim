@@ -21,13 +21,15 @@ function proofMarks(q: Unit3Question): AngleMark[] {
       return [{ ...a, label: 'C', tone: 'primary' }, { ...b, label: 'D', tone: 'primary' }];
     }
     case 'U3-P1-C': {
-      const [ca, cb] = corr(0);
+      // Corresponding ∠A/∠B and alternate ∠C/∠D on s (four different angles), and the
+      // vertical pair ∠E/∠F at the lower crossing of the second transversal t.
+      const [ca, cb] = corr(1);
       const [aa, ab] = alt(0);
       return [
         { ...ca, label: 'A', tone: 'primary' }, { ...cb, label: 'B', tone: 'primary' },
         { ...aa, label: 'C', tone: 'secondary' }, { ...ab, label: 'D', tone: 'secondary' },
-        { intersection: 'top', sector: 1, label: 'E', tone: 'neutral', arcStyle: 'double' },
-        { intersection: 'top', sector: 3, label: 'F', tone: 'neutral', arcStyle: 'double' },
+        { intersection: 'bottom-secondary', sector: 0, label: 'E', tone: 'neutral', arcStyle: 'double' },
+        { intersection: 'bottom-secondary', sector: 2, label: 'F', tone: 'neutral', arcStyle: 'double' },
       ];
     }
     case 'U3-P1-D':
@@ -73,12 +75,13 @@ function proofMarks(q: Unit3Question): AngleMark[] {
       ];
     }
     case 'U3-P3-C': {
+      // ∠E = 35° is drawn in an acute (65°) sector of s, well away from ∠A, ∠B, ∠D on r.
       const [a, b] = corr(1);
       return [
         { ...a, label: 'A', tone: 'primary' },
         { ...b, label: 'B', tone: 'primary' },
         { intersection: 'bottom', sector: ((b.sector + 2) % 4) as Sector, label: 'D', tone: 'neutral', arcStyle: 'double' },
-        { intersection: 'top-secondary', sector: 0, label: 'E', value: '35°', tone: 'secondary' },
+        { intersection: 'bottom-secondary', sector: 0, label: 'E', value: '35°', tone: 'secondary' },
       ];
     }
     default:

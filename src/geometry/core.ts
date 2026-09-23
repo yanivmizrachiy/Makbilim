@@ -97,39 +97,42 @@ export function estimateLabelRect(
 export const LABEL_INK_BOX = { minWidth: 13, maxWidth: 190, charWidth: 11, height: 20, baseWidth: 4 } as const;
 
 /**
- * True when `segment` passes within `clearance` of `rect` — used so labels are never placed
- * on a drawn line (SPEC 10.3). Liang–Barsky clip of the segment against the grown rectangle.
+ * Liang–Barsky: the parameter range [t0, t1] (0 = segment.a, 1 = segment.b) of the part of
+ * `segment` inside `rect`, or null when the segment misses it. The single clipping routine of
+ * the geometry engine.
  */
-export function segmentNearRect(segment: Segment, rect: Rect, clearance = 0): boolean {
-  const left = rect.left - clearance;
-  const right = rect.right + clearance;
-  const top = rect.top - clearance;
-  const bottom = rect.bottom + clearance;
+export function clipSegmentToRect(segment: Segment, rect: Rect): [number, number] | null {
   const dx = segment.b.x - segment.a.x;
   const dy = segment.b.y - segment.a.y;
   let t0 = 0;
   let t1 = 1;
   const edges: Array<[number, number]> = [
-    [-dx, segment.a.x - left],
-    [dx, right - segment.a.x],
-    [-dy, segment.a.y - top],
-    [dy, bottom - segment.a.y],
+    [-dx, segment.a.x - rect.left],
+    [dx, rect.right - segment.a.x],
+    [-dy, segment.a.y - rect.top],
+    [dy, rect.bottom - segment.a.y],
   ];
   for (const [p, q] of edges) {
     if (p === 0) {
-      if (q < 0) return false;
+      if (q < 0) return null;
       continue;
     }
     const t = q / p;
     if (p < 0) {
-      if (t > t1) return false;
+      if (t > t1) return null;
       if (t > t0) t0 = t;
     } else {
-      if (t < t0) return false;
+      if (t < t0) return null;
       if (t < t1) t1 = t;
     }
   }
-  return true;
+  return t0 <= t1 ? [t0, t1] : null;
+}
+
+/** True when `segment` passes within `clearance` of `rect` — so labels never sit on a drawn line (SPEC 10.3). */
+export function segmentNearRect(segment: Segment, rect: Rect, clearance = 0): boolean {
+  const grown = { left: rect.left - clearance, top: rect.top - clearance, right: rect.right + clearance, bottom: rect.bottom + clearance };
+  return clipSegmentToRect(segment, grown) !== null;
 }
 
 export function rectsOverlap(first: Rect, second: Rect, gap = 0): boolean {

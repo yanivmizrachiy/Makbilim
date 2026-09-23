@@ -63,7 +63,8 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
       ];
     }
     case 'U2-P2-D': {
-      const [a, b] = corr(0);
+      // Sector 1 is the 54° sector for lines at −14° and a transversal at 40°.
+      const [a, b] = corr(1);
       return [
         { ...a, value: '54°', tone: 'primary' },
         { ...b, tone: 'primary' },
@@ -120,10 +121,12 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
       return [{ ...a, value: '(3x + 17)°', tone: 'secondary' }, { ...b, value: '(5x − 21)°', tone: 'secondary' }];
     }
     case 'U2-P4-C': {
+      // x = 17 gives 93°: sector 2 is the obtuse (100°) sector for lines at 71°, transversal at 171°.
       const [a, b] = corr(2);
       return [{ ...a, value: '(6x − 9)°', tone: 'primary' }, { ...b, value: '(3x + 42)°', tone: 'primary' }];
     }
     case 'U2-P4-D': {
+      // x = 18 gives 71°: the acute interior alternate pair (71° for lines at 15°, transversal at 124°).
       const [a, b] = alt(1);
       return [{ ...a, value: '(2x + 35)°', tone: 'secondary' }, { ...b, value: '(5x − 19)°', tone: 'secondary' }];
     }
@@ -136,47 +139,55 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
       return [{ ...a, value: '(4x + 15)°', tone: 'secondary' }, { ...b, value: '(2x + 63)°', tone: 'secondary' }];
     }
     case 'U2-P5-C': {
-      const [a, b] = corr(0);
+      // Corresponding pair in the 76° sectors of r (72°), alternate pair in the 94° sectors of s.
+      // The long expressions sit at q, where the two transversals are far apart.
+      const [a, b] = corr(1);
       const secondary = secAlt(1);
       return [
-        { ...a, value: '(3x + 12)°', tone: 'primary' },
-        { ...b, value: '72°', tone: 'primary' },
+        { ...b, value: '(3x + 12)°', tone: 'primary' },
+        { ...a, value: '72°', tone: 'primary' },
         ...(secondary ? [
-          { ...secondary[0], value: '(2y + 18)°', tone: 'secondary' as const },
-          { ...secondary[1], value: '94°', tone: 'secondary' as const },
+          { ...secondary[1], value: '(2y + 18)°', tone: 'secondary' as const },
+          { ...secondary[0], value: '94°', tone: 'secondary' as const },
         ] : []),
       ];
     }
     case 'U2-P5-D':
+      // x = 25: (2x + 20)° = 70° sits in the 68° sector, (3x + 35)° = 110° in the 112° sector.
       return [
-        { intersection: 'top', sector: 0, value: '(2x + 20)°', tone: 'primary' },
-        { intersection: 'top', sector: 1, value: '(3x + 35)°', tone: 'secondary' },
+        { intersection: 'top', sector: 1, value: '(2x + 20)°', tone: 'primary' },
+        { intersection: 'top', sector: 0, value: '(3x + 35)°', tone: 'secondary' },
       ];
     case 'U2-P6-A': {
       const [a, b] = corr(0);
       return [{ ...a, value: '64°', tone: 'primary' }, { ...b, label: '?', tone: 'primary' }];
     }
     case 'U2-P6-B': {
-      const [a, b] = alt(0);
+      // The obtuse interior alternate pair: 118° for rails at −12° and a transversal at 106°.
+      const [a, b] = alt(1);
       return [{ ...a, value: '118°', tone: 'secondary' }, { ...b, label: '?', tone: 'secondary' }];
     }
     case 'U2-P6-C': {
-      const [a, b] = corr(0);
+      // ∠A = 128° in an obtuse (135°) sector of r, α = 52° in the adjacent acute (45°) one;
+      // ∠C = 75° in a 75° sector of s.
+      const [a, b] = corr(1);
       return [
         { ...a, label: 'A', value: '128°', tone: 'primary' },
         { ...b, tone: 'primary' },
         { intersection: 'bottom', sector: ((b.sector + 1) % 4) as Sector, label: 'α', tone: 'neutral', arcStyle: 'double' },
-        { intersection: 'top-secondary', sector: 1, label: 'C', value: '75°', tone: 'secondary' },
+        { intersection: 'top-secondary', sector: 0, label: 'C', value: '75°', tone: 'secondary' },
       ];
     }
     case 'U2-P6-D': {
-      const [a, b] = corr(0);
+      // ∠A = 41° and α in 50° sectors of r; ∠C = 68° and its corresponding angle in 68° sectors
+      // of s, β = 112° in the adjacent 112° sector.
+      const [a, b] = corr(2);
       return [
         { ...a, label: 'A', value: '41°', tone: 'primary' },
         { ...b, label: 'α', tone: 'primary' },
-        { intersection: 'top-secondary', sector: 1, label: 'C', value: '68°', tone: 'secondary' },
-        { intersection: 'bottom-secondary', sector: 1, tone: 'secondary' },
-        { intersection: 'bottom-secondary', sector: 2, label: 'β', tone: 'neutral', arcStyle: 'double' },
+        { intersection: 'top-secondary', sector: 0, label: 'C', value: '68°', tone: 'secondary' },
+        { intersection: 'bottom-secondary', sector: 0, tone: 'secondary' },
+        { intersection: 'bottom-secondary', sector: 1, label: 'β', tone: 'neutral', arcStyle: 'double' },
       ];
     }
     default:

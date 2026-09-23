@@ -82,10 +82,14 @@ export const unit3Questions: Unit3Question[] = [
     ],
     diagram: {
       topology: 'claim-reason-matching-three-relations',
-      lineLabels: ['k', 'm', 's'],
+      // Six distinct angles cannot carry a corresponding, an alternate and a vertical pair on
+      // one transversal (8 angles, but any vertical pair blocks the other two), so the
+      // vertical pair ∠E, ∠F sits on a second transversal t.
+      lineLabels: ['k', 'm', 's', 't'],
       pointLabels: ['A', 'B', 'C', 'D', 'E', 'F'],
       orientationDeg: -12,
-      transversalDeg: 117,
+      transversalDeg: 101,
+      secondaryTransversalDeg: 63,
       parallelGivens: ['k ∥ m'],
       target: 'match each equality to its reason'
     },
@@ -267,8 +271,8 @@ export const unit3Questions: Unit3Question[] = [
       lineLabels: ['a', 'b', 'r', 's'],
       pointLabels: ['A', 'B', 'D', 'E'],
       orientationDeg: 11,
-      transversalDeg: 51,
-      secondaryTransversalDeg: 126,
+      transversalDeg: 114,
+      secondaryTransversalDeg: 76,
       parallelGivens: ['a ∥ b'],
       givens: ['∠A corresponds to ∠B on transversal r', '∠B vertical to ∠D', '∠E = 35° on transversal s'],
       target: '∠A = ∠D'
@@ -297,12 +301,16 @@ export const unit3Questions: Unit3Question[] = [
       orientationDeg: -9,
       transversalDeg: 64,
       parallelGivens: ['p ∥ q'],
-      givens: ['∠A corresponds to ∠B', '∠B vertical to ∠C', '∠A and ∠C are not an alternate pair'],
+      givens: ['∠A corresponds to ∠B', '∠B vertical to ∠C', '∠A and ∠C are alternate angles; proof B never states p ∥ q'],
       target: 'evaluate two proofs of ∠A = ∠C'
     },
     expected: {
       choice: 'הוכחה א',
-      reason: 'הוכחה א משתמשת בשני קשרים תקפים. בהוכחה ב הזוויות ∠A ו־∠C אינן זוג זוויות מתחלפות ולכן הנימוק אינו תקף.'
+      reason: [
+        'הוכחה א נכונה: ∠A = ∠B כי הן זוויות מתאימות בין הישרים המקבילים p ו־q, ו־∠B = ∠C כי הן זוויות קודקודיות.',
+        'הוכחה ב אינה נכונה כפי שנכתבה. הזוויות ∠A ו־∠C אכן מתחלפות, אבל עצם היותן מתחלפות אינו מבטיח שהן שוות: המשפט הוא „זוויות מתחלפות בין ישרים מקבילים שוות”, ובהוכחה ב לא צוין שהישרים p ו־q מקבילים.',
+        'תיקון להוכחה ב: ∠A = ∠C כי הן זוויות מתחלפות בין הישרים המקבילים p ו־q.'
+      ]
     }
   }
 ];

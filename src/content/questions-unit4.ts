@@ -95,7 +95,7 @@ export const unit4Questions: Unit4Question[] = [
       lineLabels: ['k', 'm', 'r'],
       pointLabels: ['C', 'D'],
       orientationDeg: -13,
-      transversalDeg: 118,
+      transversalDeg: 99,
       parallelGiven: false,
       givens: ['∠C = 112°', '∠D = 112°', '∠C and ∠D are alternate'],
       target: 'determine k ∥ m'

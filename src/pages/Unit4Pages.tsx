@@ -17,7 +17,8 @@ function marks(q: Unit4Question): AngleMark[] {
       return [{ ...a, label: 'A', value: '67°', tone: 'primary' }, { ...b, label: 'B', value: '67°', tone: 'primary' }];
     }
     case 'U4-P2-A': {
-      const [a, b] = alternatePair(o, t, 0);
+      // The obtuse interior alternate pair: 112° for lines at −13° and a transversal at 99°.
+      const [a, b] = alternatePair(o, t, 1);
       return [{ ...a, label: 'C', value: '112°', tone: 'secondary' }, { ...b, label: 'D', value: '112°', tone: 'secondary' }];
     }
     case 'U4-P2-C': {
@@ -39,10 +40,13 @@ function ConverseDiagram({ q }: { q: Unit4Question }) {
         orientationDeg={q.diagram.orientationDeg}
         transversalDeg={q.diagram.transversalDeg ?? 57}
         parallelPair={[0, 1]}
+        // The same (obtuse, 'left') position at all three crossings: ∠A/∠B and ∠B/∠C are
+        // corresponding pairs, and the wide sector leaves room for each badge inside its own
+        // angle (below r the acute 'right' sector is too tight, which pushed ∠C across r).
         angleMarks={[
-          { line: 0, label: 'A', side: 'right', tone: 'primary' },
-          { line: 1, label: 'B', side: 'right', tone: 'primary' },
-          { line: 2, label: 'C', side: 'right', tone: 'secondary' },
+          { line: 0, label: 'A', side: 'left', tone: 'primary' },
+          { line: 1, label: 'B', side: 'left', tone: 'primary' },
+          { line: 2, label: 'C', side: 'left', tone: 'secondary' },
         ]}
         ariaLabel="שלושה ישרים p, q, r וישר חותך; p ו־q מסומנים כמקבילים"
       />

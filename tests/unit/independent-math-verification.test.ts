@@ -15,10 +15,8 @@
  * classifies each pair of marked angles (corresponding / alternate / vertical / adjacent)
  * from first principles.
  *
- * Content issues found by this suite are listed below. A test that exercises one of them
- * is declared with `it.fails(...)` and cites the issue id, so the suite stays honest: it
- * passes today because the content is wrong, and it will start FAILING as soon as the
- * content is fixed — at which point the integrator flips it back to `it(...)`.
+ * Content defects this suite found — ALL FIXED; each is now a permanent regression assertion
+ * (the test names cite the id). Kept here as the record of what went wrong and why:
  *
  * CI-1  U2-P2-D  ∠A = α = 54° (acute) but every marked sector is drawn at 99° (obtuse).
  * CI-2  U2-P4-C  the marked angles evaluate to 93° (obtuse) but are drawn at 45° (acute).
@@ -858,8 +856,8 @@ const unit2Specs: Unit2Spec[] = [
   },
 ];
 
-/** Tasks whose drawing is misleading about acute / obtuse (see header). */
-const ACUTE_OBTUSE_ISSUES: Record<string, string> = {
+/** Tasks whose drawing was once misleading about acute / obtuse — now fixed (see header). */
+const ACUTE_OBTUSE_REGRESSIONS: Record<string, string> = {
   'U2-P2-D': 'CI-1',
   'U2-P4-C': 'CI-2',
   'U2-P4-D': 'CI-3',
@@ -871,6 +869,7 @@ const ACUTE_OBTUSE_ISSUES: Record<string, string> = {
   'U3-P3-C': 'CI-9',
   'U4-P2-A': 'CI-10',
 };
+const regressionNote = (id: string) => (ACUTE_OBTUSE_REGRESSIONS[id] ? ` (regression: ${ACUTE_OBTUSE_REGRESSIONS[id]})` : '');
 
 function namedAngles(spec: { id: string; marks: string[] }) {
   const drawing = drawingOf(spec.id);
@@ -1074,9 +1073,7 @@ describe('independent verification — unit 2 hand-derived solutions', () => {
         }
       });
 
-      const issue = ACUTE_OBTUSE_ISSUES[spec.id];
-      // CI-1 … CI-8: see header — the drawn sector contradicts the acute/obtuse measure.
-      (issue ? it.fails : it)(`drawn angles agree with the computed measures on acute / obtuse (SPEC 10.3)${issue ? ` — ${issue}` : ''}`, () => {
+      it(`drawn angles agree with the computed measures on acute / obtuse (SPEC 10.3)${regressionNote(spec.id)}`, () => {
         const angles = namedAngles(spec);
         const violations = acuteObtuseViolations(
           spec.marks.map(name => ({ name, drawn: angles.get(name)!.span, measure: measures[name]! })),
@@ -1306,9 +1303,7 @@ describe('independent verification — unit 4 converse tasks', () => {
         }
       });
 
-      const issue = ACUTE_OBTUSE_ISSUES[spec.id];
-      // CI-10: see header.
-      (issue ? it.fails : it)(`drawn angles agree with the computed measures on acute / obtuse (SPEC 10.3)${issue ? ` — ${issue}` : ''}`, () => {
+      it(`drawn angles agree with the computed measures on acute / obtuse (SPEC 10.3)${regressionNote(spec.id)}`, () => {
         const angles = namedAngles(spec);
         const violations = acuteObtuseViolations(
           spec.marks.map(name => ({ name, drawn: angles.get(name)!.span, measure: measures[name]! })),
@@ -1349,9 +1344,9 @@ describe('independent verification — unit 4 converse tasks', () => {
     expect(relationOf(A, B)).toBe('corresponding');
   });
 
-  // CI-13: the ∠C badge is pushed across line r by label-collision avoidance, so its callout
-  // points into the angle ABOVE r (same-side interior with ∠B), not the angle corresponding to ∠B.
-  it.fails('U4-P2-D: ∠B and ∠C are drawn as a corresponding pair relative to q and r — CI-13', () => {
+  // Regression CI-13: collision avoidance once pushed the ∠C badge across line r, into the angle
+  // ABOVE r (same-side interior with ∠B). Badges are now confined to their own sector.
+  it('U4-P2-D: ∠B and ∠C are drawn as a corresponding pair relative to q and r (regression: CI-13)', () => {
     const { B, C } = threeLineAngles();
     expect(relationOf(B, C)).toBe('corresponding');
   });
@@ -1454,9 +1449,8 @@ describe('independent verification — unit 3 proof relations match the drawing'
       expect(asList(q.expected.reason).join(' ')).toContain(`לאחר הנתון ${parallel}`);
     });
 
-    const duplicateIssue = q.id === 'U3-P1-C' ? 'CI-12' : undefined;
-    // CI-12: see header — two different letters on one drawn angle.
-    (duplicateIssue ? it.fails : it)(`${q.id}: different letters never name the same drawn angle${duplicateIssue ? ` — ${duplicateIssue}` : ''}`, () => {
+    // Regression CI-12 (U3-P1-C once named one drawn angle both ∠A and ∠C).
+    it(`${q.id}: different letters never name the same drawn angle${q.id === 'U3-P1-C' ? ' (regression: CI-12)' : ''}`, () => {
       const labelled = drawingOf(q.id).angles.filter(angle => angle.label);
       const clashes: string[] = [];
       labelled.forEach((a, i) => labelled.slice(i + 1).forEach(b => {
@@ -1475,17 +1469,15 @@ describe('independent verification — unit 3 proof relations match the drawing'
     expect(q.expected.proof).toContain('הנתון ∠E = 35° אינו נחוץ להוכחה.');
   });
 
-  // CI-9: see header.
-  it.fails('U3-P3-C: the drawn ∠E agrees with its given 35° on acute / obtuse (SPEC 10.3) — CI-9', () => {
+  it('U3-P3-C: the drawn ∠E agrees with its given 35° on acute / obtuse (SPEC 10.3) (regression: CI-9)', () => {
     const drawing = drawingOf('U3-P3-C');
     const index = drawing.marks.findIndex(mark => mark.label === 'E');
     expect(drawing.marks[index]!.value).toBe('35°');
     expect(acuteObtuseViolations([{ name: 'E', drawn: drawing.angles[index]!.span, measure: 35 }])).toEqual([]);
   });
 
-  it('unit 3: every other drawn numeric value agrees with its sector on acute / obtuse', () => {
+  it('unit 3: every drawn numeric value agrees with its sector on acute / obtuse', () => {
     for (const q of unit3Questions) {
-      if (q.id === 'U3-P3-C') continue;
       const drawing = drawingOf(q.id);
       drawing.marks.forEach((mark, index) => {
         if (!mark.value || !isDegreeValue(mark.value)) return;
@@ -1494,14 +1486,19 @@ describe('independent verification — unit 3 proof relations match the drawing'
     }
   });
 
-  // CI-11: see header — corresponding + vertical always gives an alternate pair.
-  it.fails('U3-P3-D: the key\'s claim that ∠A and ∠C are not alternate agrees with the drawing — CI-11', () => {
+  // Regression CI-11: the key once rejected proof ב by claiming ∠A and ∠C are NOT alternate.
+  // Corresponding + vertical always gives an alternate pair; proof ב's real flaw is that it
+  // concludes equality from "alternate" alone, without p ∥ q (the SPEC 3.3 misconception).
+  it('U3-P3-D: ∠A and ∠C are alternate in the drawing, and the key says so and faults proof ב for the missing p ∥ q (regression: CI-11)', () => {
     const q = byId(unit3Questions, 'U3-P3-D');
-    const claimsNotAlternate = (q.diagram.givens ?? []).some(given => /∠A and ∠C are not an alternate pair/.test(given))
-      || asList(q.expected.reason).some(reason => reason.includes('∠A ו־∠C אינן זוג זוויות מתחלפות'));
     const byLabel = new Map(drawingOf('U3-P3-D').angles.map(angle => [angle.label, angle]));
-    const relation = relationOf(byLabel.get('A')!, byLabel.get('C')!);
-    if (claimsNotAlternate) expect(['alternate', 'alternate-exterior']).not.toContain(relation);
+    expect(relationOf(byLabel.get('A')!, byLabel.get('C')!)).toBe('alternate');
+    const reason = asList(q.expected.reason).join(' ');
+    expect(reason).not.toContain('אינן זוג זוויות מתחלפות');
+    expect(reason).toContain('∠A ו־∠C אכן מתחלפות');
+    expect(reason).toContain(ALTERNATE_DIRECT);
+    expect(reason).toContain('תיקון להוכחה ב: ∠A = ∠C כי הן זוויות מתחלפות בין הישרים המקבילים p ו־q');
+    expect((q.diagram.givens ?? []).join(' ')).not.toMatch(/not an alternate pair/);
   });
 
   it('U3-P3-D: proof א is valid (corresponding with p ∥ q, then vertical) and is the key choice', () => {
