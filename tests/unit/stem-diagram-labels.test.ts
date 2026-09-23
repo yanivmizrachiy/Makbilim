@@ -103,11 +103,25 @@ describe('stem ↔ diagram labels (units 2–4)', () => {
     }
   });
 
-  it('in unit 3 every angle named anywhere in the task (stem, claims, proof lines) is drawn', () => {
+  it('in unit 3 every angle named anywhere in the task (stem, claims, options, proof lines) is drawn', () => {
     for (const task of withDiagram.filter(item => item.id.startsWith('U3-'))) {
       const labels = drawnLabels(task.id);
-      const named = namedAngles([task.stem, ...(task.subparts ?? []), ...(task.proofLines ?? []).map(row => row.claim)].join(' '));
+      const named = namedAngles([task.stem, ...(task.subparts ?? []), ...(task.choices ?? []), ...(task.proofLines ?? []).map(row => row.claim)].join(' '));
       for (const letter of named.letters) expect(labels, `${task.id}: ∠${letter}`).toContain(letter);
+    }
+  });
+
+  it('in unit 3 every line named in the task text (p ∥ q, "הישר s") is a drawn line label, and no segment is named', () => {
+    const drawnLines = (taskId: string) => diagrams
+      .filter(d => d.taskId === taskId)
+      .flatMap(d => [...d.svg.matchAll(/<text class="line-label-text"[^>]*data-label="([^"]*)"/g)].map(m => decode(m[1]!)));
+    for (const task of withDiagram.filter(item => item.id.startsWith('U3-'))) {
+      const lines = drawnLines(task.id);
+      expect(lines.length, task.id).toBeGreaterThanOrEqual(3);
+      const text = taskText(task);
+      // A lower-case Latin letter standing alone is a line name.
+      for (const [, name] of text.matchAll(/(?<![A-Za-z])([a-z])(?![A-Za-z])/g)) expect(lines, `${task.id}: line ${name}`).toContain(name);
+      expect(text, `${task.id}: segment names (AB) are not part of this topic`).not.toMatch(/(?<![A-Za-z∠])[A-Z]{2}(?![A-Za-z])/);
     }
   });
 });

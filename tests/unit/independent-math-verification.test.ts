@@ -54,7 +54,7 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { THEOREMS, THEOREM_GUARDRAILS } from '../../src/content/theorems';
+import { REASONS, THEOREMS, THEOREM_GUARDRAILS } from '../../src/content/theorems';
 import { unit2Questions, type Unit2Question } from '../../src/content/questions-unit2';
 import { unit3Questions, type Unit3Question } from '../../src/content/questions-unit3';
 import { unit4Questions, type Unit4Question } from '../../src/content/questions-unit4';
@@ -1580,21 +1580,29 @@ describe('independent verification — unit 4 converse tasks', () => {
 // Unit 3 — every relation a proof relies on must be the relation in the drawing.
 // ---------------------------------------------------------------------------
 
-type Claim = readonly [string, string, Kind];
+/**
+ * A unit-3 relation, as the drawing decides it. The booklet calls both interior and exterior
+ * alternate pairs „מתחלפות” (unit 1), so a written „מתחלפות” matches either — but each hand-read
+ * claim below names the exact drawn relation, and the drawing must show exactly that.
+ */
+type Claim3Kind = Kind | 'alternate-exterior';
+type Claim = readonly [string, string, Claim3Kind];
+const asWrittenKind = (kind: Claim3Kind): Kind => (kind === 'alternate-exterior' ? 'alternate' : kind);
 
-/** Relations each unit-3 task relies on, read by hand from its stem / proof. */
+/** Relations each unit-3 task relies on, read by hand from its stem / proof / key notes. */
 const unit3Claims: Record<string, Claim[]> = {
   'U3-P1-A': [['A', 'B', 'corresponding']],
   'U3-P1-B': [['C', 'D', 'corresponding']],
   'U3-P1-C': [['A', 'B', 'corresponding'], ['C', 'D', 'alternate'], ['E', 'F', 'vertical']],
-  'U3-P1-D': [['A', 'B', 'corresponding'], ['B', 'C', 'vertical']],
+  // Corresponding then vertical lands on the alternate angle: the one-step route is also correct.
+  'U3-P1-D': [['A', 'B', 'corresponding'], ['B', 'C', 'vertical'], ['A', 'C', 'alternate-exterior']],
   'U3-P2-A': [['A', 'B', 'alternate']],
   'U3-P2-B': [['A', 'B', 'corresponding'], ['B', 'C', 'vertical']],
   'U3-P2-C': [['A', 'B', 'alternate'], ['B', 'C', 'vertical']],
   'U3-P2-D': [['A', 'B', 'corresponding']],
-  'U3-P3-A': [['A', 'B', 'corresponding'], ['B', 'C', 'vertical']],
+  'U3-P3-A': [['A', 'B', 'corresponding'], ['B', 'C', 'vertical'], ['A', 'C', 'alternate-exterior']],
   'U3-P3-B': [['A', 'B', 'alternate'], ['B', 'C', 'adjacent']],
-  'U3-P3-C': [['A', 'B', 'corresponding'], ['B', 'D', 'vertical']],
+  'U3-P3-C': [['A', 'B', 'corresponding'], ['B', 'D', 'vertical'], ['A', 'D', 'alternate']],
   // Proof ב rests on ∠A / ∠C being alternate (true in the drawing) but omits p ∥ q (regression: CI-11).
   'U3-P3-D': [['A', 'B', 'corresponding'], ['B', 'C', 'vertical'], ['A', 'C', 'alternate']],
 };
@@ -1608,7 +1616,7 @@ const WRITTEN_PAIR = /∠([A-Z]) (?:=|\+) ∠([A-Z])|∠([A-Z]) ו־∠([A-Z])/g
  * קודקודיות'). A pair followed by no relation (e.g. 'מכלל המעבר') makes no claim; a pair followed by
  * two different relations is ambiguous and fails loudly.
  */
-function claimsInText(text: string): Claim[] {
+function claimsInText(text: string): Array<readonly [string, string, Kind]> {
   const pairs = [...text.matchAll(WRITTEN_PAIR)];
   return pairs.flatMap((match, i) => {
     const end = pairs[i + 1]?.index ?? text.length;
@@ -1619,12 +1627,13 @@ function claimsInText(text: string): Claim[] {
   });
 }
 
-/** Relation claims written in the content's key: proofs, reasons, chosen reasons, and proof-table rows (blanks filled from the key). */
-function writtenClaims(q: Unit3Question): Claim[] {
+/** Relation claims written in the content's key: proofs, reasons, chosen reasons, the teacher note, and proof-table rows (blanks filled from the key). */
+function writtenClaims(q: Unit3Question): Array<readonly [string, string, Kind]> {
   const keyReasons = asList(q.expected.reason);
   const texts = [
     ...(q.expected.proof ?? []),
     ...keyReasons.flatMap(sentencesOf),
+    ...asList(q.teacherNote).flatMap(sentencesOf),
     // A chosen reason justifies the stem's target claim.
     ...(q.expected.choice && q.choices ? [`${q.diagram.target} — ${q.expected.choice}`] : []),
     ...(q.proofLines ?? []).map(row => {
@@ -1635,6 +1644,13 @@ function writtenClaims(q: Unit3Question): Claim[] {
   ];
   return texts.flatMap(claimsInText).filter((claim, index, all) => all.findIndex(other => other.join() === claim.join()) === index);
 }
+
+/** Every reason a unit-3 table row or key line may cite: exactly a canonical constant of theorems.ts. */
+const CANONICAL_REASONS: readonly string[] = [
+  THEOREMS.correspondingDirect.text,
+  THEOREMS.alternateDirect.text,
+  ...Object.values(REASONS),
+];
 
 describe('independent verification — unit 3 proof relations match the drawing', () => {
   it('covers every unit-3 task', () => {
@@ -1655,22 +1671,29 @@ describe('independent verification — unit 3 proof relations match the drawing'
       // write at least one, so this check can never pass vacuously.
       const written = writtenClaims(q);
       expect(written.length, `${q.id}: the key states no angle relation`).toBeGreaterThan(0);
-      for (const claim of written) expect(claims).toContainEqual(claim);
+      const handWritten = claims.map(([a, b, kind]) => [a, b, asWrittenKind(kind)] as const);
+      for (const claim of written) expect(handWritten).toContainEqual(claim);
     });
 
     it(`${q.id}: corresponding / alternate equality is only used with the parallel condition available`, () => {
       const drawing = drawingOf(q.id);
-      const usesDirect = claims.some(([, , kind]) => kind === 'corresponding' || kind === 'alternate');
+      const usesDirect = claims.some(([, , kind]) => kind !== 'vertical' && kind !== 'adjacent');
       if (!usesDirect) return;
       if (q.diagram.parallelGivens.length > 0) {
         expect(drawing.chevrons).toEqual([0, 1]);
+        // SPEC 14: the parallel condition is stated in words — in the stem, or as the table's
+        // given row — not only by the drawing's marks.
+        const statedGivens = [q.stem, ...(q.proofLines ?? []).filter(row => row.reason === REASONS.given).map(row => row.claim)].join(' ');
+        expect(statedGivens, `${q.id}: the parallel condition is stated in words`).toContain(q.diagram.parallelGivens[0]!);
         return;
       }
       // U3-P2-D: parallelism is exactly the missing datum the student must choose.
       const parallel = `${q.diagram.lineLabels[0]} ∥ ${q.diagram.lineLabels[1]}`;
       expect(drawing.chevrons).toEqual([]);
       expect(q.expected.choice).toBe(parallel);
-      expect(asList(q.expected.reason).join(' ')).toContain(`לאחר הנתון ${parallel}`);
+      const reason = asList(q.expected.reason).join(' ');
+      expect(reason).toContain(`הנתון ${parallel} מספיק`);
+      expect(reason).toContain(THEOREMS.correspondingDirect.text);
     });
 
     // Regression CI-12 (U3-P1-C once named one drawn angle both ∠A and ∠C).
@@ -1682,15 +1705,176 @@ describe('independent verification — unit 3 proof relations match the drawing'
       }));
       expect(clashes).toEqual([]);
     });
+
+    it(`${q.id}: every reason in a proof table and every key reason is a canonical sentence of theorems.ts`, () => {
+      for (const row of q.proofLines ?? []) {
+        if (row.reason === undefined || row.reason.includes('___')) continue;
+        expect(CANONICAL_REASONS, `${q.id}: "${row.reason}"`).toContain(row.reason);
+      }
+      for (const text of [...(q.choices ?? []), ...(q.expected.proof ?? []), ...asList(q.expected.reason), ...asList(q.teacherNote)]) {
+        // The canonical direct theorems are quoted exactly — never with an added „זו לזו”.
+        expect(text, q.id).not.toMatch(/בין (ה)?ישרים (ה)?מקבילים שוות זו לזו/);
+        if (text.includes('בין ישרים מקבילים שוות')) {
+          expect([THEOREMS.correspondingDirect.text, THEOREMS.alternateDirect.text].some(t => text.includes(t)), `${q.id}: "${text}"`).toBe(true);
+        }
+        if (text.includes('קודקודיות שוות')) expect(text, q.id).toContain(REASONS.vertical);
+      }
+      // A key line 'claim — reason' cites a canonical reason verbatim.
+      for (const line of q.expected.proof ?? []) {
+        const reason = line.split(' — ')[1];
+        if (reason !== undefined) expect(CANONICAL_REASONS, `${q.id}: "${line}"`).toContain(reason);
+      }
+    });
   }
+
+  // D2 — a chain 'corresponding then vertical' always ends on the angle ALTERNATE to the first one,
+  // so a one-step alternate proof is correct too; the key must say so (read from the drawing).
+  it('unit 3: wherever the proven pair is itself corresponding / alternate in the drawing, the key accepts the one-step route', () => {
+    let checked = 0;
+    for (const q of unit3Questions) {
+      const target = /^∠([A-Z]) = ∠([A-Z])$/.exec(q.diagram.target);
+      if (!target || q.diagram.parallelGivens.length === 0 || !(q.expected.proof ?? []).length) continue;
+      const [, x, z] = target as unknown as [string, string, string];
+      const byLabel = new Map(drawingOf(q.id).angles.map(angle => [angle.label, angle]));
+      if (!byLabel.has(x) || !byLabel.has(z)) continue;
+      const relation = relationOf(byLabel.get(x)!, byLabel.get(z)!);
+      if (relation !== 'corresponding' && relation !== 'alternate' && relation !== 'alternate-exterior') continue;
+      checked += 1;
+      const written = asList(q.teacherNote).flatMap(sentencesOf).flatMap(claimsInText);
+      expect(written, `${q.id}: the note names the one-step route`).toContainEqual([x, z, asWrittenKind(relation)]);
+      expect(q.teacherNote, q.id).toContain(relation === 'corresponding' ? THEOREMS.correspondingDirect.text : THEOREMS.alternateDirect.text);
+      expect(q.teacherNote, q.id).toContain('שתי הדרכים מתקבלות');
+    }
+    expect(checked, 'U3-P1-D, U3-P3-A and U3-P3-C prove an alternate pair through ∠B').toBe(3);
+  });
+
+  it('U3-P1-D: the key gives the verdict the task asks for (קבעו אם)', () => {
+    const q = byId(unit3Questions, 'U3-P1-D');
+    expect(q.stem).toContain('קבעו אם ∠A = ∠C');
+    expect(q.expected.conclusion).toBe('כן, ∠A = ∠C.');
+  });
+
+  it('U3-P1-A: the stem does not name the pair type, and the only distractor with the pair type lacks the parallel condition', () => {
+    const q = byId(unit3Questions, 'U3-P1-A');
+    expect(q.stem).not.toMatch(/מתאימות|מתחלפות/);
+    const byLabel = new Map(drawingOf(q.id).angles.map(angle => [angle.label, angle]));
+    expect(relationOf(byLabel.get('A')!, byLabel.get('B')!)).toBe('corresponding');
+    expect(q.expected.choice).toBe(THEOREMS.correspondingDirect.text);
+    const sameType = (q.choices ?? []).filter(choice => choice.includes('מתאימות'));
+    expect(sameType).toHaveLength(2);
+    expect(sameType.filter(choice => !choice.includes('מקבילים'))).toEqual(['זוויות מתאימות שוות.']);
+  });
+
+  it('U3-P1-C: four reasons for three claims — exactly one reason fits no claim', () => {
+    const q = byId(unit3Questions, 'U3-P1-C');
+    expect(q.stem.startsWith(`בשרטוט ${q.diagram.parallelGivens[0]}.`)).toBe(true);
+    const used = (q.expected.proof ?? []).map(line => line.split(' — ')[1]!);
+    expect(new Set(used).size).toBe(3);
+    for (const reason of used) expect(q.choices).toContain(reason);
+    const unused = (q.choices ?? []).filter(choice => !used.includes(choice));
+    expect(unused).toEqual([REASONS.adjacent]);
+    // No drawn pair among the claims is adjacent, so the spare reason really fits nothing.
+    expect(unit3Claims['U3-P1-C']!.map(([, , kind]) => kind)).not.toContain('adjacent');
+    // The bank does not list the reasons in the order of the claims.
+    expect(q.choices!.filter(choice => used.includes(choice))).not.toEqual(used);
+  });
+
+  // The printed order must be a wrong proof, and the key must accept EVERY valid order —
+  // enumerated here from first principles: a row may only use what earlier rows established.
+  it('U3-P2-B: the printed order is not a proof, and the key accepts exactly the valid orders', () => {
+    const q = byId(unit3Questions, 'U3-P2-B');
+    const rows = q.proofLines ?? [];
+    expect(rows).toHaveLength(4);
+    const parallelRow = rows.findIndex(row => /^[a-z] ∥ [a-z]$/.test(row.claim));
+    /** Rows (by printed index) that must come before row i. */
+    const prerequisites = rows.map((row, i): number[] => {
+      if (row.reason === REASONS.given || row.reason === REASONS.vertical) return [];
+      if (row.reason === THEOREMS.correspondingDirect.text || row.reason === THEOREMS.alternateDirect.text) return [parallelRow];
+      if (row.reason === REASONS.transitivity) {
+        const [, x, z] = /^∠([A-Z]) = ∠([A-Z])$/.exec(row.claim)!;
+        const equalities = rows.map((other, j) => ({ j, m: /^∠([A-Z]) = ∠([A-Z])$/.exec(other.claim) })).filter(e => e.m && e.j !== i);
+        // X = Y and Y = Z for one middle angle Y.
+        for (const first of equalities) {
+          const [, a, b] = first.m!;
+          const y = a === x ? b : b === x ? a : null;
+          if (!y) continue;
+          const second = equalities.find(e => e.j !== first.j && new Set([e.m![1], e.m![2]]).has(y) && new Set([e.m![1], e.m![2]]).has(z!));
+          if (second) return [first.j, second.j];
+        }
+        throw new Error(`no chain for ${row.claim}`);
+      }
+      throw new Error(`unknown reason "${row.reason}"`);
+    });
+    // The table rows must also be true of the drawing (vertical / corresponding as claimed).
+    const byLabel = new Map(drawingOf(q.id).angles.map(angle => [angle.label, angle]));
+    expect(relationOf(byLabel.get('A')!, byLabel.get('B')!)).toBe('corresponding');
+    expect(relationOf(byLabel.get('B')!, byLabel.get('C')!)).toBe('vertical');
+    const permutations = (items: number[]): number[][] =>
+      items.length <= 1 ? [items] : items.flatMap((item, i) => permutations([...items.slice(0, i), ...items.slice(i + 1)]).map(rest => [item, ...rest]));
+    const validSequences = permutations([0, 1, 2, 3]).filter(sequence =>
+      sequence.every((row, position) => prerequisites[row]!.every(pre => sequence.indexOf(pre) < position)));
+    // As the student writes them: for each printed row (top to bottom), its place in the proof.
+    const validFillings = validSequences.map(sequence => rows.map((_, i) => sequence.indexOf(i) + 1));
+    expect(validFillings.length).toBe(3);
+    expect(validFillings.map(f => f.join())).not.toContain([1, 2, 3, 4].join());
+    expect([...(q.acceptedOrders ?? [])].map(f => f.join()).sort()).toEqual(validFillings.map(f => f.join()).sort());
+    // The teacher reads every accepted filling in the key.
+    const reason = asList(q.expected.reason).join(' ');
+    for (const filling of validFillings) expect(reason).toContain(filling.join(', '));
+    // The key's proof is one of the valid orders.
+    const keyOrder = (q.expected.proof ?? []).map(line => rows.findIndex(row => line.startsWith(`${row.claim} — `)));
+    expect(validSequences.map(s => s.join())).toContain(keyOrder.join());
+  });
+
+  // Every option of the data-sufficiency task is a datum about what is drawn; exactly one suffices.
+  it('U3-P2-D: the options name only drawn objects, and only the parallelism of the lines bounding ∠A, ∠B suffices', () => {
+    const q = byId(unit3Questions, 'U3-P2-D');
+    const drawing = drawingOf(q.id);
+    const choices = q.choices ?? [];
+    expect(choices).toHaveLength(4);
+    const drawnAngleLabels = drawing.angles.map(angle => angle.label);
+    expect([...drawnAngleLabels].sort()).toEqual(['A', 'B']);
+    const lineNames = q.diagram.lineLabels;
+    for (const choice of choices) {
+      for (const [, letter] of choice.matchAll(/∠([A-Z])/g)) expect(drawnAngleLabels, `${choice}`).toContain(letter);
+      for (const [, name] of choice.matchAll(/\b([a-z])\b/g)) expect(lineNames, `${choice}`).toContain(name);
+      expect(choice, 'no segment names in this topic').not.toMatch(/[A-Z]{2}/);
+    }
+    // ∠A and ∠B lie on one transversal (r) at its crossings with the two lines p and q.
+    const [A, B] = ['A', 'B'].map(label => drawing.angles.find(angle => angle.label === label)!);
+    expect(relationOf(A!, B!)).toBe('corresponding');
+    expect(A!.transversal).toBe(0);
+    const sufficient = `${lineNames[0]} ∥ ${lineNames[1]}`;
+    const parallelChoices = choices.filter(choice => /^[a-z] ∥ [a-z]$/.test(choice));
+    expect(parallelChoices).toContain(sufficient);
+    expect(q.expected.choice).toBe(sufficient);
+    // The other parallel option names the two transversals — and they are drawn parallel, so it is
+    // a datum the drawing allows, but it says nothing about the lines that form ∠A and ∠B.
+    const wrongPair = parallelChoices.filter(choice => choice !== sufficient);
+    expect(wrongPair).toEqual([`${lineNames[2]} ∥ ${lineNames[3]}`]);
+    expect(drawing.transversalDirs).toHaveLength(2);
+    expect(lineAngleGap(drawing.transversalDirs[0]!, drawing.transversalDirs[1]!)).toBeLessThan(1e-6);
+    // The option 'the angles are corresponding' is true of the drawing — and insufficient without p ∥ q.
+    expect(choices.some(choice => choice.includes('מתאימות') && !/מקביל|∥/.test(choice))).toBe(true);
+    const reason = asList(q.expected.reason).join(' ');
+    expect(reason).toContain(`הנתון ${wrongPair[0]} אינו עוזר`);
+    expect(reason).toContain('אינו מבטיח שוויון בלי נתון המקבילות');
+  });
 
   it('U3-P3-C: ∠E lies on the other transversal, so it is genuinely unrelated to ∠A, ∠B, ∠D', () => {
     const q = byId(unit3Questions, 'U3-P3-C');
-    const byLabel = new Map(drawingOf('U3-P3-C').angles.map(angle => [angle.label, angle]));
+    const drawing = drawingOf('U3-P3-C');
+    const byLabel = new Map(drawing.angles.map(angle => [angle.label, angle]));
     const E = byLabel.get('E')!;
     for (const other of ['A', 'B', 'D']) expect(relationOf(E, byLabel.get(other)!)).toBe('unrelated');
-    expect(q.stem).toContain('∠E = 35°');
-    expect(q.expected.proof).toContain('הנתון ∠E = 35° אינו נחוץ להוכחה.');
+    expect(E.transversal).toBe(1);
+    const mark = drawing.marks.find(item => item.label === 'E')!;
+    expect(q.stem).toContain(`∠E = ${mark.value}`);
+    expect(q.stem).toMatch(/קבעו אם הנתון ∠E = 35° נחוץ להוכחה, ונמקו/);
+    expect(q.expected.unneededDatum).toBe(`∠E = ${mark.value}`);
+    expect(asList(q.expected.reason).join(' ')).toMatch(/^הנתון ∠E = 35° אינו נחוץ להוכחה: .*הישר s.*הישר r/);
+    // The proof itself never uses ∠E.
+    expect((q.expected.proof ?? []).join(' ')).not.toContain('∠E');
   });
 
   it('U3-P3-C: the drawn ∠E agrees with its given 35° on acute / obtuse (SPEC 10.3) (regression: CI-9)', () => {
@@ -1717,10 +1901,12 @@ describe('independent verification — unit 3 proof relations match the drawing'
     const q = byId(unit3Questions, 'U3-P3-D');
     const byLabel = new Map(drawingOf('U3-P3-D').angles.map(angle => [angle.label, angle]));
     expect(relationOf(byLabel.get('A')!, byLabel.get('C')!)).toBe('alternate');
+    expect(q.stem.startsWith('נתון p ∥ q.')).toBe(true);
     const reason = asList(q.expected.reason).join(' ');
     expect(reason).not.toContain('אינן זוג זוויות מתחלפות');
     expect(reason).toContain('∠A ו־∠C אכן מתחלפות');
-    expect(reason).toContain(ALTERNATE_DIRECT);
+    expect(reason).toContain(`„${THEOREMS.alternateDirect.text}”`);
+    expect(reason).toContain('לא נעשה שימוש בנתון שהישרים p ו־q מקבילים');
     expect(reason).toContain('תיקון להוכחה ב: ∠A = ∠C כי הן זוויות מתחלפות בין הישרים המקבילים p ו־q');
     expect((q.diagram.givens ?? []).join(' ')).not.toMatch(/not an alternate pair/);
   });
