@@ -18,8 +18,8 @@
   --body-leading: 1.42;
   --header-height: 19mm;
   --footer-height: 10.5mm;
-  --diagram-compact-height: 36mm;
-  --diagram-full-height: 50mm;
+  --diagram-compact-height: 40mm;
+  --diagram-full-height: 54mm;
 }
 
 * { box-sizing: border-box; }
@@ -32,6 +32,10 @@ html, body, #root {
   font-family: "Noto Sans Hebrew", "Arial Hebrew", Arial, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1;
+  font-kerning: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body { direction: rtl; }
