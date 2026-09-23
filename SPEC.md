@@ -496,12 +496,17 @@ Point, Vector, Line, Segment, ישרים מקבילים, חותך אחד/יות�
 
 ## 11.12 דטרמיניזם, שלמות ו־Release
 - `package-lock.json` tracked ומחייב; CI משתמש ב־`npm ci` וב־npm cache המבוסס על lockfile.
-- כל build מפיק `SHA256SUMS.txt` ו־`build-manifest.json` לכל קובצי ה־PDF.
+- כל שימוש ב־GitHub Action חיצוני ב־CI/Release pinned ל־commit SHA מלא; תגי `@vN` אינם מקור אמת להרצה.
+- כל build מפיק `SHA256SUMS.txt` לכל קובצי ה־PDF.
+- `input-fingerprint.json` מכיל SHA-256 לכל קלט קנוני: SPEC, lockfile, manifests, baseline, שאלות, תשובות ומשפטים, וכן aggregate SHA-256 יחיד.
+- `build-manifest.json` קושר יחד גרסת package, commit/ref/run, גרסת Node, fingerprint הקלטים, SBOM ושלושת קובצי ה־PDF.
+- כל build מפיק CycloneDX SBOM ב־`artifacts/sbom.cdx.json` ישירות מ־npm/lockfile, ללא רשימת תלויות ידנית כפולה.
 - Release נוצר אוטומטית רק ב־push של tag התואם `v*`, ורק לאחר build ו־QA מלאים מאותו tag.
-- Release כולל את שלושת ה־PDF, checksums, manifest ודוחות ה־PDF המאמתים.
+- שם ה־tag חייב להיות בדיוק `v<version>` של `package.json`; mismatch מפיל Release.
+- Release כולל את שלושת ה־PDF, checksums, build manifest, SBOM, input fingerprint, provenance manifest ודוחות ה־QA.
 - אין ליצור Release אוטומטי מכל commit ל־main.
 
-שער: `deterministic-install` + `checksums` + `release-contract`.
+שער: `deterministic-install` + `actions-pin` + `sbom` + `input-fingerprint` + `checksums` + `release-contract`.
 
 ---
 
@@ -707,10 +712,13 @@ Makbilim/
 30. `teacher-pdf`
 31. `deterministic-install`
 32. `checksums`
-33. `release-contract`
-34. `source-provenance`
-35. `accessibility`
-36. `pdf`
+33. `actions-pin`
+34. `sbom`
+35. `input-fingerprint`
+36. `release-contract`
+37. `source-provenance`
+38. `accessibility`
+39. `pdf`
 
 Validators של מקוריות/הדרגתיות/markers פועלים על יחידות 1–4. validator של `curriculum-source-integrity` פועל על יחידה 5 ומוודא שאין שינוי בתוכן המקור.
 
