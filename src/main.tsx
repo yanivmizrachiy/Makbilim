@@ -14,3 +14,9 @@ createRoot(root).render(
     <App />
   </React.StrictMode>,
 );
+
+// Dev-only live-preview control. The DEV branch is stripped from production
+// builds, so this never ships to the student page, teacher app, or PDF.
+if (import.meta.env.DEV) {
+  void import('./dev/DevRefreshBar').then(({ mountDevRefreshBar }) => mountDevRefreshBar());
+}
