@@ -10,7 +10,9 @@ const teacherVite = read('vite.teacher.config.ts');
 const teacherHtml = read('teacher.html');
 const teacherApp = read('src/TeacherApp.tsx');
 const teacherBuild = read('scripts/build-teacher-pdf.mjs');
+const checksumBuild = read('scripts/write-checksums.mjs');
 const ci = read('.github/workflows/ci.yml');
+const release = read('.github/workflows/release.yml');
 const baseline = JSON.parse(read('qa/visual-baseline.json')) as {
   pageCount: number;
   layout: unknown[];
@@ -40,6 +42,18 @@ describe('publication hardening', () => {
     expect(teacherBuild).toContain('Teacher answer count mismatch');
     expect(teacherBuild).toContain('Teacher PDF contains non-A4 pages');
     expect(teacherBuild).toContain('teacher-pdf-report.json');
+  });
+
+  it('creates checksums and releases only from explicit version tags', () => {
+    expect(pkg.scripts.checksums).toContain('write-checksums.mjs');
+    expect(pkg.scripts.pdf).toContain('npm run checksums');
+    expect(checksumBuild).toContain("createHash('sha256')");
+    expect(checksumBuild).toContain('SHA256SUMS.txt');
+    expect(release).toContain("tags:");
+    expect(release).toContain("- 'v*'");
+    expect(release).not.toContain('branches:');
+    expect(release).toContain('gh release create');
+    expect(release).toContain('--verify-tag');
   });
 
   it('tracks a canonical visual baseline for all 19 student pages', () => {
