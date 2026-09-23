@@ -8,7 +8,7 @@ const render = (angleMarks: AngleMark[]) =>
   renderToStaticMarkup(createElement(ParallelLinesDiagram, { orientationDeg: 0, transversalDeg: 62, angleMarks }));
 
 const markGroup = (html: string, role: string) => {
-  const match = new RegExp(`<g class="(angle-mark [^"]+)" data-angle-role="${role}">(.*?)</g>`).exec(html);
+  const match = new RegExp(`<g class="(angle-mark [^"]+)" data-angle-role="${role}"[^>]*>(.*?)</g>`).exec(html);
   return { className: match?.[1] ?? '', inner: match?.[2] ?? '' };
 };
 

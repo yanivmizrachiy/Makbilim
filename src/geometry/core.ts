@@ -90,6 +90,48 @@ export function estimateLabelRect(
   };
 }
 
+/**
+ * Ink box of a printed line/transversal label (19px bold glyphs plus their white halo). Tighter
+ * than the spacing box used between labels: "a label on a line" means ink touching ink.
+ */
+export const LABEL_INK_BOX = { minWidth: 13, maxWidth: 190, charWidth: 11, height: 20, baseWidth: 4 } as const;
+
+/**
+ * True when `segment` passes within `clearance` of `rect` — used so labels are never placed
+ * on a drawn line (SPEC 10.3). Liang–Barsky clip of the segment against the grown rectangle.
+ */
+export function segmentNearRect(segment: Segment, rect: Rect, clearance = 0): boolean {
+  const left = rect.left - clearance;
+  const right = rect.right + clearance;
+  const top = rect.top - clearance;
+  const bottom = rect.bottom + clearance;
+  const dx = segment.b.x - segment.a.x;
+  const dy = segment.b.y - segment.a.y;
+  let t0 = 0;
+  let t1 = 1;
+  const edges: Array<[number, number]> = [
+    [-dx, segment.a.x - left],
+    [dx, right - segment.a.x],
+    [-dy, segment.a.y - top],
+    [dy, bottom - segment.a.y],
+  ];
+  for (const [p, q] of edges) {
+    if (p === 0) {
+      if (q < 0) return false;
+      continue;
+    }
+    const t = q / p;
+    if (p < 0) {
+      if (t > t1) return false;
+      if (t > t0) t0 = t;
+    } else {
+      if (t < t0) return false;
+      if (t < t1) t1 = t;
+    }
+  }
+  return true;
+}
+
 export function rectsOverlap(first: Rect, second: Rect, gap = 0): boolean {
   return !(
     first.right + gap <= second.left ||
@@ -136,6 +178,8 @@ export function chooseRadialLabelPoint({
   radii = [],
   angleOffsets = [0, 6, -6, 12, -12, 18, -18, 24, -24, 30, -30],
   labelOptions = {},
+  avoid = [],
+  lineClearance = 3,
 }: {
   origin: Point;
   angleDeg: number;
@@ -148,6 +192,9 @@ export function chooseRadialLabelPoint({
   radii?: number[];
   angleOffsets?: number[];
   labelOptions?: { minWidth?: number; maxWidth?: number; charWidth?: number; height?: number; baseWidth?: number };
+  /** Drawn lines the label must keep clear of; touching one costs as much as a label collision. */
+  avoid?: Segment[];
+  lineClearance?: number;
 }): { point: Point; rect: Rect } {
   const radiusCandidates = [
     preferredRadius,
@@ -172,9 +219,10 @@ export function chooseRadialLabelPoint({
       const collisions = occupied.filter(other => rectsOverlap(rect, other, minGap)).length;
       const clampDistance = Math.hypot(point.x - rawPoint.x, point.y - rawPoint.y);
       const displacement = Math.abs(radius - preferredRadius) + Math.abs(offset) * 0.6 + clampDistance * 0.8;
-      const penalty = collisions * 1_000 + displacement;
+      const lineHits = avoid.filter(segment => segmentNearRect(segment, rect, lineClearance)).length;
+      const penalty = (collisions + lineHits) * 1_000 + displacement;
 
-      if (collisions === 0 && clampDistance < 0.01 && displacement === 0) return { point, rect };
+      if (collisions === 0 && lineHits === 0 && clampDistance < 0.01 && displacement === 0) return { point, rect };
       if (penalty < fallbackPenalty) {
         fallbackPenalty = penalty;
         fallback = { point, rect };

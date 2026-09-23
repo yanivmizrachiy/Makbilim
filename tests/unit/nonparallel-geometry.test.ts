@@ -185,8 +185,13 @@ describe('ParallelLinesDiagram — second-line skew (genuinely non-parallel pair
     expect(distanceToLine(bottomDot!, transversal!)).toBeLessThan(1e-6);
   });
 
+  it('rejects explicit parallel marks on a skewed pair instead of silently dropping them', () => {
+    expect(() => render({ orientationDeg: 0, transversalDeg: 62, showParallelMarks: true, secondLineSkewDeg: 8 })).toThrow(RangeError);
+    expect(() => render({ orientationDeg: 0, transversalDeg: 62, showParallelMarks: false, secondLineSkewDeg: 8 })).not.toThrow();
+  });
+
   it('never draws parallel chevrons or parallel wording for a skewed pair', () => {
-    const markup = render({ orientationDeg: 0, transversalDeg: 62, showParallelMarks: true, secondLineSkewDeg: 8 });
+    const markup = render({ orientationDeg: 0, transversalDeg: 62, secondLineSkewDeg: 8 });
     expect(countParallelMarks(markup)).toBe(0);
     expect(markup).toContain('data-line-relation="non-parallel"');
     expect(markup).toContain('data-second-line-skew="8"');

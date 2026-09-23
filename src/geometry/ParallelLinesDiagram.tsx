@@ -3,11 +3,15 @@ import {
   chooseRadialLabelPoint,
   clampLabelPoint,
   estimateLabelRect,
+  LABEL_INK_BOX,
   lineIntersection,
   offsetPoint,
   pointOnRay,
+  rectsOverlap,
+  segmentNearRect,
   segmentThrough,
   type Point,
+  type Rect,
 } from './core';
 import { resolveAngleStyle, type AngleRole } from './angle-roles';
 
@@ -64,10 +68,25 @@ const SKEW_SECTOR_CLEARANCE = 12;
  */
 const MAX_SECOND_LINE_SKEW_DEG = 20;
 
-const PARALLEL_ARIA_LABEL = 'שרטוט של שני ישרים מקבילים וישר חותך';
-const NON_PARALLEL_ARIA_LABEL = 'שרטוט של שני ישרים שאינם מקבילים וישר חותך';
-const PARALLEL_DESC = 'שרטוט וקטורי מדויק עם סימוני מקבילות, הדגשת זוויות ותוויות סמנטיות.';
-const NON_PARALLEL_DESC = 'שרטוט וקטורי מדויק של שני ישרים שאינם מקבילים וישר החותך אותם, עם הדגשת זוויות ותוויות סמנטיות.';
+/** Candidate spots for a line label: distance along the line from its centre, and off the line. */
+const LINE_LABEL_ALONG = [142, 128, 114, -142, -128, -114];
+const LINE_LABEL_OFFSET = [18, 24];
+
+/**
+ * Accessible name/description state only what the drawing actually shows: a pair is called
+ * parallel only when parallel marks are drawn; an unmarked pair makes no parallel claim.
+ */
+type LineRelation = 'parallel' | 'nonParallel' | 'unmarked';
+const ARIA_LABEL: Record<LineRelation, string> = {
+  parallel: 'שרטוט של שני ישרים מקבילים וישר חותך',
+  nonParallel: 'שרטוט של שני ישרים שאינם מקבילים וישר חותך',
+  unmarked: 'שרטוט של שני ישרים וישר חותך',
+};
+const RELATION_DESC: Record<LineRelation, string> = {
+  parallel: 'שני ישרים מקבילים, המסומנים בסימני מקבילות, וישר החותך אותם.',
+  nonParallel: 'שני ישרים שאינם מקבילים וישר החותך אותם.',
+  unmarked: 'שני ישרים וישר החותך אותם; בשרטוט לא מסומן שהישרים מקבילים.',
+};
 
 function classForMark(mark: AngleMark) {
   const { tone, arcStyle } = resolveAngleStyle(mark);
@@ -186,20 +205,26 @@ export function ParallelLinesDiagram({
   orientationDeg = 0,
   transversalDeg = 62,
   secondaryTransversalDeg,
-  showParallelMarks = true,
+  showParallelMarks: showParallelMarksProp,
   secondLineSkewDeg = 0,
   angleMarks = [],
   ariaLabel,
 }: ParallelLinesDiagramProps) {
   const isSkewed = secondLineSkewDeg !== 0;
   if (isSkewed) {
+    if (showParallelMarksProp === true) {
+      throw new RangeError('ParallelLinesDiagram: parallel marks cannot be drawn on a non-parallel (skewed) pair.');
+    }
     assertSkewKeepsSectorOrder(
       orientationDeg,
       secondLineSkewDeg,
       secondaryTransversalDeg == null ? [transversalDeg] : [transversalDeg, secondaryTransversalDeg],
     );
   }
-  const accessibleLabel = ariaLabel ?? (isSkewed ? NON_PARALLEL_ARIA_LABEL : PARALLEL_ARIA_LABEL);
+  const showParallelMarks = showParallelMarksProp ?? !isSkewed;
+  const relation: LineRelation = isSkewed ? 'nonParallel' : showParallelMarks ? 'parallel' : 'unmarked';
+  const accessibleLabel = ariaLabel ?? ARIA_LABEL[relation];
+  const accessibleDesc = `${RELATION_DESC[relation]}${angleMarks.length > 0 ? ' זוויות מסומנות בקשתות.' : ''}`;
   const bottomLineDeg = orientationDeg + secondLineSkewDeg;
 
   const topCenter = offsetPoint(CENTER, orientationDeg, -PARALLEL_DISTANCE);
@@ -234,60 +259,74 @@ export function ParallelLinesDiagram({
 
   const labelBounds = { minX: 0, minY: 0, maxX: W, maxY: H };
   const lineLabelOptions = { minWidth: 32, maxWidth: 190, charWidth: 11.5, height: 30, baseWidth: 18 };
-  const topLabel = clampLabelPoint(
-    labelPoint(topCenter, orientationDeg, 142, -18),
-    lineLabels[0],
-    labelBounds,
-    lineLabelOptions,
-    12,
-  );
-  const bottomLabel = clampLabelPoint(
-    labelPoint(bottomCenter, bottomLineDeg, 142, 18),
-    lineLabels[1],
-    labelBounds,
-    lineLabelOptions,
-    12,
-  );
+  // Labels never sit on a drawn line (SPEC 10.3): every placement below checks all of these.
+  const drawnSegments = [top, bottom, primary, ...(secondary ? [secondary] : [])];
+  const occupiedLabelRects: Rect[] = [];
 
-  const occupiedLabelRects = [
-    estimateLabelRect(topLabel, lineLabels[0], lineLabelOptions),
-    estimateLabelRect(bottomLabel, lineLabels[1], lineLabelOptions),
-  ];
+  /**
+   * A line label goes near one end of its line, just off it. The original spot (far end,
+   * preferred side, 18 units off) is tried first and kept whenever it is clean; otherwise the
+   * other end / other side / a little farther out is used, instead of clamping the label onto
+   * a line at the edge of the drawing.
+   */
+  const placeLineLabel = (center: Point, lineDeg: number, text: string, normalSign: 1 | -1): Point => {
+    const candidates = LINE_LABEL_ALONG.flatMap(along =>
+      [normalSign, -normalSign].flatMap(side =>
+        LINE_LABEL_OFFSET.map(offset => labelPoint(center, lineDeg, along, side * offset)),
+      ),
+    );
+    const scored = candidates.map((raw, order) => {
+      const point = clampLabelPoint(raw, text, labelBounds, lineLabelOptions, 12);
+      const spacing = estimateLabelRect(point, text, lineLabelOptions);
+      const ink = estimateLabelRect(point, text, LABEL_INK_BOX);
+      const collisions = occupiedLabelRects.filter(other => rectsOverlap(spacing, other, 6)).length;
+      const lineHits = drawnSegments.filter(segment => segmentNearRect(segment, ink, 1)).length;
+      const clampDistance = Math.hypot(point.x - raw.x, point.y - raw.y);
+      return { point, spacing, penalty: (collisions + lineHits) * 1_000 + clampDistance * 2 + order * 0.5 };
+    });
+    const best = scored.reduce((winner, next) => (next.penalty < winner.penalty ? next : winner));
+    occupiedLabelRects.push(best.spacing);
+    return best.point;
+  };
 
-  const primaryPlaced = chooseRadialLabelPoint({
-    origin: CENTER,
-    angleDeg: transversalDeg,
-    text: transversalLabel,
-    preferredRadius: 154,
-    bounds: labelBounds,
-    occupied: occupiedLabelRects,
-    radii: [166, 178, 190, 202],
-    inset: 12,
-    minGap: 8,
-    angleOffsets: [0, 5, -5, 10, -10, 15, -15],
-    labelOptions: lineLabelOptions,
-  });
-  const primaryLabel = primaryPlaced.point;
-  occupiedLabelRects.push(primaryPlaced.rect);
+  const topLabel = placeLineLabel(topCenter, orientationDeg, lineLabels[0], -1);
+  const bottomLabel = placeLineLabel(bottomCenter, bottomLineDeg, lineLabels[1], 1);
 
-  let secondaryLabel: Point | null = null;
-  if (secondary && secondaryTransversalDeg != null) {
-    const secondaryPlaced = chooseRadialLabelPoint({
-      origin: secondaryCenter,
-      angleDeg: secondaryTransversalDeg,
-      text: secondaryTransversalLabel,
+  const inkTouchesLine = (point: Point, text: string) =>
+    drawnSegments.some(segment => segmentNearRect(segment, estimateLabelRect(point, text, LABEL_INK_BOX), 1));
+
+  /**
+   * A transversal label sits beside one end of its line, never on a drawn line (SPEC 10.3).
+   * The far end (as before) is kept whenever it is clean; if that end runs off a crowded edge
+   * of the drawing, the other end of the same line is used.
+   */
+  const placeTransversalLabel = (origin: Point, deg: number, text: string, angleOffsets: number[]): Point => {
+    const attempt = (direction: number) => chooseRadialLabelPoint({
+      origin,
+      angleDeg: direction,
+      text,
       preferredRadius: 154,
       bounds: labelBounds,
       occupied: occupiedLabelRects,
       radii: [166, 178, 190, 202],
       inset: 12,
       minGap: 8,
-      angleOffsets: [0, 5, -5, 10, -10, 15, -15, 20, -20],
+      angleOffsets,
       labelOptions: lineLabelOptions,
+      avoid: drawnSegments,
     });
-    secondaryLabel = secondaryPlaced.point;
-    occupiedLabelRects.push(secondaryPlaced.rect);
-  }
+    const farEnd = attempt(deg);
+    const placed = inkTouchesLine(farEnd.point, text)
+      ? [attempt(deg + 180)].find(other => !inkTouchesLine(other.point, text)) ?? farEnd
+      : farEnd;
+    occupiedLabelRects.push(placed.rect);
+    return placed.point;
+  };
+
+  const primaryLabel = placeTransversalLabel(CENTER, transversalDeg, transversalLabel, [0, 5, -5, 10, -10, 15, -15]);
+  const secondaryLabel = secondary && secondaryTransversalDeg != null
+    ? placeTransversalLabel(secondaryCenter, secondaryTransversalDeg, secondaryTransversalLabel, [0, 5, -5, 10, -10, 15, -15, 20, -20])
+    : null;
 
   const renderedMarks = angleMarks.map((mark, index) => {
     const intersection = intersections[mark.intersection];
@@ -350,7 +389,7 @@ export function ParallelLinesDiagram({
       focusable="false"
     >
       <title>{accessibleLabel}</title>
-      <desc>{isSkewed ? NON_PARALLEL_DESC : PARALLEL_DESC}</desc>
+      <desc>{accessibleDesc}</desc>
 
       <g className="angle-sectors" aria-hidden="true">
         {renderedMarks.map(({ mark, index, intersection, start, end }) => (
@@ -403,7 +442,7 @@ export function ParallelLinesDiagram({
       {renderedMarks.map(({ mark, index, intersection, start, end, label, angleLabelPoint }) => {
         const style = resolveAngleStyle(mark).arcStyle;
         return (
-          <g key={`${mark.intersection}-${mark.sector}-${index}`} className={classForMark(mark)} data-angle-role={mark.role}>
+          <g key={`${mark.intersection}-${mark.sector}-${index}`} className={classForMark(mark)} data-angle-role={mark.role} data-angle-at={mark.intersection} data-angle-sector={mark.sector}>
             <path className="angle-arc angle-arc--inner" d={arcPath(intersection.point, 29, start, end)} />
             {style === 'double' && (
               <path className="angle-arc angle-arc--outer" d={arcPath(intersection.point, 36, start + 1, end - 1)} />
