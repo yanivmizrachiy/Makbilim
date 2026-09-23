@@ -470,6 +470,27 @@ const asList = (value: string | string[] | undefined) => (value == null ? [] : A
 const distinct = <T,>(items: T[]) => items.filter((item, index) => items.indexOf(item) === index);
 
 /**
+ * Short relation phrases, as keys and proof lines write them („זוויות מתאימות”, „מתחלפות”,
+ * „קודקודיות”, „צמודות”, „זווית שטוחה”). A converse citation („המשפט ההפוך של זוויות מתאימות”, or
+ * the canonical converse sentence) names its pair of angles with the same words.
+ */
+const RELATION_PHRASES: ReadonlyArray<readonly [RegExp, Kind]> = [
+  [/מתאימות/g, 'corresponding'],
+  [/מתחלפות/g, 'alternate'],
+  [/קודקודיות/g, 'vertical'],
+  [/צמודות|זווית שטוחה/g, 'adjacent'],
+];
+
+/** Every relation a text names, in reading order (repeats kept). */
+function relationsNamed(text: string): Kind[] {
+  return RELATION_PHRASES.flatMap(([phrase, kind]) => [...text.matchAll(phrase)].map(m => ({ kind, at: m.index })))
+    .sort((a, b) => a.at - b.at)
+    .map(hit => hit.kind);
+}
+
+const sentencesOf = (text: string) => text.split(/(?<=\.)\s+/).filter(sentence => sentence.trim() !== '');
+
+/**
  * SPEC 10.3 — a drawing must not mislead about acute / obtuse. A mark is inconsistent when
  * the drawn sector and the true measure lie on opposite sides of 90° and differ by more than
  * 10° (so a 87°-drawn 93° angle is tolerated, a 45°-drawn 93° angle is not).
@@ -612,10 +633,12 @@ const unit2Specs: Unit2Spec[] = [
     steps: [['A', 'A↓', 'corresponding'], ['A↓', 'α', 'vertical'], ['A', 'A×', 'vertical'], ['A×', 'α', 'corresponding']],
     derive: () => {
       const A = 54;
-      const route1 = A; // A → (corresponding) → (vertical) → α
-      const route2 = A; // A → (vertical) → (corresponding) → α
-      expect(route1).toBe(route2);
-      return { answer: { 'α': route1 }, measures: { A, 'A↓': A, 'A×': A, 'α': route1 } };
+      const Adown = A; // route 1: A → (corresponding, p ∥ q) → A↓
+      const alpha = Adown; // route 1: A↓ → (vertical) → α
+      const Across = A; // route 2: A → (vertical) → A×
+      // Route 2's last step (A× → α, corresponding) is asserted inside it() by the step check
+      // measures['A×'] = measures['α'], so both routes must reach the same α.
+      return { answer: { 'α': alpha }, measures: { A, 'A↓': Adown, 'A×': Across, 'α': alpha } };
     },
   },
   {
@@ -870,6 +893,24 @@ const ACUTE_OBTUSE_REGRESSIONS: Record<string, string> = {
 };
 const regressionNote = (id: string) => (ACUTE_OBTUSE_REGRESSIONS[id] ? ` (regression: ${ACUTE_OBTUSE_REGRESSIONS[id]})` : '');
 
+/**
+ * The only unit-2 tasks allowed to have no written justification in the key. Pinned, so a new task
+ * that forgets its justification fails instead of silently skipping the citation check.
+ */
+const NO_WRITTEN_JUSTIFICATION: Record<string, string> = {
+  'U2-P3-A': 'the four relations are the table rows themselves (מתאימות / מתחלפות / קודקודיות / צמודות), checked against the drawing',
+  'U2-P3-B': 'the relations are the table\'s relation column (מתאימה ל־∠A, צמודה ל־∠D); the stem asks only for the two sizes',
+  'U2-P3-C': 'the stem asks only for β and for the unneeded datum (no „נמקו”); the key states unneededDatum instead',
+};
+
+/** The drawn angle carrying the value of one side of an equation, e.g. '(4x + 6)°' or '72°'; exactly one mark must carry it. */
+function markCarrying(id: string, side: string): DrawnAngle {
+  const drawing = drawingOf(id);
+  const indices = drawing.marks.flatMap((mark, index) => (mark.value === `(${side})°` || mark.value === `${side}°` ? [index] : []));
+  expect(indices, `${id}: exactly one drawn mark carries "${side}"`).toHaveLength(1);
+  return drawing.angles[indices[0]!]!;
+}
+
 function namedAngles(spec: { id: string; marks: string[] }) {
   const drawing = drawingOf(spec.id);
   expect(drawing.angles.map(a => a.label), `${spec.id}: rendered marks`).toHaveLength(spec.marks.length);
@@ -977,6 +1018,11 @@ describe('independent verification — unit 2 hand-derived solutions', () => {
     expect(unit2Specs.map(spec => spec.id)).toEqual(unit2Questions.map(q => q.id));
   });
 
+  it('exactly the pinned tasks have no written justification', () => {
+    const without = unit2Questions.filter(q => asList(q.expected.justification).length === 0).map(q => q.id);
+    expect(without).toEqual(Object.keys(NO_WRITTEN_JUSTIFICATION));
+  });
+
   for (const spec of unit2Specs) {
     const q = byId(unit2Questions, spec.id);
     const { answer, measures, choice } = spec.derive();
@@ -1032,18 +1078,28 @@ describe('independent verification — unit 2 hand-derived solutions', () => {
           for (const forbidden of THEOREM_GUARDRAILS.forbiddenStandaloneClaims) expect(text).not.toContain(forbidden);
         }
         if (spec.id === 'U2-P2-D') {
-          // Two routes, each named as an ordered pair of relations.
-          const routes = texts.map(text => {
-            const order = [
-              { kind: 'corresponding', at: text.indexOf('מתאימות') },
-              { kind: 'vertical', at: text.indexOf('קודקודיות') },
-            ].filter(item => item.at >= 0).sort((a, b) => a.at - b.at);
-            return order.map(item => item.kind);
-          });
-          expect(routes).toEqual([['corresponding', 'vertical'], ['vertical', 'corresponding']]);
+          // Two routes, each named as an ordered pair of relations — exactly the relations of the
+          // two drawn step chains A → A↓ → α and A → A× → α.
+          const angles = namedAngles(spec);
+          const chain = (...names: string[]) => names.slice(1).map((name, i) => relationOf(angles.get(names[i]!)!, angles.get(name)!));
+          const drawnRoutes = [chain('A', 'A↓', 'α'), chain('A', 'A×', 'α')];
+          expect(drawnRoutes).toEqual([['corresponding', 'vertical'], ['vertical', 'corresponding']]);
+          expect(texts, `${spec.id}: one text per route`).toHaveLength(2);
+          for (const route of texts) {
+            for (const forbidden of THEOREM_GUARDRAILS.forbiddenStandaloneClaims) {
+              expect(route, `${spec.id}: route "${route}" states „${forbidden}” without the parallel condition`).not.toContain(forbidden);
+            }
+          }
+          expect(texts.map(relationsNamed), `${spec.id}: relations named by each route`).toEqual(drawnRoutes);
           return;
         }
-        if (texts.length === 0) return;
+        if (texts.length === 0) {
+          // Only pinned tasks may omit the justification, and none of them asks the student to justify.
+          expect(NO_WRITTEN_JUSTIFICATION[spec.id], `${spec.id}: key has no justification and the task is not pinned as allowed to omit one`).toBeDefined();
+          expect(q.stem, `${spec.id}: the stem asks „נמקו” but the key has no justification`).not.toContain('נמקו');
+          return;
+        }
+        expect(NO_WRITTEN_JUSTIFICATION[spec.id], `${spec.id}: pinned as having no justification, but the key has one`).toBeUndefined();
         const used = distinct(spec.steps.map(step => step[2]).filter(kind => kind !== 'same'));
         expect(texts.map(theoremKind), `${spec.id}: justification`).toEqual(used);
         for (const text of texts) {
@@ -1115,10 +1171,22 @@ describe('independent verification — unit 2 algebra: unique, valid, justified'
       }
     });
 
-    if (q.justificationLane !== true) continue;
+    // SPEC 7 / SPEC 14: every equation between angle expressions has a justification lane, and the
+    // theorem written there justifies exactly the equality built — the drawn relation of the two
+    // angles the equation equates (one justification per equation, in order).
     it(`${spec.id}: has a justification lane and a justification that names the relation behind the equation`, () => {
-      expect(q.justificationLane).toBe(true);
-      expect(asList(q.expected.justification).length).toBeGreaterThan(0);
+      expect(q.justificationLane, `${spec.id}: SPEC 7 requires a justification lane next to the equation`).toBe(true);
+      const drawn = spec.equations!.map(({ left, right, kind }) => {
+        const relation = relationOf(markCarrying(spec.id, left), markCarrying(spec.id, right));
+        const fits: Relation[] = kind === 'equal' ? ['corresponding', 'alternate', 'vertical'] : ['adjacent'];
+        expect(fits, `${spec.id}: ${left} / ${right} are drawn as ${relation}, which does not give a ${kind} equation`).toContain(relation);
+        return relation;
+      });
+      const texts = asList(q.expected.justification);
+      expect(texts.map(theoremKind), `${spec.id}: theorem cited for each equation`).toEqual(drawn);
+      for (const text of texts) {
+        expect(distinct(relationsNamed(text)), `${spec.id}: "${text}" must name one relation only`).toEqual([theoremKind(text)]);
+      }
     });
   }
 
@@ -1191,6 +1259,13 @@ const CONVERSE = {
   alternate: THEOREMS.alternateConverse.text,
 } as const;
 
+/** A sentence that invokes a converse theorem, by name or by its canonical wording. */
+const citesConverse = (sentence: string) =>
+  sentence.includes('המשפט ההפוך') || Object.values(CONVERSE).some(text => sentence.includes(withoutFinalPeriod(text)));
+
+/** The imperative that turns a unit-4 stem from givens into the question. */
+const QUESTION_VERB = /קבעו|מצאו|הוכיחו|בחרו|חשבו/;
+
 type Unit4Spec = Unit2Spec & { converse: 'corresponding' | 'alternate'; conclusion: string };
 
 const unit4Specs: Unit4Spec[] = [
@@ -1205,7 +1280,7 @@ const unit4Specs: Unit4Spec[] = [
     derive: () => {
       const A = 67;
       const B = 67;
-      expect(A).toBe(B); // the corresponding pair is equal ⇒ converse theorem applies
+      // The corresponding pair is equal ⇒ the converse applies; asserted inside it() (measures A = B).
       return { answer: {}, measures: { A, B } };
     },
   },
@@ -1220,7 +1295,7 @@ const unit4Specs: Unit4Spec[] = [
     derive: () => {
       const C = 112;
       const D = 112;
-      expect(C).toBe(D); // the alternate pair is equal ⇒ converse theorem applies
+      // The alternate pair is equal ⇒ the converse applies; asserted inside it() (measures C = D).
       return { answer: {}, measures: { C, D } };
     },
   },
@@ -1269,17 +1344,28 @@ describe('independent verification — unit 4 converse tasks', () => {
         }
       });
 
-      it('parallelism is the conclusion, never a given: no parallel marks, no parallel statement', () => {
+      it('parallelism is the conclusion, never a given: no parallel marks, and nothing before the question states it', () => {
         expect(q.diagram?.parallelGiven).toBe(false);
         expect(drawingOf(spec.id).chevrons).toEqual([]);
         const [first, second] = q.diagram?.lineLabels ?? [];
-        expect(q.stem).not.toContain(`נתון ${first} ∥ ${second}`);
-        expect(q.stem).not.toContain(`הישרים ${first} ו־${second} מקבילים`);
-        expect(q.expected.conclusion).toBe(`${first} ∥ ${second}`);
+        const conclusion = `${first} ∥ ${second}`;
+        const verb = QUESTION_VERB.exec(q.stem);
+        expect(verb, `${spec.id}: stem has no question verb`).not.toBeNull();
+        const givens = q.stem.slice(0, verb!.index);
+        const question = q.stem.slice(verb!.index);
+        // The givens (everything before the question verb) state no parallelism at all — neither the
+        // symbol nor the word — and p ∥ q appears only as what is asked.
+        expect(givens, `${spec.id}: givens "${givens}"`).not.toMatch(/∥|מקביל/);
+        expect(question).toContain(conclusion);
+        expect(q.expected.conclusion).toBe(conclusion);
         expect(spec.conclusion).toBe(q.expected.conclusion);
       });
 
       it('the cited reason is the converse theorem matching the drawn relation', () => {
+        // The converse named in the spec is the relation of the drawn pair, not a hand-typed label.
+        const angles = namedAngles(spec);
+        const [from, to] = spec.steps[0]!;
+        expect(relationOf(angles.get(from)!, angles.get(to)!), `${spec.id}: drawn relation of ∠${from} / ∠${to}`).toBe(spec.converse);
         if (spec.equations) {
           const justification = asList(q.expected.justification).join(' ');
           const reasons = asList(q.expected.reason).join(' ');
@@ -1290,7 +1376,20 @@ describe('independent verification — unit 4 converse tasks', () => {
           expect(justification).toContain(`x = ${answer.x}`);
           expect(reasons).toContain(`x = ${answer.x}`);
           expect(reasons).toContain(`${answer['זווית']}°`);
-          expect(reasons).toContain(spec.converse === 'corresponding' ? 'הזוויות המתאימות' : 'הזוויות המתחלפות');
+          // Every key sentence that invokes the converse names no relation other than the drawn one,
+          // and at least one names it: the cited converse is the CORRESPONDING one, not the alternate.
+          const sentences = [...asList(q.expected.justification), ...asList(q.expected.reason)].flatMap(sentencesOf);
+          const citations = sentences.filter(citesConverse).map(sentence => ({ sentence, named: distinct(relationsNamed(sentence)) }));
+          expect(citations.length, `${spec.id}: the key never invokes the converse`).toBeGreaterThan(0);
+          for (const { sentence, named } of citations) {
+            expect([[], [spec.converse]], `${spec.id}: "${sentence}" cites the converse of ${named.join(' + ')}`).toContainEqual(named);
+          }
+          expect(citations.filter(({ named }) => named.length === 1).length, `${spec.id}: no converse citation says which converse`).toBeGreaterThan(0);
+          // Parallelism is concluded, so a direct theorem (which presupposes it) is never cited.
+          for (const sentence of sentences) {
+            expect(sentence, `${spec.id}: cites a direct theorem`).not.toContain(CORRESPONDING_DIRECT);
+            expect(sentence, `${spec.id}: cites a direct theorem`).not.toContain(ALTERNATE_DIRECT);
+          }
           const equation = /(\S+ \+ \d+ = \S+ − \d+)/.exec(justification)?.[1];
           expect(equation).toBeDefined();
           expect(equivalent(parseEquation(equation!), parseEquation(`${left} = ${right}`))).toBe(true);
@@ -1387,30 +1486,45 @@ const unit3Claims: Record<string, Claim[]> = {
   'U3-P3-A': [['A', 'B', 'corresponding'], ['B', 'C', 'vertical']],
   'U3-P3-B': [['A', 'B', 'alternate'], ['B', 'C', 'adjacent']],
   'U3-P3-C': [['A', 'B', 'corresponding'], ['B', 'D', 'vertical']],
-  'U3-P3-D': [['A', 'B', 'corresponding'], ['B', 'C', 'vertical']],
+  // Proof ב rests on ∠A / ∠C being alternate (true in the drawing) but omits p ∥ q (regression: CI-11).
+  'U3-P3-D': [['A', 'B', 'corresponding'], ['B', 'C', 'vertical'], ['A', 'C', 'alternate']],
 };
 
-/** Relation claims written in the content's proofs / reasons (with blanks filled from the key). */
+/** An angle pair as written: '∠A = ∠B', '∠B + ∠C = 180°' or 'הזוויות ∠A ו־∠C'. */
+const WRITTEN_PAIR = /∠([A-Z]) (?:=|\+) ∠([A-Z])|∠([A-Z]) ו־∠([A-Z])/g;
+
+/**
+ * Relation claims in one text, in reading order: each written pair takes the relation phrase(s)
+ * that follow it up to the next pair ('∠A = ∠B כי הן זוויות מתאימות …, ו־∠B = ∠C כי הן זוויות
+ * קודקודיות'). A pair followed by no relation (e.g. 'מכלל המעבר') makes no claim; a pair followed by
+ * two different relations is ambiguous and fails loudly.
+ */
+function claimsInText(text: string): Claim[] {
+  const pairs = [...text.matchAll(WRITTEN_PAIR)];
+  return pairs.flatMap((match, i) => {
+    const end = pairs[i + 1]?.index ?? text.length;
+    const named = distinct(relationsNamed(text.slice(match.index + match[0].length, end)));
+    if (named.length > 1) throw new Error(`"${text}": the pair ${match[0]} is followed by ${named.join(' + ')}`);
+    const [a, b] = match[1] ? [match[1], match[2]!] : [match[3]!, match[4]!];
+    return named.length === 1 ? [[a, b, named[0]!] as const] : [];
+  });
+}
+
+/** Relation claims written in the content's key: proofs, reasons, chosen reasons, and proof-table rows (blanks filled from the key). */
 function writtenClaims(q: Unit3Question): Claim[] {
-  const claims: Claim[] = [];
-  const push = (claim: string, reason: string) => {
-    const kind = theoremKind(reason);
-    const eq = /∠([A-Z]) = ∠([A-Z])/.exec(claim) ?? /∠([A-Z]) \+ ∠([A-Z]) = 180°/.exec(claim);
-    if (kind && eq) claims.push([eq[1]!, eq[2]!, kind]);
-  };
-  for (const line of q.expected.proof ?? []) {
-    const [claim, reason] = line.split(' — ');
-    if (claim && reason) push(claim, reason);
-  }
-  const keyReason = asList(q.expected.reason).join(' ');
-  for (const row of q.proofLines ?? []) {
-    const claim = row.claim.includes('___') ? keyReason : row.claim;
-    const reason = row.reason?.includes('___') ? keyReason : row.reason ?? '';
-    push(claim, reason);
-  }
-  const because = /^(∠[A-Z] = ∠[A-Z]) כי (.+)$/.exec(keyReason);
-  if (because) push(because[1]!, because[2]!);
-  return claims;
+  const keyReasons = asList(q.expected.reason);
+  const texts = [
+    ...(q.expected.proof ?? []),
+    ...keyReasons.flatMap(sentencesOf),
+    // A chosen reason justifies the stem's target claim.
+    ...(q.expected.choice && q.choices ? [`${q.diagram.target} — ${q.expected.choice}`] : []),
+    ...(q.proofLines ?? []).map(row => {
+      const claim = row.claim.includes('___') ? keyReasons.join(' ') : row.claim;
+      const reason = row.reason?.includes('___') ? keyReasons.join(' ') : row.reason ?? '';
+      return `${claim} — ${reason}`;
+    }),
+  ];
+  return texts.flatMap(claimsInText).filter((claim, index, all) => all.findIndex(other => other.join() === claim.join()) === index);
 }
 
 describe('independent verification — unit 3 proof relations match the drawing', () => {
@@ -1428,8 +1542,11 @@ describe('independent verification — unit 3 proof relations match the drawing'
         expect(byLabel.has(a) && byLabel.has(b), `${q.id}: ∠${a} and ∠${b} must be drawn`).toBe(true);
         expect(relationOf(byLabel.get(a)!, byLabel.get(b)!), `${q.id}: ∠${a} / ∠${b}`).toBe(kind);
       }
-      // What the teacher key writes must be a subset of these hand-read claims.
-      for (const claim of writtenClaims(q)) expect(claims).toContainEqual(claim);
+      // What the teacher key writes must be a subset of these hand-read claims — and the key must
+      // write at least one, so this check can never pass vacuously.
+      const written = writtenClaims(q);
+      expect(written.length, `${q.id}: the key states no angle relation`).toBeGreaterThan(0);
+      for (const claim of written) expect(claims).toContainEqual(claim);
     });
 
     it(`${q.id}: corresponding / alternate equality is only used with the parallel condition available`, () => {
