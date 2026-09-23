@@ -50,12 +50,27 @@ export const unit1Questions: Unit1Question[] = [
     subparts: ['רשמו זוג אחד של זוויות מתאימות.', 'רשמו זוג אחד של זוויות מתחלפות.', 'הסבירו בקצרה כיצד זיהיתם כל זוג לפי מיקומו ביחס לישרים ולישר החותך.'],
     diagram: { topology: 'rotated-eight-angle-construction', lineLabels: ['ℓ₁', 'ℓ₂', 'r'], pointLabels: ['P', 'R'], orientationDeg: 78, transversalDeg: 24, parallelGiven: false }
   },
+  // Theorem-wording drills (SPEC 3.1): every line is the full canonical theorem with
+  // exactly ONE word missing, and the missing word rotates so that the student writes
+  // each key word — מתאימות, מתחלפות, מקבילים, שוות — at least once. The two sentences
+  // differ only in the angle-type word, so each task keeps a single theorem in all its
+  // lines; that is what makes the angle-type blank uniquely determined.
   {
-    id: 'U1-P2-C', page: 2, stem: 'השלימו מילה אחת בלבד: זוויות מתאימות בין ישרים ______ שוות.',
+    id: 'U1-P2-C', page: 2, stem: 'בכל השורות מופיע אותו משפט, ובכל שורה חסרה בו מילה אחת. השלימו את המילה החסרה.',
+    subparts: [
+      'זוויות מתאימות בין ישרים ______ שוות.',
+      'זוויות מתאימות בין ישרים מקבילים ______.',
+      'זוויות ______ בין ישרים מקבילים שוות.'
+    ],
     diagram: { topology: 'minimal-theorem-support', lineLabels: ['e', 'f', 'z'], orientationDeg: 8, transversalDeg: 67, parallelGiven: true }
   },
   {
-    id: 'U1-P2-D', page: 3, stem: 'השלימו מילה אחת בלבד: זוויות ______ בין ישרים מקבילים שוות.',
+    id: 'U1-P2-D', page: 3, stem: 'השלימו בכל שורה את המילה החסרה, כך שבכל שלוש השורות יתקבל אותו משפט.',
+    subparts: [
+      'זוויות מתחלפות בין ישרים מקבילים ______.',
+      'זוויות ______ בין ישרים מקבילים שוות.',
+      'זוויות מתחלפות בין ישרים ______ שוות.'
+    ],
     diagram: { topology: 'minimal-theorem-support', lineLabels: ['x', 'y', 'v'], orientationDeg: -14, transversalDeg: 109, parallelGiven: true }
   },
   {

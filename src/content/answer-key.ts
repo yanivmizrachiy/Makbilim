@@ -1,6 +1,7 @@
 import { unit2Questions } from './questions-unit2';
 import { unit3Questions } from './questions-unit3';
-import { unit4Questions } from './questions-unit4';
+import { unit4Questions, type Unit4Question } from './questions-unit4';
+import { THEOREMS } from './theorems';
 
 export type TeacherAnswerEntry = {
   id: string;
@@ -44,8 +45,17 @@ const unit1AnswerKey: TeacherAnswerEntry[] = [
     ],
     note: 'ייתכנו זוגות נכונים נוספים בהתאם למספור שבשרטוט.',
   },
-  { id: 'U1-P2-C', unit: 1, page: 2, answer: 'מקבילים' },
-  { id: 'U1-P2-D', unit: 1, page: 3, answer: 'מתחלפות' },
+  // One word per line, in line order.
+  {
+    id: 'U1-P2-C', unit: 1, page: 2,
+    answer: ['מקבילים', 'שוות', 'מתאימות'],
+    note: `בכל השורות מתקבל המשפט: „${THEOREMS.correspondingDirect.text}”`,
+  },
+  {
+    id: 'U1-P2-D', unit: 1, page: 3,
+    answer: ['שוות', 'מתחלפות', 'מקבילים'],
+    note: `בכל השורות מתקבל המשפט: „${THEOREMS.alternateDirect.text}”`,
+  },
   {
     id: 'U1-P2-E', unit: 1, page: 3,
     answer: [
@@ -88,12 +98,28 @@ const unit3AnswerKey: TeacherAnswerEntry[] = unit3Questions.map(question => ({
   answer: question.expected,
 }));
 
-const unit4AnswerKey: TeacherAnswerEntry[] = unit4Questions.map(question => ({
-  id: question.id,
-  unit: 4,
-  page: question.page,
-  answer: question.expected,
-}));
+const CLOZE_BLANK = /_{3,}/;
+
+// For a one-word-per-line completion task, the sentence every completed line forms
+// (all lines of such a task complete to the same theorem), shown to the teacher.
+const completedClozeSentence = (question: Unit4Question): string | null => {
+  const lines = question.subparts ?? [];
+  const words = question.expected.completions ?? [];
+  if (lines.length === 0 || words.length !== lines.length || !lines.every(line => CLOZE_BLANK.test(line))) return null;
+  const sentences = new Set(lines.map((line, index) => line.replace(CLOZE_BLANK, words[index] ?? '')));
+  return sentences.size === 1 ? [...sentences][0] ?? null : null;
+};
+
+const unit4AnswerKey: TeacherAnswerEntry[] = unit4Questions.map(question => {
+  const sentence = completedClozeSentence(question);
+  return {
+    id: question.id,
+    unit: 4,
+    page: question.page,
+    answer: question.expected,
+    ...(sentence ? { note: `בכל השורות מתקבל המשפט: „${sentence}”` } : {}),
+  };
+});
 
 export const teacherAnswerKey: TeacherAnswerEntry[] = [
   ...unit1AnswerKey,

@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { unit1Questions } from '../../src/content/questions-unit1';
+import { teacherAnswerKey } from '../../src/content/answer-key';
+import { THEOREMS } from '../../src/content/theorems';
 import { unit1RelationTableCases } from '../../src/pages/Unit1Continuation';
 import { alternateInteriorPairs, alternatePairs, correspondingPair } from '../../src/geometry/relations';
+
+const BLANK = '______';
+const blanksIn = (text: string) => text.match(/_+/g) ?? [];
+const WHOLE_WORD_BLANK = /(?:^|\s)______(?=[\s.,]|$)/;
 
 describe('Unit 1 conceptual integrity', () => {
   it('contains 14 progressively structured questions', () => {
@@ -21,13 +27,53 @@ describe('Unit 1 conceptual integrity', () => {
     expect(rotatedCopy).not.toMatch(/אדום|כחול|אפור/);
   });
 
-  it('keeps the parallel-lines condition explicit in theorem recall', () => {
-    const corresponding = unit1Questions.find(q => q.id === 'U1-P2-C')!;
-    const alternate = unit1Questions.find(q => q.id === 'U1-P2-D')!;
-    expect(corresponding.stem).toBe('השלימו מילה אחת בלבד: זוויות מתאימות בין ישרים ______ שוות.');
-    expect(alternate.stem).toBe('השלימו מילה אחת בלבד: זוויות ______ בין ישרים מקבילים שוות.');
-    expect((corresponding.stem.match(/______/g) ?? [])).toHaveLength(1);
-    expect((alternate.stem.match(/______/g) ?? [])).toHaveLength(1);
+  it('drills each canonical direct theorem one missing word per line, covering all four key words (SPEC 3.1)', () => {
+    expect(THEOREMS.correspondingDirect.text).toBe('זוויות מתאימות בין ישרים מקבילים שוות.');
+    expect(THEOREMS.alternateDirect.text).toBe('זוויות מתחלפות בין ישרים מקבילים שוות.');
+    const drills = [
+      { id: 'U1-P2-C', theorem: THEOREMS.correspondingDirect.text, angleType: 'מתאימות' },
+      { id: 'U1-P2-D', theorem: THEOREMS.alternateDirect.text, angleType: 'מתחלפות' },
+    ];
+    const blankedWords = new Set<string>();
+
+    for (const { id, theorem, angleType } of drills) {
+      const q = unit1Questions.find(item => item.id === id)!;
+      const lines = q.subparts ?? [];
+      const answer = teacherAnswerKey.find(entry => entry.id === id)?.answer;
+
+      expect(q.stem).toContain('השלימו');
+      expect(q.stem, `${id} must tell the student that every line is the same theorem`).toContain('אותו משפט');
+      expect(blanksIn(q.stem), `${id} stem must not contain a blank`).toHaveLength(0);
+      expect(lines.length, `${id} needs at least three completion lines`).toBeGreaterThanOrEqual(3);
+      expect(new Set(lines).size, `${id} repeats an identical line`).toBe(lines.length);
+      expect(Array.isArray(answer), `${id} answer key must list one word per line`).toBe(true);
+      const words = answer as string[];
+      expect(words).toHaveLength(lines.length);
+      expect(new Set(words).size, `${id} must blank a different word in every line`).toBe(words.length);
+
+      lines.forEach((line, index) => {
+        const word = words[index]!;
+        expect(blanksIn(line), `${id} line ${index + 1} must have exactly one blank`).toEqual([BLANK]);
+        expect(line, `${id} line ${index + 1}: the blank must stand for one whole word`).toMatch(WHOLE_WORD_BLANK);
+        expect(word, `${id} line ${index + 1}: the answer must be one Hebrew word`).toMatch(/^[א-ת]+$/u);
+        expect(line.replace(BLANK, word), `${id} line ${index + 1} must complete to the canonical theorem verbatim`).toBe(theorem);
+        blankedWords.add(word);
+      });
+
+      // With a single theorem in every line, the angle-type blank is determined by the
+      // other lines of the same task (both theorems differ only in that word).
+      expect(lines.some(line => line.includes(angleType)), `${id} must show "${angleType}" in some line`).toBe(true);
+    }
+
+    expect([...blankedWords].sort()).toEqual(['מקבילים', 'מתאימות', 'מתחלפות', 'שוות'].sort());
+  });
+
+  it('never puts two blanks in the same sentence anywhere in unit 1', () => {
+    for (const q of unit1Questions) {
+      for (const text of [q.stem, ...(q.subparts ?? []), ...(q.choices ?? [])]) {
+        expect(blanksIn(text).length, `${q.id}: "${text}"`).toBeLessThanOrEqual(1);
+      }
+    }
   });
 
   it('explicitly challenges the misconception that alternate angles are always equal', () => {

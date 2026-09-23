@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { A4Page } from '../components/A4Page';
 import { QuestionBlock } from '../components/QuestionBlock';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
@@ -51,6 +52,39 @@ function EightAngleDiagram({
   );
 }
 
+// A completion line stores its missing word as a short underscore run; on the page
+// the blank is widened so a Hebrew word fits by hand, and announced to screen readers.
+const CLOZE_BLANK = /_{3,}/;
+const CLOZE_WRITE_SPACE = '_'.repeat(18);
+
+function ClozeText({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(CLOZE_BLANK).map((part, index) => (
+        <Fragment key={index}>
+          {index > 0 && <><span aria-hidden="true">{CLOZE_WRITE_SPACE}</span><span className="sr-only">מילה חסרה</span></>}
+          {part}
+        </Fragment>
+      ))}
+    </>
+  );
+}
+
+// Theorem-completion lines sit beside the reference diagram (in the stem column of
+// the split layout) and keep the canonical small-bullet subpart markers.
+function ClozeLines({ lines }: { lines: string[] }) {
+  return (
+    <div className="subparts">
+      {lines.map((line, index) => (
+        <div className="subpart" key={index}>
+          <span className="subpart-marker" aria-hidden="true">•</span>
+          <div className="subpart-content"><ClozeText text={line} /></div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function TrueFalseRow({ text }: { text: string }) {
   return (
     <div className="true-false-row">
@@ -94,10 +128,10 @@ function Unit1Page2() {
 
       <QuestionBlock
         compact
-        answerLines={1}
         diagram={<ParallelLinesDiagram lineLabels={['e', 'f']} transversalLabel="z" orientationDeg={8} transversalDeg={67} showParallelMarks />}
       >
         {theorem.stem}
+        <ClozeLines lines={theorem.subparts ?? []} />
       </QuestionBlock>
     </A4Page>
   );
@@ -191,10 +225,11 @@ function Unit1Page3() {
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={3}>
       <QuestionBlock
-        answerLines={1}
+        compact
         diagram={<ParallelLinesDiagram lineLabels={['x', 'y']} transversalLabel="v" orientationDeg={-14} transversalDeg={109} showParallelMarks />}
       >
         {theorem.stem}
+        <ClozeLines lines={theorem.subparts ?? []} />
       </QuestionBlock>
 
       <QuestionBlock>
