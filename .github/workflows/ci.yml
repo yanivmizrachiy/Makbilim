@@ -60,6 +60,7 @@ jobs:
             artifacts/pdf/*.pdf
             artifacts/screenshots/*.png
             artifacts/layout-report.json
+            artifacts/accessibility-report.json
             artifacts/pdf-crosscheck.json
             artifacts/teacher-pdf-report.json
             artifacts/SHA256SUMS.txt
