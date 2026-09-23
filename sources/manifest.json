@@ -10,37 +10,312 @@
     "projectOwnedSources": "adapt only when permitted by the canonical spec"
   },
   "items": [
-    {"id":"1Yd2q1yI3kbAlmroRsq-U-iYTrRxXxQ_LTtJxeKWxjWE","title":"משימה מהרשת - Twinkl KS3 - Finding Missing Angles in Parallel Lines","mimeType":"application/vnd.google-apps.document","category":"web-reference","storageStatus":"drive-native-indexed"},
-    {"id":"1awsDyE6W5ly6OPUXpt_7l8dbRo1yb2OzzDXgChfTExM","title":"משימות מהרשת - Cazoom - זוויות בין ישרים מקבילים - Year 8-9","mimeType":"application/vnd.google-apps.document","category":"web-reference","storageStatus":"drive-native-indexed"},
-    {"id":"1k1Y-Xi_lYC8_ok74-gWgJr7vT-UP9kGJzD1Ux8FskRI","title":"משימה מהרשת - TES - Angles in Parallel Lines - גילאי 11-14","mimeType":"application/vnd.google-apps.document","category":"web-reference","storageStatus":"drive-native-indexed"},
-    {"id":"1LHkgRluT5u4yPFecTcvHkINbSG2l01vX_tg0Kf5rnGk","title":"משימה מהרשת - Teachwire KS3 - זוויות בין ישרים מקבילים","mimeType":"application/vnd.google-apps.document","category":"web-reference","storageStatus":"drive-native-indexed"},
-    {"id":"1WN9CiZSpRHR7P59gCgpnDXJH_6eXQgKCEcJiT2VuiLk","title":"משימה מהרשת - Cuemath - Angles in Parallel Lines Worksheets","mimeType":"application/vnd.google-apps.document","category":"web-reference","storageStatus":"drive-native-indexed"},
-    {"id":"10s9bTRD66EDlXa7F2B6X1J7U4aCXJKzet4pC1mYwKE0","title":"משימות מהרשת - משרד החינוך - רק זוויות בין ישרים מקבילים","mimeType":"application/vnd.google-apps.document","category":"web-reference","storageStatus":"drive-native-indexed"},
-    {"id":"1VWWS9C30WuAmYsNcQrAOBWqn6OWThhAQmTdvIN4eqjE","title":"משימה מהרשת - לומדים מתמטיקה - זוויות מתאימות ומתחלפות","mimeType":"application/vnd.google-apps.document","category":"web-reference","storageStatus":"drive-native-indexed"},
-    {"id":"1kMV5EVYcwb6j0V6rOf2vhRKYSqUKi0g4dnmJpRcIgHA","title":"משימה מהרשת - ויצמן - זוגות זוויות בין ישרים מקבילים","mimeType":"application/vnd.google-apps.document","category":"web-reference","storageStatus":"drive-native-indexed"},
-    {"id":"1pqKWIwfRDIafoSwQwA0LreSfLdxkpHLkWx5Gz9jSUKk","title":"משימה מהרשת - Matic - זוויות מתאימות ומתחלפות תרגול בסיס","mimeType":"application/vnd.google-apps.document","category":"web-reference","storageStatus":"drive-native-indexed"},
-    {"id":"1VuMRUW-08Ltg6QHGxw_U7hJi17zuoWAAnsLsQrOxYbk","title":"משימה מהרשת - Math Picnic - Angles in Parallel Lines","mimeType":"application/vnd.google-apps.document","category":"web-reference","storageStatus":"drive-native-indexed"},
-    {"id":"1bIGwSMJ8Y0D5RgGVD682j-ZaIXsFn-fXhysAPbBCMW4","title":"משימה מהרשת - CorbettMaths - זוויות בין ישרים מקבילים","mimeType":"application/vnd.google-apps.document","category":"web-reference","storageStatus":"drive-native-indexed"},
-
-    {"id":"1b-pznCH-ylknEDiontKPy9SkOAcKA1h5","title":"חידת AI - זוויות מתחלפות בין ישרים מקבילים - ט3 - 10","mimeType":"image/png","category":"visual-task-reference","storageStatus":"drive-binary-indexed"},
-    {"id":"1IJL1fKkvCRStvRJRQiyNjCVNejyp-7bt","title":"חידת AI - אם זוויות מתאימות שוות אז הישרים מקבילים - ט5 - 09","mimeType":"image/jpeg","category":"visual-task-reference","storageStatus":"drive-binary-indexed"},
-    {"id":"1wuufRUqgD0NfWHsYzYKg2BWCYEnhVR5_","title":"חידת AI - אם זוויות מתאימות שוות אז הישרים מקבילים - ז6 - 08","mimeType":"image/png","category":"visual-task-reference","storageStatus":"drive-binary-indexed"},
-    {"id":"1iksi23YRwr0MIvfr_EjjXtDP6FMycwGp","title":"חידת AI - זוויות מתחלפות בין ישרים מקבילים - ז5 - 07","mimeType":"image/jpeg","category":"visual-task-reference","storageStatus":"drive-binary-indexed"},
-    {"id":"1sVIPY3trn11LPxjcNeSupgFyPRWkQnno","title":"חידת AI - זוויות מתאימות בין ישרים מקבילים - ז2 - 06","mimeType":"image/jpeg","category":"visual-task-reference","storageStatus":"drive-binary-indexed"},
-    {"id":"1MGu790jpO6SlZCpzCU9Ik8xi-ZhmRDhC","title":"חידת AI - זוויות חד-צדדיות סכום 180 וישרים מקבילים - ז6 - 05","mimeType":"image/png","category":"visual-task-reference","storageStatus":"drive-binary-indexed"},
-    {"id":"1GpRUa1IiGSqjxyd2O4TzedWH05wIxD69","title":"חידת AI - זוויות מתחלפות בין ישרים מקבילים - ז6 - 04","mimeType":"text/html","category":"visual-task-reference","storageStatus":"drive-file-indexed"},
-    {"id":"1R0igrzH9462-XZxOUFXHCnU0Dp5hR4dM","title":"חידת AI - אם זוויות מתחלפות שוות אז הישרים מקבילים - ז6 - 03","mimeType":"image/jpeg","category":"visual-task-reference","storageStatus":"drive-binary-indexed"},
-    {"id":"1sziZx9vVXc6v-YMIgKHlVIqzwnbW7JCe","title":"חידת AI - אם זוויות מתאימות שוות אז הישרים מקבילים - ז6 - 02","mimeType":"image/jpeg","category":"visual-task-reference","storageStatus":"drive-binary-indexed"},
-    {"id":"1rHP-DlWMerXtjyt2jweixk2Al4HYxzXx","title":"חידת AI - זוויות מתאימות בין ישרים מקבילים - ז6 - 01","mimeType":"image/jpeg","category":"visual-task-reference","storageStatus":"drive-binary-indexed"},
-
-    {"id":"1CwQhZ32W3N7gAzcbNem0rWtcFKhtmHan","title":"זוויות מתחלפות בין ישרים מקבילים - מצגת ותרגול.pptx","mimeType":"application/vnd.openxmlformats-officedocument.presentationml.presentation","category":"instructional-source","storageStatus":"drive-binary-indexed"},
-    {"id":"1pjwig05ENHHTgEuyS2kz4nWHpHh411pL","title":"זוויות מתאימות בין ישרים מקבילים - מצגת ותרגול.pptx","mimeType":"application/vnd.openxmlformats-officedocument.presentationml.presentation","category":"instructional-source","storageStatus":"drive-binary-indexed"},
-    {"id":"1vWMetf4Otrx1asSWRiH25NTJbf1q6rac","title":"גאומטריה ח - חישובי זוויות עם ישרים מקבילים - עמוד 20.html","mimeType":"text/html","category":"worksheet-source","storageStatus":"drive-file-indexed"},
-    {"id":"1ZoNkPsfAQZHL1RKHt3aAJDu27sgUE-na","title":"גאומטריה ח - מתחלפות ומתאימות בין מקבילים - עמוד 18.html","mimeType":"text/html","category":"worksheet-source","storageStatus":"drive-file-indexed"},
-    {"id":"1U2GxwykWmjROuZ336cWGkQIggjcmBIeR","title":"גאומטריה ח - זוויות מתחלפות בהקשר מציאותי - עמוד 17.html","mimeType":"text/html","category":"worksheet-source","storageStatus":"drive-file-indexed"},
-    {"id":"1nWS_WbIrbCaUuentz5skzr0FmJtxGIaM","title":"גאומטריה ח - זוויות בין מקבילים - מתאימות מתחלפות חד-צדדיות - עמוד 16.html","mimeType":"text/html","category":"worksheet-source","storageStatus":"drive-file-indexed"},
-    {"id":"1QqjEbt5WXBqKiAS8uv6Nhbjquv6YEb9XlJ0wAcHf8hg","title":"זוויות בין מקבילים","mimeType":"application/vnd.google-apps.document","category":"core-source","storageStatus":"drive-native-indexed"},
-    {"id":"1urTvBYehLICf39Ku2hReoVWESuHKyzp5","title":"זוויות בין ישרים מקבילים","mimeType":"application/pdf","category":"core-source","storageStatus":"drive-binary-indexed"},
-    {"id":"1tWm2odE2EbJgf_mMFv_xdD-_YZfFOROk","title":"זוויות מתאימות וזוויות מתחלפות בין ישרים מקבילים וחזרה על זוויות צמודות וקודקודיות (1) (1).pdf","mimeType":"application/pdf","category":"core-source","storageStatus":"drive-binary-indexed"}
-  ]
+    {
+      "id": "1Yd2q1yI3kbAlmroRsq-U-iYTrRxXxQ_LTtJxeKWxjWE",
+      "title": "משימה מהרשת - Twinkl KS3 - Finding Missing Angles in Parallel Lines",
+      "mimeType": "application/vnd.google-apps.document",
+      "category": "web-reference",
+      "storageStatus": "drive-native-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "external-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1awsDyE6W5ly6OPUXpt_7l8dbRo1yb2OzzDXgChfTExM",
+      "title": "משימות מהרשת - Cazoom - זוויות בין ישרים מקבילים - Year 8-9",
+      "mimeType": "application/vnd.google-apps.document",
+      "category": "web-reference",
+      "storageStatus": "drive-native-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "external-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1k1Y-Xi_lYC8_ok74-gWgJr7vT-UP9kGJzD1Ux8FskRI",
+      "title": "משימה מהרשת - TES - Angles in Parallel Lines - גילאי 11-14",
+      "mimeType": "application/vnd.google-apps.document",
+      "category": "web-reference",
+      "storageStatus": "drive-native-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "external-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1LHkgRluT5u4yPFecTcvHkINbSG2l01vX_tg0Kf5rnGk",
+      "title": "משימה מהרשת - Teachwire KS3 - זוויות בין ישרים מקבילים",
+      "mimeType": "application/vnd.google-apps.document",
+      "category": "web-reference",
+      "storageStatus": "drive-native-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "external-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1WN9CiZSpRHR7P59gCgpnDXJH_6eXQgKCEcJiT2VuiLk",
+      "title": "משימה מהרשת - Cuemath - Angles in Parallel Lines Worksheets",
+      "mimeType": "application/vnd.google-apps.document",
+      "category": "web-reference",
+      "storageStatus": "drive-native-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "external-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "10s9bTRD66EDlXa7F2B6X1J7U4aCXJKzet4pC1mYwKE0",
+      "title": "משימות מהרשת - משרד החינוך - רק זוויות בין ישרים מקבילים",
+      "mimeType": "application/vnd.google-apps.document",
+      "category": "web-reference",
+      "storageStatus": "drive-native-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "external-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1VWWS9C30WuAmYsNcQrAOBWqn6OWThhAQmTdvIN4eqjE",
+      "title": "משימה מהרשת - לומדים מתמטיקה - זוויות מתאימות ומתחלפות",
+      "mimeType": "application/vnd.google-apps.document",
+      "category": "web-reference",
+      "storageStatus": "drive-native-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "external-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1kMV5EVYcwb6j0V6rOf2vhRKYSqUKi0g4dnmJpRcIgHA",
+      "title": "משימה מהרשת - ויצמן - זוגות זוויות בין ישרים מקבילים",
+      "mimeType": "application/vnd.google-apps.document",
+      "category": "web-reference",
+      "storageStatus": "drive-native-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "external-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1pqKWIwfRDIafoSwQwA0LreSfLdxkpHLkWx5Gz9jSUKk",
+      "title": "משימה מהרשת - Matic - זוויות מתאימות ומתחלפות תרגול בסיס",
+      "mimeType": "application/vnd.google-apps.document",
+      "category": "web-reference",
+      "storageStatus": "drive-native-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "external-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1VuMRUW-08Ltg6QHGxw_U7hJi17zuoWAAnsLsQrOxYbk",
+      "title": "משימה מהרשת - Math Picnic - Angles in Parallel Lines",
+      "mimeType": "application/vnd.google-apps.document",
+      "category": "web-reference",
+      "storageStatus": "drive-native-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "external-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1bIGwSMJ8Y0D5RgGVD682j-ZaIXsFn-fXhysAPbBCMW4",
+      "title": "משימה מהרשת - CorbettMaths - זוויות בין ישרים מקבילים",
+      "mimeType": "application/vnd.google-apps.document",
+      "category": "web-reference",
+      "storageStatus": "drive-native-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "external-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1b-pznCH-ylknEDiontKPy9SkOAcKA1h5",
+      "title": "חידת AI - זוויות מתחלפות בין ישרים מקבילים - ט3 - 10",
+      "mimeType": "image/png",
+      "category": "visual-task-reference",
+      "storageStatus": "drive-binary-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "visual-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1IJL1fKkvCRStvRJRQiyNjCVNejyp-7bt",
+      "title": "חידת AI - אם זוויות מתאימות שוות אז הישרים מקבילים - ט5 - 09",
+      "mimeType": "image/jpeg",
+      "category": "visual-task-reference",
+      "storageStatus": "drive-binary-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "visual-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1wuufRUqgD0NfWHsYzYKg2BWCYEnhVR5_",
+      "title": "חידת AI - אם זוויות מתאימות שוות אז הישרים מקבילים - ז6 - 08",
+      "mimeType": "image/png",
+      "category": "visual-task-reference",
+      "storageStatus": "drive-binary-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "visual-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1iksi23YRwr0MIvfr_EjjXtDP6FMycwGp",
+      "title": "חידת AI - זוויות מתחלפות בין ישרים מקבילים - ז5 - 07",
+      "mimeType": "image/jpeg",
+      "category": "visual-task-reference",
+      "storageStatus": "drive-binary-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "visual-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1sVIPY3trn11LPxjcNeSupgFyPRWkQnno",
+      "title": "חידת AI - זוויות מתאימות בין ישרים מקבילים - ז2 - 06",
+      "mimeType": "image/jpeg",
+      "category": "visual-task-reference",
+      "storageStatus": "drive-binary-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "visual-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1MGu790jpO6SlZCpzCU9Ik8xi-ZhmRDhC",
+      "title": "חידת AI - זוויות חד-צדדיות סכום 180 וישרים מקבילים - ז6 - 05",
+      "mimeType": "image/png",
+      "category": "visual-task-reference",
+      "storageStatus": "drive-binary-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "visual-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1GpRUa1IiGSqjxyd2O4TzedWH05wIxD69",
+      "title": "חידת AI - זוויות מתחלפות בין ישרים מקבילים - ז6 - 04",
+      "mimeType": "text/html",
+      "category": "visual-task-reference",
+      "storageStatus": "drive-file-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "visual-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1R0igrzH9462-XZxOUFXHCnU0Dp5hR4dM",
+      "title": "חידת AI - אם זוויות מתחלפות שוות אז הישרים מקבילים - ז6 - 03",
+      "mimeType": "image/jpeg",
+      "category": "visual-task-reference",
+      "storageStatus": "drive-binary-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "visual-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1sziZx9vVXc6v-YMIgKHlVIqzwnbW7JCe",
+      "title": "חידת AI - אם זוויות מתאימות שוות אז הישרים מקבילים - ז6 - 02",
+      "mimeType": "image/jpeg",
+      "category": "visual-task-reference",
+      "storageStatus": "drive-binary-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "visual-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1rHP-DlWMerXtjyt2jweixk2Al4HYxzXx",
+      "title": "חידת AI - זוויות מתאימות בין ישרים מקבילים - ז6 - 01",
+      "mimeType": "image/jpeg",
+      "category": "visual-task-reference",
+      "storageStatus": "drive-binary-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "visual-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1CwQhZ32W3N7gAzcbNem0rWtcFKhtmHan",
+      "title": "זוויות מתחלפות בין ישרים מקבילים - מצגת ותרגול.pptx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "category": "instructional-source",
+      "storageStatus": "drive-binary-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "instructional-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1pjwig05ENHHTgEuyS2kz4nWHpHh411pL",
+      "title": "זוויות מתאימות בין ישרים מקבילים - מצגת ותרגול.pptx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "category": "instructional-source",
+      "storageStatus": "drive-binary-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "instructional-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1vWMetf4Otrx1asSWRiH25NTJbf1q6rac",
+      "title": "גאומטריה ח - חישובי זוויות עם ישרים מקבילים - עמוד 20.html",
+      "mimeType": "text/html",
+      "category": "worksheet-source",
+      "storageStatus": "drive-file-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "worksheet-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1ZoNkPsfAQZHL1RKHt3aAJDu27sgUE-na",
+      "title": "גאומטריה ח - מתחלפות ומתאימות בין מקבילים - עמוד 18.html",
+      "mimeType": "text/html",
+      "category": "worksheet-source",
+      "storageStatus": "drive-file-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "worksheet-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1U2GxwykWmjROuZ336cWGkQIggjcmBIeR",
+      "title": "גאומטריה ח - זוויות מתחלפות בהקשר מציאותי - עמוד 17.html",
+      "mimeType": "text/html",
+      "category": "worksheet-source",
+      "storageStatus": "drive-file-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "worksheet-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1nWS_WbIrbCaUuentz5skzr0FmJtxGIaM",
+      "title": "גאומטריה ח - זוויות בין מקבילים - מתאימות מתחלפות חד-צדדיות - עמוד 16.html",
+      "mimeType": "text/html",
+      "category": "worksheet-source",
+      "storageStatus": "drive-file-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "worksheet-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1QqjEbt5WXBqKiAS8uv6Nhbjquv6YEb9XlJ0wAcHf8hg",
+      "title": "זוויות בין מקבילים",
+      "mimeType": "application/vnd.google-apps.document",
+      "category": "core-source",
+      "storageStatus": "drive-native-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "core-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1urTvBYehLICf39Ku2hReoVWESuHKyzp5",
+      "title": "זוויות בין ישרים מקבילים",
+      "mimeType": "application/pdf",
+      "category": "core-source",
+      "storageStatus": "drive-binary-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "core-reference",
+      "rightsStatus": "not-asserted"
+    },
+    {
+      "id": "1tWm2odE2EbJgf_mMFv_xdD-_YZfFOROk",
+      "title": "זוויות מתאימות וזוויות מתחלפות בין ישרים מקבילים וחזרה על זוויות צמודות וקודקודיות (1) (1).pdf",
+      "mimeType": "application/pdf",
+      "category": "core-source",
+      "storageStatus": "drive-binary-indexed",
+      "sourceIdType": "google-drive-file-id",
+      "usageMode": "core-reference",
+      "rightsStatus": "not-asserted"
+    }
+  ],
+  "provenancePolicy": {
+    "version": 1,
+    "sourceIdType": "google-drive-file-id",
+    "rightsStatusDefault": "not-asserted",
+    "noLicenseInference": true,
+    "note": "רישיון או בעלות אינם מוסקים משם הקובץ, הכותרת או עצם שמירת המקור ב-Google Drive."
+  }
 }
