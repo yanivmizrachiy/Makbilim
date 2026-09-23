@@ -11,6 +11,7 @@ const teacherHtml = read('teacher.html');
 const teacherApp = read('src/TeacherApp.tsx');
 const teacherBuild = read('scripts/build-teacher-pdf.mjs');
 const checksumBuild = read('scripts/write-checksums.mjs');
+const sbomBuild = read('scripts/write-sbom.mjs');
 const ci = read('.github/workflows/ci.yml');
 const release = read('.github/workflows/release.yml');
 const baseline = JSON.parse(read('qa/visual-baseline.json')) as {
@@ -44,16 +45,36 @@ describe('publication hardening', () => {
     expect(teacherBuild).toContain('teacher-pdf-report.json');
   });
 
-  it('creates checksums and releases only from explicit version tags', () => {
+  it('creates traceable checksums, SBOM and releases only from matching version tags', () => {
     expect(pkg.scripts.checksums).toContain('write-checksums.mjs');
+    expect(pkg.scripts.sbom).toContain('write-sbom.mjs');
+    expect(pkg.scripts.pdf).toContain('npm run sbom');
     expect(pkg.scripts.pdf).toContain('npm run checksums');
     expect(checksumBuild).toContain("createHash('sha256')");
     expect(checksumBuild).toContain('SHA256SUMS.txt');
+    expect(checksumBuild).toContain('input-fingerprint.json');
+    expect(checksumBuild).toContain('aggregateInputSha256');
+    expect(sbomBuild).toContain("'sbom', '--sbom-format=cyclonedx'");
+    expect(sbomBuild).toContain("sbom.bomFormat !== 'CycloneDX'");
     expect(release).toContain("tags:");
     expect(release).toContain("- 'v*'");
     expect(release).not.toContain('branches:');
+    expect(release).toContain('Verify tag matches package version');
+    expect(release).toContain('GITHUB_REF_NAME');
+    expect(release).toContain('sbom.cdx.json');
+    expect(release).toContain('input-fingerprint.json');
     expect(release).toContain('gh release create');
     expect(release).toContain('--verify-tag');
+  });
+
+  it('pins all external GitHub Actions to immutable commit SHAs', () => {
+    const workflows = [ci, release].join('\n');
+    const usesLines = workflows.split('\n').filter(line => line.trim().startsWith('uses:'));
+    expect(usesLines.length).toBeGreaterThan(0);
+    for (const line of usesLines) {
+      expect(line).toMatch(/uses:\s+[^@\s]+@[0-9a-f]{40}(?:\s+#\s+v\d+)?$/);
+    }
+    expect(workflows).not.toMatch(/uses:\s+[^@\s]+@v\d+/);
   });
 
   it('tracks a canonical visual baseline for all 19 student pages', () => {
