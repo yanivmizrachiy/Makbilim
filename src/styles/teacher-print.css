@@ -1,15 +1,48 @@
+/*
+ * Teacher guide — a printed answer key, typeset like the student booklet's companion:
+ * white page, hairline rules, no cards, tiles, tints or shadows around answers. Every
+ * answer is found by its ● position on the (unnumbered) student page.
+ */
+
 @page {
   size: A4 portrait;
-  margin: 12mm 13mm 14mm;
+  margin: 14mm 14mm 15mm;
+
+  @bottom-right {
+    content: "מדריך למורה · זוויות בין ישרים מקבילים";
+    color: #5b6773;
+    font-family: "Noto Sans Hebrew", "Arial Hebrew", Arial, sans-serif;
+    font-size: 7.5pt;
+    vertical-align: top;
+    padding-top: 4mm;
+  }
+
+  @bottom-left {
+    content: counter(page);
+    color: #5b6773;
+    font-family: "Noto Sans Hebrew", "Arial Hebrew", Arial, sans-serif;
+    font-size: 8pt;
+    font-weight: 700;
+    vertical-align: top;
+    padding-top: 4mm;
+  }
+}
+
+/* The cover carries no running footer. */
+@page :first {
+  @bottom-right { content: none; }
+  @bottom-left { content: none; }
 }
 
 :root {
   --teacher-ink: #14212b;
   --teacher-muted: #5b6773;
-  --teacher-line: #cfd8df;
-  --teacher-soft: #f4f8fa;
+  --teacher-rule: #c5cfd8;
   --teacher-accent: #0f6f78;
   --teacher-navy: #183b56;
+  --teacher-body-size: 9.6pt;
+  --teacher-small-size: 8.3pt;
+  --teacher-column-gap: 7mm;
 }
 
 * { box-sizing: border-box; }
@@ -27,6 +60,7 @@ body {
   color: var(--teacher-ink);
   font-family: "Noto Sans Hebrew", "Arial Hebrew", Arial, sans-serif;
   font-synthesis: none;
+  font-kerning: normal;
   text-rendering: optimizeLegibility;
 }
 
@@ -34,186 +68,437 @@ body {
   width: 210mm;
   margin: 0 auto;
   background: #fff;
-  padding: 12mm 13mm 14mm;
+  padding: 14mm 14mm 15mm;
   box-shadow: 0 2mm 8mm rgb(15 23 42 / 12%);
-  print-color-adjust: exact;
-  -webkit-print-color-adjust: exact;
+  font-size: var(--teacher-body-size);
+  line-height: 1.5;
 }
 
+.teacher-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Cover ─────────────────────────────────────────────────────────────── */
+
 .teacher-cover {
-  min-height: 258mm;
-  display: grid;
-  align-content: center;
-  gap: 5mm;
-  text-align: center;
+  min-height: 267mm;
+  display: flex;
+  flex-direction: column;
+  gap: 7mm;
+  padding-top: 32mm;
   break-after: page;
 }
 
+.teacher-cover-title {
+  padding-bottom: 6mm;
+  border-bottom: .6mm solid var(--teacher-navy);
+}
+
 .teacher-kicker {
+  margin: 0 0 2mm;
   color: var(--teacher-accent);
   font-size: 11pt;
   font-weight: 800;
-  letter-spacing: .04em;
+  letter-spacing: .06em;
 }
 
 .teacher-cover h1 {
   margin: 0;
   color: var(--teacher-navy);
-  font-size: 28pt;
-  line-height: 1.08;
+  font-size: 30pt;
+  font-weight: 800;
+  line-height: 1.1;
 }
 
-.teacher-cover h2 {
+.teacher-cover-subtitle {
+  margin: 2.5mm 0 0;
+  font-size: 15pt;
+  font-weight: 600;
+  color: var(--teacher-ink);
+}
+
+.teacher-cover-lead {
+  max-width: 150mm;
   margin: 0;
-  font-size: 19pt;
-  font-weight: 750;
+  font-size: 10.5pt;
+  line-height: 1.6;
 }
 
-.teacher-cover p {
-  width: min(145mm, 100%);
-  margin: 0 auto;
-  font-size: 11pt;
+/* Contents: a plain table with hairline rules — no fills, no boxes. */
+.teacher-contents {
+  width: 100%;
+  margin-top: 2mm;
+  border-collapse: collapse;
+  font-size: 10pt;
+  font-variant-numeric: tabular-nums;
+}
+
+.teacher-contents caption {
+  caption-side: top;
+  padding-bottom: 2mm;
+  text-align: start;
+  color: var(--teacher-navy);
+  font-size: 12pt;
+  font-weight: 800;
+}
+
+.teacher-contents th,
+.teacher-contents td {
+  padding: 1.9mm 2mm;
+  text-align: start;
+  border-bottom: .2mm solid var(--teacher-rule);
+}
+
+.teacher-contents thead th {
+  padding-top: 0;
+  color: var(--teacher-muted);
+  font-size: var(--teacher-small-size);
+  font-weight: 700;
+  border-bottom: .35mm solid var(--teacher-navy);
+}
+
+.teacher-contents tbody th {
+  width: 14mm;
+  color: var(--teacher-navy);
+  font-weight: 800;
+}
+
+.teacher-contents th:nth-child(3),
+.teacher-contents td:nth-child(3),
+.teacher-contents th:nth-child(4),
+.teacher-contents td:nth-child(4) {
+  width: 30mm;
+  text-align: center;
+}
+
+.teacher-contents-source td,
+.teacher-contents-source th {
+  color: var(--teacher-muted);
+}
+
+.teacher-contents tfoot th,
+.teacher-contents tfoot td {
+  border-top: .35mm solid var(--teacher-navy);
+  border-bottom: 0;
+  font-weight: 800;
+}
+
+.teacher-cover-footnote {
+  margin: -3mm 0 0;
+  color: var(--teacher-muted);
+  font-size: var(--teacher-small-size);
+  line-height: 1.5;
+}
+
+.teacher-howto {
+  margin-top: 2mm;
+}
+
+.teacher-howto h2 {
+  margin: 0 0 1.5mm;
+  color: var(--teacher-navy);
+  font-size: 12pt;
+  font-weight: 800;
+}
+
+.teacher-howto > p {
+  max-width: 165mm;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.teacher-locator-example {
+  margin: 4mm 0 0;
+  display: grid;
+  grid-template-columns: 84mm minmax(0, 1fr);
+  gap: 7mm;
+  align-items: start;
+}
+
+.teacher-locator-sample {
+  padding: 2.4mm 0 2.6mm;
+  border-top: .2mm solid var(--teacher-rule);
+  border-bottom: .2mm solid var(--teacher-rule);
+}
+
+.teacher-locator-example figcaption {
+  padding-inline-start: 3mm;
+  border-inline-start: .5mm solid var(--teacher-accent);
+  color: var(--teacher-muted);
+  font-size: var(--teacher-small-size);
   line-height: 1.55;
 }
 
-.teacher-summary-grid {
-  width: min(155mm, 100%);
-  margin: 5mm auto 0;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 3mm;
+/* The student's markers, quoted inside running text at a size that reads as the marker. */
+.teacher-inline-marker {
+  color: var(--teacher-navy);
+  font-size: 9pt;
 }
 
-.teacher-summary-grid > div {
-  display: grid;
-  gap: 1mm;
-  padding: 4mm 2mm;
-  border: .3mm solid var(--teacher-line);
-  border-radius: 2mm;
-  background: var(--teacher-soft);
+.teacher-inline-marker--sub {
+  font-size: 13pt;
+  line-height: 1;
 }
 
-.teacher-summary-grid strong {
+.teacher-inline-position {
+  color: var(--teacher-navy);
+  white-space: nowrap;
+}
+
+/* ── Unit and page headings ────────────────────────────────────────────── */
+
+/* Each unit starts on a new sheet so it can be printed or copied on its own. */
+.teacher-unit {
+  break-before: page;
+  margin-top: 16mm;
+}
+
+.teacher-unit-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "kicker kicker"
+    "title meta";
+  align-items: baseline;
+  column-gap: 6mm;
+  margin-bottom: 5mm;
+  padding-bottom: 2.6mm;
+  border-bottom: .6mm solid var(--teacher-navy);
+  break-after: avoid;
+}
+
+.teacher-unit-kicker {
+  grid-area: kicker;
+  margin: 0;
   color: var(--teacher-accent);
-  font-size: 18pt;
+  font-size: 10pt;
+  font-weight: 800;
+  letter-spacing: .04em;
 }
 
-.teacher-summary-grid span {
-  font-size: 8.7pt;
-  line-height: 1.25;
+.teacher-unit-heading h2 {
+  grid-area: title;
+  margin: .5mm 0 0;
+  color: var(--teacher-navy);
+  font-size: 19pt;
+  font-weight: 800;
+  line-height: 1.15;
 }
 
-.teacher-cover-note {
+.teacher-unit-meta {
+  grid-area: meta;
+  margin: 0;
   color: var(--teacher-muted);
-  font-size: 9.5pt !important;
-}
-
-.teacher-page-group {
-  margin-bottom: 8mm;
+  font-size: var(--teacher-small-size);
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .teacher-page-group + .teacher-page-group {
-  padding-top: 2mm;
+  margin-top: 6.5mm;
 }
 
 .teacher-page-heading {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   gap: 6mm;
-  align-items: end;
-  margin-bottom: 3.2mm;
-  padding-bottom: 2.4mm;
-  border-bottom: .45mm solid var(--teacher-navy);
+  padding-bottom: 1.2mm;
+  border-bottom: .3mm solid var(--teacher-navy);
   break-after: avoid;
 }
 
-.teacher-unit {
-  color: var(--teacher-accent);
-  font-size: 9.5pt;
+.teacher-page-heading h3 {
+  margin: 0;
+  color: var(--teacher-navy);
+  font-size: 12.5pt;
   font-weight: 800;
 }
 
-.teacher-page-heading h2 {
-  margin: .7mm 0 0;
-  font-size: 16pt;
-  color: var(--teacher-navy);
-}
-
 .teacher-page-count {
+  margin: 0;
   color: var(--teacher-muted);
-  font-size: 8.8pt;
-  font-weight: 700;
+  font-size: var(--teacher-small-size);
   white-space: nowrap;
 }
 
+/* ── Answers ───────────────────────────────────────────────────────────── */
+
 .teacher-answer-grid {
-  display: grid;
-  gap: 3mm;
+  display: block;
 }
 
-.teacher-answer-card {
-  border: .25mm solid var(--teacher-line);
-  border-radius: 1.8mm;
-  padding: 3mm 3.4mm;
+/* One printed row: a single answer, or two side by side in the two-column flow
+   (● 1 | ● 2, then ● 3 | ● 4). The row is the unit kept whole on a sheet, and the
+   hairline above it separates it from the previous row. */
+.teacher-answer-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border-top: .2mm solid var(--teacher-rule);
   break-inside: avoid;
   page-break-inside: avoid;
 }
 
-.teacher-answer-card > header {
+.teacher-answer-grid[data-flow="columns"] > .teacher-answer-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--teacher-column-gap);
+}
+
+/* The page heading's rule already opens the first row. */
+.teacher-answer-row:first-child {
+  border-top: 0;
+}
+
+.teacher-answer-card {
+  min-width: 0;
+  padding: 2.5mm 0 2.9mm;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.teacher-answer-header {
   display: flex;
-  justify-content: space-between;
-  gap: 5mm;
   align-items: baseline;
-  margin-bottom: 2mm;
+  gap: 2.2mm;
+  line-height: 1.2;
 }
 
-.teacher-answer-order {
-  font-size: 10pt;
-  font-weight: 800;
+/* "● 3" — the student's own marker, followed by the question's place on the page. */
+.teacher-answer-position {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1.2mm;
   color: var(--teacher-navy);
-}
-
-/* Same task-type vocabulary as the student page, so the teacher can match answers at a glance. */
-.teacher-answer-kind {
-  color: var(--teacher-accent);
-  font-size: 8.6pt;
   font-weight: 800;
   white-space: nowrap;
 }
 
-.teacher-answer-body {
-  font-size: 10pt;
-  line-height: 1.48;
+.teacher-answer-marker {
+  font-size: 9pt;
 }
 
-.teacher-answer-list {
-  margin: 0;
-  padding-inline-start: 6mm;
-  display: grid;
-  gap: 1mm;
+.teacher-answer-position-number {
+  font-size: 11.5pt;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Same task-type vocabulary and look as the student page's eyebrow label. */
+.teacher-answer-kind,
+.teacher-sample-kind {
+  padding-inline-start: 2.2mm;
+  border-inline-start: .3mm solid currentColor;
+  color: var(--teacher-accent);
+  font-size: 8.4pt;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.teacher-answer-locator {
+  margin-inline-start: auto;
+  color: var(--teacher-muted);
+  font-size: 7.6pt;
+  white-space: nowrap;
+}
+
+.teacher-answer-stem {
+  margin: .9mm 0 1.6mm;
+  color: var(--teacher-muted);
+  font-size: var(--teacher-small-size);
+  line-height: 1.45;
+}
+
+.teacher-answer-body {
+  font-size: var(--teacher-body-size);
+  line-height: 1.5;
 }
 
 .teacher-answer-text {
   margin: 0;
 }
 
+/* Unordered items use the student's sub-item marker •; ordered items keep their numbers. */
+.teacher-answer-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: .8mm;
+}
+
+.teacher-answer-list > li {
+  position: relative;
+  padding-inline-start: 3.6mm;
+}
+
+.teacher-answer-list:not(.teacher-answer-list--ordered) > li::before {
+  content: "•";
+  position: absolute;
+  inset-inline-start: .2mm;
+  color: var(--teacher-navy);
+  font-size: 10.5pt;
+  line-height: 1.3;
+}
+
+.teacher-answer-list--ordered {
+  counter-reset: teacher-line;
+}
+
+.teacher-answer-list--ordered > li {
+  counter-increment: teacher-line;
+  padding-inline-start: 4.6mm;
+}
+
+.teacher-answer-list--ordered > li::before {
+  content: counter(teacher-line) ".";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--teacher-muted);
+  font-size: var(--teacher-small-size);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
 .teacher-answer-fields {
   margin: 0;
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
-  gap: 1.4mm 3.5mm;
+  row-gap: 1.1mm;
+}
+
+/* Each field is one row of the field grid; its heading column is shared by all fields. */
+.teacher-answer-field {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  column-gap: 2.4mm;
   align-items: baseline;
 }
 
 .teacher-answer-fields dt {
   color: var(--teacher-accent);
-  font-size: 8.8pt;
+  font-size: 7.9pt;
   font-weight: 800;
   white-space: nowrap;
 }
 
 .teacher-answer-fields dd {
   margin: 0;
+  min-width: 0;
+}
+
+/* Two-column flow: a list field puts its heading above the list, at full column width. */
+.teacher-answer-grid[data-flow="columns"] .teacher-answer-field[data-layout="block"] {
+  row-gap: .5mm;
+}
+
+.teacher-answer-grid[data-flow="columns"] .teacher-answer-field[data-layout="block"] > dt,
+.teacher-answer-grid[data-flow="columns"] .teacher-answer-field[data-layout="block"] > dd {
+  grid-column: 1 / -1;
 }
 
 .teacher-answer-values {
@@ -222,55 +507,46 @@ body {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 1mm 6mm;
+  gap: .6mm 6mm;
 }
 
+/* Teacher note: a thin accent rule, no tinted box. */
 .teacher-answer-note {
-  margin-top: 2.5mm;
-  padding: 2mm 2.5mm;
-  border-inline-start: 1mm solid var(--teacher-accent);
-  background: var(--teacher-soft);
-  color: #33414d;
-  font-size: 8.8pt;
-  line-height: 1.45;
-}
-
-.teacher-source-policy {
-  margin-top: 8mm;
-  padding: 5mm;
-  border: .35mm solid var(--teacher-line);
-  background: var(--teacher-soft);
-  break-inside: avoid;
-}
-
-.teacher-source-policy h2 {
-  margin: 0 0 2mm;
-  color: var(--teacher-navy);
-  font-size: 14pt;
-}
-
-.teacher-source-policy p {
-  margin: 0 0 3mm;
-  font-size: 9.8pt;
+  margin-top: 1.8mm;
+  padding-inline-start: 2.6mm;
+  border-inline-start: .5mm solid var(--teacher-accent);
+  color: #37444f;
+  font-size: var(--teacher-small-size);
   line-height: 1.5;
 }
 
-.teacher-source-policy dl {
-  margin: 0;
-  display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
-  gap: 1.2mm 3mm;
-  font-size: 9pt;
-}
-
-.teacher-source-policy dt {
-  font-weight: 800;
+.teacher-answer-note strong {
   color: var(--teacher-accent);
+  font-weight: 800;
 }
 
-.teacher-source-policy dd {
-  margin: 0;
+/* ── Unit 5 ────────────────────────────────────────────────────────────── */
+
+.teacher-source-policy {
+  margin-top: 11mm;
+  break-inside: avoid;
 }
+
+.teacher-source-policy .teacher-unit-heading {
+  grid-template-areas:
+    "kicker"
+    "title";
+  grid-template-columns: minmax(0, 1fr);
+  margin-bottom: 3mm;
+}
+
+.teacher-source-policy p:not(.teacher-unit-kicker) {
+  max-width: 160mm;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Math islands ──────────────────────────────────────────────────────── */
 
 .math,
 [dir="ltr"] {
@@ -284,6 +560,8 @@ body {
   white-space: nowrap;
 }
 
+/* ── Print and forced colours ──────────────────────────────────────────── */
+
 @media print {
   html,
   body,
@@ -296,5 +574,30 @@ body {
     margin: 0;
     padding: 0;
     box-shadow: none;
+  }
+
+  /* The cover ends with a forced page break; its height need not be reserved. */
+  .teacher-cover {
+    min-height: 0;
+  }
+
+  .teacher-unit {
+    margin-top: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .teacher-cover-title,
+  .teacher-unit-heading,
+  .teacher-page-heading,
+  .teacher-contents thead th,
+  .teacher-contents tfoot th,
+  .teacher-contents tfoot td {
+    border-color: CanvasText;
+  }
+
+  .teacher-answer-note,
+  .teacher-locator-example figcaption {
+    border-inline-start-color: CanvasText;
   }
 }

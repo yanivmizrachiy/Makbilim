@@ -77,9 +77,16 @@ describe('teacher guide is written for teachers', () => {
   const html = renderToStaticMarkup(createElement(TeacherApp));
   const { visibleText, mathSources } = inspect(html);
 
-  it('shows all 58 answers, each with the student-page task-type label', () => {
+  it('shows all 58 answers, each with its ● position, the student-page task-type label and the stem opening', () => {
     expect(html.match(/<article class="teacher-answer-card"/g)).toHaveLength(58);
     expect(html.match(/<span class="teacher-answer-kind">/g)).toHaveLength(58);
+    const cards = html.match(/<article class="teacher-answer-card"[\s\S]*?<\/article>/g) ?? [];
+    expect(cards).toHaveLength(58);
+    for (const card of cards) {
+      expect(card).toMatch(/<span class="teacher-answer-marker" aria-hidden="true">●<\/span><span class="teacher-answer-position-number">[1-4]<\/span>/);
+      expect(card).toMatch(/<span class="teacher-answer-kind">[^<]+<\/span>/);
+      expect(card).toMatch(/<p class="teacher-answer-stem">/);
+    }
     expect(html).toContain('data-answer-count="58"');
   });
 
