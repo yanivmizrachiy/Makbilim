@@ -28,6 +28,17 @@ export const THEOREMS = {
   }
 } as const;
 
+/**
+ * The other reasons a proof line or a key may cite, in the same short canonical style as the two
+ * direct theorems. Content takes every reason from THEOREMS / REASONS — never a retyped variant.
+ */
+export const REASONS = {
+  vertical: 'זוויות קודקודיות שוות.',
+  adjacent: 'זוויות צמודות משלימות ל־180°.',
+  transitivity: 'מכלל המעבר.',
+  given: 'נתון.',
+} as const;
+
 export const THEOREM_GUARDRAILS = {
   forbiddenStandaloneClaims: [
     'זוויות מתחלפות שוות',
