@@ -15,10 +15,6 @@
   background: var(--unit-accent);
 }
 
-.a4-page[data-layout-quality="premium"] .unit-title .unit-no {
-  color: var(--unit-accent-dark);
-}
-
 /* Questions sit directly on the white page: no card, no fill, no shadow, no side-bar. */
 .question-block[data-question-surface="premium"] {
   background: transparent;

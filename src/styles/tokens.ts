@@ -2,8 +2,9 @@ export const printTokens = {
   page: {
     widthMm: 210,
     heightMm: 297,
-    numbering: 'reset-per-unit' as const,
-    firstPageInUnit: 1,
+    numbering: 'continuous' as const,
+    firstPage: 1,
+    pageNumberDisplay: 'circle-top-left' as const,
   },
   markers: {
     question: {
@@ -18,7 +19,8 @@ export const printTokens = {
       role: 'small-solid-bullet' as const,
       ariaLabel: 'סעיף',
     },
-    numbering: 'none' as const,
+    numbering: 'continuous-global' as const,
+    subpartNumbering: 'hebrew-letters' as const,
   },
   footer: {
     line1: 'יניב רז - מדריך מחוזי חט"ב בעיר ירושלים',

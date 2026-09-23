@@ -77,7 +77,7 @@ body { direction: rtl; }
   letter-spacing: 0.02em;
 }
 
-.unit-title {
+.topic-title {
   color: var(--ink);
   font-size: var(--unit-title-size);
   line-height: 1.15;
@@ -85,13 +85,25 @@ body { direction: rtl; }
   letter-spacing: -0.005em;
 }
 
+/* Continuous global page number: a number-only circle at the far (top-left in RTL) corner of the
+   header (SPEC 4.1/11.6). The ring colour equals the numeral colour; transparent fill; the New
+   Computer Modern numeral matches the formulas. Principle adapted from razpages, not its look. */
 .page-number {
-  color: var(--ink);
+  width: var(--page-number-circle);
+  height: var(--page-number-circle);
+  flex: 0 0 auto;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--page-number-ring-w) solid var(--unit-accent-dark);
+  border-radius: 50%;
+  color: var(--unit-accent-dark);
+  font-family: "Makbilim Math", var(--font-body);
   font-size: var(--page-number-size);
-  line-height: 1.15;
-  font-weight: 700;
+  font-weight: 500;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
 }
 
 /* ── Content area: weighted, deterministic growth ─────────────────────────────
@@ -132,12 +144,17 @@ body { direction: rtl; }
   padding-top: var(--q-sep-after);
 }
 
+/* Continuous global question number (SPEC 4.2/11.5): the number leads the question in place of the
+   retired ● marker, in the formula face, at a fixed position and alignment. */
 .question-marker {
   color: var(--ink);
+  font-family: "Makbilim Math", var(--font-body);
   font-size: var(--question-marker-size);
+  font-weight: 700;
   line-height: 1;
   text-align: center;
-  padding-top: 1.15mm;
+  font-variant-numeric: tabular-nums;
+  padding-top: 0.7mm;
 }
 
 /* One text column (stem → sub-items / choices → answer slots → work area) and, beside it, the
@@ -223,12 +240,14 @@ body { direction: rtl; }
 
 .subpart-after { grid-column: 2 / -1; }
 
+/* Sub-part letter (א, ב, ג…) — local to its question (SPEC 4.2/11.5), in place of the retired • bullet. */
 .subpart-marker {
   color: var(--ink);
   font-size: var(--subpart-marker-size);
+  font-weight: 700;
   line-height: 1;
   text-align: center;
-  padding-top: 1.6mm;
+  padding-top: 1mm;
 }
 
 /* One-line sub-items that end in a write-in slot (pair → word, claim → reason). */

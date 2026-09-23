@@ -26,7 +26,7 @@ export function Unit1Page1() {
   const d = byId('U1-P1-D');
 
   return (
-    <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={1}>
+    <A4Page pageId="U1-P1">
       <QuestionBlock taskId={a.id} compact diagram={<ParallelLinesDiagram lineLabels={['p', 'q']} transversalLabel="r" orientationDeg={0} transversalDeg={50} showParallelMarks={false} ariaLabel="שני ישרים וישר נוסף החותך את שניהם" />}>
         {a.stem}
       </QuestionBlock>
@@ -66,12 +66,12 @@ export function Unit1Page1() {
 export default function App() {
   return (
     <div className="preview-stack">
+      <Unit5Pages />
       <Unit1Page1 />
       <Unit1Continuation />
       <Unit2Pages />
       <Unit3Pages />
       <Unit4Pages />
-      <Unit5Pages />
     </div>
   );
 }

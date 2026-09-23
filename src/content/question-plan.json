@@ -1,9 +1,9 @@
 {
   "projectTitle": "זוויות בין ישרים מקבילים",
   "canonicalSpec": "SPEC.md",
-  "studentVisibleQuestionNumbers": false,
-  "questionMarker": "●",
-  "subpartMarker": "•",
+  "studentVisibleQuestionNumbers": true,
+  "questionNumbering": "continuous-global",
+  "subpartNumbering": "hebrew-letters",
   "originalTaskCount": 58,
   "curriculumSourceTaskBlocks": 8,
   "units": [

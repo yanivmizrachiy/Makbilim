@@ -13,8 +13,8 @@ const root = process.cwd();
 const read = (file: string) => fs.readFileSync(path.join(root, file), 'utf8');
 
 const healthyPage = (unit: number, localPage: number): LayoutPage => ({
-  unit,
-  localPage,
+  pageId: `U${unit}-P${localPage}`,
+  globalPage: localPage,
   usedSpanRatio: 0.978,
   scrollOverflow: 0,
   overflowingQuestions: 0,

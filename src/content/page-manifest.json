@@ -1,7 +1,9 @@
 {
   "projectTitle": "זוויות בין ישרים מקבילים",
   "canonicalSpec": "SPEC.md",
-  "pageNumbering": "reset-per-unit",
+  "pageNumbering": "continuous",
+  "bookletOrder": "curriculum-first",
+  "pageNumberDisplay": "circle-top-left",
   "originalUnits": [
     {"unit": 1, "title": "מושגים בסיסיים", "pages": 4, "pageNumbers": [1,2,3,4]},
     {"unit": 2, "title": "תרגילי חישוב", "pages": 6, "pageNumbers": [1,2,3,4,5,6]},
@@ -21,11 +23,12 @@
   },
   "studentPageCount": 19,
   "studentFacingRules": {
-    "originalUnitsQuestionMarker": "●",
-    "originalUnitsSubpartMarker": "•",
-    "originalUnitsQuestionNumbering": false,
-    "originalUnitsSubpartNumbering": false,
-    "curriculumUnitPreservesSourceNumbering": true,
+    "questionNumbering": "continuous",
+    "subpartNumbering": "hebrew-letters",
+    "pageNumbering": "continuous",
+    "pageNumberDisplay": "circle-top-left",
+    "curriculumFirst": true,
+    "curriculumGlobalNumberIsChrome": true,
     "footerRequired": true,
     "projectTitleRequired": true
   }

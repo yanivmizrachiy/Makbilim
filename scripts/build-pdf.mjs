@@ -188,9 +188,9 @@ try {
     const contentRect = content?.getBoundingClientRect();
     const footer = el.querySelector('.page-footer');
     const footerRect = footer?.getBoundingClientRect();
-    const unit = Number(el.getAttribute('data-unit'));
-    const localPage = Number(el.getAttribute('data-page'));
-    const isVerbatimCurriculum = unit === 5;
+    const pageId = el.getAttribute('data-page-id') ?? '';
+    const globalPage = Number(el.getAttribute('data-page'));
+    const isVerbatimCurriculum = el.getAttribute('data-curriculum') === 'true';
     const questions = [...el.querySelectorAll(isVerbatimCurriculum ? '.bbb-source-block' : '.question-block')];
     const questionContents = [...el.querySelectorAll(isVerbatimCurriculum ? '.bbb-source-block' : '.question-content')];
     const markerCount = el.querySelectorAll('.question-marker').length;
@@ -240,7 +240,7 @@ try {
     const geometryCollisionCount = geometryCollisionReport.reduce((sum, item) => sum + item.collisions, 0);
     const geometryOutOfBoundsCount = geometryCollisionReport.reduce((sum, item) => sum + item.outOfBounds, 0);
     const projectTitleText = el.querySelector('.page-title-group h1')?.textContent?.trim() ?? '';
-    const unitTitleText = el.querySelector('.unit-title')?.textContent?.trim() ?? '';
+    const topicTitleText = el.querySelector('.topic-title')?.textContent?.trim() ?? '';
     const pageNumberText = el.querySelector('.page-number')?.textContent?.trim() ?? '';
     const footerLines = [...el.querySelectorAll('.page-footer > div')].map(n => n.textContent?.trim() ?? '');
     const overflowingQuestions = questions.filter(q => {
@@ -295,8 +295,8 @@ try {
     const maxBlockDeadMm = blocks.length ? Math.max(...blocks.map(block => block.blockDeadMm)) : null;
     return {
       renderIndex: index + 1,
-      unit,
-      localPage,
+      pageId,
+      globalPage,
       isVerbatimCurriculum,
       widthPx: rect.width,
       heightPx: rect.height,
@@ -324,7 +324,7 @@ try {
       geometryOutOfBoundsCount,
       geometryCollisionReport,
       projectTitleText,
-      unitTitleText,
+      topicTitleText,
       pageNumberText,
       footerLines,
       headerContentOverlap,
@@ -334,12 +334,28 @@ try {
     };
   }));
 
+  // Booklet order (SPEC 4.3): curriculum first, then the authored topics; global pages 1..19.
+  // Mirrors src/content/booklet.ts BOOKLET_PAGES.
   const expectedPages = [
-    [1,1],[1,2],[1,3],[1,4],
-    [2,1],[2,2],[2,3],[2,4],[2,5],[2,6],
-    [3,1],[3,2],[3,3],
-    [4,1],[4,2],
-    [5,1],[5,2],[5,3],[5,4],
+    { pageId: 'C-P1', topic: 'שאלות מתוך תוכנית הלימודים' },
+    { pageId: 'C-P2', topic: 'שאלות מתוך תוכנית הלימודים' },
+    { pageId: 'C-P3', topic: 'שאלות מתוך תוכנית הלימודים' },
+    { pageId: 'C-P4', topic: 'שאלות מתוך תוכנית הלימודים' },
+    { pageId: 'U1-P1', topic: 'זוויות מתאימות ומתחלפות' },
+    { pageId: 'U1-P2', topic: 'זוויות מתאימות ומתחלפות' },
+    { pageId: 'U1-P3', topic: 'המשפטים הישירים' },
+    { pageId: 'U1-P4', topic: 'המשפטים הישירים' },
+    { pageId: 'U2-P1', topic: 'חישובי זוויות' },
+    { pageId: 'U2-P2', topic: 'חישובי זוויות' },
+    { pageId: 'U2-P3', topic: 'חישובי זוויות' },
+    { pageId: 'U2-P4', topic: 'אלגברה' },
+    { pageId: 'U2-P5', topic: 'אלגברה' },
+    { pageId: 'U2-P6', topic: 'אלגברה' },
+    { pageId: 'U3-P1', topic: 'נימוק והוכחה' },
+    { pageId: 'U3-P2', topic: 'נימוק והוכחה' },
+    { pageId: 'U3-P3', topic: 'נימוק והוכחה' },
+    { pageId: 'U4-P1', topic: 'המשפטים ההפוכים' },
+    { pageId: 'U4-P2', topic: 'המשפטים ההפוכים' },
   ];
   const canonicalProjectTitle = 'זוויות בין ישרים מקבילים';
   const canonicalFooter = [
@@ -360,10 +376,12 @@ try {
     const curriculumFidelityFailure = item.isVerbatimCurriculum && (
       item.questionCount !== 2 || item.sourceNumberCount !== 2 || item.sourceShaCount !== 2
     );
+    const expected = expectedPages[index] ?? { pageId: '', topic: '' };
     const pageChromeFailure = (
       item.projectTitleText !== canonicalProjectTitle ||
-      !item.unitTitleText.includes(`יחידה ${item.unit}`) ||
-      item.pageNumberText !== `עמוד ${item.localPage}` ||
+      item.topicTitleText !== expected.topic ||
+      item.topicTitleText.includes('יחידה') ||
+      item.pageNumberText !== String(index + 1) ||
       item.footerLines.length !== 2 ||
       item.footerLines[0] !== canonicalFooter[0] ||
       item.footerLines[1] !== canonicalFooter[1] ||
@@ -384,8 +402,8 @@ try {
       (item.bottomGapRatio != null && item.bottomGapRatio > 0.12) ||
       (item.usedSpanRatio != null && item.usedSpanRatio < 0.76) ||
       item.maxInterQuestionGapRatio > 0.19 ||
-      item.unit !== expectedPages[index][0] ||
-      item.localPage !== expectedPages[index][1]
+      item.pageId !== expected.pageId ||
+      item.globalPage !== index + 1
     );
   });
   if (failures.length) throw new Error(`A4 layout QA failed: ${JSON.stringify(failures)}`);
@@ -457,7 +475,7 @@ try {
     for (let index = 0; index < pageCount; index += 1) {
       const locator = page.locator('.a4-page').nth(index);
       const item = layout[index];
-      const stem = `u${item.unit}-p${item.localPage}`;
+      const stem = item.pageId.toLowerCase();
       await locator.screenshot({
         path: path.join(shotsDir, `${stem}-${suffix}.png`),
         animations: 'disabled',

@@ -137,22 +137,23 @@ describe('density presets (src/content/page-layout.ts)', () => {
       expect(['regular', 'dense']).toContain(density);
       expect(tuningCss).toContain(`[data-density="${density}"]`);
     }
-    const [unit, page] = Object.keys(PAGE_DENSITY)[0]!.match(/\d+/g)!.map(Number) as [number, number];
-    const markup = renderToStaticMarkup(createElement(A4Page, { unitNumber: unit, unitTitle: 't', pageNumber: page, children: null }));
-    expect(markup).toContain(`data-density="${pageDensity(unit, page)}"`);
-    expect(pageDensity(5, 1)).toBe('regular');
+    const pageId = Object.keys(PAGE_DENSITY)[0]!;
+    const markup = renderToStaticMarkup(createElement(A4Page, { pageId, children: null }));
+    expect(markup).toContain(`data-density="${pageDensity(pageId)}"`);
+    expect(pageDensity('C-P1')).toBe('regular');
   });
 });
 
 describe('page header and footer', () => {
-  const markup = renderToStaticMarkup(createElement(A4Page, { unitNumber: 2, unitTitle: 'תרגילי חישוב', pageNumber: 3, children: null }));
+  // U2-P4 is global page 12 (curriculum 1–4, unit-1 5–8, U2-P1..P3 9–11), topic "אלגברה".
+  const markup = renderToStaticMarkup(createElement(A4Page, { pageId: 'U2-P4', children: null }));
   const tree = parseMarkup(markup);
   const text = (className: string) => visibleText(findAll(tree, node => hasClass(node, className))[0]!).trim();
 
   it('keeps every header and footer text exactly as the visual baseline compares it', () => {
     expect(visibleText(findAll(tree, node => node.tag === 'h1')[0]!).trim()).toBe('זוויות בין ישרים מקבילים');
-    expect(text('unit-title')).toBe('יחידה 2 — תרגילי חישוב');
-    expect(text('page-number')).toBe('עמוד 3');
+    expect(text('topic-title')).toBe('אלגברה');
+    expect(text('page-number')).toBe('12');
     const footer = findAll(tree, node => hasClass(node, 'page-footer'))[0]!;
     expect(findAll(footer, node => node.tag === 'div').map(node => visibleText(node).trim())).toEqual([
       printTokens.footer.line1,

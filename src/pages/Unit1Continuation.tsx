@@ -97,7 +97,7 @@ function Unit1Page2() {
   const theorem = byId('U1-P2-C');
 
   return (
-    <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={2}>
+    <A4Page pageId="U1-P2">
       <QuestionBlock
         taskId={corresponding.id}
         compact
@@ -226,7 +226,7 @@ function Unit1Page3() {
   const claim = byId('U1-P3-A');
 
   return (
-    <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={3}>
+    <A4Page pageId="U1-P3">
       <QuestionBlock
         taskId={theorem.id}
         compact
@@ -269,7 +269,7 @@ function Unit1Page4() {
   const correction = byId('U1-P3-D');
 
   return (
-    <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={4}>
+    <A4Page pageId="U1-P4">
       <QuestionBlock taskId={table.id} compact response={<RelationTable />}>
         {table.stem}
       </QuestionBlock>

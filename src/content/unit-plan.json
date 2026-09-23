@@ -1,17 +1,15 @@
 {
   "projectTitle": "זוויות בין ישרים מקבילים",
   "canonicalSpec": "SPEC.md",
+  "structure": "topics-not-units",
+  "curriculumFirst": true,
   "numbering": {
-    "unitNumbering": "numeric",
-    "pageNumbering": "reset-per-unit",
-    "firstPageInEveryUnit": 1,
-    "globalContinuousPageNumbering": false,
-    "questionNumbering": "none",
-    "subpartNumbering": "none",
-    "questionMarker": "●",
-    "subpartMarker": "•",
-    "questionMarkerRole": "large-solid-bullet",
-    "subpartMarkerRole": "small-solid-bullet"
+    "pageNumbering": "continuous",
+    "globalContinuousPageNumbering": true,
+    "pageNumberDisplay": "circle-top-left",
+    "questionNumbering": "continuous",
+    "subpartNumbering": "hebrew-letters",
+    "unitsAreProvenanceOnly": true
   },
   "units": [
     {

@@ -147,7 +147,7 @@ function ConverseQuestion({ q }: { q: Unit4Question }) {
 function Unit4Page({ page }: { page: number }) {
   const questions = unit4Questions.filter(q => q.page === page);
   return (
-    <A4Page unitNumber={4} unitTitle="משפטים הפוכים" pageNumber={page}>
+    <A4Page pageId={`U4-P${page}`}>
       {questions.map(q => <ConverseQuestion key={q.id} q={q} />)}
     </A4Page>
   );

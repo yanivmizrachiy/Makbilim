@@ -14,8 +14,8 @@ export const EXPECTED_PAGES = 19;
 
 /** Structural facts per page that must match the baseline exactly. */
 export const EXACT_KEYS = [
-  'unit',
-  'localPage',
+  'pageId',
+  'globalPage',
   'isVerbatimCurriculum',
   'questionCount',
   'markerCount',
@@ -28,7 +28,7 @@ export const EXACT_KEYS = [
   'geometryCollisionCount',
   'geometryOutOfBoundsCount',
   'projectTitleText',
-  'unitTitleText',
+  'topicTitleText',
   'pageNumberText',
   'headerContentOverlap',
   'footerContentOverlap',
@@ -61,7 +61,7 @@ const MUST_BE_ZERO = [
   'unlabeledGeometrySvgCount',
 ];
 
-export const pageName = page => `U${page.unit}-P${page.localPage}`;
+export const pageName = page => page.pageId ?? `page-${page.globalPage ?? '?'}`;
 
 /** Problems that make a single rendered page unacceptable, independent of any baseline. */
 export function pageHealthIssues(page) {

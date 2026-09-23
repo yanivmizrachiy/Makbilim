@@ -16,7 +16,7 @@ const pageUnitSchema = z.object({
 const pageManifestSchema = z.object({
   projectTitle: z.literal(PROJECT),
   canonicalSpec: z.literal('SPEC.md'),
-  pageNumbering: z.literal('reset-per-unit'),
+  pageNumbering: z.literal('continuous'),
   originalUnits: z.array(pageUnitSchema).length(4),
   originalPageCount: z.literal(15),
   curriculumUnit: z.object({
@@ -31,27 +31,26 @@ const pageManifestSchema = z.object({
   }),
   studentPageCount: z.literal(19),
   studentFacingRules: z.object({
-    originalUnitsQuestionMarker: z.literal('●'),
-    originalUnitsSubpartMarker: z.literal('•'),
-    originalUnitsQuestionNumbering: z.literal(false),
-    originalUnitsSubpartNumbering: z.literal(false),
-    curriculumUnitPreservesSourceNumbering: z.literal(true),
+    questionNumbering: z.literal('continuous'),
+    subpartNumbering: z.literal('hebrew-letters'),
+    pageNumbering: z.literal('continuous'),
+    pageNumberDisplay: z.literal('circle-top-left'),
+    curriculumFirst: z.literal(true),
+    curriculumGlobalNumberIsChrome: z.literal(true),
     footerRequired: z.literal(true),
     projectTitleRequired: z.literal(true),
   }),
-});
+}).passthrough();
 
 const unitPlanSchema = z.object({
   projectTitle: z.literal(PROJECT),
   canonicalSpec: z.literal('SPEC.md'),
   numbering: z.object({
-    pageNumbering: z.literal('reset-per-unit'),
-    firstPageInEveryUnit: z.literal(1),
-    globalContinuousPageNumbering: z.literal(false),
-    questionNumbering: z.literal('none'),
-    subpartNumbering: z.literal('none'),
-    questionMarker: z.literal('●'),
-    subpartMarker: z.literal('•'),
+    pageNumbering: z.literal('continuous'),
+    globalContinuousPageNumbering: z.literal(true),
+    pageNumberDisplay: z.literal('circle-top-left'),
+    questionNumbering: z.literal('continuous'),
+    subpartNumbering: z.literal('hebrew-letters'),
   }).passthrough(),
   units: z.array(z.object({
     unit: z.number().int().min(1).max(5),
@@ -92,9 +91,9 @@ const questionUnitSchema = z.object({
 const questionPlanSchema = z.object({
   projectTitle: z.literal(PROJECT),
   canonicalSpec: z.literal('SPEC.md'),
-  studentVisibleQuestionNumbers: z.literal(false),
-  questionMarker: z.literal('●'),
-  subpartMarker: z.literal('•'),
+  studentVisibleQuestionNumbers: z.literal(true),
+  questionNumbering: z.literal('continuous-global'),
+  subpartNumbering: z.literal('hebrew-letters'),
   originalTaskCount: z.literal(58),
   curriculumSourceTaskBlocks: z.literal(8),
   units: z.array(questionUnitSchema).length(4),

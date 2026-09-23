@@ -1,8 +1,12 @@
 import { type ReactNode } from 'react';
 import { answerSpecById, growOf } from '../content/answer-areas';
+import { globalQuestionNumber } from '../content/booklet';
 import { TASK_KIND_LABEL, taskKindById } from '../content/task-kinds';
 import { DiagramSizeProvider, diagramSizeFor } from '../geometry/diagram-size';
 import { AnswerArea, AnswerSlots } from './AnswerArea';
+
+/** Local sub-part letters (SPEC 4.2/11.5): sub-parts are lettered א, ב, ג… within their question. */
+const SUBPART_LETTERS = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'כ', 'ל'] as const;
 
 /** A sub-item: its content, an optional answer beside it (a verdict) and an optional row under it. */
 export type SubpartItem = {
@@ -33,7 +37,7 @@ export type QuestionBlockProps = {
   compact?: boolean | undefined;
 };
 
-function Subpart({ item }: { item: SubpartItem }) {
+function Subpart({ item, letter }: { item: SubpartItem; letter: string }) {
   const className = [
     'subpart',
     item.aside ? 'subpart--aside' : '',
@@ -41,7 +45,7 @@ function Subpart({ item }: { item: SubpartItem }) {
   ].filter(Boolean).join(' ');
   return (
     <div className={className}>
-      <span className="subpart-marker" aria-hidden="true">•</span>
+      <span className="subpart-marker">{letter}</span>
       <div className="subpart-content">{item.content}</div>
       {item.aside && <div className="subpart-aside">{item.aside}</div>}
       {item.after && <div className="subpart-after">{item.after}</div>}
@@ -92,7 +96,7 @@ export function QuestionBlock({
       data-answer-mode={spec.mode}
       data-grow={growOf(spec)}
     >
-      <div className="question-marker" aria-hidden="true">●</div>
+      <div className="question-marker"><span className="sr-only">שאלה </span>{globalQuestionNumber(taskId)}</div>
       <div className={contentClass}>
         <div className="question-main">
           <div className="question-stem">
@@ -102,7 +106,7 @@ export function QuestionBlock({
           {diagram && !side && <div className="question-diagram question-diagram--stacked">{sized}</div>}
           {allItems.length > 0 && (
             <div className="subparts">
-              {allItems.map((item, index) => <Subpart item={item} key={index} />)}
+              {allItems.map((item, index) => <Subpart item={item} letter={SUBPART_LETTERS[index] ?? String(index + 1)} key={index} />)}
             </div>
           )}
           {response}

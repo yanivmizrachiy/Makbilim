@@ -309,7 +309,7 @@ function CalculationQuestion({ q }: { q: Unit2Question }) {
 function Unit2Page({ page }: { page: number }) {
   const questions = unit2Questions.filter(q => q.page === page);
   return (
-    <A4Page unitNumber={2} unitTitle="תרגילי חישוב" pageNumber={page}>
+    <A4Page pageId={`U2-P${page}`}>
       {questions.map(q => <CalculationQuestion key={q.id} q={q} />)}
     </A4Page>
   );

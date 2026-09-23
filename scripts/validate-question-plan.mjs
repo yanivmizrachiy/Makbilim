@@ -47,9 +47,9 @@ if (!fs.existsSync(file)) {
     }
   }
 
-  if (plan.studentVisibleQuestionNumbers !== false) fail('student-visible question numbering must be disabled');
-  if (plan.questionMarker !== '●') fail('question marker must be ●');
-  if (plan.subpartMarker !== '•') fail('subpart marker must be •');
+  if (plan.studentVisibleQuestionNumbers !== true) fail('student-visible question numbering must be enabled (continuous 1..N)');
+  if (plan.questionNumbering !== 'continuous-global') fail('question numbering must be continuous-global');
+  if (plan.subpartNumbering !== 'hebrew-letters') fail('sub-parts must be lettered (א, ב, ג…)');
 }
 
 if (!process.exitCode) console.log('question-plan: PASS');

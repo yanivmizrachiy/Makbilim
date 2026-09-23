@@ -52,6 +52,8 @@
   --running-head-size: 8.7pt;
   --unit-title-size: 13.6pt;
   --page-number-size: 10.6pt;
+  --page-number-circle: 9mm;       /* number-only page circle, top-left (SPEC 4.1/11.6) */
+  --page-number-ring-w: 0.4mm;
   --footer-size: 7pt;
   --footer-color: #7a8490;
 
@@ -93,12 +95,10 @@
   /* ── Diagram scale (owned by the geometry layer; values unchanged) ── */
 }
 
-/* Unit accent: a restrained typographic accent on markers, labels and the header tick. */
+/* One uniform accent across the whole booklet (SPEC 11.2 / כח: a single visual language, not a
+   colour per topic). A restrained typographic accent on the page number, question numbers, labels
+   and the header tick. */
 .a4-page[data-layout-quality="premium"] { --unit-accent: #0f6f78; --unit-accent-dark: #183b56; }
-.a4-page[data-unit="2"] { --unit-accent: #126782; --unit-accent-dark: #174968; }
-.a4-page[data-unit="3"] { --unit-accent: #315b7d; --unit-accent-dark: #213f5b; }
-.a4-page[data-unit="4"] { --unit-accent: #6b526f; --unit-accent-dark: #4c3b51; }
-.a4-page[data-unit="5"] { --unit-accent: #5d6670; --unit-accent-dark: #3f4851; }
 
 @media print and (monochrome) {
   :root {

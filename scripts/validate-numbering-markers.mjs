@@ -2,12 +2,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 
+// continuous-numbering gate (SPEC 4.1/4.2/11.5/11.6): pages and questions are numbered
+// continuously 1..N across the whole booklet (no per-unit reset, no "אין מספור, רק ●"),
+// sub-parts are lettered, and the curriculum block is first.
 const root = process.cwd();
 const unitPlanPath = path.join(root, 'src', 'content', 'unit-plan.json');
 const tokensPath = path.join(root, 'src', 'styles', 'tokens.ts');
+const bookletPath = path.join(root, 'src', 'content', 'booklet.ts');
 
 const fail = (message) => {
-  console.error(`numbering-markers: FAIL — ${message}`);
+  console.error(`continuous-numbering: FAIL — ${message}`);
   process.exitCode = 1;
 };
 
@@ -17,29 +21,22 @@ if (!fs.existsSync(unitPlanPath)) {
   const plan = JSON.parse(fs.readFileSync(unitPlanPath, 'utf8'));
   const n = plan.numbering ?? {};
 
-  if (n.pageNumbering !== 'reset-per-unit') fail('page numbering must reset per unit');
-  if (n.firstPageInEveryUnit !== 1) fail('every unit must start at page 1');
-  if (n.globalContinuousPageNumbering !== false) fail('global continuous page numbering must be disabled');
-  if (n.questionNumbering !== 'none') fail('original units must not number questions');
-  if (n.subpartNumbering !== 'none') fail('original units must not number or letter subparts');
-  if (n.questionMarker !== '●') fail('question marker must be ●');
-  if (n.subpartMarker !== '•') fail('subpart marker must be •');
+  if (plan.structure !== 'topics-not-units') fail('unit-plan must declare structure "topics-not-units"');
+  if (plan.curriculumFirst !== true) fail('curriculum questions must come first');
+  if (n.pageNumbering !== 'continuous') fail('page numbering must be continuous');
+  if (n.globalContinuousPageNumbering !== true) fail('global continuous page numbering must be enabled');
+  if (n.pageNumberDisplay !== 'circle-top-left') fail('page number must display as a top-left circle');
+  if (n.questionNumbering !== 'continuous') fail('questions must be numbered continuously');
+  if (n.subpartNumbering !== 'hebrew-letters') fail('sub-parts must be lettered (א, ב, ג…)');
 
   const units = plan.units ?? [];
-  for (const unit of units) {
-    if (unit.pageStart !== 1) fail(`unit ${unit.unit} must start at page 1`);
-  }
-
   const curriculum = units.find((unit) => unit.unit === 5);
   if (!curriculum) {
-    fail('unit 5 curriculum source unit is missing');
+    fail('unit 5 curriculum source block is missing (kept as provenance)');
   } else {
-    if (curriculum.title !== 'שאלות מתוך תוכנית הלימודים') fail('unit 5 title mismatch');
-    if (curriculum.sourceMode !== 'verbatim') fail('unit 5 must use verbatim source mode');
-    if (curriculum.contentMutation !== 'forbidden') fail('unit 5 content mutation must be forbidden');
-    if (curriculum.subpartMutation !== undefined && curriculum.subpartMutation !== 'forbidden') {
-      fail('unit 5 subpart mutation must be forbidden when specified');
-    }
+    if (curriculum.title !== 'שאלות מתוך תוכנית הלימודים') fail('curriculum title mismatch');
+    if (curriculum.sourceMode !== 'verbatim') fail('curriculum must use verbatim source mode');
+    if (curriculum.contentMutation !== 'forbidden') fail('curriculum content mutation must be forbidden');
   }
 }
 
@@ -48,18 +45,30 @@ if (!fs.existsSync(tokensPath)) {
 } else {
   const tokens = fs.readFileSync(tokensPath, 'utf8');
   const required = [
-    "numbering: 'reset-per-unit'",
-    'firstPageInUnit: 1',
-    "glyph: '●'",
-    "glyph: '•'",
-    "numbering: 'none'",
+    "numbering: 'continuous'",
+    "pageNumberDisplay: 'circle-top-left'",
+    "numbering: 'continuous-global'",
+    "subpartNumbering: 'hebrew-letters'",
   ];
-
   for (const fragment of required) {
     if (!tokens.includes(fragment)) fail(`design token contract missing: ${fragment}`);
   }
 }
 
+if (!fs.existsSync(bookletPath)) {
+  fail('src/content/booklet.ts is missing — the single booklet-order source');
+} else {
+  const booklet = fs.readFileSync(bookletPath, 'utf8');
+  // The curriculum pages (C-P*) must be declared before any authored page (U*-P*).
+  const firstCurriculum = booklet.indexOf("id: 'C-P1'");
+  const firstAuthored = booklet.indexOf("id: 'U1-P1'");
+  if (firstCurriculum < 0 || firstAuthored < 0) fail('booklet order must list C-P* then U*-P* pages');
+  else if (firstCurriculum > firstAuthored) fail('curriculum pages must precede authored pages in booklet order');
+  if (!booklet.includes('globalPageNumber') || !booklet.includes('globalQuestionNumber')) {
+    fail('booklet.ts must export globalPageNumber and globalQuestionNumber');
+  }
+}
+
 if (!process.exitCode) {
-  console.log('numbering-markers: PASS');
+  console.log('continuous-numbering: PASS');
 }

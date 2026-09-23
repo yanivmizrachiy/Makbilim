@@ -49,9 +49,7 @@ export function Unit5Pages() {
       {pages.map((blocks, pageIndex) => (
         <A4Page
           key={`curriculum-page-${pageIndex + 1}`}
-          unitNumber={5}
-          unitTitle="שאלות מתוך תוכנית הלימודים"
-          pageNumber={pageIndex + 1}
+          pageId={`C-P${pageIndex + 1}`}
           className="curriculum-source-page"
         >
           <div className="bbb-source" data-curriculum-ready="true">
