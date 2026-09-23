@@ -56,7 +56,7 @@ export const unit1Questions: Unit1Question[] = [
   // differ only in the angle-type word, so each task keeps a single theorem in all its
   // lines; that is what makes the angle-type blank uniquely determined.
   {
-    id: 'U1-P2-C', page: 2, stem: 'בכל השורות מופיע אותו משפט, ובכל שורה חסרה בו מילה אחת. השלימו את המילה החסרה.',
+    id: 'U1-P2-C', page: 2, stem: 'בשרטוט מסומן זוג זוויות. השלימו בכל שורה מילה אחת, כך שיתקבל המשפט המתאים לזוג המסומן.',
     subparts: [
       'זוויות מתאימות בין ישרים ______ שוות.',
       'זוויות מתאימות בין ישרים מקבילים ______.',
@@ -65,7 +65,7 @@ export const unit1Questions: Unit1Question[] = [
     diagram: { topology: 'minimal-theorem-support', lineLabels: ['e', 'f', 'z'], orientationDeg: 8, transversalDeg: 67, parallelGiven: true }
   },
   {
-    id: 'U1-P2-D', page: 3, stem: 'השלימו בכל שורה את המילה החסרה, כך שבכל שלוש השורות יתקבל אותו משפט.',
+    id: 'U1-P2-D', page: 3, stem: 'השלימו את המילה החסרה בכל שורה, כך שכל שורה תתאר את זוג הזוויות המסומן בשרטוט.',
     subparts: [
       'זוויות מתחלפות בין ישרים מקבילים ______.',
       'זוויות ______ בין ישרים מקבילים שוות.',
@@ -79,7 +79,7 @@ export const unit1Questions: Unit1Question[] = [
     diagram: { topology: 'statement-only-with-small-reference-diagram', lineLabels: ['r', 's', 't'], orientationDeg: 0, transversalDeg: 64, parallelGiven: true }
   },
   {
-    id: 'U1-P3-A', page: 3, stem: 'דניאל אמר: „זוויות מתחלפות שוות.” נועה אמרה: „המשפט אינו מדויק; צריך לומר: זוויות מתחלפות בין ישרים מקבילים שוות.” קבעו מי צודק והסבירו מדוע.',
+    id: 'U1-P3-A', page: 3, stem: 'בכל אחד משני השרטוטים מסומן זוג זוויות מתחלפות. דניאל אמר: „זוויות מתחלפות שוות.” נועה אמרה: „המשפט אינו מדויק; צריך לומר: זוויות מתחלפות בין ישרים מקבילים שוות.” קבעו מי צודק והסבירו מדוע.',
     diagram: { topology: 'claim-analysis-two-configurations', lineLabels: ['m', 'n', 'q'], orientationDeg: 13, transversalDeg: 73, parallelGiven: false }
   },
   {
@@ -93,7 +93,7 @@ export const unit1Questions: Unit1Question[] = [
     diagram: { topology: 'rotated-four-option-angle-pairs', lineLabels: ['b', 'd', 'f'], pointLabels: ['S', 'T'], orientationDeg: 84, transversalDeg: 29, parallelGiven: false, highlights: ['option-a', 'option-b', 'option-c', 'option-d'] }
   },
   {
-    id: 'U1-P3-D', page: 4, stem: 'מאיה אמרה: „זוויות מתאימות שוות.” יואב טען שחסר במשפט תנאי הכרחי. כתבו את המשפט המלא והמדויק והסבירו מה היה חסר.',
+    id: 'U1-P3-D', page: 4, stem: 'בכל אחד משני השרטוטים מסומן זוג זוויות מתאימות. מאיה אמרה: „זוויות מתאימות שוות.” יואב טען שחסר במשפט תנאי הכרחי. כתבו את המשפט המלא והמדויק והסבירו מה היה חסר.',
     diagram: { topology: 'two-configurations-one-parallel-one-not', lineLabels: ['h', 'k', 's'], orientationDeg: -21, transversalDeg: 48, parallelGiven: false }
   }
 ];

@@ -3,7 +3,19 @@ import { A4Page } from '../components/A4Page';
 import { MathText } from '../components/MathText';
 import { QuestionBlock } from '../components/QuestionBlock';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
+import { alternateInteriorPairs, correspondingPair, type AnglePair } from '../geometry/relations';
 import { unit1Questions } from '../content/questions-unit1';
+
+/** A pair of angles the task text points to ("the marked pair"), drawn with the marked role. */
+const markedPair = (pair: AnglePair): AngleMark[] =>
+  pair.map(({ intersection, sector }) => ({ intersection, sector, role: 'marked' as const }));
+
+/** The alternate pair BETWEEN the two lines, computed from the drawing's own geometry. */
+function alternateInteriorPair(lineDeg: number, transversalDeg: number): AnglePair {
+  const pair = alternateInteriorPairs(lineDeg, transversalDeg)[0];
+  if (!pair) throw new Error(`No alternate interior pair for line ${lineDeg}° / transversal ${transversalDeg}°`);
+  return pair;
+}
 
 const byId = (id: string) => {
   const q = unit1Questions.find(item => item.id === id);
@@ -138,7 +150,7 @@ function Unit1Page2() {
       <QuestionBlock
         taskId={theorem.id}
         compact
-        diagram={<ParallelLinesDiagram lineLabels={['e', 'f']} transversalLabel="z" orientationDeg={8} transversalDeg={67} showParallelMarks />}
+        diagram={<ParallelLinesDiagram lineLabels={['e', 'f']} transversalLabel="z" orientationDeg={8} transversalDeg={67} showParallelMarks angleMarks={markedPair(correspondingPair(0))} />}
       >
         {theorem.stem}
         <ClozeLines lines={theorem.subparts ?? []} />
@@ -237,7 +249,7 @@ function Unit1Page3() {
       <QuestionBlock
         taskId={theorem.id}
         compact
-        diagram={<ParallelLinesDiagram lineLabels={['x', 'y']} transversalLabel="v" orientationDeg={-14} transversalDeg={109} showParallelMarks />}
+        diagram={<ParallelLinesDiagram lineLabels={['x', 'y']} transversalLabel="v" orientationDeg={-14} transversalDeg={109} showParallelMarks angleMarks={markedPair(alternateInteriorPair(-14, 109))} />}
       >
         {theorem.stem}
         <ClozeLines lines={theorem.subparts ?? []} />
@@ -255,8 +267,8 @@ function Unit1Page3() {
         answerLines={4}
         diagram={
           <div className="paired-diagrams">
-            <ParallelLinesDiagram lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={13} transversalDeg={73} showParallelMarks />
-            <ParallelLinesDiagram lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={-9} transversalDeg={68} showParallelMarks={false} secondLineSkewDeg={8} />
+            <ParallelLinesDiagram lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={13} transversalDeg={73} showParallelMarks angleMarks={markedPair(alternateInteriorPair(13, 73))} />
+            <ParallelLinesDiagram lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={-9} transversalDeg={68} showParallelMarks={false} secondLineSkewDeg={8} angleMarks={markedPair(alternateInteriorPair(-9, 68))} />
           </div>
         }
       >
@@ -313,8 +325,8 @@ function Unit1Page4() {
         answerLines={4}
         diagram={
           <div className="paired-diagrams">
-            <ParallelLinesDiagram lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={-21} transversalDeg={48} showParallelMarks />
-            <ParallelLinesDiagram lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={16} transversalDeg={62} showParallelMarks={false} secondLineSkewDeg={-8} />
+            <ParallelLinesDiagram lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={-21} transversalDeg={48} showParallelMarks angleMarks={markedPair(correspondingPair(0))} />
+            <ParallelLinesDiagram lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={16} transversalDeg={62} showParallelMarks={false} secondLineSkewDeg={-8} angleMarks={markedPair(correspondingPair(0))} />
           </div>
         }
       >

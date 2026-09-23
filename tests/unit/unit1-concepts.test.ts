@@ -1,9 +1,21 @@
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { unit1Questions } from '../../src/content/questions-unit1';
 import { teacherAnswerKey } from '../../src/content/answer-key';
 import { THEOREMS } from '../../src/content/theorems';
-import { unit1RelationTableCases } from '../../src/pages/Unit1Continuation';
+import { Unit1Continuation, unit1RelationTableCases } from '../../src/pages/Unit1Continuation';
 import { alternateInteriorPairs, alternatePairs, correspondingPair } from '../../src/geometry/relations';
+
+// The marked angles actually drawn for a task, read from the rendered page.
+const unit1Markup = renderToStaticMarkup(createElement(Unit1Continuation));
+function markedAnglesOf(taskId: string) {
+  const start = unit1Markup.indexOf(`data-task-id="${taskId}"`);
+  const end = unit1Markup.indexOf('<section', start + 1);
+  const section = unit1Markup.slice(start, end === -1 ? undefined : end);
+  return [...section.matchAll(/data-angle-role="marked" data-angle-at="(top|bottom)" data-angle-sector="([0-3])"/g)]
+    .map(match => ({ at: match[1], sector: Number(match[2]) }));
+}
 
 const BLANK = '______';
 const blanksIn = (text: string) => text.match(/_+/g) ?? [];
@@ -42,7 +54,7 @@ describe('Unit 1 conceptual integrity', () => {
       const answer = teacherAnswerKey.find(entry => entry.id === id)?.answer;
 
       expect(q.stem).toContain('השלימו');
-      expect(q.stem, `${id} must tell the student that every line is the same theorem`).toContain('אותו משפט');
+      expect(q.stem, `${id} must point the student to the marked pair in the drawing`).toContain('המסומן');
       expect(blanksIn(q.stem), `${id} stem must not contain a blank`).toHaveLength(0);
       expect(lines.length, `${id} needs at least three completion lines`).toBeGreaterThanOrEqual(3);
       expect(new Set(lines).size, `${id} repeats an identical line`).toBe(lines.length);
@@ -60,9 +72,18 @@ describe('Unit 1 conceptual integrity', () => {
         blankedWords.add(word);
       });
 
-      // With a single theorem in every line, the angle-type blank is determined by the
-      // other lines of the same task (both theorems differ only in that word).
-      expect(lines.some(line => line.includes(angleType)), `${id} must show "${angleType}" in some line`).toBe(true);
+      // Both direct theorems are true, so the angle-type blank ("______ בין ישרים מקבילים שוות")
+      // is determined by the DRAWING: exactly one marked pair, of exactly that relation.
+      const marked = markedAnglesOf(id);
+      const top = marked.filter(angle => angle.at === 'top');
+      const bottom = marked.filter(angle => angle.at === 'bottom');
+      expect(top, `${id} marks exactly one angle at the top intersection`).toHaveLength(1);
+      expect(bottom, `${id} marks exactly one angle at the bottom intersection`).toHaveLength(1);
+      const drawn = [top[0]!.sector, bottom[0]!.sector];
+      const pairsOfType = angleType === 'מתאימות'
+        ? ([0, 1, 2, 3] as const).map(seed => correspondingPair(seed))
+        : alternatePairs();
+      expect(pairsOfType.some(([a, b]) => a.sector === drawn[0] && b.sector === drawn[1]), `${id}: the marked pair must be ${angleType}`).toBe(true);
     }
 
     expect([...blankedWords].sort()).toEqual(['מקבילים', 'מתאימות', 'מתחלפות', 'שוות'].sort());
