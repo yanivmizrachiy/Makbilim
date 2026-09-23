@@ -505,6 +505,21 @@ Point, Vector, Line, Segment, ישרים מקבילים, חותך אחד/יות�
 
 ---
 
+
+## 11.13 נגישות מרונדרת
+- מסמך התלמיד משתמש ב-`lang="he"` ו-`dir="rtl"`, וכל 19 דפי A4 נשארים RTL.
+- אין ריבוי landmarks מסוג `main` בתוך חוברת התלמיד; כל דף הוא `article` עצמאי.
+- כל SVG גאומטרי נושא `role="img"` ו-`aria-label` משמעותי.
+- כל נוסחת MathJax המרונדרת שומרת תיאור ARIA.
+- IDs ב־DOM חייבים להיות ייחודיים, ואסור שיהיו רכיבים focusable בתוך `aria-hidden="true"`.
+- מדריך המורה חייב להכיל `main` יחיד, `h1` יחיד, RTL/עברית תקינים ונוסחאות נגישות.
+- תוצאות בדיקת התלמיד נשמרות ב-`artifacts/accessibility-report.json`; בדיקת המורה נשמרת בתוך `teacher-pdf-report.json`.
+
+שער: `accessibility`.
+
+---
+
+
 # 12. מקוריות ומניעת כפילויות
 
 ביחידות 1–4 לכל משימה יש fingerprint הכולל לפחות: מיומנות, משפט נדרש, טופולוגיית שרטוט, סוג נתון, סוג נדרש, שלבי הסקה, response mode, רמת קושי, משפחת ערכים, אותיות/סמלים, wordingArchetype, instructionVerb, misconceptionTarget, sourceArchetypeRefs ורמת transfer.
@@ -512,6 +527,17 @@ Point, Vector, Line, Segment, ישרים מקבילים, חותך אחד/יות�
 שתי שאלות מקוריות נחשבות דומות מדי אם נתיב הפתרון והמבנה כמעט זהים גם כאשר המספרים/אותיות שונים.
 
 יחידה 5 מוחרגת ממנגנון מקוריות: תפקידה לשמר חומר מקור, לא ליצור וריאציה.
+
+---
+
+## 12.1 Provenance וזכויות מקורות
+- לכל אחד מ־30 המקורות ב-`sources/manifest.json` נשמר מזהה Google Drive, קטגוריה, אופן שימוש וסטטוס זכויות.
+- `rightsStatus: "not-asserted"` פירושו שהפרויקט אינו טוען לבעלות או לרישיון שלא אומתו.
+- אסור להסיק רישיון, בעלות או היתר שימוש מתוך שם הקובץ, הכותרת או עצם שמירתו ב־Google Drive.
+- `usageMode` מבדיל בין reference חיצוני, reference חזותי, מקור הדרכתי, worksheet reference ו־core reference.
+- שינוי או הוספת מקור בלי provenance מלא מפילים CI.
+
+שער: `source-provenance`.
 
 ---
 
@@ -682,7 +708,9 @@ Makbilim/
 31. `deterministic-install`
 32. `checksums`
 33. `release-contract`
-34. `pdf`
+34. `source-provenance`
+35. `accessibility`
+36. `pdf`
 
 Validators של מקוריות/הדרגתיות/markers פועלים על יחידות 1–4. validator של `curriculum-source-integrity` פועל על יחידה 5 ומוודא שאין שינוי בתוכן המקור.
 
