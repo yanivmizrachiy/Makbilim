@@ -100,7 +100,8 @@ describe('Unit 4 — משפטים הפוכים', () => {
     const proof = final?.expected.proof ?? [];
     // The direct theorem where p ∥ q is GIVEN, the converse where q ∥ r is CONCLUDED — each the
     // canonical sentence from theorems.ts, never a retyped variant (decision D1).
-    expect(proof.filter(line => line.endsWith(`— ${THEOREMS.correspondingDirect.text}`))).toHaveLength(1);
+    // …and the direct-theorem line says where the given parallelism enters (p ∥ q, from the stem).
+    expect(proof.filter(line => line.includes(THEOREMS.correspondingDirect.text))).toEqual([`∠A = ∠B — ${THEOREMS.correspondingDirect.text} (p ∥ q נתון)`]);
     expect(proof.at(-1)).toBe(`q ∥ r — ${THEOREMS.correspondingConverse.text}`);
     expect(proof.findIndex(line => line.includes(THEOREMS.correspondingDirect.text)))
       .toBeLessThan(proof.findIndex(line => line.includes(THEOREMS.correspondingConverse.text)));
@@ -127,13 +128,16 @@ describe('Unit 4 — משפטים הפוכים', () => {
 
   it('U4-P2-A: the stem does not name the pair type — the student identifies it and chooses the converse', () => {
     const q = byId('U4-P2-A');
-    const [givens, question] = q.stem.split(/(?=זהו)/);
+    const [givens, question] = q.stem.split(/(?=ציינו)/);
     expect(question, 'the stem asks the student to identify the pair').toBeDefined();
     expect(givens).not.toMatch(/מתאימ|מתחלפ/);
     expect(question).toContain('מתאימות או מתחלפות');
     expect(q.diagram?.givens.join(' ')).not.toMatch(/alternate|corresponding/);
     expect(asList(q.expected.reason)).toEqual(['∠C ו־∠D הן זוויות מתחלפות.', THEOREMS.alternateConverse.text]);
-    expect(planOf('U4-P2-A').instructionVerb).toContain('זהו');
+    expect(planOf('U4-P2-A').instructionVerb).toContain('ציינו');
+    // Three things to write (the pair type, k ∥ m, the full converse): at least three rows.
+    expect(answerSpecById('U4-P2-A').minLines).toBeGreaterThanOrEqual(3);
+    expect(answerSpecById('U4-P2-A').minLines).toBeGreaterThan(answerSpecById('U4-P1-D').minLines);
     // It is no longer the same path as the guided U4-P1-D, which names the type.
     expect(byId('U4-P1-D').stem).toContain('מתאימות');
     expect(planOf('U4-P2-A').progressionGain).not.toBe(planOf('U4-P1-D').progressionGain);
@@ -143,7 +147,9 @@ describe('Unit 4 — משפטים הפוכים', () => {
     const q = byId('U4-P2-B');
     expect(planOf('U4-P2-B').format).toBe('true-false');
     expect(planOf('U4-P2-B').instructionVerb).toBe('קבעו ונמקו');
-    expect(q.stem).toMatch(/נכונה או לא נכונה/);
+    // One line: the instruction names the verdict; the two options (נכון / לא נכון) sit beside each claim.
+    expect(q.stem).toMatch(/קבעו אם כל טענה נכונה/);
+    expect(q.stem).toMatch(/^הישר t חותך את p ו־q\./);
     expect(q.stem).toMatch(/נמקו/);
     expect(q.verdictOptions).toEqual(['נכון', 'לא נכון']);
     expect(q.choices).toBeUndefined();
@@ -176,5 +182,8 @@ describe('Unit 4 — משפטים הפוכים', () => {
     expect(q.expected.justification).toBe(THEOREMS.correspondingConverse.text);
     expect(Object.keys(q.expected.values ?? {})).toEqual(['x']);
     expect(asList(q.expected.reason).join(' ')).toContain('המשפט ההפוך של הזוויות המתאימות');
+    // The lane holds the theorem; the equation, its solution and the check need rows of their own.
+    expect(answerSpecById('U4-P2-C').lane).toBe('theorem');
+    expect(answerSpecById('U4-P2-C').minLines).toBeGreaterThanOrEqual(asList(q.expected.reason).length);
   });
 });

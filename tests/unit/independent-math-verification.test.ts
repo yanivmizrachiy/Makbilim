@@ -1365,7 +1365,7 @@ const citesConverse = (sentence: string) =>
   sentence.includes('המשפט ההפוך') || Object.values(CONVERSE).some(text => sentence.includes(withoutFinalPeriod(text)));
 
 /** The imperative that turns a unit-4 stem from givens into the question. */
-const QUESTION_VERB = /קבעו|מצאו|הוכיחו|בחרו|חשבו|זהו/;
+const QUESTION_VERB = /קבעו|מצאו|הוכיחו|בחרו|חשבו|ציינו/;
 
 /** Hebrew name of a converse pair type, as a key sentence writes it. */
 const PAIR_WORD = { corresponding: 'מתאימות', alternate: 'מתחלפות' } as const;
@@ -1643,7 +1643,7 @@ describe('independent verification — unit 4 converse tasks', () => {
     // Every reason is the canonical sentence itself (theorems.ts), never a retyped variant: the
     // DIRECT theorem where p ∥ q is given, the CONVERSE where q ∥ r is concluded.
     expect(proof).toEqual([
-      `∠A = ∠B — ${THEOREMS.correspondingDirect.text}`,
+      `∠A = ∠B — ${THEOREMS.correspondingDirect.text} (p ∥ q נתון)`,
       '∠A = ∠C — נתון.',
       '∠B = ∠C — מכלל המעבר.',
       '∠B ו־∠C הן זוויות מתאימות ביחס לישרים q ו־r — נתון.',

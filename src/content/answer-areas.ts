@@ -118,7 +118,7 @@ export const FORMAT_ANSWER: Readonly<Record<string, AnswerSpec>> = {
   // Unit 4 — converse theorems.
   'direct-vs-converse': { mode: 'items', minLines: 0 },
   'numeric-parallelism': { mode: 'justify', minLines: 2 },
-  'algebra-for-parallelism': { mode: 'algebra', minLines: 2, lane: 'theorem', final: true },
+  'algebra-for-parallelism': { mode: 'algebra', minLines: 3, lane: 'theorem', final: true },
   'short-parallelism-proof': { mode: 'proof', minLines: 5 },
 };
 
@@ -128,6 +128,8 @@ export const TASK_ANSWER_OVERRIDES: Readonly<Record<string, AnswerSpec>> = {
   'U2-P6-D': { mode: 'algebra', minLines: 2, lane: 'theorem', final: true, finalKeys: ['α + β'] },
   // Five converse claims on a full page: one 'נימוק:' row under each verdict (five rows in all).
   'U4-P2-B': { mode: 'items', minLines: 0, itemRows: 1 },
+  // Name the pair type, conclude k ∥ m and cite the full converse: three rows (the guided U4-P1-D keeps two).
+  'U4-P2-A': { mode: 'justify', minLines: 3 },
 };
 
 const FORMAT_BY_TASK_ID: ReadonlyMap<string, string> = new Map(

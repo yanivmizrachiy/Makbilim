@@ -97,7 +97,7 @@ export const unit4Questions: Unit4Question[] = [
     page: 2,
     // The pair type is NOT named: the student identifies it from the drawing (the arcs sit on
     // opposite sides of r, between k and m) and must then choose the matching converse.
-    stem: 'בשרטוט הישרים k ו־m נחתכים על ידי הישר r. נתון כי ∠C = 112° ו־∠D = 112°. זהו אם ∠C ו־∠D הן זוויות מתאימות או מתחלפות, וקבעו אם k ∥ m. נמקו.',
+    stem: 'בשרטוט הישרים k ו־m נחתכים על ידי הישר r. נתון כי ∠C = 112° ו־∠D = 112°. ציינו אם ∠C ו־∠D הן זוויות מתאימות או מתחלפות, וקבעו אם k ∥ m. נמקו.',
     diagram: {
       topology: 'converse-alternate-equal-numeric',
       lineLabels: ['k', 'm', 'r'],
@@ -122,7 +122,7 @@ export const unit4Questions: Unit4Question[] = [
     // True / false on the converse theorems (SPEC 4, unit 4): which data suffice to conclude p ∥ q.
     // Two claims are converse conditions; the other three rest on facts that hold for ANY two lines
     // cut by a transversal (vertical, adjacent) or on the position of a pair without its equality.
-    stem: 'הישרים p ו־q נחתכים על ידי הישר t. קבעו ליד כל טענה אם היא נכונה או לא נכונה, ונמקו.',
+    stem: 'הישר t חותך את p ו־q. קבעו אם כל טענה נכונה, ונמקו.',
     subparts: [
       'אם זוג זוויות קודקודיות בחיתוך של p ו־t שוות זו לזו, אז p ו־q מקבילים.',
       'אם זוג זוויות מתאימות בין p ו־q שוות זו לזו, אז p ו־q מקבילים.',
@@ -189,7 +189,7 @@ export const unit4Questions: Unit4Question[] = [
       conclusion: 'q ∥ r',
       proof: [
         // Direct theorem on the GIVEN p ∥ q (stated in the stem), then the converse on q and r.
-        `∠A = ∠B — ${THEOREMS.correspondingDirect.text}`,
+        `∠A = ∠B — ${THEOREMS.correspondingDirect.text} (p ∥ q נתון)`,
         `∠A = ∠C — ${REASONS.given}`,
         `∠B = ∠C — ${REASONS.transitivity}`,
         `∠B ו־∠C הן זוויות מתאימות ביחס לישרים q ו־r — ${REASONS.given}`,
