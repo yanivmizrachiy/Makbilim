@@ -209,16 +209,64 @@ function relationOf(a: DrawnAngle, b: DrawnAngle): Relation {
 
 const NUM = '(-?\\d+(?:\\.\\d+)?(?:e[-+]?\\d+)?)';
 const LINE_RE = new RegExp(`<line x1="${NUM}" y1="${NUM}" x2="${NUM}" y2="${NUM}"`, 'g');
-const FILL_RE = new RegExp(
-  `<path class="angle-mark[^"]*angle-sector-fill" d="M ${NUM} ${NUM} L ${NUM} ${NUM} A ${NUM} ${NUM} 0 ([01]) 1 ${NUM} ${NUM} Z"`,
-  'g',
-);
+/** The inner arc of each mark: "M start A r r 0 large 1 end" (sweep in the direction of increasing angle). */
+const ARC_RE = new RegExp(`<path class="angle-arc angle-arc--inner" d="M ${NUM} ${NUM} A ${NUM} ${NUM} 0 ([01]) 1 ${NUM} ${NUM}"`, 'g');
 const CHEVRON_RE = new RegExp(`<g class="parallel-mark parallel-mark--chevrons" transform="translate\\(${NUM} ${NUM}\\)`, 'g');
-const CALLOUT_RE = new RegExp(`<line class="angle-callout" x1="${NUM}" y1="${NUM}" x2="${NUM}" y2="${NUM}"`);
-const LABEL_RE = /<text class="angle-label-text"[^>]*>([^<]*)<\/text>/;
+const LABEL_RE = /<text class="angle-label-text"[^>]*>([\s\S]*?)<\/text>/;
 
 const decode = (text: string) =>
   text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&amp;/g, '&');
+
+/**
+ * Reads back the text a label DRAWS: the glyphs are math-italic code points (as in the question
+ * text), subscripts are tspans, and binary operators carry medium math spaces.
+ */
+function drawnText(markup: string): string {
+  return [...decode(markup.replace(/<[^>]+>/g, ''))].map(ch => {
+    const cp = ch.codePointAt(0)!;
+    if (cp === 0x210e) return 'h';
+    if (cp >= 0x1d434 && cp < 0x1d44e) return String.fromCharCode(0x41 + cp - 0x1d434);
+    if (cp >= 0x1d44e && cp < 0x1d468) return String.fromCharCode(0x61 + cp - 0x1d44e);
+    if (cp >= 0x1d6fc && cp <= 0x1d714) return String.fromCharCode(0x3b1 + cp - 0x1d6fc);
+    if (ch === '\u205f') return ' ';
+    return ch;
+  }).join('');
+}
+
+/** Centre of a circular arc from its end points, radius and flags (SVG, y down). */
+function arcCentre(start: Pt, end: Pt, radius: number, large: boolean): Pt {
+  const mid = { x: (start.x + end.x) / 2, y: (start.y + end.y) / 2 };
+  const chord = minus(end, start);
+  const half = Math.hypot(chord.x, chord.y) / 2;
+  const toCentre = Math.sqrt(Math.max(0, radius * radius - half * half));
+  // Sweep flag 1 turns with increasing angle; the small arc's centre lies to the chord's −90° side.
+  const normal = { x: chord.y / (2 * half), y: -chord.x / (2 * half) };
+  const sign = large ? -1 : 1;
+  return { x: mid.x - sign * normal.x * toCentre, y: mid.y - sign * normal.y * toCentre };
+}
+
+type DrawnArc = { vertex: Pt; thetaStart: number; sweep: number };
+
+function drawnArcs(svg: string): DrawnArc[] {
+  return [...svg.matchAll(ARC_RE)].map(m => {
+    const start = { x: Number(m[1]), y: Number(m[2]) };
+    const radius = Number(m[3]);
+    const end = { x: Number(m[6]), y: Number(m[7]) };
+    const vertex = arcCentre(start, end, radius, m[5] === '1');
+    const thetaStart = direction(vertex, start);
+    return { vertex, thetaStart, sweep: norm(direction(vertex, end) - thetaStart) };
+  });
+}
+
+/** The crossing dot an arc is centred on (every arc must be centred on a drawn crossing). */
+function snapToDot(svg: string, point: Pt): Pt {
+  const block = svg.slice(svg.indexOf('<g class="geometry-intersections"'));
+  const dots = [...block.slice(0, block.indexOf('</g>')).matchAll(new RegExp(`<circle cx="${NUM}" cy="${NUM}"`, 'g'))]
+    .map(m => ({ x: Number(m[1]), y: Number(m[2]) }));
+  const nearest = dots.reduce((best, dot) => (Math.hypot(dot.x - point.x, dot.y - point.y) < Math.hypot(best.x - point.x, best.y - point.y) ? dot : best));
+  if (Math.hypot(nearest.x - point.x, nearest.y - point.y) > 0.01) throw new Error('arc is not centred on a crossing');
+  return nearest;
+}
 
 function drawnLines(svg: string): Seg[] {
   const start = svg.indexOf('<g class="geometry-lines">');
@@ -236,7 +284,7 @@ function markChunks(svg: string) {
 function markLabels(svg: string): Array<string | null> {
   return markChunks(svg).map(chunk => {
     const m = LABEL_RE.exec(chunk);
-    return m ? decode(m[1]!) : null;
+    return m ? drawnText(m[1]!) : null;
   });
 }
 
@@ -265,17 +313,15 @@ function readParallelDrawing(svg: string, props: ParallelLinesDiagramProps): Dra
   const parallels = lines.slice(0, 2);
   const transversals = lines.slice(2);
   const labels = markLabels(svg);
-  const angles = [...svg.matchAll(FILL_RE)].map((m, index): DrawnAngle => {
-    const vertex = { x: Number(m[1]), y: Number(m[2]) };
-    const start = { x: Number(m[3]), y: Number(m[4]) };
-    const end = { x: Number(m[8]), y: Number(m[9]) };
+  const angles = drawnArcs(svg).map((drawn, index): DrawnAngle => {
+    const vertex = snapToDot(svg, drawn.vertex);
+    const thetaStart = drawn.thetaStart;
+    const arc = drawn.sweep;
     const parallelLine = onLine(vertex, parallels);
     const transversal = onLine(vertex, transversals);
     if (parallelLine < 0 || transversal < 0) throw new Error(`mark ${index} is not drawn at a crossing`);
     const lineDeg = direction(parallels[parallelLine]!.a, parallels[parallelLine]!.b);
     const transDeg = direction(transversals[transversal]!.a, transversals[transversal]!.b);
-    const thetaStart = direction(vertex, start);
-    const arc = norm(direction(vertex, end) - thetaStart);
     const sector = locateSector(norm(thetaStart + arc / 2), lineDeg, transDeg);
     const startOffset = norm(thetaStart - sector.from.deg);
     const arcInside = startOffset >= -1e-6 && startOffset + arc <= sector.width + 1e-6;
@@ -311,16 +357,19 @@ function readThreeLinesDrawing(svg: string, props: ThreeLinesDiagramProps): Draw
   const parallels = lines.slice(0, 3);
   const transversal = lines[3]!;
   const transDeg = direction(transversal.a, transversal.b);
+  // Each mark is drawn as a real arc: its centre is the crossing, its middle points into the angle.
+  const arcs = drawnArcs(svg);
   const angles = markChunks(svg).map((chunk, index): DrawnAngle => {
-    const callout = CALLOUT_RE.exec(chunk);
-    if (!callout) throw new Error(`three-line mark ${index} has no callout`);
-    const vertex = { x: Number(callout[1]), y: Number(callout[2]) };
-    const tip = { x: Number(callout[3]), y: Number(callout[4]) };
+    const drawn = arcs[index];
+    if (!drawn) throw new Error(`three-line mark ${index} has no arc`);
+    const vertex = snapToDot(svg, drawn.vertex);
+    const tip = { x: vertex.x + Math.cos(rad(drawn.thetaStart + drawn.sweep / 2)), y: vertex.y + Math.sin(rad(drawn.thetaStart + drawn.sweep / 2)) };
     const parallelLine = onLine(vertex, parallels);
     if (parallelLine < 0 || distanceToLine(vertex, transversal) > 0.05) throw new Error(`mark ${index} is not at a crossing`);
     const lineDeg = direction(parallels[parallelLine]!.a, parallels[parallelLine]!.b);
     const sector = locateSector(direction(vertex, tip), lineDeg, transDeg);
     const label = LABEL_RE.exec(chunk);
+    const startOffset = norm(drawn.thetaStart - sector.from.deg);
     return {
       vertex: `line-${parallelLine}`,
       parallelLine,
@@ -329,9 +378,9 @@ function readThreeLinesDrawing(svg: string, props: ThreeLinesDiagramProps): Draw
       transSide: sector.transRay.side,
       interior: false,
       span: sector.width,
-      label: label ? decode(label[1]!) : null,
+      label: label ? drawnText(label[1]!) : null,
       margin: sector.margin,
-      arcInside: true,
+      arcInside: startOffset >= -1e-6 && startOffset + drawn.sweep <= sector.width + 1e-6,
     };
   });
   return {
@@ -1002,8 +1051,9 @@ describe('independent verification — rendered drawings faithfully show the dia
         const p = props as ThreeLinesDiagramProps;
         expect(lineAngleGap(drawing.transversalDirs[0]!, p.transversalDeg ?? 61)).toBeLessThan(1e-6);
         expect(drawing.angles.map(a => a.label)).toEqual((p.angleMarks ?? []).map(m => m.label ?? m.value ?? ''));
-        // A callout must point unambiguously into one sector.
-        for (const angle of drawing.angles) expect(angle.margin, `${id}: callout too close to a line`).toBeGreaterThan(3);
+        // Each arc points unambiguously into one sector and stays inside it.
+        for (const angle of drawing.angles) expect(angle.margin, `${id}: arc too close to a line`).toBeGreaterThan(3);
+        for (const angle of drawing.angles) expect(angle.arcInside, `${id}: arc leaves its sector`).toBe(true);
       }
       for (const angle of drawing.angles) {
         expect(angle.span).toBeGreaterThan(0);

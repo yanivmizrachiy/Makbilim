@@ -8,6 +8,8 @@ import {
   type ParallelLinesDiagramProps,
 } from '../../src/geometry/ParallelLinesDiagram';
 import { Unit1Continuation } from '../../src/pages/Unit1Continuation';
+import { arcTrimDeg, mm } from '../../src/geometry/engine';
+import { geometryTokens } from '../../src/styles/tokens';
 
 /*
  * Geometry-level contract for genuinely NON-parallel counterexample diagrams.
@@ -18,14 +20,15 @@ import { Unit1Continuation } from '../../src/pages/Unit1Continuation';
 type Point = { x: number; y: number };
 type Segment = { a: Point; b: Point };
 type Ray = { deg: number; kind: 'line' | 'transversal' };
-type Arc = { start: Point; end: Point };
+type Arc = { start: Point; end: Point; radius: number };
 
-const VIEWBOX = { width: 480, height: 320 };
-/** ParallelLinesDiagram trims every arc 5° inside each bounding ray. */
-const ARC_TRIM_DEG = 5;
-/** Arc end points are serialised with 2 decimals at radius 29 → ≤ 0.02° error. */
-const ARC_TOLERANCE_DEG = 0.05;
-const INNER_ARC_RADIUS = 29;
+/**
+ * Arcs are drawn at the physical arc radius (a larger one for acute angles), and their butt
+ * ends are trimmed exactly to the edge of the drawn line: arcTrimDeg(radius) inside each ray.
+ */
+const ARC_RADII = [mm(geometryTokens.arc.radiusMm), mm(geometryTokens.arc.radiusMm + geometryTokens.arc.acuteBoostMm)];
+/** Arc end points are serialised with 3 decimals at radius ≥ 17 px → ≤ 0.01° error. */
+const ARC_TOLERANCE_DEG = 0.02;
 
 const render = (props: ParallelLinesDiagramProps) =>
   renderToStaticMarkup(createElement(ParallelLinesDiagram, props));
@@ -64,11 +67,19 @@ function parseIntersections(markup: string): Point[] {
 
 /** Inner arcs, in the same order as the angleMarks prop. */
 function parseInnerArcs(markup: string): Arc[] {
-  const pattern = /class="angle-arc angle-arc--inner" d="M (\S+) (\S+) A \S+ \S+ 0 [01] 1 (\S+) (\S+)"/g;
+  const pattern = /class="angle-arc angle-arc--inner" d="M (\S+) (\S+) A (\S+) \S+ 0 [01] 1 (\S+) (\S+)"/g;
   return [...markup.matchAll(pattern)].map(match => ({
     start: { x: Number(match[1]), y: Number(match[2]) },
-    end: { x: Number(match[3]), y: Number(match[4]) },
+    radius: Number(match[3]),
+    end: { x: Number(match[4]), y: Number(match[5]) },
   }));
+}
+
+/** The drawing's own viewBox: the whole visible figure. */
+function parseViewBox(markup: string) {
+  const [x, y, width, height] = (/viewBox="([^"]+)"/.exec(markup)?.[1] ?? '').split(' ').map(Number);
+  if (![x, y, width, height].every(Number.isFinite)) throw new Error('missing viewBox');
+  return { x: x!, y: y!, width: width!, height: height! };
 }
 
 const countParallelMarks = (markup: string) => (markup.match(/class="parallel-mark /g) ?? []).length;
@@ -98,8 +109,10 @@ function infiniteLineIntersection(first: Segment, second: Segment): Point | null
   return { x: first.a.x + t * r.x, y: first.a.y + t * r.y };
 }
 
-const insideViewBox = (point: Point) =>
-  point.x >= 0 && point.x <= VIEWBOX.width && point.y >= 0 && point.y <= VIEWBOX.height;
+const insideViewBox = (point: Point, markup: string) => {
+  const box = parseViewBox(markup);
+  return point.x >= box.x && point.x <= box.x + box.width && point.y >= box.y && point.y <= box.y + box.height;
+};
 
 function raysAt(line: Segment, transversal: Segment): Ray[] {
   const lineDeg = segmentDeg(line);
@@ -114,17 +127,20 @@ function raysAt(line: Segment, transversal: Segment): Ray[] {
 
 /**
  * Identifies the real angle an arc marks: the two ADJACENT rays at `center`
- * that bound it. Fails unless the arc is centred on the intersection, starts
- * exactly 5° after one ray, ends exactly 5° before the next ray, and no other
+ * that bound it. Fails unless the arc is centred on the intersection, is drawn at
+ * one of the physical arc radii, starts exactly arcTrimDeg(r) after one ray (at the
+ * edge of the drawn line), ends exactly as far before the next ray, and no other
  * ray passes through the marked sector.
  */
 function markedAngle(center: Point, arc: Arc, rays: Ray[]) {
-  expect(Math.hypot(arc.start.x - center.x, arc.start.y - center.y)).toBeCloseTo(INNER_ARC_RADIUS, 1);
-  expect(Math.hypot(arc.end.x - center.x, arc.end.y - center.y)).toBeCloseTo(INNER_ARC_RADIUS, 1);
+  expect(ARC_RADII.some(radius => Math.abs(radius - arc.radius) < 0.001)).toBe(true);
+  expect(Math.hypot(arc.start.x - center.x, arc.start.y - center.y)).toBeCloseTo(arc.radius, 1);
+  expect(Math.hypot(arc.end.x - center.x, arc.end.y - center.y)).toBeCloseTo(arc.radius, 1);
+  const trim = arcTrimDeg(arc.radius);
   const startDeg = dirDeg(center, arc.start);
   const endDeg = dirDeg(center, arc.end);
-  const from = rays.find(ray => Math.abs(angleDiff(startDeg - ARC_TRIM_DEG, ray.deg)) < ARC_TOLERANCE_DEG);
-  const to = rays.find(ray => Math.abs(angleDiff(endDeg + ARC_TRIM_DEG, ray.deg)) < ARC_TOLERANCE_DEG);
+  const from = rays.find(ray => Math.abs(angleDiff(startDeg - trim, ray.deg)) < ARC_TOLERANCE_DEG);
+  const to = rays.find(ray => Math.abs(angleDiff(endDeg + trim, ray.deg)) < ARC_TOLERANCE_DEG);
   if (!from || !to) {
     throw new Error(
       `arc ${startDeg.toFixed(2)}°→${endDeg.toFixed(2)}° is not bounded by the rays at this intersection ` +
@@ -176,7 +192,7 @@ describe('ParallelLinesDiagram — second-line skew (genuinely non-parallel pair
     // The pair converges visibly but never meets inside the drawing.
     const meeting = infiniteLineIntersection(top!, bottom!);
     expect(meeting).not.toBeNull();
-    expect(insideViewBox(meeting!)).toBe(false);
+    expect(insideViewBox(meeting!, markup)).toBe(false);
     // Each intersection dot lies exactly on its own line and on the transversal.
     const [topDot, bottomDot] = parseIntersections(markup);
     expect(distanceToLine(topDot!, top!)).toBeLessThan(1e-6);
@@ -328,11 +344,11 @@ describe('Unit 1 teaching pairs — one parallel configuration, one NOT', () => 
     const [sTop, sBottom, sTransversal] = parseLines(skewedSvg);
     expect(lineDiff(segmentDeg(sBottom!), segmentDeg(sTop!))).toBeCloseTo(skew, 9);
     const meeting = infiniteLineIntersection(sTop!, sBottom!);
-    expect(insideViewBox(meeting!)).toBe(false);
+    expect(insideViewBox(meeting!, skewedSvg)).toBe(false);
     // The transversal still visibly cuts both drawn lines.
     for (const line of [sTop!, sBottom!]) {
       const cut = infiniteLineIntersection(line, sTransversal!)!;
-      expect(insideViewBox(cut)).toBe(true);
+      expect(insideViewBox(cut, skewedSvg)).toBe(true);
       expect(Math.min(line.a.x, line.b.x) - 1e-9).toBeLessThanOrEqual(cut.x);
       expect(Math.max(line.a.x, line.b.x) + 1e-9).toBeGreaterThanOrEqual(cut.x);
     }

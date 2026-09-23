@@ -204,6 +204,7 @@ function RelationTable() {
           <tr key={index}>
             <td>
               <ParallelLinesDiagram
+                size="table"
                 lineLabels={['a', 'c']}
                 transversalLabel="p"
                 orientationDeg={item.orientationDeg}
@@ -249,8 +250,8 @@ function Unit1Page3() {
         answerLines={4}
         diagram={
           <div className="paired-diagrams">
-            <ParallelLinesDiagram lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={13} transversalDeg={73} showParallelMarks angleMarks={markedPair(alternateInteriorPair(13, 73))} />
-            <ParallelLinesDiagram lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={-9} transversalDeg={68} showParallelMarks={false} secondLineSkewDeg={8} angleMarks={markedPair(alternateInteriorPair(-9, 68))} />
+            <ParallelLinesDiagram size="pair" lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={13} transversalDeg={73} showParallelMarks angleMarks={markedPair(alternateInteriorPair(13, 73))} />
+            <ParallelLinesDiagram size="pair" lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={-9} transversalDeg={68} showParallelMarks={false} secondLineSkewDeg={8} angleMarks={markedPair(alternateInteriorPair(-9, 68))} />
           </div>
         }
       >
@@ -307,8 +308,8 @@ function Unit1Page4() {
         answerLines={4}
         diagram={
           <div className="paired-diagrams">
-            <ParallelLinesDiagram lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={-21} transversalDeg={48} showParallelMarks angleMarks={markedPair(correspondingPair(0))} />
-            <ParallelLinesDiagram lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={16} transversalDeg={62} showParallelMarks={false} secondLineSkewDeg={-8} angleMarks={markedPair(correspondingPair(0))} />
+            <ParallelLinesDiagram size="pair" lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={-21} transversalDeg={48} showParallelMarks angleMarks={markedPair(correspondingPair(0))} />
+            <ParallelLinesDiagram size="pair" lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={16} transversalDeg={62} showParallelMarks={false} secondLineSkewDeg={-8} angleMarks={markedPair(correspondingPair(0))} />
           </div>
         }
       >
