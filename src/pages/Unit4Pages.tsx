@@ -4,7 +4,8 @@ import { ClozeText } from '../components/ClozeText';
 import { MathText } from '../components/MathText';
 import { CLOZE_BLANK } from '../content/cloze';
 import { QuestionBlock } from '../components/QuestionBlock';
-import { ChoiceGrid, VerdictOptions } from '../components/ResponseParts';
+import { ChoiceGrid, ItemRows, VerdictOptions } from '../components/ResponseParts';
+import { answerSpecById } from '../content/answer-areas';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
 import { ThreeLinesDiagram } from '../geometry/ThreeLinesDiagram';
 import { alternatePairOfSize, correspondingPair, sectorOfSize } from '../geometry/relations';
@@ -108,13 +109,19 @@ function TheoremCompletion({ q }: { q: Unit4Question }) {
   );
 }
 
-// One verdict per statement (e.g. ○ משפט ישיר ○ משפט הפוך), set beside the statement it answers.
+// One verdict per statement (○ משפט ישיר ○ משפט הפוך, or ○ נכון ○ לא נכון), set beside the statement
+// it answers; where the task asks for a reason, its 'נימוק:' row(s) sit under the statement.
 function PerStatementVerdict({ q }: { q: Unit4Question }) {
+  const rows = answerSpecById(q.id).itemRows ?? 0;
   return (
     <QuestionBlock
       taskId={q.id}
       compact
-      items={(q.subparts ?? []).map(line => ({ content: <MathText text={line} />, aside: <VerdictOptions options={q.verdictOptions ?? []} /> }))}
+      items={(q.subparts ?? []).map(line => ({
+        content: <MathText text={line} />,
+        aside: <VerdictOptions options={q.verdictOptions ?? []} />,
+        ...(rows > 0 ? { after: <ItemRows label="נימוק:" rows={rows} /> } : {}),
+      }))}
     >
       <MathText text={q.stem} />
     </QuestionBlock>

@@ -1365,9 +1365,16 @@ const citesConverse = (sentence: string) =>
   sentence.includes('המשפט ההפוך') || Object.values(CONVERSE).some(text => sentence.includes(withoutFinalPeriod(text)));
 
 /** The imperative that turns a unit-4 stem from givens into the question. */
-const QUESTION_VERB = /קבעו|מצאו|הוכיחו|בחרו|חשבו/;
+const QUESTION_VERB = /קבעו|מצאו|הוכיחו|בחרו|חשבו|זהו/;
 
-type Unit4Spec = Unit2Spec & { converse: 'corresponding' | 'alternate'; conclusion: string };
+/** Hebrew name of a converse pair type, as a key sentence writes it. */
+const PAIR_WORD = { corresponding: 'מתאימות', alternate: 'מתחלפות' } as const;
+
+/**
+ * `identify`: the stem does NOT name the pair type — the student reads it from the drawing, and the
+ * key must first identify it (as the drawn relation) and then cite that pair's converse.
+ */
+type Unit4Spec = Unit2Spec & { converse: 'corresponding' | 'alternate'; conclusion: string; identify?: boolean };
 
 const unit4Specs: Unit4Spec[] = [
   {
@@ -1388,7 +1395,9 @@ const unit4Specs: Unit4Spec[] = [
   {
     id: 'U4-P2-A',
     parallelText: null,
-    stemGivens: ['∠C = 112°', '∠D = 112°', 'מתחלפות'],
+    // The pair type is the student's to identify from the drawing, not a stem given.
+    stemGivens: ['∠C = 112°', '∠D = 112°'],
+    identify: true,
     marks: ['C', 'D'],
     steps: [['C', 'D', 'alternate']],
     converse: 'alternate',
@@ -1411,10 +1420,10 @@ const unit4Specs: Unit4Spec[] = [
     conclusion: 'p ∥ q',
     derive: () => {
       // p ∥ q follows from the converse exactly when the corresponding angles are equal:
-      // 3x + 14 = 5x − 26  ⇒  40 = 2x  ⇒  x = 20 ; angle = 3·20 + 14 = 74
+      // 3x + 14 = 5x − 26  ⇒  40 = 2x  ⇒  x = 20 ; angle = 3·20 + 14 = 74 (a check, not asked)
       const x = (14 + 26) / (5 - 3);
       const angle = 3 * x + 14;
-      return { answer: { x, 'זווית': angle }, measures: { e1: angle, e2: 5 * x - 26 } };
+      return { answer: { x }, measures: { e1: angle, e2: 5 * x - 26 } };
     },
   },
 ];
@@ -1472,11 +1481,13 @@ describe('independent verification — unit 4 converse tasks', () => {
           const reasons = asList(q.expected.reason).join(' ');
           expect(spec.equations).toHaveLength(1);
           const { left, right } = spec.equations[0]!;
-          expect(justification).toContain('המשפט ההפוך');
-          expect(justification).toContain(`${left} = ${right}`);
-          expect(justification).toContain(`x = ${answer.x}`);
+          // The 'המשפט המתאים:' lane holds exactly the converse of the DRAWN pair, character for character.
+          expect(justification).toBe(CONVERSE[spec.converse]);
+          // The work: the equation the converse requires, its solution, and the check (the equal angle).
+          expect(reasons).toContain(`${left} = ${right}`);
           expect(reasons).toContain(`x = ${answer.x}`);
-          expect(reasons).toContain(`${answer['זווית']}°`);
+          expect(reasons).toContain(`${measures[from]}°`);
+          expect(measures[from]).toBe(measures[to]);
           // Every key sentence that invokes the converse names no relation other than the drawn one,
           // and at least one names it: the cited converse is the CORRESPONDING one, not the alternate.
           const sentences = [...asList(q.expected.justification), ...asList(q.expected.reason)].flatMap(sentencesOf);
@@ -1491,13 +1502,27 @@ describe('independent verification — unit 4 converse tasks', () => {
             expect(sentence, `${spec.id}: cites a direct theorem`).not.toContain(CORRESPONDING_DIRECT);
             expect(sentence, `${spec.id}: cites a direct theorem`).not.toContain(ALTERNATE_DIRECT);
           }
-          const equation = /(\S+ \+ \d+ = \S+ − \d+)/.exec(justification)?.[1];
+          const equation = /(\S+ \+ \d+ = \S+ − \d+)/.exec(reasons)?.[1];
           expect(equation).toBeDefined();
           expect(equivalent(parseEquation(equation!), parseEquation(`${left} = ${right}`))).toBe(true);
         } else {
-          const reason = asList(q.expected.reason).join(' ');
-          // Exactly the canonical converse sentence (SPEC 3.2), character for character.
-          expect(reason).toBe(CONVERSE[spec.converse]);
+          const reasons = asList(q.expected.reason);
+          // The last reason is exactly the canonical converse sentence (SPEC 3.2), character for character.
+          expect(reasons.at(-1)).toBe(CONVERSE[spec.converse]);
+          if (spec.identify) {
+            // The stem offers both pair types as the question and states neither as a given…
+            const verb = QUESTION_VERB.exec(q.stem)!;
+            const givens = q.stem.slice(0, verb.index);
+            expect(givens, `${spec.id}: the stem names the pair type as a given`).not.toMatch(/מתאימ|מתחלפ/);
+            expect(q.stem.slice(verb.index)).toContain(`${PAIR_WORD.corresponding} או ${PAIR_WORD.alternate}`);
+            // …and the key first identifies the DRAWN relation, then cites its converse.
+            expect(reasons).toHaveLength(2);
+            expect(claimsInText(reasons[0]!)).toEqual([[from, to, spec.converse]]);
+            expect(reasons[0]).toBe(`∠${from} ו־∠${to} הן זוויות ${PAIR_WORD[spec.converse]}.`);
+          } else {
+            expect(reasons).toHaveLength(1);
+            expect(q.stem, `${spec.id}: a guided application names the pair type`).toContain(PAIR_WORD[spec.converse]);
+          }
         }
       });
 
@@ -1517,15 +1542,71 @@ describe('independent verification — unit 4 converse tasks', () => {
     for (const x of [19, 21, 0, 40]) expect(evaluate(equation, { x })).not.toBe(0);
   });
 
-  it('U4-P2-B: exactly one offered condition is a converse-theorem condition, and it is the key', () => {
+  /**
+   * U4-P2-B — true / false on the converse theorems. Each claim's premise is read from its text and
+   * modelled on concrete lines: p, q and the transversal t have directions a, b and c (degrees), so
+   * at p the angles are θp = (c − a) mod 180 and 180° − θp, at q likewise θq. A claim „premise ⇒
+   * p ∥ q” is TRUE exactly when no non-parallel configuration satisfies the premise (and it is not
+   * vacuous: a parallel one does). The verdicts are derived here, independently of the key.
+   */
+  it('U4-P2-B: each true / false verdict on a converse claim is re-derived from concrete lines', () => {
     const q = byId(unit4Questions, 'U4-P2-B');
-    const sufficient = (q.choices ?? []).filter(choice => /(מתאימות|מתחלפות) בין p ו־q שוות/.test(choice));
-    expect(sufficient).toEqual([q.expected.choice]);
-    // The distractors are facts that hold for ANY two lines cut by a transversal.
-    const alwaysTrue = (q.choices ?? []).filter(choice => choice !== q.expected.choice);
-    expect(alwaysTrue).toHaveLength(3);
-    expect(alwaysTrue.every(choice => /קודקודיות|צמודות שסכומן 180°|באותו קודקוד/.test(choice))).toBe(true);
-    expect(drawingOf('U4-P2-B').chevrons).toEqual([]);
+    const claims = q.subparts ?? [];
+    expect(q.verdictOptions).toEqual(['נכון', 'לא נכון']);
+    expect(q.diagram, 'the claims are in words; no drawing may reveal a verdict').toBeUndefined();
+    expect(claims.length).toBeGreaterThanOrEqual(4);
+
+    // An angle between two rays (directions in degrees), in [0°, 180°).
+    const mod180 = (deg: number) => ((deg % 180) + 180) % 180;
+    const between = (from: number, to: number) => mod180(to - from);
+    type Premise = (a: number, b: number, c: number) => boolean;
+    const premiseOf = (claim: string): { kind: string; holds: Premise } => {
+      expect(claim, `"${claim}" must conclude p ∥ q`).toMatch(/, אז p ו־q מקבילים\.$/);
+      // Vertical angles at ONE crossing (p, t): between the rays a→c and between the opposite rays.
+      if (/קודקודיות בחיתוך של p ו־t שוות/.test(claim)) return { kind: 'vertical', holds: (a, _b, c) => between(a, c) === between(a + 180, c + 180) };
+      // Adjacent angles at ONE crossing (q, t): q→t and t→(opposite q) share the ray t.
+      if (/צמודות בחיתוך של q ו־t משלימות ל־180°/.test(claim)) return { kind: 'adjacent', holds: (_a, b, c) => between(b, c) + between(c, b + 180) === 180 };
+      // An equal corresponding pair: the same position at both crossings (p→t at p, q→t at q).
+      if (/זוויות מתאימות בין p ו־q שוות זו לזו/.test(claim)) return { kind: 'equal-pair', holds: (a, b, c) => between(a, c) === between(b, c) };
+      // An equal alternate pair: q→t at q against the opposite rays (opposite p)→(opposite t) at p.
+      if (/זוויות מתחלפות בין p ו־q שוות זו לזו/.test(claim)) return { kind: 'equal-pair', holds: (a, b, c) => between(a + 180, c + 180) === between(b, c) };
+      // The position of a pair only, with no equality: such a pair exists for ANY two lines.
+      if (/הן זוויות (מתאימות|מתחלפות) בין p ו־q, /.test(claim) && !/שוות/.test(claim)) return { kind: 'position', holds: () => true };
+      throw new Error(`U4-P2-B: unmodelled claim "${claim}"`);
+    };
+    const configurations: Array<{ a: number; b: number; c: number }> = [];
+    for (const a of [0, 7, 20]) for (const b of [0, 7, 20, 35]) for (const c of [55, 70, 110]) configurations.push({ a, b, c });
+
+    const derived = claims.map(claim => {
+      const { kind, holds } = premiseOf(claim);
+      const counterexample = configurations.find(({ a, b, c }) => a !== b && holds(a, b, c));
+      const nonVacuous = configurations.some(({ a, b, c }) => a === b && holds(a, b, c));
+      expect(nonVacuous, claim).toBe(true);
+      return { claim, kind, verdict: counterexample ? 'לא נכון' : 'נכון' };
+    });
+
+    // Both verdicts occur; every „always true” fact and the position-only claim are false.
+    expect(derived.map(d => d.kind).sort()).toEqual(['adjacent', 'equal-pair', 'equal-pair', 'position', 'vertical']);
+    expect(derived.filter(d => d.verdict === 'נכון').map(d => d.kind)).toEqual(['equal-pair', 'equal-pair']);
+
+    const keyed = asList(q.expected.reason);
+    expect(keyed).toHaveLength(claims.length);
+    derived.forEach(({ claim, verdict }, index) => {
+      const key = keyed[index]!;
+      expect(key.startsWith(`${verdict} — `), `U4-P2-B "${claim}": key "${key}" vs derived ${verdict}`).toBe(true);
+      const pair = /זוויות (מתאימות|מתחלפות) בין p ו־q שוות/.exec(claim)?.[1];
+      if (verdict === 'נכון') {
+        // A true claim is justified by exactly the converse of the pair it names (SPEC 3.2).
+        const converse = pair === 'מתאימות' ? CONVERSE.corresponding : CONVERSE.alternate;
+        expect(key).toBe(`נכון — ${converse}`);
+      } else {
+        // A false claim never cites a converse (or a direct theorem) as if it applied.
+        expect(key).not.toContain(withoutFinalPeriod(CONVERSE.corresponding));
+        expect(key).not.toContain(withoutFinalPeriod(CONVERSE.alternate));
+        expect(key).not.toContain(CORRESPONDING_DIRECT);
+        expect(key).not.toContain(ALTERNATE_DIRECT);
+      }
+    });
   });
 
   const threeLineAngles = () => {
@@ -1559,11 +1640,15 @@ describe('independent verification — unit 4 converse tasks', () => {
     expect(givenPart).not.toMatch(/q ∥ r|r ∥ q/);
     expect(provePart).toBe(' כי q ∥ r.');
     const proof = q.expected.proof ?? [];
-    expect(proof[0]).toMatch(/^∠A = ∠B — זוויות מתאימות בין הישרים המקבילים p ו־q/);
-    expect(proof[1]).toBe('∠A = ∠C — נתון.');
-    expect(proof[2]).toMatch(/^לכן ∠B = ∠C/);
-    expect(proof[3]).toContain('∠B ו־∠C הן זוויות מתאימות ביחס לישרים q ו־r');
-    expect(proof[4]).toMatch(/^לכן q ∥ r — לפי המשפט ההפוך של זוויות מתאימות/);
+    // Every reason is the canonical sentence itself (theorems.ts), never a retyped variant: the
+    // DIRECT theorem where p ∥ q is given, the CONVERSE where q ∥ r is concluded.
+    expect(proof).toEqual([
+      `∠A = ∠B — ${THEOREMS.correspondingDirect.text}`,
+      '∠A = ∠C — נתון.',
+      '∠B = ∠C — מכלל המעבר.',
+      '∠B ו־∠C הן זוויות מתאימות ביחס לישרים q ו־r — נתון.',
+      `q ∥ r — ${CONVERSE.corresponding}`,
+    ]);
     expect(q.expected.conclusion).toBe('q ∥ r');
   });
 });

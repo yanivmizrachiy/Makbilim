@@ -58,7 +58,6 @@ export const FORMAT_KIND: Readonly<Record<string, TaskKind>> = {
   'direct-vs-converse': 'claim',
 
   'sufficient-data': 'sufficiency',
-  'data-sufficiency': 'sufficiency',
   'numeric-parallelism': 'sufficiency',
 
   'simple-algebra': 'algebra',
