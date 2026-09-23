@@ -88,7 +88,13 @@ export default function TeacherApp() {
   const groups = groupByUnitAndPage(teacherAnswerKey);
 
   return (
-    <main className="teacher-document" data-teacher-ready="true" dir="rtl">
+    <main
+      className="teacher-document"
+      data-teacher-ready="true"
+      data-answer-count={answerKeySummary.authoredTotal}
+      data-unit5-source-blocks={curriculumAnswerKeyPolicy.selectedSourceBlocks}
+      dir="rtl"
+    >
       <section className="teacher-cover">
         <div className="teacher-kicker">מפתח תשובות מאומת</div>
         <h1>זוויות בין ישרים מקבילים</h1>
