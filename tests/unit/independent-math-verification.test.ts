@@ -677,30 +677,34 @@ const unit2Specs: Unit2Spec[] = [
     id: 'U2-P2-D',
     parallelText: 'p ∥ q',
     stemGivens: ['∠A = 54°'],
-    marks: ['A', 'A↓', 'A×', 'α'],
-    // Route 1: corresponding then vertical.  Route 2: vertical then corresponding.
-    steps: [['A', 'A↓', 'corresponding'], ['A↓', 'α', 'vertical'], ['A', 'A×', 'vertical'], ['A×', 'α', 'corresponding']],
+    // Only ∠A and α are drawn: finding the two routes is the task, so their middle angles (A↓ on q,
+    // A× vertical to ∠A) are not marked. Directly, ∠A and α are an alternate pair. Both routes
+    // (corresponding then vertical, vertical then corresponding) are checked on a probe copy of the
+    // figure that adds the two middle angles — see 'the cited theorems …' below.
+    marks: ['A', 'α'],
+    steps: [['A', 'α', 'alternate']],
     derive: () => {
       const A = 54;
       const Adown = A; // route 1: A → (corresponding, p ∥ q) → A↓
       const alpha = Adown; // route 1: A↓ → (vertical) → α
       const Across = A; // route 2: A → (vertical) → A×
-      // Route 2's last step (A× → α, corresponding) is asserted inside it() by the step check
-      // measures['A×'] = measures['α'], so both routes must reach the same α.
-      return { answer: { 'α': alpha }, measures: { A, 'A↓': Adown, 'A×': Across, 'α': alpha } };
+      // Route 2 lands on the same α: A× → α is corresponding (checked on the probe figure).
+      expect(Across).toBe(alpha);
+      return { answer: { 'α': alpha }, measures: { A, 'α': alpha } };
     },
   },
   {
     id: 'U2-P3-A',
     parallelText: 'p ∥ q',
     stemGivens: ['זווית שגודלה 38°'],
-    marks: ['ref', 'א', 'ב', 'ג', 'ד', 'ref*'],
+    // The 38° angle is marked ONCE (it used to carry a second, differently coloured mark). The
+    // letters deliberately do not follow the table's row order.
+    marks: ['ref', 'א', 'ב', 'ג', 'ד'],
     steps: [
-      ['ref', 'א', 'corresponding'],
-      ['ref', 'ב', 'alternate'],
-      ['ref', 'ג', 'vertical'],
-      ['ref', 'ד', 'adjacent'],
-      ['ref', 'ref*', 'same'],
+      ['ref', 'א', 'vertical'],
+      ['ref', 'ב', 'corresponding'],
+      ['ref', 'ג', 'adjacent'],
+      ['ref', 'ד', 'alternate'],
     ],
     derive: () => {
       const ref = 38;
@@ -710,7 +714,7 @@ const unit2Specs: Unit2Spec[] = [
       const adjacent = 180 - ref; // 142
       return {
         answer: { 'מתאימה': corresponding, 'מתחלפת': alternate, 'קודקודית': vertical, 'צמודה': adjacent },
-        measures: { ref, 'א': corresponding, 'ב': alternate, 'ג': vertical, 'ד': adjacent, 'ref*': ref },
+        measures: { ref, 'א': vertical, 'ב': corresponding, 'ג': adjacent, 'ד': alternate },
       };
     },
   },
@@ -966,29 +970,37 @@ function namedAngles(spec: { id: string; marks: string[] }) {
   return new Map(spec.marks.map((name, index) => [name, drawing.angles[index]!]));
 }
 
+/**
+ * Checks what the student SEES next to each mark — the text rendered in the SVG, never the props — against the stem:
+ * a drawn value is a given of the stem and equals the hand measure; a drawn expression is in the stem
+ * and evaluates to the hand measure at the solution; a drawn name ∠X whose size the stem states
+ * (∠X = v°) has hand measure v; a drawn Greek unknown is asked for in the stem. Conversely, every
+ * degree value in the stem is on the figure: drawn as that value, or stated as ∠X = v° for an angle
+ * drawn with the name X.
+ */
 function assertMarksMatchStem(spec: Unit2Spec, q: Unit2Question | Unit4Question, measures: Record<string, number>, solution: { x?: number; y?: number }) {
   const drawing = drawingOf(spec.id);
-  spec.marks.forEach((name, index) => {
-    const mark = drawing.marks[index]!;
-    const measure = measures[name]!;
-    const value = mark.value;
-    if (value && isDegreeValue(value)) {
-      expect(Number.parseInt(value, 10), `${spec.id} ${name}: drawn value vs hand measure`).toBe(measure);
-      const statement = mark.label && /^[A-Z]$/.test(mark.label) ? `∠${mark.label} = ${value}` : value;
-      expect(q.stem, `${spec.id} ${name}: drawn datum "${statement}" must be a given of the stem`).toContain(statement);
+  const shown = spec.marks.map((name, index) => ({ name, text: drawing.angles[index]!.label, measure: measures[name]! }));
+  for (const { name, text, measure } of shown) {
+    if (!text) continue;
+    if (isDegreeValue(text)) {
+      expect(Number.parseInt(text, 10), `${spec.id} ${name}: drawn value vs hand measure`).toBe(measure);
+      expect(q.stem, `${spec.id} ${name}: drawn datum "${text}" must be a given of the stem`).toContain(text);
+    } else if (isExpressionValue(text)) {
+      expect(q.stem, `${spec.id} ${name}: drawn expression must appear in the stem`).toContain(bareExpression(text));
+      expect(evaluate(parseLinear(bareExpression(text)), solution), `${spec.id} ${name}: drawn expression at the solution`).toBe(measure);
+    } else if (/^[A-Z]$/.test(text)) {
+      const stated = new RegExp(`∠${text} = (\\d+)°`).exec(q.stem);
+      if (stated) expect(Number(stated[1]), `${spec.id} ${name}: stem size of the drawn ∠${text} vs hand measure`).toBe(measure);
+    } else if (/^[α-ω]$/.test(text)) {
+      expect(q.stem, `${spec.id}: unknown ${text} drawn but not asked for`).toContain(text);
     }
-    if (value && isExpressionValue(value)) {
-      expect(q.stem, `${spec.id} ${name}: drawn expression must appear in the stem`).toContain(bareExpression(value));
-      expect(evaluate(parseLinear(bareExpression(value)), solution), `${spec.id} ${name}: drawn expression at the solution`).toBe(measure);
-    }
-    if (mark.label && /^[α-ω]$/.test(mark.label)) {
-      expect(q.stem, `${spec.id}: unknown ${mark.label} drawn but not asked for`).toContain(mark.label);
-    }
-  });
-  // Conversely, every degree value stated in the stem is a datum drawn on the figure.
+  }
   for (const [, digits] of q.stem.matchAll(/(\d+)°/g)) {
-    const shown = spec.marks.some((name, index) => drawing.marks[index]!.value === `${digits}°` && measures[name] === Number(digits));
-    expect(shown, `${spec.id}: stem datum ${digits}° is not drawn`).toBe(true);
+    const asValue = shown.some(angle => angle.text === `${digits}°` && angle.measure === Number(digits));
+    const asName = [...q.stem.matchAll(new RegExp(`∠([A-Z]) = ${digits}°`, 'g'))]
+      .some(([, letter]) => shown.some(angle => angle.text === letter && angle.measure === Number(digits)));
+    expect(asValue || asName, `${spec.id}: stem datum ${digits}° is not drawn (neither as a value nor as a named angle)`).toBe(true);
   }
 }
 
@@ -1059,6 +1071,12 @@ describe('independent verification — rendered drawings faithfully show the dia
         expect(angle.span).toBeGreaterThan(0);
         expect(angle.span).toBeLessThan(180);
       }
+      // One mark per drawn angle (U2-P3-A once marked its 38° angle twice, in two colours).
+      const doubled: string[] = [];
+      drawing.angles.forEach((a, i) => drawing.angles.slice(i + 1).forEach((b, j) => {
+        if (relationOf(a, b) === 'same') doubled.push(`#${i} ${a.label ?? ''} ≡ #${i + 1 + j} ${b.label ?? ''}`);
+      }));
+      expect(doubled, `${id}: an angle is marked more than once`).toEqual([]);
     });
   }
 });
@@ -1122,17 +1140,34 @@ describe('independent verification — unit 2 hand-derived solutions', () => {
         }
       });
 
-      it('the cited theorems are exactly the relations the derivation uses', () => {
+      it('the cited theorems are exactly the relations the derivation uses', async () => {
         const texts = asList(q.expected.justification);
         for (const text of texts) {
           for (const forbidden of THEOREM_GUARDRAILS.forbiddenStandaloneClaims) expect(text).not.toContain(forbidden);
         }
         if (spec.id === 'U2-P2-D') {
           // Two routes, each named as an ordered pair of relations — exactly the relations of the
-          // two drawn step chains A → A↓ → α and A → A× → α.
+          // step chains A → A↓ → α and A → A× → α. The page draws only ∠A and α, so the middle
+          // angles are added to a probe copy of the same figure (A↓: the same sector on the other
+          // line; A×: the opposite sector at ∠A's vertex), and every relation is read from the
+          // probe's SVG.
           const angles = namedAngles(spec);
-          const chain = (...names: string[]) => names.slice(1).map((name, i) => relationOf(angles.get(names[i]!)!, angles.get(name)!));
-          const drawnRoutes = [chain('A', 'A↓', 'α'), chain('A', 'A×', 'α')];
+          const drawing = drawingOf(spec.id);
+          expect(drawing.marks, `${spec.id}: only ∠A and α are marked (finding the routes is the task)`).toHaveLength(2);
+          const [a, alpha] = drawing.marks as [AngleMark, AngleMark];
+          const probeMarks: AngleMark[] = [
+            a,
+            { intersection: a.intersection === 'top' ? 'bottom' : 'top', sector: a.sector },
+            { intersection: a.intersection, sector: ((a.sector + 2) % 4) as AngleMark['sector'] },
+            alpha,
+          ];
+          const { ParallelLinesDiagram } = await import('../../src/geometry/ParallelLinesDiagram');
+          const probeProps: ParallelLinesDiagramProps = { ...(drawing.props as ParallelLinesDiagramProps), angleMarks: probeMarks };
+          const probeSvg = renderToStaticMarkup(createElement(ParallelLinesDiagram, probeProps));
+          const probe = readParallelDrawing(probeSvg.slice(probeSvg.indexOf('<svg')), probeProps).angles;
+          const [pA, pDown, pCross, pAlpha] = probe as [DrawnAngle, DrawnAngle, DrawnAngle, DrawnAngle];
+          expect([relationOf(pA, angles.get('A')!), relationOf(pAlpha, angles.get('α')!)], `${spec.id}: the probe's ∠A and α are the drawn ones`).toEqual(['same', 'same']);
+          const drawnRoutes = [[relationOf(pA, pDown), relationOf(pDown, pAlpha)], [relationOf(pA, pCross), relationOf(pCross, pAlpha)]];
           expect(drawnRoutes).toEqual([['corresponding', 'vertical'], ['vertical', 'corresponding']]);
           expect(texts, `${spec.id}: one text per route`).toHaveLength(2);
           for (const route of texts) {
@@ -1273,14 +1308,30 @@ describe('independent verification — unit 2 algebra: unique, valid, justified'
     expect(new Set(q.choices).size).toBe(q.choices?.length);
   });
 
-  it('U2-P3-A: table rows, drawn letters א–ד and answer keys describe the same four relations in the same order', () => {
+  // The letters used to follow the table's row order (א = corresponding, ב = alternate, …), which
+  // handed the student the answer; they are now shuffled, so this checks the same consistency
+  // without fixing the order, and additionally that the order is NOT the row order.
+  it('U2-P3-A: table rows, drawn letters א–ד and answer keys describe the same four relations, and the letters do not give away the rows', () => {
     const q = byId(unit2Questions, 'U2-P3-A');
+    const rowRelation = { 'מתאימה': 'corresponding', 'מתחלפת': 'alternate', 'קודקודית': 'vertical', 'צמודה': 'adjacent' } as const;
     expect((q.tableRows ?? []).map(row => row.relation)).toEqual(['מתאימות', 'מתחלפות', 'קודקודיות', 'צמודות']);
-    expect(Object.keys(q.expected.values ?? {})).toEqual(['מתאימה', 'מתחלפת', 'קודקודית', 'צמודה']);
+    expect(Object.keys(q.expected.values ?? {})).toEqual(Object.keys(rowRelation));
     const drawing = drawingOf('U2-P3-A');
-    expect(drawing.angles.slice(1, 5).map(a => a.label)).toEqual(['א', 'ב', 'ג', 'ד']);
+    // The given angle once, then the four letters — no other mark.
+    expect(drawing.angles.map(a => a.label)).toEqual(['38°', 'א', 'ב', 'ג', 'ד']);
     const ref = drawing.angles[0]!;
-    expect(drawing.angles.slice(1, 5).map(a => relationOf(ref, a))).toEqual(['corresponding', 'alternate', 'vertical', 'adjacent']);
+    const letterOf = new Map(drawing.angles.slice(1).map(angle => [relationOf(ref, angle), angle.label]));
+    // Each relation of the table is drawn exactly once.
+    expect([...letterOf.keys()].sort()).toEqual(['adjacent', 'alternate', 'corresponding', 'vertical']);
+    // Each row's key value is the hand-derived measure of the letter drawn in that row's relation.
+    const { measures } = unit2Specs.find(spec => spec.id === 'U2-P3-A')!.derive();
+    for (const [row, relation] of Object.entries(rowRelation)) {
+      expect(q.expected.values?.[row], `U2-P3-A row ${row}`).toBe(measures[letterOf.get(relation)!]);
+    }
+    // No letter sits at the position of its own table row.
+    Object.values(rowRelation).forEach((relation, row) => {
+      expect(letterOf.get(relation), `U2-P3-A: the ${relation} angle is lettered in table-row order`).not.toBe(['א', 'ב', 'ג', 'ד'][row]);
+    });
   });
 
   it('U2-P3-B: the table states the same relations the drawing shows', () => {

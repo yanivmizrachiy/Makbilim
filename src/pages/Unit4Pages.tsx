@@ -7,26 +7,33 @@ import { QuestionBlock } from '../components/QuestionBlock';
 import { ChoiceGrid, VerdictOptions } from '../components/ResponseParts';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
 import { ThreeLinesDiagram } from '../geometry/ThreeLinesDiagram';
-import { alternatePair, correspondingPair } from '../geometry/relations';
+import { alternatePairOfSize, correspondingPair, sectorOfSize } from '../geometry/relations';
 import { unit4Questions, type Unit4Question } from '../content/questions-unit4';
 
+/**
+ * Angle marks for the unit-4 converse diagrams. Both angles of each pair are GIVEN (their sizes or
+ * expressions); what is asked is whether the lines are parallel. Marks declare their role, never a
+ * colour, so the style does not say which converse theorem applies. Sectors are chosen by the size
+ * of the angle they show (SPEC 10.3).
+ */
 function marks(q: Unit4Question): AngleMark[] {
   if (!q.diagram) return [];
   const o = q.diagram.orientationDeg;
   const t = q.diagram.transversalDeg ?? 62;
   switch (q.id) {
     case 'U4-P1-D': {
-      const [a, b] = correspondingPair(0);
-      return [{ ...a, label: 'A', value: '67°', tone: 'primary' }, { ...b, label: 'B', value: '67°', tone: 'primary' }];
+      const [a, b] = correspondingPair(sectorOfSize(o, t, 'acute', 1), 'top');
+      return [{ ...a, label: 'A', value: '67°', role: 'given' }, { ...b, label: 'B', value: '67°', role: 'given' }];
     }
     case 'U4-P2-A': {
-      // The obtuse interior alternate pair: 112° for lines at −13° and a transversal at 99°.
-      const [a, b] = alternatePair(o, t, 1);
-      return [{ ...a, label: 'C', value: '112°', tone: 'secondary' }, { ...b, label: 'D', value: '112°', tone: 'secondary' }];
+      // ∠C = ∠D = 112°: the obtuse alternate-interior pair.
+      const [c, d] = alternatePairOfSize(o, t, 'obtuse', 'bottom');
+      return [{ ...c, label: 'C', value: '112°', role: 'given' }, { ...d, label: 'D', value: '112°', role: 'given' }];
     }
     case 'U4-P2-C': {
-      const [a, b] = correspondingPair(1);
-      return [{ ...a, value: '(3x + 14)°', tone: 'primary' }, { ...b, value: '(5x − 26)°', tone: 'primary' }];
+      // x = 20 gives 74°: an acute corresponding pair.
+      const [a, b] = correspondingPair(sectorOfSize(o, t, 'acute'), 'top');
+      return [{ ...a, value: '(3x + 14)°', role: 'given' }, { ...b, value: '(5x − 26)°', role: 'given' }];
     }
     default:
       return [];
@@ -46,10 +53,12 @@ function ConverseDiagram({ q }: { q: Unit4Question }) {
         // The same (obtuse, 'left') position at all three crossings: ∠A/∠B and ∠B/∠C are
         // corresponding pairs, and the wide sector leaves room for each badge inside its own
         // angle (below r the acute 'right' sector is too tight, which pushed ∠C across r).
+        // The three letters are proof names, so all three share one (default) style: ∠C, which
+        // sits on the line whose parallelism is to be PROVED, must not look different.
         angleMarks={[
-          { line: 0, label: 'A', side: 'left', tone: 'primary' },
-          { line: 1, label: 'B', side: 'left', tone: 'primary' },
-          { line: 2, label: 'C', side: 'left', tone: 'secondary' },
+          { line: 0, label: 'A', side: 'left' },
+          { line: 1, label: 'B', side: 'left' },
+          { line: 2, label: 'C', side: 'left' },
         ]}
         ariaLabel="שלושה ישרים p, q, r וישר חותך; p ו־q מסומנים כמקבילים"
       />

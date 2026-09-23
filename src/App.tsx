@@ -27,15 +27,15 @@ function Unit1Page1() {
 
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={1}>
-      <QuestionBlock taskId={a.id} compact diagram={<ParallelLinesDiagram lineLabels={['p', 'q']} transversalLabel="r" orientationDeg={0} transversalDeg={58} showParallelMarks={false} ariaLabel="שני ישרים וישר נוסף החותך את שניהם" />}>
+      <QuestionBlock taskId={a.id} compact diagram={<ParallelLinesDiagram lineLabels={['p', 'q']} transversalLabel="r" orientationDeg={0} transversalDeg={50} showParallelMarks={false} ariaLabel="שני ישרים וישר נוסף החותך את שניהם" />}>
         {a.stem}
       </QuestionBlock>
 
-      <QuestionBlock taskId={b.id} compact diagram={<ParallelLinesDiagram lineLabels={['k', 'm']} transversalLabel="t" orientationDeg={4} transversalDeg={63} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 0, role: 'marked' }]} ariaLabel="זווית אחת מסומנת במפגש העליון" />}>
+      <QuestionBlock taskId={b.id} compact diagram={<ParallelLinesDiagram lineLabels={['k', 'm']} transversalLabel="t" orientationDeg={4} transversalDeg={142} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 0, role: 'marked' }]} ariaLabel="זווית אחת מסומנת במפגש העליון" />}>
         {b.stem}
       </QuestionBlock>
 
-      <QuestionBlock taskId={c.id} compact diagram={<ParallelLinesDiagram lineLabels={['a', 'b']} transversalLabel="s" orientationDeg={-7} transversalDeg={116} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 1, role: 'marked' }]} ariaLabel="זווית אחת מסומנת; יש לזהות את הזווית המתחלפת לה" />}>
+      <QuestionBlock taskId={c.id} compact diagram={<ParallelLinesDiagram lineLabels={['a', 'b']} transversalLabel="s" orientationDeg={-7} transversalDeg={101} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 1, role: 'marked' }]} ariaLabel="זווית אחת מסומנת; יש לזהות את הזווית המתחלפת לה" />}>
         {c.stem}
       </QuestionBlock>
 
@@ -43,12 +43,16 @@ function Unit1Page1() {
         taskId={d.id}
         compact
         diagram={<ParallelLinesDiagram lineLabels={['u', 'v']} transversalLabel="w" orientationDeg={11} transversalDeg={71} showParallelMarks={false} angleMarks={[
-          { intersection: 'top', sector: 0, tone: 'primary', arcStyle: 'single' },
-          { intersection: 'bottom', sector: 0, tone: 'primary', arcStyle: 'single' },
-          { intersection: 'top', sector: 1, tone: 'secondary', arcStyle: 'double' },
-          { intersection: 'bottom', sector: 3, tone: 'secondary', arcStyle: 'double' },
-          { intersection: 'top', sector: 2, tone: 'neutral', arcStyle: 'dashed' },
-          { intersection: 'bottom', sector: 1, tone: 'neutral', arcStyle: 'dashed' },
+          // arc-form-whitelist:start U1-P1-D — the task text names each pair by its arc form
+          // (one arc / two arcs / a dashed arc), so only the arc form is set here. All three pairs
+          // share one colour: a colour per pair would hint at the relation the student classifies.
+          { intersection: 'top', sector: 0, arcStyle: 'single' },
+          { intersection: 'bottom', sector: 0, arcStyle: 'single' },
+          { intersection: 'top', sector: 1, arcStyle: 'double' },
+          { intersection: 'bottom', sector: 3, arcStyle: 'double' },
+          { intersection: 'top', sector: 2, arcStyle: 'dashed' },
+          { intersection: 'bottom', sector: 1, arcStyle: 'dashed' },
+          // arc-form-whitelist:end
         ]} ariaLabel="שלושה זוגות זוויות מסומנים בסוגי קשת שונים" />}
         items={(d.subparts ?? []).map(text => ({ content: <>{text}<LineSlot /></>, inline: true }))}
       >
