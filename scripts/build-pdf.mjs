@@ -182,7 +182,8 @@ try {
     const geometryCollisionReport = geometrySvgs.map((svg, svgIndex) => {
       const svgRect = svg.getBoundingClientRect();
       const labelRects = [
-        ...svg.querySelectorAll('.geometry-labels text, .angle-label-plate rect, .three-line-angle-mark .angle-badge'),
+        // Every drawn label: line names and angle names / values / numbers (haloed text, no plates).
+        ...svg.querySelectorAll('text.line-label-text, text.angle-label-text'),
       ].map((label, labelIndex) => ({
         labelIndex,
         rect: label.getBoundingClientRect(),

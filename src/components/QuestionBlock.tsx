@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 import { TASK_KIND_LABEL, taskKindById } from '../content/task-kinds';
+import { DiagramSizeProvider, diagramSizeFor } from '../geometry/diagram-size';
 
 export type QuestionBlockProps = {
   children: ReactNode;
@@ -55,7 +56,7 @@ export function QuestionBlock({
           {kind && <span className="task-kind">{TASK_KIND_LABEL[kind]}</span>}
           {children}
         </div>
-        {diagram && <div className="question-diagram">{diagram}</div>}
+        {diagram && <div className="question-diagram"><DiagramSizeProvider size={diagramSizeFor({ taskId, kind, compact })}>{diagram}</DiagramSizeProvider></div>}
         {subparts && subparts.length > 0 && (
           <div className="subparts">
             {subparts.map((part, index) => (

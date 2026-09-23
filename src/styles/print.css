@@ -19,8 +19,6 @@
   --header-height: 19mm;
   --footer-height: 10.5mm;
   --cloze-blank-width: 30mm;
-  --diagram-compact-height: 40mm;
-  --diagram-full-height: 54mm;
 }
 
 * { box-sizing: border-box; }
@@ -242,66 +240,6 @@ body { direction: rtl; }
   overflow: visible;
 }
 
-.geometry-diagram {
-  display: block;
-  width: auto;
-  height: var(--diagram-full-height);
-  max-width: 100%;
-  overflow: visible;
-}
-
-.question-block--compact .geometry-diagram {
-  height: var(--diagram-compact-height);
-  max-width: 100%;
-}
-
-.question-content--split .geometry-diagram {
-  width: auto;
-  height: var(--diagram-compact-height);
-  max-width: 100%;
-}
-
-.geometry-lines line {
-  stroke: #17202a;
-  stroke-width: 2.05;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-}
-
-.parallel-mark line {
-  stroke: #17202a;
-  stroke-width: 1.65;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-}
-
-.geometry-labels text,
-.angle-mark text {
-  fill: #101820;
-  font-family: Arial, "Noto Sans Hebrew", sans-serif;
-  font-size: 19px;
-  font-weight: 700;
-  paint-order: stroke fill;
-  stroke: var(--paper);
-  stroke-width: 5px;
-  stroke-linejoin: round;
-}
-
-.angle-mark path {
-  fill: none;
-  stroke-width: 3.1;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-}
-
-.angle-mark--primary path { stroke: var(--teal); }
-.angle-mark--secondary path {
-  stroke: var(--amber);
-  stroke-dasharray: 8 3;
-}
-.angle-mark--neutral path { stroke: #4a5560; }
-.angle-mark--dashed path { stroke-dasharray: 5 4; }
-
 .answer-lines {
   display: grid;
   gap: 3mm;
@@ -396,12 +334,6 @@ body { direction: rtl; }
   margin-inline: auto;
 }
 
-.paired-diagrams .geometry-diagram {
-  width: 100%;
-  height: auto;
-  max-height: 34mm;
-}
-
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -424,7 +356,6 @@ body { direction: rtl; }
 }
 
 .relation-table td:first-child { width: 40%; padding: 0.8mm; }
-.relation-table .geometry-diagram { height: 23mm; width: auto; max-width: 100%; }
 .proof-table { font-size: 9.8pt; }
 .table-write-line { display: block; min-height: 7mm; border-bottom: 0.22mm solid #64748b; }
 .write-cell { min-height: 8mm; }
@@ -482,8 +413,6 @@ body { direction: rtl; }
     --amber: #555;
     --soft: #f2f2f2;
   }
-
-  .angle-mark--secondary path { stroke-dasharray: 8 3; }
 }
 
 @media screen and (max-width: 900px) {

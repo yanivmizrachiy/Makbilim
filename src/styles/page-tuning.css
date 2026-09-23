@@ -24,12 +24,9 @@
    enlarged diagram scale (40/54mm) is kept everywhere else. This also repairs a
    PRE-EXISTING overflow present at HEAD (u1p4 ~20mm, u3p3 ~11mm over the page). */
 .a4-page[data-unit="1"][data-page="4"] .page-content { gap: 1mm; }
-.a4-page[data-unit="1"][data-page="4"] .geometry-diagram { height: 28mm; }
-.a4-page[data-unit="1"][data-page="4"] .relation-table .geometry-diagram { height: 22mm; }
 .a4-page[data-unit="1"][data-page="4"] .relation-table td { padding: 0.7mm; }
 .a4-page[data-unit="1"][data-page="4"] .answer-lines { gap: 2mm; }
 .a4-page[data-unit="1"][data-page="4"] .answer-lines span { height: 3mm; }
 
 .a4-page[data-unit="3"][data-page="3"] .page-content { gap: 1mm; }
-.a4-page[data-unit="3"][data-page="3"] .geometry-diagram { height: 31mm; }
 .a4-page[data-unit="3"][data-page="3"] .answer-lines { gap: 2mm; }
