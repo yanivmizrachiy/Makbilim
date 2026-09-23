@@ -24,13 +24,25 @@ describe('Unit 1 conceptual integrity', () => {
   it('keeps the parallel-lines condition explicit in theorem recall', () => {
     const corresponding = unit1Questions.find(q => q.id === 'U1-P2-C')!;
     const alternate = unit1Questions.find(q => q.id === 'U1-P2-D')!;
-    expect(corresponding.stem).toContain('אם שני ישרים ______ נחתכים על ידי ישר שלישי');
-    expect(alternate.stem).toContain('אם שני ישרים ______ נחתכים על ידי ישר שלישי');
+    expect(corresponding.stem).toBe('השלימו מילה אחת בלבד: זוויות מתאימות בין ישרים ______ שוות.');
+    expect(alternate.stem).toBe('השלימו מילה אחת בלבד: זוויות ______ בין ישרים מקבילים שוות.');
+    expect((corresponding.stem.match(/______/g) ?? [])).toHaveLength(1);
+    expect((alternate.stem.match(/______/g) ?? [])).toHaveLength(1);
   });
 
   it('explicitly challenges the misconception that alternate angles are always equal', () => {
     const q = unit1Questions.find(item => item.id === 'U1-P3-A')!;
-    expect(q.stem).toContain('השוויון מובטח כאשר הישרים מקבילים');
+    expect(q.stem).toContain('זוויות מתחלפות בין ישרים מקבילים שוות');
+  });
+
+  it('includes both non-parallel counterexamples and a second boy-girl critical claim', () => {
+    const tableCases = unit1RelationTableCases.filter(item => !item.parallel);
+    expect(tableCases.some(item => item.relation === 'מתאימות' && item.equalityConclusion === 'לא ניתן לקבוע')).toBe(true);
+    expect(tableCases.some(item => item.relation === 'מתחלפות' && item.equalityConclusion === 'לא ניתן לקבוע')).toBe(true);
+    const correction = unit1Questions.find(item => item.id === 'U1-P3-D')!;
+    expect(correction.stem).toContain('מאיה');
+    expect(correction.stem).toContain('יואב');
+    expect(correction.stem).toContain('זוויות מתאימות שוות');
   });
 
   it('derives a corresponding, alternate and neither pair for page 1 classification', () => {
