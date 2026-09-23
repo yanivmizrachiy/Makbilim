@@ -103,7 +103,12 @@ describe('authored misconception targets (SPEC 5.2, 6, 6.1)', () => {
     expect(repeated, 'identical misconception targets').toEqual([]);
   });
 
-  it('no two different-format tasks on the same page share an identical target', () => {
+  it('tasks on the same page never share a near-identical target (not only an identical one)', () => {
+    const words = (text: string) => new Set(text.replace(/[^֐-׿\s]/g, ' ').split(/\s+/).filter(word => word.length > 1));
+    const jaccard = (a: Set<string>, b: Set<string>) => {
+      const shared = [...a].filter(word => b.has(word)).length;
+      return shared / (a.size + b.size - shared || 1);
+    };
     const byPage = new Map<string, typeof planTasks>();
     for (const task of planTasks) {
       const key = `U${task.unit}-page-${task.page}`;
@@ -114,9 +119,8 @@ describe('authored misconception targets (SPEC 5.2, 6, 6.1)', () => {
         for (let j = i + 1; j < tasks.length; j += 1) {
           const a = tasks[i]!;
           const b = tasks[j]!;
-          if (a.format === b.format) continue;
-          expect((a.misconceptionTarget ?? '').trim(), `${page}: ${a.id} (${a.format}) and ${b.id} (${b.format}) share a target`)
-            .not.toBe((b.misconceptionTarget ?? '').trim());
+          const similarity = jaccard(words(a.misconceptionTarget ?? ''), words(b.misconceptionTarget ?? ''));
+          expect(similarity, `${page}: ${a.id} and ${b.id} have near-identical targets (${similarity.toFixed(2)})`).toBeLessThan(0.6);
         }
       }
     }
