@@ -51,20 +51,20 @@ export const unit1Questions: Unit1Question[] = [
     diagram: { topology: 'rotated-eight-angle-construction', lineLabels: ['ℓ₁', 'ℓ₂', 'r'], pointLabels: ['P', 'R'], orientationDeg: 78, transversalDeg: 24, parallelGiven: false }
   },
   {
-    id: 'U1-P2-C', page: 2, stem: 'השלימו את המשפט: אם שני ישרים ______ נחתכים על ידי ישר שלישי, אז כל זוג זוויות מתאימות ______ זו לזו.',
+    id: 'U1-P2-C', page: 2, stem: 'השלימו מילה אחת בלבד: זוויות מתאימות בין ישרים ______ שוות.',
     diagram: { topology: 'minimal-theorem-support', lineLabels: ['e', 'f', 'z'], orientationDeg: 8, transversalDeg: 67, parallelGiven: true }
   },
   {
-    id: 'U1-P2-D', page: 3, stem: 'השלימו את המשפט: אם שני ישרים ______ נחתכים על ידי ישר שלישי, אז כל זוג זוויות מתחלפות ______ זו לזו.',
+    id: 'U1-P2-D', page: 3, stem: 'השלימו מילה אחת בלבד: זוויות ______ בין ישרים מקבילים שוות.',
     diagram: { topology: 'minimal-theorem-support', lineLabels: ['x', 'y', 'v'], orientationDeg: -14, transversalDeg: 109, parallelGiven: true }
   },
   {
     id: 'U1-P2-E', page: 3, stem: 'קבעו אם הטענה נכונה או לא נכונה. נמקו.',
-    subparts: ['כל שתי זוויות מתחלפות שוות זו לזו.', 'אם שני ישרים מקבילים נחתכים על ידי ישר שלישי, הזוויות המתחלפות שוות זו לזו.', 'אם שני ישרים מקבילים נחתכים על ידי ישר שלישי, הזוויות המתאימות שוות זו לזו.'],
+    subparts: ['זוויות מתחלפות שוות.', 'זוויות מתחלפות בין ישרים מקבילים שוות.', 'זוויות מתאימות בין ישרים מקבילים שוות.'],
     diagram: { topology: 'statement-only-with-small-reference-diagram', lineLabels: ['r', 's', 't'], orientationDeg: 0, transversalDeg: 64, parallelGiven: true }
   },
   {
-    id: 'U1-P3-A', page: 3, stem: 'דניאל אמר: „זוויות מתחלפות שוות זו לזו.” נועה אמרה: „הטענה אינה מדויקת; השוויון מובטח כאשר הישרים מקבילים.” קבעו מי צודק ונמקו.',
+    id: 'U1-P3-A', page: 3, stem: 'דניאל אמר: „זוויות מתחלפות שוות.” נועה אמרה: „המשפט אינו מדויק; צריך לומר: זוויות מתחלפות בין ישרים מקבילים שוות.” קבעו מי צודק והסבירו מדוע.',
     diagram: { topology: 'claim-analysis-two-configurations', lineLabels: ['m', 'n', 'q'], orientationDeg: 13, transversalDeg: 73, parallelGiven: false }
   },
   {
@@ -78,7 +78,7 @@ export const unit1Questions: Unit1Question[] = [
     diagram: { topology: 'rotated-four-option-angle-pairs', lineLabels: ['b', 'd', 'f'], pointLabels: ['S', 'T'], orientationDeg: 84, transversalDeg: 29, parallelGiven: false, highlights: ['option-a', 'option-b', 'option-c', 'option-d'] }
   },
   {
-    id: 'U1-P3-D', page: 4, stem: 'במשפט שלפניכם חסר תנאי הכרחי: „זוויות מתאימות שוות זו לזו.” כתבו את המשפט המלא והמדויק.',
+    id: 'U1-P3-D', page: 4, stem: 'מאיה אמרה: „זוויות מתאימות שוות.” יואב טען שחסר במשפט תנאי הכרחי. כתבו את המשפט המלא והמדויק והסבירו מה היה חסר.',
     diagram: { topology: 'two-configurations-one-parallel-one-not', lineLabels: ['h', 'k', 's'], orientationDeg: -21, transversalDeg: 48, parallelGiven: false }
   }
 ];
