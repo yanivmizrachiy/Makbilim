@@ -1,4 +1,4 @@
-import React from 'react';
+import { Fragment, type ReactNode } from 'react';
 import { MathText } from './components/MathText';
 import {
   answerKeySummary,
@@ -6,6 +6,7 @@ import {
   teacherAnswerKey,
   type TeacherAnswerEntry,
 } from './content/answer-key';
+import { TASK_KIND_LABEL, taskKindById } from './content/task-kinds';
 
 const unitTitles: Record<number, string> = {
   1: 'מושגים בסיסיים',
@@ -15,56 +16,95 @@ const unitTitles: Record<number, string> = {
   5: 'שאלות מתוך תוכנית הלימודים',
 };
 
-const fieldLabels: Record<string, string> = {
-  answer: 'תשובה',
-  values: 'ערכים',
-  value: 'ערך',
-  reason: 'נימוק',
-  reasons: 'נימוקים',
-  justification: 'הצדקה',
-  conclusion: 'מסקנה',
-  theorem: 'משפט',
-  theoremId: 'משפט',
-  angle: 'זווית',
-  x: 'x',
-  y: 'y',
+/**
+ * Answer fields of the structured answer key, in the order a teacher reads them
+ * (the answer itself, then notes on the data, then the proof and the reasoning),
+ * each with the Hebrew heading printed in the guide. An answer field missing from
+ * this list is a hard error — a raw data key must never reach the printed guide.
+ */
+const ANSWER_FIELDS: ReadonlyArray<readonly [field: string, heading: string]> = [
+  ['values', 'תשובה'],
+  ['choice', 'התשובה הנכונה'],
+  ['completions', 'לפי סדר השורות'],
+  ['conclusion', 'מסקנה'],
+  ['unneededDatum', 'נתון שאינו נחוץ'],
+  ['requiredDatum', 'הנתון הנדרש'],
+  ['proof', 'הוכחה'],
+  ['reason', 'נימוק'],
+  ['justification', 'נימוק גאומטרי'],
+];
+const FIELD_HEADINGS: ReadonlyMap<string, string> = new Map(ANSWER_FIELDS);
+
+/** Computed quantities that are plain numbers; every other computed value is an angle in degrees. */
+const PLAIN_NUMBER_NAMES = new Set(['x', 'y']);
+
+/** Hebrew value names used in the answer key → the phrase shown to the teacher. */
+const HEBREW_VALUE_NAMES: Readonly<Record<string, string>> = {
+  'זווית': 'גודל הזווית',
+  'מתאימה': 'הזווית המתאימה',
+  'מתחלפת': 'הזווית המתחלפת',
+  'קודקודית': 'הזווית הקודקודית',
+  'צמודה': 'הזווית הצמודה',
 };
 
-function AnswerValue({ value }: { value: unknown }) {
-  if (value == null) return <span>—</span>;
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
 
-  if (typeof value === 'string') {
-    return <MathText text={value} />;
+function ValueLine({ name, value }: { name: string; value: unknown }) {
+  const unit = PLAIN_NUMBER_NAMES.has(name) ? '' : '°';
+  const hebrewName = HEBREW_VALUE_NAMES[name];
+  if (hebrewName) return <>{hebrewName}: <MathText text={`${String(value)}${unit}`} /></>;
+  if (/[֐-׿]/.test(name)) {
+    throw new Error(`Answer value "${name}" has no teacher-facing phrase — add it to HEBREW_VALUE_NAMES.`);
   }
+  return <MathText text={`${name} = ${String(value)}${unit}`} />;
+}
 
-  if (typeof value === 'number' || typeof value === 'boolean') {
-    return <MathText text={String(value)} />;
+function FieldContent({ field, value }: { field: string; value: unknown }): ReactNode {
+  if (field === 'values') {
+    if (!isRecord(value)) throw new Error('Answer field "values" must be an object of named quantities.');
+    return (
+      <ul className="teacher-answer-values">
+        {Object.entries(value).map(([name, item]) => <li key={name}><ValueLine name={name} value={item} /></li>)}
+      </ul>
+    );
   }
-
   if (Array.isArray(value)) {
+    const items = value.map((item, index) => <li key={index}><MathText text={String(item)} /></li>);
+    return field === 'proof' || field === 'completions'
+      ? <ol className="teacher-answer-list">{items}</ol>
+      : <ul className="teacher-answer-list">{items}</ul>;
+  }
+  return <MathText text={String(value)} />;
+}
+
+function AnswerBody({ answer }: { answer: unknown }) {
+  if (typeof answer === 'string') return <p className="teacher-answer-text"><MathText text={answer} /></p>;
+
+  if (Array.isArray(answer)) {
     return (
       <ul className="teacher-answer-list">
-        {value.map((item, index) => (
-          <li key={index}><AnswerValue value={item} /></li>
-        ))}
+        {answer.map((item, index) => <li key={index}><MathText text={String(item)} /></li>)}
       </ul>
     );
   }
 
-  if (typeof value === 'object') {
+  if (isRecord(answer)) {
+    const unlabelled = Object.keys(answer).filter(field => !FIELD_HEADINGS.has(field));
+    if (unlabelled.length) throw new Error(`Answer field(s) without a teacher-facing heading: ${unlabelled.join(', ')}`);
     return (
-      <dl className="teacher-answer-object">
-        {Object.entries(value as Record<string, unknown>).map(([key, item]) => (
-          <React.Fragment key={key}>
-            <dt>{fieldLabels[key] ?? key}</dt>
-            <dd><AnswerValue value={item} /></dd>
-          </React.Fragment>
+      <dl className="teacher-answer-fields">
+        {ANSWER_FIELDS.filter(([field]) => field in answer).map(([field, heading]) => (
+          <Fragment key={field}>
+            <dt>{heading}</dt>
+            <dd><FieldContent field={field} value={answer[field]} /></dd>
+          </Fragment>
         ))}
       </dl>
     );
   }
 
-  return <span>{String(value)}</span>;
+  throw new Error(`Unsupported answer shape: ${JSON.stringify(answer)}`);
 }
 
 function groupByUnitAndPage(entries: TeacherAnswerEntry[]) {
@@ -96,12 +136,12 @@ export default function TeacherApp() {
       dir="rtl"
     >
       <section className="teacher-cover">
-        <div className="teacher-kicker">מפתח תשובות מאומת</div>
+        <div className="teacher-kicker">מפתח תשובות מלא</div>
         <h1>זוויות בין ישרים מקבילים</h1>
         <h2>מדריך למורה</h2>
         <p>
-          המפתח מופק ישירות ממקור האמת <bdi dir="ltr">answer-key.ts</bdi>
-          {' '}ומכסה את יחידות 1–4 בלבד.
+          המדריך כולל את התשובות לכל המשימות ביחידות 1–4, כולל נימוקים גאומטריים ופתרון המשוואות,
+          לפי סדר העמודים והשאלות בחוברת. סוג כל משימה מסומן כמו בדף התלמיד.
         </p>
         <div className="teacher-summary-grid">
           <div><strong>{answerKeySummary.unit1}</strong><span>תשובות ביחידה 1</span></div>
@@ -110,8 +150,8 @@ export default function TeacherApp() {
           <div><strong>{answerKeySummary.unit4}</strong><span>תשובות ביחידה 4</span></div>
         </div>
         <p className="teacher-cover-note">
-          סה״כ {answerKeySummary.authoredTotal} תשובות למשימות המקוריות.
-          יחידה 5 נשמרת בנאמנות למקור ואינה מקבלת פתרונות מומצאים.
+          סה״כ {answerKeySummary.authoredTotal} תשובות. ביחידה 5 מובאות שאלות מתוך תוכנית הלימודים כפי שהן במקור,
+          ולשאלות אלה לא צורפו פתרונות.
         </p>
       </section>
 
@@ -127,13 +167,13 @@ export default function TeacherApp() {
 
           <div className="teacher-answer-grid">
             {items.map((entry, index) => (
-              <article className="teacher-answer-card" key={entry.id}>
+              <article className="teacher-answer-card" key={entry.id} data-task-id={entry.id}>
                 <header>
                   <span className="teacher-answer-order">שאלה {index + 1}</span>
-                  <bdi className="teacher-answer-id" dir="ltr">{entry.id}</bdi>
+                  <span className="teacher-answer-kind">{TASK_KIND_LABEL[taskKindById(entry.id)]}</span>
                 </header>
                 <div className="teacher-answer-body">
-                  <AnswerValue value={entry.answer} />
+                  <AnswerBody answer={entry.answer} />
                 </div>
                 {entry.note ? (
                   <aside className="teacher-answer-note">
@@ -147,16 +187,11 @@ export default function TeacherApp() {
       ))}
 
       <section className="teacher-source-policy">
-        <h2>יחידה 5 — מדיניות פתרונות</h2>
-        <p>{curriculumAnswerKeyPolicy.rule}</p>
-        <dl>
-          <dt>מקור</dt>
-          <dd><bdi dir="ltr">{curriculumAnswerKeyPolicy.sourceRepository}</bdi></dd>
-          <dt>בלוקי מקור</dt>
-          <dd>{curriculumAnswerKeyPolicy.selectedSourceBlocks}</dd>
-          <dt>סטטוס</dt>
-          <dd><bdi dir="ltr">{curriculumAnswerKeyPolicy.status}</bdi></dd>
-        </dl>
+        <h2>יחידה 5 — {unitTitles[5]}</h2>
+        <p>
+          ביחידה 5 מובאות {curriculumAnswerKeyPolicy.selectedSourceBlocks} שאלות מתוך תוכנית הלימודים, בדיוק כפי שהן
+          במקור. לשאלות אלה לא צורף מפתח תשובות.
+        </p>
       </section>
     </main>
   );

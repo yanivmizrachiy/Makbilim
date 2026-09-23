@@ -173,12 +173,12 @@ body {
   color: var(--teacher-navy);
 }
 
-.teacher-answer-id {
-  direction: ltr;
-  unicode-bidi: isolate;
-  color: var(--teacher-muted);
-  font-family: Consolas, "Courier New", monospace;
-  font-size: 7.8pt;
+/* Same task-type vocabulary as the student page, so the teacher can match answers at a glance. */
+.teacher-answer-kind {
+  color: var(--teacher-accent);
+  font-size: 8.6pt;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 .teacher-answer-body {
@@ -193,21 +193,36 @@ body {
   gap: 1mm;
 }
 
-.teacher-answer-object {
+.teacher-answer-text {
+  margin: 0;
+}
+
+.teacher-answer-fields {
   margin: 0;
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
-  gap: 1.2mm 3mm;
+  gap: 1.4mm 3.5mm;
+  align-items: baseline;
 }
 
-.teacher-answer-object dt {
+.teacher-answer-fields dt {
   color: var(--teacher-accent);
   font-size: 8.8pt;
   font-weight: 800;
+  white-space: nowrap;
 }
 
-.teacher-answer-object dd {
+.teacher-answer-fields dd {
   margin: 0;
+}
+
+.teacher-answer-values {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1mm 6mm;
 }
 
 .teacher-answer-note {
@@ -262,6 +277,11 @@ body {
   direction: ltr;
   unicode-bidi: isolate;
   display: inline-block;
+}
+
+/* One MathText island is one unbreakable unit, as in the student booklet. */
+.math.mathjax-inline {
+  white-space: nowrap;
 }
 
 @media print {
