@@ -519,8 +519,10 @@ Point, Vector, Line, Segment, ישרים מקבילים, חותך אחד/יות�
 - IDs ב־DOM חייבים להיות ייחודיים, ואסור שיהיו רכיבים focusable בתוך `aria-hidden="true"`.
 - מדריך המורה חייב להכיל `main` יחיד, `h1` יחיד, RTL/עברית תקינים ונוסחאות נגישות.
 - תוצאות בדיקת התלמיד נשמרות ב-`artifacts/accessibility-report.json`; בדיקת המורה נשמרת בתוך `teacher-pdf-report.json`.
+- PDF התלמיד שמופק ב־Chromium ו־PDF המורה מופקים עם `tagged: true`.
+- QA בינארי מאמת שקיים `/StructTreeRoot` ב־PDFים המתויגים; כתיבת option בלבד אינה מספיקה.
 
-שער: `accessibility`.
+שער: `accessibility` + `tagged-pdf`.
 
 ---
 
@@ -718,7 +720,8 @@ Makbilim/
 36. `release-contract`
 37. `source-provenance`
 38. `accessibility`
-39. `pdf`
+39. `tagged-pdf`
+40. `pdf`
 
 Validators של מקוריות/הדרגתיות/markers פועלים על יחידות 1–4. validator של `curriculum-source-integrity` פועל על יחידה 5 ומוודא שאין שינוי בתוכן המקור.
 
