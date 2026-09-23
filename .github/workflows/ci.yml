@@ -63,6 +63,8 @@ jobs:
             artifacts/accessibility-report.json
             artifacts/pdf-crosscheck.json
             artifacts/teacher-pdf-report.json
+            artifacts/sbom.cdx.json
+            artifacts/input-fingerprint.json
             artifacts/SHA256SUMS.txt
             artifacts/build-manifest.json
           if-no-files-found: error
