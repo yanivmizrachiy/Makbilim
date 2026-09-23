@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import { answerSpecById, growOf } from '../content/answer-areas';
 import { globalQuestionNumber } from '../content/booklet';
-import { TASK_KIND_LABEL, taskKindById } from '../content/task-kinds';
+import { STUDENT_HIDDEN_KIND_LABELS, TASK_KIND_LABEL, taskKindById } from '../content/task-kinds';
 import { DiagramSizeProvider, diagramSizeFor } from '../geometry/diagram-size';
 import { AnswerArea, AnswerSlots } from './AnswerArea';
 
@@ -100,7 +100,7 @@ export function QuestionBlock({
       <div className={contentClass}>
         <div className="question-main">
           <div className="question-stem">
-            <span className="task-kind">{TASK_KIND_LABEL[kind]}</span>
+            {!STUDENT_HIDDEN_KIND_LABELS.has(kind) && <span className="task-kind">{TASK_KIND_LABEL[kind]}</span>}
             {children}
           </div>
           {diagram && !side && <div className="question-diagram question-diagram--stacked">{sized}</div>}

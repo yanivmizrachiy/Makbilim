@@ -5,6 +5,7 @@ import { MathText } from '../components/MathText';
 import { CLOZE_BLANK } from '../content/cloze';
 import { QuestionBlock } from '../components/QuestionBlock';
 import { ChoiceGrid, ItemRows, VerdictOptions } from '../components/ResponseParts';
+import { DeductionChain } from '../components/DeductionChain';
 import { answerSpecById } from '../content/answer-areas';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
 import { ThreeLinesDiagram } from '../geometry/ThreeLinesDiagram';
@@ -137,6 +138,7 @@ function ConverseQuestion({ q }: { q: Unit4Question }) {
       compact
       diagram={q.diagram ? <ConverseDiagram q={q} /> : undefined}
       subparts={(q.subparts ?? []).map(text => <MathText text={text} />)}
+      response={q.deduction ? <DeductionChain deduction={q.deduction} /> : undefined}
     >
       <MathText text={q.stem} />
       {q.choices && <ChoiceGrid options={q.choices} />}
@@ -154,5 +156,5 @@ function Unit4Page({ page }: { page: number }) {
 }
 
 export function Unit4Pages() {
-  return <>{[1, 2].map(page => <Unit4Page page={page} key={page} />)}</>;
+  return <>{[1, 2, 3].map(page => <Unit4Page page={page} key={page} />)}</>;
 }

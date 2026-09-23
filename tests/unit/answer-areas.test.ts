@@ -10,6 +10,7 @@ import {
   FORMAT_ANSWER,
   GROW_BY_MODE,
   growOf,
+  EQUATION_LABEL,
   LANE_LABEL,
   minimumWritingRows,
   TASK_ANSWER_OVERRIDES,
@@ -67,7 +68,7 @@ describe('answer areas are decided in data (content/answer-areas.ts)', () => {
 
   it('weights growth deterministically by mode: identification/completion 0, value 1, work/justify 2, algebra/critique/proof 3', () => {
     const expected: Record<AnswerMode, number> = {
-      none: 0, items: 0, value: 1, justify: 2, work: 2, 'two-ways': 2, algebra: 3, critique: 3, proof: 3,
+      none: 0, items: 0, value: 1, justify: 2, work: 2, 'two-ways': 2, algebra: 3, critique: 3, proof: 3, deduction: 1,
     };
     expect(GROW_BY_MODE).toEqual(expected);
   });
@@ -80,7 +81,8 @@ describe('answer areas are decided in data (content/answer-areas.ts)', () => {
       if (!ASKS_FOR_WRITING.test(text)) continue;
       const spec = answerSpecById(task.id);
       const rows = minimumWritingRows(spec, itemsWithRowsIn(blockOf(task.id), task.id));
-      if (spec.mode !== 'proof' && rows < 2) short.push(`${task.id} (${rows})`);
+      // A proof form or a guided deduction chain (its cloze reason) is the reasoning surface itself.
+      if (spec.mode !== 'proof' && spec.mode !== 'deduction' && rows < 2) short.push(`${task.id} (${rows})`);
     }
     expect(short).toEqual([]);
     // The tasks that had 0–1 lines before the answer system existed are now covered explicitly.
@@ -100,7 +102,10 @@ describe('answer areas are decided in data (content/answer-areas.ts)', () => {
       const area = findAll(blockOf(task.id), node => hasClass(node, 'answer-lines'))[0]!;
       const first = elementChildren(area)[0]!;
       expect(classesOf(first), task.id).toEqual(expect.arrayContaining(['rule', 'rule--lane', 'justification-lane']));
-      expect(visibleText(first).trim(), task.id).toBe(LANE_LABEL[lane]);
+      // The lane row reads „המשפט המתאים | המשוואה” (SPEC 7): theorem cell, then the equation cell.
+      expect(visibleText(first), task.id).toContain(LANE_LABEL[lane]);
+      expect(visibleText(first), task.id).toContain(EQUATION_LABEL);
+      expect(attrOf(first, 'data-equation-lane'), task.id).toBe('true');
     }
     // A singular label never promises one reason where the key needs two (and vice versa).
     expect(LANE_LABEL.theorem).toBe('המשפט המתאים:');
@@ -142,8 +147,9 @@ describe('answer areas are decided in data (content/answer-areas.ts)', () => {
       expect(attrOf(block, 'data-grow'), task.id).toBe(String(growOf(spec)));
       expect(attrOf(block, 'data-answer-mode'), task.id).toBe(spec.mode);
       const areas = findAll(block, node => hasClass(node, 'answer-lines') && !hasClass(node, 'answer-lines--item'));
-      if (spec.mode === 'none' || spec.mode === 'items') {
+      if (spec.mode === 'none' || spec.mode === 'items' || spec.mode === 'deduction') {
         expect(areas, `${task.id} must not carry stray writing lines`).toHaveLength(0);
+        if (spec.mode === 'deduction') expect(findAll(block, node => hasClass(node, 'deduction-chain')), task.id).toHaveLength(1);
         continue;
       }
       const expectedAreas = spec.mode === 'two-ways' ? TWO_WAYS_LABELS.length : 1;

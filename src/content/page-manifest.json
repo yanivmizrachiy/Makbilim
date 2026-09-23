@@ -8,9 +8,9 @@
     {"unit": 1, "title": "מושגים בסיסיים", "pages": 5, "pageNumbers": [1,2,3,4,5]},
     {"unit": 2, "title": "תרגילי חישוב", "pages": 6, "pageNumbers": [1,2,3,4,5,6]},
     {"unit": 3, "title": "תרגילי הוכחה", "pages": 3, "pageNumbers": [1,2,3]},
-    {"unit": 4, "title": "משפטים הפוכים", "pages": 2, "pageNumbers": [1,2]}
+    {"unit": 4, "title": "משפטים הפוכים", "pages": 3, "pageNumbers": [1,2,3]}
   ],
-  "originalPageCount": 16,
+  "originalPageCount": 17,
   "curriculumUnit": {
     "unit": 5,
     "title": "שאלות מתוך תוכנית הלימודים",
@@ -21,7 +21,7 @@
     "questionsPerPage": 2,
     "firstPage": 1
   },
-  "studentPageCount": 20,
+  "studentPageCount": 21,
   "studentFacingRules": {
     "questionNumbering": "continuous",
     "subpartNumbering": "hebrew-letters",

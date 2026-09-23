@@ -55,8 +55,8 @@ describe('dual-engine publication pipeline contract', () => {
     expect(buildPdf).toContain("querySelectorAll(':scope > .rule')");
   });
 
-  it('cross-checks exactly 20 A4 pages in both PDF engines', () => {
-    expect(crosscheck).toContain('const EXPECTED_PAGES = 20');
+  it('cross-checks exactly 21 A4 pages in both PDF engines', () => {
+    expect(crosscheck).toContain('const EXPECTED_PAGES = 21');
     expect(crosscheck).toContain("inspect(canonicalPath, 'vivliostyle')");
     expect(crosscheck).toContain("inspect(chromiumPath, 'chromium')");
     expect(crosscheck).toContain('PDF renderer page-count mismatch');

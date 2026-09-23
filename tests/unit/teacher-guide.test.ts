@@ -58,8 +58,8 @@ const visibleText = (html: string) =>
 describe('teacher guide — locating an answer by its global number', () => {
   const pages = renderedStudentPages();
 
-  it('renders all 16 authored student pages and their 62 questions', () => {
-    expect(pages).toHaveLength(16);
+  it('renders all 17 authored student pages and their 62 questions', () => {
+    expect(pages).toHaveLength(17);
     expect(pages.flatMap(page => page.taskIds)).toHaveLength(62);
   });
 
@@ -196,7 +196,7 @@ describe('teacher guide — flat printed layout', () => {
     expect(answerFlow(['שוות', { values: { x: 16 }, justification: 'x'.repeat(COLUMN_FLOW_MAX_LINE) }])).toBe('columns');
 
     const grids = [...teacherHtml.matchAll(/<div class="teacher-answer-grid" data-flow="(columns|single)">([\s\S]*?)<\/section>/g)];
-    expect(grids).toHaveLength(16);
+    expect(grids).toHaveLength(17);
     const flows = grids.map(match => match[1]);
     expect(flows).toContain('columns');
     expect(flows).toContain('single');

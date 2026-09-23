@@ -39,6 +39,7 @@ export const BOOKLET_PAGES: readonly BookletPage[] = [
   { id: 'U3-P3', topic: 'נימוק והוכחה' },
   { id: 'U4-P1', topic: 'המשפטים ההפוכים' },
   { id: 'U4-P2', topic: 'המשפטים ההפוכים' },
+  { id: 'U4-P3', topic: 'המשפטים ההפוכים' },
 ];
 
 const pageIndexById = new Map(BOOKLET_PAGES.map((page, index) => [page.id, index]));

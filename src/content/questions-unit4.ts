@@ -8,6 +8,16 @@ export type Unit4Question = {
   choices?: string[];
   /** Response structure: the verdict the student marks beside each sub-item statement. */
   verdictOptions?: string[];
+  /**
+   * A guided deduction (SPEC 3.2 / 11.14): givens ↓ intermediate equality ↓ conclusion are printed,
+   * joined by the shared ↓ arrow; the student completes the justification one word per line.
+   */
+  deduction?: {
+    givens: string[];
+    steps: string[];
+    conclusion: string;
+    reasonLines: string[];
+  };
   diagram?: {
     topology: string;
     lineLabels: string[];
@@ -61,7 +71,7 @@ export const unit4Questions: Unit4Question[] = [
   },
   {
     id: 'U4-P1-C',
-    page: 1,
+    page: 2,
     stem: 'קבעו ליד כל טענה אם היא משפט ישיר או משפט הפוך.',
     // The canonical statements themselves (SPEC 3.1 / 3.2), taken from theorems.ts so they can never drift.
     subparts: [
@@ -74,6 +84,9 @@ export const unit4Questions: Unit4Question[] = [
     expected: { completions: ['ישיר', 'הפוך', 'ישיר', 'הפוך'] }
   },
   {
+    // Ids are internal and stable (SPEC 4.2); only the `page` field places a task. Page 1 ends with
+    // this first guided chain (its diagram), page 2 holds the verdicts, the 112° chain and the
+    // true/false, and page 3 the algebra and the proof.
     id: 'U4-P1-D',
     page: 1,
     stem: 'בשרטוט שני ישרים נחתכים על ידי ישר שלישי. נתון כי ∠A = 67° ו־∠B = 67°, והזוויות ∠A ו־∠B מתאימות. קבעו אם p ∥ q. נמקו.',
@@ -87,7 +100,16 @@ export const unit4Questions: Unit4Question[] = [
       givens: ['∠A = 67°', '∠B = 67°', '∠A and ∠B are corresponding'],
       target: 'determine p ∥ q'
     },
+    // First converse application: the whole chain is printed; the student completes the converse
+    // one word per line (the stem names the pair type — the type word is a recall here).
+    deduction: {
+      givens: ['∠A = 67°', '∠B = 67°'],
+      steps: ['∠A = ∠B'],
+      conclusion: 'p ∥ q',
+      reasonLines: ['אם זוג זוויות ______ שוות זו לזו,', 'אז שני הישרים ______.']
+    },
     expected: {
+      completions: ['מתאימות', 'מקבילים'],
       conclusion: 'p ∥ q',
       reason: THEOREMS.correspondingConverse.text
     }
@@ -108,7 +130,16 @@ export const unit4Questions: Unit4Question[] = [
       givens: ['∠C = 112°', '∠D = 112°'],
       target: 'identify the pair type, then determine k ∥ m'
     },
+    // The guided 112° example (SPEC 3.2): ∠C = 112°, ∠D = 112° ↓ ∠C = ∠D ↓ k ∥ m. The pair type is
+    // NOT named anywhere: identifying it from the drawing is what fills the first blank.
+    deduction: {
+      givens: ['∠C = 112°', '∠D = 112°'],
+      steps: ['∠C = ∠D'],
+      conclusion: 'k ∥ m',
+      reasonLines: ['אם זוג זוויות ______ שוות זו לזו,', 'אז שני הישרים ______.']
+    },
     expected: {
+      completions: ['מתחלפות', 'מקבילים'],
       conclusion: 'k ∥ m',
       reason: [
         '∠C ו־∠D הן זוויות מתחלפות.',
@@ -143,7 +174,7 @@ export const unit4Questions: Unit4Question[] = [
   },
   {
     id: 'U4-P2-C',
-    page: 2,
+    page: 3,
     stem: 'הישרים p ו־q נחתכים על ידי ישר שלישי. גודלי שתי זוויות מתאימות הם (3x + 14)° ו־(5x − 26)°. מצאו את x כך שניתן יהיה לקבוע כי p ∥ q. נמקו.',
     diagram: {
       topology: 'converse-algebra-corresponding',
@@ -171,7 +202,7 @@ export const unit4Questions: Unit4Question[] = [
   },
   {
     id: 'U4-P2-D',
-    page: 2,
+    page: 3,
     stem: 'נתון p ∥ q. בשרטוט ∠A מתאימה ל־∠B, ונתון גם כי ∠A = ∠C. הזוויות ∠B ו־∠C מתאימות ביחס לישרים q ו־r. הוכיחו כי q ∥ r.',
     diagram: {
       topology: 'combined-direct-and-converse-three-lines',

@@ -51,10 +51,11 @@
   box-shadow: none;
 }
 
-/* Writing rules and lanes stay light and dotted: they must never read as the separator. */
+/* Writing rules and lanes stay light and dotted: they must never read as the separator. Only the
+   colour is cleared — the squared work grid (print.css) is a background IMAGE and must survive. */
 .question-block[data-question-surface="premium"] .answer-lines,
 .question-block[data-question-surface="premium"] .justification-lane {
-  background: transparent;
+  background-color: transparent;
   box-shadow: none;
 }
 

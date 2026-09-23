@@ -294,6 +294,67 @@ body { direction: rtl; }
   fill: none;
 }
 
+/* Guided deduction chain (SPEC 3.2 / 11.14): a centred column — givens (tagged נתון), ↓, the
+   intermediate equality, ↓, the conclusion — every line one math island; then the reason the
+   student completes one word per line. */
+.deduction-chain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+
+.deduction-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.deduction-line {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+.deduction-tag {
+  color: var(--unit-accent-dark);
+  font-size: var(--text-label);
+  font-weight: 700;
+}
+
+.deduction-block--conclusion .deduction-line { font-weight: 700; }
+
+.deduction-reason {
+  align-self: stretch;
+  margin-top: var(--space-2);
+  display: grid;
+  gap: var(--space-1);
+}
+
+.deduction-reason-line {
+  font-size: var(--text-body);
+  line-height: var(--leading-cloze);
+}
+
+/* Algebra lane (SPEC 7): the first work row reads „המשפט המתאים | המשוואה” — the theorem cell on the
+   right, the equation cell on the left — and the squared rows below hold x, the substitution and
+   the final angle. */
+.answer-lines > .rule--lane[data-equation-lane="true"] {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+  column-gap: var(--space-4);
+}
+
+/* The two lane cells read as „המשפט המתאים | המשוואה”: a thin divider on the column boundary. */
+.rule--lane[data-equation-lane="true"] > .justification-label--equation {
+  border-inline-start: var(--rule-w) solid var(--rule-color);
+  padding-inline-start: var(--space-2);
+}
+
 .answer-lines {
   display: flex;
   flex-direction: column;
@@ -303,9 +364,12 @@ body { direction: rtl; }
    prose writing rules. Applied only to work / algebra / calculation areas, never to short-answer,
    choose or one-word tasks. The square lines share the writing-rule colour (grayscale-mapped). */
 .answer-lines[data-grid="squares"] {
+  /* Print media drops background images unless the page asks to keep them: the squares must print. */
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
   background-image:
-    linear-gradient(to right, var(--rule-color) var(--grid-line-w), transparent var(--grid-line-w)),
-    linear-gradient(to bottom, var(--rule-color) var(--grid-line-w), transparent var(--grid-line-w));
+    linear-gradient(to right, var(--grid-color) var(--grid-line-w), transparent var(--grid-line-w)),
+    linear-gradient(to bottom, var(--grid-color) var(--grid-line-w), transparent var(--grid-line-w));
   background-size: var(--grid-cell) var(--grid-cell);
   background-position: top right;
 }

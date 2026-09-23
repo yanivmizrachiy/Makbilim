@@ -1,5 +1,5 @@
 {
-  "pageCount": 20,
+  "pageCount": 21,
   "expectedPages": [
     {
       "pageId": "C-P1",
@@ -80,12 +80,16 @@
     {
       "pageId": "U4-P2",
       "topic": "המשפטים ההפוכים"
+    },
+    {
+      "pageId": "U4-P3",
+      "topic": "המשפטים ההפוכים"
     }
   ],
   "mathJaxStatus": {
-    "total": 253,
-    "rendered": 253,
-    "svgNodes": 253
+    "total": 264,
+    "rendered": 264,
+    "svgNodes": 264
   },
   "layout": [
     {
@@ -1145,8 +1149,8 @@
         {
           "taskId": "U2-P4-A",
           "answerMode": "algebra",
-          "heightMm": 52,
-          "blockDeadMm": 9.1,
+          "heightMm": 55,
+          "blockDeadMm": 12.1,
           "answerRuleCount": 3,
           "rulePitchMm": 7,
           "lastRuleToSeparatorMm": 3
@@ -1154,8 +1158,8 @@
         {
           "taskId": "U2-P4-B",
           "answerMode": "algebra",
-          "heightMm": 54.8,
-          "blockDeadMm": 9,
+          "heightMm": 57.8,
+          "blockDeadMm": 12,
           "answerRuleCount": 3,
           "rulePitchMm": 7,
           "lastRuleToSeparatorMm": 3
@@ -1163,8 +1167,8 @@
         {
           "taskId": "U2-P4-C",
           "answerMode": "algebra",
-          "heightMm": 60.8,
-          "blockDeadMm": 15.1,
+          "heightMm": 57.8,
+          "blockDeadMm": 12.1,
           "answerRuleCount": 3,
           "rulePitchMm": 7,
           "lastRuleToSeparatorMm": 3
@@ -1172,7 +1176,7 @@
         {
           "taskId": "U2-P4-D",
           "answerMode": "algebra",
-          "heightMm": 88.5,
+          "heightMm": 85.5,
           "blockDeadMm": 15.4,
           "answerRuleCount": 3,
           "rulePitchMm": 7,
@@ -1249,8 +1253,8 @@
         {
           "taskId": "U2-P5-A",
           "answerMode": "algebra",
-          "heightMm": 61.3,
-          "blockDeadMm": 17.8,
+          "heightMm": 59.8,
+          "blockDeadMm": 16.3,
           "answerRuleCount": 3,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -1258,7 +1262,7 @@
         {
           "taskId": "U2-P5-B",
           "answerMode": "algebra",
-          "heightMm": 58.6,
+          "heightMm": 63.1,
           "blockDeadMm": 18.4,
           "answerRuleCount": 3,
           "rulePitchMm": 8,
@@ -1267,8 +1271,8 @@
         {
           "taskId": "U2-P5-C",
           "answerMode": "algebra",
-          "heightMm": 64.6,
-          "blockDeadMm": 17.8,
+          "heightMm": 63.1,
+          "blockDeadMm": 16.3,
           "answerRuleCount": 3,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -1276,7 +1280,7 @@
         {
           "taskId": "U2-P5-D",
           "answerMode": "critique",
-          "heightMm": 70.5,
+          "heightMm": 69.1,
           "blockDeadMm": 0,
           "answerRuleCount": 3,
           "rulePitchMm": 8,
@@ -1486,7 +1490,7 @@
           "answerMode": "justify",
           "heightMm": 91.9,
           "blockDeadMm": 0,
-          "answerRuleCount": 8,
+          "answerRuleCount": 9,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": null
         }
@@ -1719,10 +1723,10 @@
       "usedSpanRatio": 0.9673408382624181,
       "maxInterQuestionGapPx": 25.546875,
       "maxInterQuestionGapRatio": 0.025996947147490936,
-      "questionCount": 4,
-      "markerCount": 4,
-      "subpartCount": 10,
-      "subpartMarkerCount": 10,
+      "questionCount": 3,
+      "markerCount": 3,
+      "subpartCount": 6,
+      "subpartMarkerCount": 6,
       "sourceNumberCount": 0,
       "sourceShaCount": 0,
       "geometrySvgCount": 1,
@@ -1746,7 +1750,7 @@
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 0.8,
+      "maxBlockDeadMm": 26.4,
       "blocks": [
         {
           "taskId": "U4-P1-A",
@@ -1767,21 +1771,12 @@
           "lastRuleToSeparatorMm": null
         },
         {
-          "taskId": "U4-P1-C",
-          "answerMode": "items",
-          "heightMm": 68.7,
-          "blockDeadMm": 0.1,
+          "taskId": "U4-P1-D",
+          "answerMode": "deduction",
+          "heightMm": 121.7,
+          "blockDeadMm": 26.4,
           "answerRuleCount": 0,
           "rulePitchMm": null,
-          "lastRuleToSeparatorMm": null
-        },
-        {
-          "taskId": "U4-P1-D",
-          "answerMode": "justify",
-          "heightMm": 53.1,
-          "blockDeadMm": 0,
-          "answerRuleCount": 3,
-          "rulePitchMm": 8,
           "lastRuleToSeparatorMm": null
         }
       ]
@@ -1798,20 +1793,20 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 9.4375,
-      "topGapRatio": 0.009603765184761177,
-      "bottomGapPx": 16.984375,
-      "bottomGapRatio": 0.01728359727787318,
-      "usedSpanRatio": 0.9731126375373657,
-      "maxInterQuestionGapPx": 21.765625,
-      "maxInterQuestionGapRatio": 0.022149080964192585,
-      "questionCount": 4,
-      "markerCount": 4,
-      "subpartCount": 5,
-      "subpartMarkerCount": 5,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 18.875,
+      "bottomGapRatio": 0.019207530369522354,
+      "usedSpanRatio": 0.9673408382624181,
+      "maxInterQuestionGapPx": 25.546875,
+      "maxInterQuestionGapRatio": 0.025996947147490936,
+      "questionCount": 3,
+      "markerCount": 3,
+      "subpartCount": 9,
+      "subpartMarkerCount": 9,
       "sourceNumberCount": 0,
       "sourceShaCount": 0,
-      "geometrySvgCount": 3,
+      "geometrySvgCount": 1,
       "unlabeledGeometrySvgCount": 0,
       "geometryCollisionCount": 0,
       "geometryOutOfBoundsCount": 0,
@@ -1819,18 +1814,6 @@
         {
           "svgIndex": 0,
           "labels": 5,
-          "collisions": 0,
-          "outOfBounds": 0
-        },
-        {
-          "svgIndex": 1,
-          "labels": 5,
-          "collisions": 0,
-          "outOfBounds": 0
-        },
-        {
-          "svgIndex": 2,
-          "labels": 7,
           "collisions": 0,
           "outOfBounds": 0
         }
@@ -1844,42 +1827,107 @@
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 15.4,
+      "maxBlockDeadMm": 3.6,
       "blocks": [
         {
+          "taskId": "U4-P1-C",
+          "answerMode": "items",
+          "heightMm": 65.4,
+          "blockDeadMm": 0.1,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
           "taskId": "U4-P2-A",
-          "answerMode": "justify",
-          "heightMm": 43.5,
-          "blockDeadMm": 0,
-          "answerRuleCount": 3,
-          "rulePitchMm": 7,
-          "lastRuleToSeparatorMm": 3
+          "answerMode": "deduction",
+          "heightMm": 99,
+          "blockDeadMm": 3.6,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
         },
         {
           "taskId": "U4-P2-B",
           "answerMode": "items",
-          "heightMm": 84.1,
-          "blockDeadMm": 1.4,
+          "heightMm": 90.6,
+          "blockDeadMm": 2.4,
           "answerRuleCount": 5,
-          "rulePitchMm": 7,
-          "lastRuleToSeparatorMm": 3
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
+    },
+    {
+      "renderIndex": 21,
+      "pageId": "U4-P3",
+      "globalPage": 21,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 18.875,
+      "bottomGapRatio": 0.019207530369522354,
+      "usedSpanRatio": 0.9673408382624181,
+      "maxInterQuestionGapPx": 25.546875,
+      "maxInterQuestionGapRatio": 0.025996947147490936,
+      "questionCount": 2,
+      "markerCount": 2,
+      "subpartCount": 0,
+      "subpartMarkerCount": 0,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 2,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
         },
+        {
+          "svgIndex": 1,
+          "labels": 7,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "topicTitleText": "המשפטים ההפוכים",
+      "pageNumberText": "21",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 81.9,
+      "blocks": [
         {
           "taskId": "U4-P2-C",
           "answerMode": "algebra",
-          "heightMm": 61.1,
-          "blockDeadMm": 15.4,
-          "answerRuleCount": 4,
-          "rulePitchMm": 7,
-          "lastRuleToSeparatorMm": 3
+          "heightMm": 125.4,
+          "blockDeadMm": 81.9,
+          "answerRuleCount": 11,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
         },
         {
           "taskId": "U4-P2-D",
           "answerMode": "proof",
-          "heightMm": 67.3,
+          "heightMm": 129.6,
           "blockDeadMm": 0.3,
-          "answerRuleCount": 6,
-          "rulePitchMm": 7,
+          "answerRuleCount": 13,
+          "rulePitchMm": 8,
           "lastRuleToSeparatorMm": null
         }
       ]

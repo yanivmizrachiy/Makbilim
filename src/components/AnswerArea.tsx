@@ -1,6 +1,8 @@
 import { type CSSProperties } from 'react';
 import {
   answerSpecById,
+  EQUATION_LABEL,
+  EQUATION_LANES,
   finalSlotsFor,
   LANE_LABEL,
   PROOF_FORM_HEADINGS,
@@ -35,8 +37,9 @@ function RuledArea({ spec, minLines }: { spec: AnswerSpec; minLines: number }) {
   return (
     <div className="answer-lines" data-answer-mode={spec.mode} data-lane={spec.lane} {...(GRID_MODES.has(spec.mode) ? { 'data-grid': 'squares' } : {})} style={minLinesStyle(minLines + (spec.lane ? 1 : 0))}>
       {spec.lane && (
-        <span className="rule rule--lane justification-lane">
+        <span className="rule rule--lane justification-lane" {...(EQUATION_LANES.has(spec.lane) ? { 'data-equation-lane': 'true' } : {})}>
           <span className="justification-label">{LANE_LABEL[spec.lane]}</span>
+          {EQUATION_LANES.has(spec.lane) && <span className="justification-label justification-label--equation">{EQUATION_LABEL}</span>}
         </span>
       )}
       <Rules count={RULE_POOL} />
@@ -105,6 +108,7 @@ export function AnswerArea({ taskId }: { taskId: string }) {
       return <ProofForm spec={spec} />;
     case 'none':
     case 'items':
+    case 'deduction':
       return null;
   }
 }

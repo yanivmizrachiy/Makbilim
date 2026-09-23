@@ -797,7 +797,8 @@ const unit2Specs: Unit2Spec[] = [
     derive: () => {
       // 4x + 6 = 2x + 38  ⇒  2x = 32  ⇒  x = 16
       const x = (38 - 6) / (4 - 2);
-      return { answer: { x }, measures: { e1: 4 * x + 6, e2: 2 * x + 38 } };
+      // SPEC 7: finding x is not the end — the answer is the angle, 4·16 + 6 = 70°.
+      return { answer: { x, 'זווית': 4 * x + 6 }, measures: { e1: 4 * x + 6, e2: 2 * x + 38 } };
     },
   },
   {
@@ -810,7 +811,8 @@ const unit2Specs: Unit2Spec[] = [
     derive: () => {
       // 3x + 17 = 5x − 21  ⇒  38 = 2x  ⇒  x = 19
       const x = (17 + 21) / (5 - 3);
-      return { answer: { x }, measures: { e1: 3 * x + 17, e2: 5 * x - 21 } };
+      // SPEC 7: the answer is the angle, 3·19 + 17 = 74°.
+      return { answer: { x, 'זווית': 3 * x + 17 }, measures: { e1: 3 * x + 17, e2: 5 * x - 21 } };
     },
   },
   {
@@ -837,7 +839,8 @@ const unit2Specs: Unit2Spec[] = [
     derive: () => {
       // alternate angles are equal: 2x + 35 = 5x − 19  ⇒  54 = 3x  ⇒  x = 18
       const x = (35 + 19) / (5 - 2);
-      return { answer: { x }, measures: { e1: 2 * x + 35, e2: 5 * x - 19 }, choice: '2x + 35 = 5x − 19' };
+      // SPEC 7: the answer is the angle, 2·18 + 35 = 71°.
+      return { answer: { x, 'זווית': 2 * x + 35 }, measures: { e1: 2 * x + 35, e2: 5 * x - 19 }, choice: '2x + 35 = 5x − 19' };
     },
   },
   {

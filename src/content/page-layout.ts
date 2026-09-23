@@ -12,7 +12,6 @@ export const PAGE_DENSITY: Readonly<Record<string, PageDensity>> = {
   'U1-P4': 'dense',
   'U2-P4': 'dense',
   'U3-P3': 'dense',
-  'U4-P2': 'dense',
 };
 
 export function pageDensity(pageId: string): PageDensity {

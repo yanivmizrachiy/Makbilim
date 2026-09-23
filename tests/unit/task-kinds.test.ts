@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import App from '../../src/App';
 import plan from '../../src/content/question-plan.json';
-import { FORMAT_KIND, TASK_KIND_LABEL, TASK_KIND_OVERRIDES, taskKindById, taskKindFor } from '../../src/content/task-kinds';
+import { FORMAT_KIND, STUDENT_HIDDEN_KIND_LABELS, TASK_KIND_LABEL, TASK_KIND_OVERRIDES, taskKindById, taskKindFor } from '../../src/content/task-kinds';
 
 type PlanTask = { id: string; format: string };
 
@@ -72,8 +72,17 @@ describe('rendered task identity and task-type labels', () => {
       const id = /data-task-id="([^"]+)"/.exec(tag)?.[1] ?? '';
       expect(tag).toContain(`data-task-kind="${taskKindById(id)}"`);
     }
+    // Proof tasks print no eyebrow (requirements יט / מא): the instruction says what to do.
+    const shown = tasks.filter(task => !STUDENT_HIDDEN_KIND_LABELS.has(taskKindFor(task.id, task.format)));
+    expect(shown.length).toBeLessThan(tasks.length);
     const labels = [...html.matchAll(/<span class="task-kind">([^<]+)<\/span>/g)].map(match => match[1]);
-    expect(labels).toHaveLength(62);
+    expect(labels).toHaveLength(shown.length);
     for (const label of labels) expect(Object.values(TASK_KIND_LABEL)).toContain(label);
+    expect(labels).not.toContain(TASK_KIND_LABEL.proof);
+    for (const block of html.split('<section class="question-block').slice(1)) {
+      const id = /data-task-id="([^"]+)"/.exec(block)?.[1] ?? '';
+      const hidden = STUDENT_HIDDEN_KIND_LABELS.has(taskKindById(id));
+      expect(block.includes('class="task-kind"'), `${id}: task-type label ${hidden ? 'hidden' : 'shown'}`).toBe(!hidden);
+    }
   });
 });

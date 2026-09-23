@@ -34,9 +34,9 @@ const healthyPage = (unit: number, localPage: number): LayoutPage => ({
 });
 
 const healthyReport = (): LayoutReport => ({
-  pageCount: 20,
+  pageCount: 21,
   mathJaxStatus: { total: 10, rendered: 10, svgNodes: 10 },
-  layout: Array.from({ length: 20 }, (_, index) => healthyPage(1, index + 1)),
+  layout: Array.from({ length: 21 }, (_, index) => healthyPage(1, index + 1)),
 });
 
 describe('visual baseline contract', () => {

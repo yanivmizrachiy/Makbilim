@@ -94,7 +94,8 @@
 
   /* ── Graph-paper work grid (SPEC 11.11א / כ): squares only where real work is written ── */
   --grid-cell: 5mm;             /* squared-paper cell */
-  --grid-line-w: 0.15mm;        /* faint square lines (share the writing-rule colour) */
+  --grid-line-w: 0.2mm;         /* faint square lines */
+  --grid-color: #c3ccd6;        /* lighter than the writing rule: squares guide, never compete */
 
   /* ── Conclusion arrow ↓ (SPEC 11.14): one shared vector arrow ── */
   --arrow-stroke-w: 0.4mm;
@@ -116,6 +117,7 @@
     --amber: #555;
     --soft: #f2f2f2;
     --rule-color: #888;
+    --grid-color: #b4b4b4;
     --q-sep-color: #555;
   }
 

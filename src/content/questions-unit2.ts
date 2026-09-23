@@ -274,7 +274,7 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P4-A',
     page: 4,
-    stem: 'בשרטוט p ∥ q. שתי הזוויות המסומנות הן מתאימות וגודליהן (4x + 6)° ו־(2x + 38)°. מצאו את x.',
+    stem: 'בשרטוט p ∥ q. גודלי שתי הזוויות המסומנות הם (4x + 6)° ו־(2x + 38)°. זהו את סוג הזוויות, כתבו את המשפט המתאים, מצאו את x וחשבו את גודל הזוויות.',
     diagram: {
       topology: 'corresponding-two-expressions-simple',
       lineLabels: ['p', 'q', 't'],
@@ -282,15 +282,15 @@ export const unit2Questions: Unit2Question[] = [
       transversalDeg: 114,
       parallelGiven: true,
       givens: ['(4x + 6)°', '(2x + 38)°'],
-      targets: ['x']
+      targets: ['x', 'marked angle']
     },
     justificationLane: true,
-    expected: { values: { x: 16 }, justification: CORRESPONDING }
+    expected: { values: { x: 16, 'זווית': 70 }, justification: CORRESPONDING }
   },
   {
     id: 'U2-P4-B',
     page: 4,
-    stem: 'הישרים k ו־m מקבילים. שתי הזוויות המסומנות הן מתחלפות וגודליהן (3x + 17)° ו־(5x − 21)°. מצאו את x.',
+    stem: 'הישרים k ו־m מקבילים. שתי הזוויות המסומנות הן (3x + 17)° ו־(5x − 21)°. איזה סוג זוויות הן? כתבו את המשפט המתאים, מצאו את x ואת גודל הזוויות.',
     diagram: {
       topology: 'alternate-two-expressions-simple',
       lineLabels: ['k', 'm', 'r'],
@@ -298,15 +298,15 @@ export const unit2Questions: Unit2Question[] = [
       transversalDeg: 58,
       parallelGiven: true,
       givens: ['(3x + 17)°', '(5x − 21)°'],
-      targets: ['x']
+      targets: ['x', 'marked angle']
     },
     justificationLane: true,
-    expected: { values: { x: 19 }, justification: ALTERNATE }
+    expected: { values: { x: 19, 'זווית': 74 }, justification: ALTERNATE }
   },
   {
     id: 'U2-P4-C',
     page: 4,
-    stem: 'בשרטוט a ∥ b. הזוויות המסומנות מתאימות וגודליהן (6x − 9)° ו־(3x + 42)°. מצאו את x ולאחר מכן חשבו את גודלן של הזוויות המסומנות.',
+    stem: 'בשרטוט a ∥ b. הזוויות המסומנות הן (6x − 9)° ו־(3x + 42)°. זהו את סוג הזוויות ורשמו את המשפט המתאים. מצאו את x ולאחר מכן חשבו את גודלן של הזוויות המסומנות.',
     diagram: {
       topology: 'corresponding-expressions-solve-x-then-angle',
       lineLabels: ['a', 'b', 's'],
@@ -322,7 +322,7 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P4-D',
     page: 4,
-    stem: 'בשרטוט הישרים r ו־s מקבילים. גודלי שתי זוויות מתחלפות הם (2x + 35)° ו־(5x − 19)°. בחרו את המשוואה המתאימה, נמקו ופתרו.',
+    stem: 'בשרטוט הישרים r ו־s מקבילים. גודלי שתי הזוויות המסומנות הם (2x + 35)° ו־(5x − 19)°. זהו את סוג הזוויות, בחרו את המשוואה המתאימה, נמקו ופתרו, וחשבו את גודל הזוויות.',
     choices: [
       '2x + 35 = 5x − 19',
       '(2x + 35) + (5x − 19) = 180',
@@ -336,10 +336,10 @@ export const unit2Questions: Unit2Question[] = [
       transversalDeg: 80,
       parallelGiven: true,
       givens: ['(2x + 35)°', '(5x − 19)°'],
-      targets: ['correct equation', 'x']
+      targets: ['correct equation', 'x', 'marked angle']
     },
     justificationLane: true,
-    expected: { choice: '2x + 35 = 5x − 19', values: { x: 18 }, justification: ALTERNATE }
+    expected: { choice: '2x + 35 = 5x − 19', values: { x: 18, 'זווית': 71 }, justification: ALTERNATE }
   },
 
   // עמוד 5 — אלגברה מתקדמת יותר
@@ -366,7 +366,7 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P5-B',
     page: 5,
-    stem: 'הישרים c ו־d מקבילים. גודלי שתי זוויות מתחלפות הם (4x + 15)° ו־(2x + 63)°. מצאו את x ואת גודל הזוויות.',
+    stem: 'הישרים c ו־d מקבילים. גודלי שתי הזוויות המסומנות הם (4x + 15)° ו־(2x + 63)°. זהו את סוג הזוויות, כתבו את המשפט, מצאו את x ואת גודל הזוויות.',
     diagram: {
       topology: 'alternate-two-expressions-advanced',
       lineLabels: ['c', 'd', 'w'],
@@ -382,7 +382,7 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P5-C',
     page: 5,
-    stem: 'בשרטוט p ∥ q ושני ישרים חותכים אותם. בזוג אחד נתונות זוויות מתאימות שגודליהן (3x + 12)° ו־72°. בזוג השני נתונות זוויות מתחלפות שגודליהן (2y + 18)° ו־94°. מצאו את x ואת y.',
+    stem: 'בשרטוט p ∥ q ושני ישרים חותכים אותם. בזוג זוויות אחד הגדלים הם (3x + 12)° ו־72°, ובזוג השני (2y + 18)° ו־94°. זהו את סוג כל זוג, כתבו את המשפטים המתאימים ומצאו את x ואת y.',
     diagram: {
       topology: 'two-transversals-two-independent-equations',
       lineLabels: ['p', 'q', 'r', 's'],

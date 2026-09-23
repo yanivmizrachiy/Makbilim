@@ -10,7 +10,7 @@
  * which share one shape: { pageCount, expectedPages, mathJaxStatus, layout[] }.
  */
 
-export const EXPECTED_PAGES = 20;
+export const EXPECTED_PAGES = 21;
 
 /** Structural facts per page that must match the baseline exactly. */
 export const EXACT_KEYS = [

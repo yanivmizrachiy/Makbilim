@@ -27,8 +27,10 @@ import { unit4Questions } from './questions-unit4';
  *  algebra   'המשפט המתאים:' (or 'המשפטים המתאימים:') lane, equation work rules and the result slots
  *  critique  judge a claim, an equation or a proof, and correct it
  *  proof     a blank טענה | נימוק proof form, ruled at the writing pitch
+ *  deduction the printed guided chain (givens ↓ equality ↓ conclusion) with its cloze reason IS the
+ *            answer surface (components/DeductionChain.tsx); no writing rows
  */
-export type AnswerMode = 'none' | 'items' | 'value' | 'justify' | 'work' | 'two-ways' | 'algebra' | 'critique' | 'proof';
+export type AnswerMode = 'none' | 'items' | 'value' | 'justify' | 'work' | 'two-ways' | 'algebra' | 'critique' | 'proof' | 'deduction';
 
 /**
  * The lane that opens the work area: the theorem that justifies the equation, the theorems of a
@@ -61,6 +63,7 @@ export const GROW_BY_MODE: Readonly<Record<AnswerMode, 0 | 1 | 2 | 3>> = {
   algebra: 3,
   critique: 3,
   proof: 3,
+  deduction: 1,
 };
 
 export const LANE_LABEL: Readonly<Record<AnswerLane, string>> = {
@@ -68,6 +71,11 @@ export const LANE_LABEL: Readonly<Record<AnswerLane, string>> = {
   theorems: 'המשפטים המתאימים:',
   reason: 'נימוק:',
 };
+
+/** The second cell of a theorem lane (SPEC 7): the row reads „המשפט המתאים | המשוואה”. */
+export const EQUATION_LABEL = 'המשוואה:';
+/** Lanes whose row is split into the theorem cell and the equation cell. */
+export const EQUATION_LANES: ReadonlySet<AnswerLane> = new Set<AnswerLane>(['theorem', 'theorems']);
 
 /** Labels of the two lanes of a 'two-ways' task — words, never letters or numbers (SPEC 4.2). */
 export const TWO_WAYS_LABELS = ['דרך ראשונה', 'דרך שנייה'] as const;
@@ -137,8 +145,10 @@ export const TASK_ANSWER_OVERRIDES: Readonly<Record<string, AnswerSpec>> = {
   'U2-P6-D': { mode: 'work', minLines: 3, lane: 'theorems', final: true, finalKeys: ['α + β'] },
   // Five converse claims on a full page: one 'נימוק:' row under each verdict (five rows in all).
   'U4-P2-B': { mode: 'items', minLines: 0, itemRows: 1 },
-  // Name the pair type, conclude k ∥ m and cite the full converse: three rows (the guided U4-P1-D keeps two).
-  'U4-P2-A': { mode: 'justify', minLines: 3 },
+  // The first converse applications are guided deductions (SPEC 3.2): the printed chain
+  // (givens ↓ equality ↓ conclusion) with its one-word-per-line reason is the whole answer surface.
+  'U4-P1-D': { mode: 'deduction', minLines: 0 },
+  'U4-P2-A': { mode: 'deduction', minLines: 0 },
 };
 
 const FORMAT_BY_TASK_ID: ReadonlyMap<string, string> = new Map(
