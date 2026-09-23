@@ -2,6 +2,7 @@ node_modules/
 dist/
 dist-teacher/
 artifacts/
+public/vendor/
 src/content/generated/
 *.log
 .vivliostyle/
