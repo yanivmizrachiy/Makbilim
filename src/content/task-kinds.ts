@@ -65,7 +65,6 @@ export const FORMAT_KIND: Readonly<Record<string, TaskKind>> = {
   'algebra-then-angle': 'algebra',
   'equation-choice': 'algebra',
   'two-variable-light': 'algebra',
-  'mixed-algebra': 'algebra',
   'algebra-for-parallelism': 'algebra',
 
   'choose-reason': 'proof',

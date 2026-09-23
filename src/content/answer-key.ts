@@ -98,6 +98,7 @@ const unit2AnswerKey: TeacherAnswerEntry[] = unit2Questions.map(question => ({
   unit: 2,
   page: question.page,
   answer: question.expected,
+  ...(question.note ? { note: question.note } : {}),
 }));
 
 const unit3AnswerKey: TeacherAnswerEntry[] = unit3Questions.map(question => ({

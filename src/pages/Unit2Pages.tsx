@@ -69,12 +69,14 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
       return [{ ...e, label: 'E', value: '116°', role: 'given' }, { ...alpha, label: 'α', role: 'target' }];
     }
     case 'U2-P2-A': {
-      // ∠A (bottom) → its corresponding angle (top) → β, vertical to it.
+      // ∠A (bottom) → its corresponding angle (top) → β = 117°, adjacent to it. β is deliberately
+      // NOT the angle vertical to the corresponding one: that angle is alternate to ∠A, so the
+      // "two-step" chain would collapse into one step.
       const s = sized('acute', 1);
       return [
         { ...at('bottom', s), label: 'A', value: '63°', role: 'given' },
         { ...at('top', s), role: 'auxiliary' },
-        { ...at('top', verticalSector(s)), label: 'β', role: 'target' },
+        { ...at('top', adjacentSector(s, P2A_TURN)), label: 'β', role: 'target' },
       ];
     }
     case 'U2-P2-B': {
@@ -168,9 +170,14 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
       return [{ ...first, value: '(2x + 35)°', role: 'given' }, { ...second, value: '(5x − 19)°', role: 'given' }];
     }
     case 'U2-P5-A': {
-      // x = 16 gives 94°: drawn in an obtuse sector.
-      const [first, second] = corr(sized('obtuse'), 'top');
-      return [{ ...first, value: '(7x − 18)°', role: 'given' }, { ...second, value: '(3x + 46)°', role: 'given' }];
+      // x = 16: (7x − 18)° = 94° in an obtuse sector at p; (3x + 38)° = 86° at q sits beside the
+      // angle corresponding to it (that angle is not marked — seeing it is the task), so the two
+      // expressions are supplementary, not equal.
+      const s = sized('obtuse');
+      return [
+        { ...at('top', s), value: '(7x − 18)°', role: 'given' },
+        { ...at('bottom', adjacentSector(s, P5A_TURN)), value: '(3x + 38)°', role: 'given' },
+      ];
     }
     case 'U2-P5-B': {
       // x = 24 gives 111°: the obtuse alternate-interior pair.
@@ -200,14 +207,19 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
       ];
     }
     case 'U2-P6-A': {
-      // The stem names the angle at the UPPER shelf, so the given stays on the top line. Of the two
+      // The stem names the angle at the UPPER shelf, so the given stays on the top line. The stem
+      // does not name the relation: the student recognises the corresponding pair. Of the two
       // acute sectors there, this one keeps the '?' inside its own angle, off the rod.
       const [given, target] = corr(sized('acute', 1), 'top');
       return [{ ...given, value: '64°', role: 'given' }, { ...target, label: '?', role: 'target' }];
     }
     case 'U2-P6-B': {
-      const [given, target] = alt('obtuse', 'top');
-      return [{ ...given, value: '118°', role: 'given' }, { ...target, label: '?', role: 'target' }];
+      // 118° → its alternate angle on the second rail (not marked) → '?' = 62°, adjacent to it.
+      const [given, step] = alt('obtuse', 'top');
+      return [
+        { ...given, value: '118°', role: 'given' },
+        { ...at(step.intersection, adjacentSector(step.sector, P6B_TURN)), label: '?', role: 'target' },
+      ];
     }
     case 'U2-P6-C': {
       // ∠A = 128° (obtuse) → its corresponding angle → α = 52°, adjacent to it. ∠C = 75° on s is
@@ -222,6 +234,7 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
     }
     case 'U2-P6-D': {
       // α corresponds to ∠A = 41° on r; on s, ∠C = 68° → its corresponding angle → β = 112°.
+      // The final synthesis marks no intermediate angle: finding the route is the task.
       // These sectors keep every label inside its own angle and off the lines and chevrons.
       const [a, alpha] = corr(sized('acute'), 'bottom');
       const sc = sizedOnSecond('acute');
@@ -229,7 +242,6 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
         { ...a, label: 'A', value: '41°', role: 'given' },
         { ...alpha, label: 'α', role: 'target' },
         { ...at('bottom-secondary', sc), label: 'C', value: '68°', role: 'given' },
-        { ...at('top-secondary', sc), role: 'auxiliary' },
         { ...at('top-secondary', adjacentSector(sc)), label: 'β', role: 'target' },
       ];
     }
@@ -237,6 +249,11 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
       return [];
   }
 }
+
+/** Which neighbour of the step angle carries the target (the side where its label reads clearly). */
+const P2A_TURN = 1;
+const P5A_TURN = -1;
+const P6B_TURN = 1;
 
 /** A pair of angles at the crossings of the SECOND transversal. */
 function onSecond(pair: AnglePair) {
@@ -265,12 +282,12 @@ function QuestionDiagram({ q }: { q: Unit2Question }) {
 function TaskTable({ rows }: { rows: NonNullable<Unit2Question['tableRows']> }) {
   return (
     <table className="data-table">
-      <thead><tr><th>זווית / קשר</th><th>סוג הקשר</th><th>גודל</th></tr></thead>
+      <thead><tr><th>זווית</th><th>סוג הקשר</th><th>גודל</th></tr></thead>
       <tbody>
         {rows.map((row, index) => (
           <tr key={index}>
             <td><MathText text={row.label} /></td>
-            <td>{row.relation ? <MathText text={row.relation} /> : ''}</td>
+            <td className={row.relation ? undefined : 'write-cell'}>{row.relation ? <MathText text={row.relation} /> : null}</td>
             <td className={row.value ? undefined : 'write-cell'}>{row.value ? <MathText text={row.value} /> : null}</td>
           </tr>
         ))}
