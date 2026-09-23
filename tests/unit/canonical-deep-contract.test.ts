@@ -180,14 +180,19 @@ describe('canonical deep workbook contract', () => {
 
   it('detects near-duplicate didactic fingerprints, not only identical IDs or stems', () => {
     const parsed = didacticProfiles.map(profile => ({ profile, fp: JSON.parse(profile.fingerprint) as Record<string, unknown> }));
-    const keys = ['skill', 'theoremIds', 'topology', 'givenType', 'targetType', 'reasoningSteps', 'responseMode', 'difficulty', 'valueFamily', 'wordingArchetype', 'misconceptionTarget', 'transferDemand', 'progressionGain'];
+    // misconceptionTarget is left out: every target is unique by contract (didactic-profile.test.ts),
+    // so it can never match and would only dilute the comparison.
+    const keys = ['skill', 'theoremIds', 'topology', 'givenType', 'targetType', 'reasoningSteps', 'responseMode', 'difficulty', 'valueFamily', 'wordingArchetype', 'transferDemand', 'progressionGain'];
+    // Deliberate contrast pairs: the same activity, once for corresponding and once for alternate angles.
+    const contrastPairs = new Set(['U1-P1-B~U1-P1-C', 'U1-P1-E~U1-P2-A']);
 
     for (let i = 0; i < parsed.length; i += 1) {
       for (let j = i + 1; j < parsed.length; j += 1) {
         const a = parsed[i]!;
         const b = parsed[j]!;
         const same = keys.filter(key => JSON.stringify(a.fp[key]) === JSON.stringify(b.fp[key])).length;
-        expect(same, `${a.profile.id} and ${b.profile.id} are too structurally similar (${same}/${keys.length})`).toBeLessThan(11);
+        const limit = contrastPairs.has(`${a.profile.id}~${b.profile.id}`) ? 11 : 10;
+        expect(same, `${a.profile.id} and ${b.profile.id} are too structurally similar (${same}/${keys.length})`).toBeLessThan(limit);
       }
     }
   });

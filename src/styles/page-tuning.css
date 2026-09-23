@@ -1,25 +1,16 @@
-.question-content--split {
-  direction: ltr;
-}
+/* Page density presets — the only per-page tuning mechanism. A4Page writes the preset chosen in
+   src/content/page-layout.ts to data-density; a preset may ONLY set design tokens (custom
+   properties), never a property directly (tests/unit/layout-tokens.test.ts). The handwriting pitch
+   never drops below 7mm and the rule-to-separator clearance never below 3mm. */
 
-.question-content--split .question-stem,
-.question-content--split .subparts,
-.question-content--split .answer-lines,
-.question-content--split .justification-lane,
-.question-content--split .choice-grid,
-.question-content--split .matching-columns,
-.question-content--split .true-false-list {
-  direction: rtl;
-}
-
-.question-content--split .question-diagram {
-  direction: ltr;
-}
-
-.a4-page[data-unit="1"][data-page="3"] .question-block:last-child .answer-lines span {
-  height: 7mm;
-}
-
-.a4-page[data-unit="1"][data-page="4"] .relation-table .geometry-diagram {
-  height: 27mm;
+.a4-page[data-density="dense"] {
+  --rule-pitch: 7mm;
+  --work-clearance: 3mm;
+  --q-sep-after: 2.5mm;
+  --q-inner-gap: 1.5mm;
+  --content-pad-top: 2.5mm;
+  --leading-cloze: 1.7;
+  --leading-slot: 1.55;
+  --table-cell-pad: 0.8mm;
+  --write-cell-h: 7mm;
 }

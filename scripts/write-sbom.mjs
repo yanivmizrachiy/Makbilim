@@ -6,10 +6,16 @@ const root = process.cwd();
 const outPath = path.join(root, 'artifacts', 'sbom.cdx.json');
 await fs.mkdir(path.dirname(outPath), { recursive: true });
 
-const npmBin = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-const child = spawn(npmBin, ['sbom', '--sbom-format=cyclonedx'], {
+// Run npm's own CLI through the current Node binary. `npm run` exports its CLI path as
+// npm_execpath; spawning npm.cmd directly is refused on Windows by current Node (EINVAL).
+const npmCli = process.env.npm_execpath;
+const [command, prefix] = npmCli && /\.c?js$/.test(npmCli)
+  ? [process.execPath, [npmCli]]
+  : [process.platform === 'win32' ? 'npm.cmd' : 'npm', []];
+const child = spawn(command, [...prefix, 'sbom', '--sbom-format=cyclonedx'], {
   cwd: root,
   stdio: ['ignore', 'pipe', 'pipe'],
+  shell: command.endsWith('.cmd'),
 });
 
 let stdout = '';

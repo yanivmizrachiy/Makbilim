@@ -47,6 +47,14 @@ describe('dual-engine publication pipeline contract', () => {
     expect(buildPdf).toContain("screenshotPageSet('forced-colors')");
   });
 
+  it('reports per-block answer-space metrics in the layout report (report-only)', () => {
+    for (const metric of ['blockDeadMm', 'rulePitchMm', 'lastRuleToSeparatorMm', 'answerRuleCount', 'maxBlockDeadMm']) {
+      expect(buildPdf).toContain(metric);
+    }
+    // Only WHOLE rules inside their writing area are counted; rules wrapped into the hidden column are not.
+    expect(buildPdf).toContain("querySelectorAll(':scope > .rule')");
+  });
+
   it('cross-checks exactly 19 A4 pages in both PDF engines', () => {
     expect(crosscheck).toContain('const EXPECTED_PAGES = 19');
     expect(crosscheck).toContain("inspect(canonicalPath, 'vivliostyle')");

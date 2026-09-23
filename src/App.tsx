@@ -1,5 +1,6 @@
 import { A4Page } from './components/A4Page';
 import { QuestionBlock } from './components/QuestionBlock';
+import { LineSlot, WordBank } from './components/ResponseParts';
 import { ParallelLinesDiagram } from './geometry/ParallelLinesDiagram';
 import { unit1Questions } from './content/questions-unit1';
 import { Unit1Continuation } from './pages/Unit1Continuation';
@@ -15,17 +16,10 @@ const byId = (id: string) => {
   return question;
 };
 
-function RelationChoices() {
-  return (
-    <div className="choice-grid" aria-label="אפשרויות תשובה">
-      <div className="choice">מתאימות</div>
-      <div className="choice">מתחלפות</div>
-      <div className="choice">אינן שייכות לאחד משני הסוגים</div>
-    </div>
-  );
-}
+// The three classes the student writes beside each marked pair: a bank to write from, not a choice.
+const PAIR_CLASSES = ['מתאימות', 'מתחלפות', 'אינן שייכות לאחד משני הסוגים'];
 
-function Unit1Page1() {
+export function Unit1Page1() {
   const a = byId('U1-P1-A');
   const b = byId('U1-P1-B');
   const c = byId('U1-P1-C');
@@ -33,32 +27,37 @@ function Unit1Page1() {
 
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={1}>
-      <QuestionBlock compact diagram={<ParallelLinesDiagram lineLabels={['p', 'q']} transversalLabel="r" orientationDeg={0} transversalDeg={58} showParallelMarks={false} ariaLabel="שני ישרים וישר נוסף החותך את שניהם" />}>
+      <QuestionBlock taskId={a.id} compact diagram={<ParallelLinesDiagram lineLabels={['p', 'q']} transversalLabel="r" orientationDeg={0} transversalDeg={50} showParallelMarks={false} ariaLabel="שני ישרים וישר נוסף החותך את שניהם" />}>
         {a.stem}
       </QuestionBlock>
 
-      <QuestionBlock compact diagram={<ParallelLinesDiagram lineLabels={['k', 'm']} transversalLabel="t" orientationDeg={4} transversalDeg={63} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 0, tone: 'primary' }]} ariaLabel="זווית אחת מסומנת במפגש העליון" />}>
+      <QuestionBlock taskId={b.id} compact diagram={<ParallelLinesDiagram lineLabels={['k', 'm']} transversalLabel="t" orientationDeg={4} transversalDeg={142} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 0, role: 'marked' }]} ariaLabel="זווית אחת מסומנת במפגש העליון" />}>
         {b.stem}
       </QuestionBlock>
 
-      <QuestionBlock compact diagram={<ParallelLinesDiagram lineLabels={['a', 'b']} transversalLabel="s" orientationDeg={-7} transversalDeg={116} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 1, tone: 'secondary' }]} ariaLabel="זווית אחת מסומנת; יש לזהות את הזווית המתחלפת לה" />}>
+      <QuestionBlock taskId={c.id} compact diagram={<ParallelLinesDiagram lineLabels={['a', 'b']} transversalLabel="s" orientationDeg={-7} transversalDeg={101} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 0, role: 'marked' }]} ariaLabel="זווית אחת מסומנת בין שני הישרים; יש לזהות את הזווית המתחלפת לה" />}>
         {c.stem}
       </QuestionBlock>
 
       <QuestionBlock
+        taskId={d.id}
         compact
         diagram={<ParallelLinesDiagram lineLabels={['u', 'v']} transversalLabel="w" orientationDeg={11} transversalDeg={71} showParallelMarks={false} angleMarks={[
-          { intersection: 'top', sector: 0, tone: 'primary', arcStyle: 'single' },
-          { intersection: 'bottom', sector: 0, tone: 'primary', arcStyle: 'single' },
-          { intersection: 'top', sector: 1, tone: 'secondary', arcStyle: 'double' },
-          { intersection: 'bottom', sector: 3, tone: 'secondary', arcStyle: 'double' },
-          { intersection: 'top', sector: 2, tone: 'neutral', arcStyle: 'dashed' },
-          { intersection: 'bottom', sector: 1, tone: 'neutral', arcStyle: 'dashed' },
+          // arc-form-whitelist:start U1-P1-D — the task text names each pair by its arc form
+          // (one arc / two arcs / a dashed arc), so only the arc form is set here. All three pairs
+          // share one colour: a colour per pair would hint at the relation the student classifies.
+          { intersection: 'top', sector: 0, arcStyle: 'single' },
+          { intersection: 'bottom', sector: 0, arcStyle: 'single' },
+          { intersection: 'top', sector: 1, arcStyle: 'double' },
+          { intersection: 'bottom', sector: 3, arcStyle: 'double' },
+          { intersection: 'top', sector: 2, arcStyle: 'dashed' },
+          { intersection: 'bottom', sector: 1, arcStyle: 'dashed' },
+          // arc-form-whitelist:end
         ]} ariaLabel="שלושה זוגות זוויות מסומנים בסוגי קשת שונים" />}
-        subparts={(d.subparts ?? []).map(text => <>{text} ____________________</>)}
+        items={(d.subparts ?? []).map(text => ({ content: <>{text}<LineSlot /></>, inline: true }))}
       >
         {d.stem}
-        <RelationChoices />
+        <WordBank items={PAIR_CLASSES} />
       </QuestionBlock>
     </A4Page>
   );

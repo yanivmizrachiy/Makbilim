@@ -1,7 +1,23 @@
 import { A4Page } from '../components/A4Page';
+import { ClozeText } from '../components/ClozeText';
+import { MathText } from '../components/MathText';
 import { QuestionBlock } from '../components/QuestionBlock';
+import { ChoiceGrid, ItemRows, LineSlot, VerdictOptions } from '../components/ResponseParts';
+import { answerSpecById } from '../content/answer-areas';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
+import { alternateInteriorPairs, correspondingPair, type AnglePair } from '../geometry/relations';
 import { unit1Questions } from '../content/questions-unit1';
+
+/** A pair of angles the task text points to ("the marked pair"), drawn with the marked role. */
+const markedPair = (pair: AnglePair): AngleMark[] =>
+  pair.map(({ intersection, sector }) => ({ intersection, sector, role: 'marked' as const }));
+
+/** The alternate pair BETWEEN the two lines, computed from the drawing's own geometry. */
+function alternateInteriorPair(lineDeg: number, transversalDeg: number): AnglePair {
+  const pair = alternateInteriorPairs(lineDeg, transversalDeg)[0];
+  if (!pair) throw new Error(`No alternate interior pair for line ${lineDeg}° / transversal ${transversalDeg}°`);
+  return pair;
+}
 
 const byId = (id: string) => {
   const q = unit1Questions.find(item => item.id === id);
@@ -9,26 +25,49 @@ const byId = (id: string) => {
   return q;
 };
 
+// Angle names go through MathText so each is one LTR math island; as plain text inside the
+// RTL column the neutral "∠" would be placed after the digit ("1∠").
+const RIGHT_COLUMN_ANGLES = ['∠1', '∠2', '∠3', '∠4'];
+const LEFT_COLUMN_ANGLES = ['∠5', '∠6', '∠7', '∠8'];
+
 function MatchingColumns({ mode }: { mode: 'corresponding' | 'alternate' }) {
   return (
     <div className="matching-columns">
-      <div><strong>טור ימני</strong><span>∠1</span><span>∠2</span><span>∠3</span><span>∠4</span></div>
-      <div><strong>טור שמאלי</strong><span>∠5</span><span>∠6</span><span>∠7</span><span>∠8</span></div>
+      <div><strong>טור ימני</strong>{RIGHT_COLUMN_ANGLES.map(angle => <span key={angle}><MathText text={angle} /></span>)}</div>
+      <div><strong>טור שמאלי</strong>{LEFT_COLUMN_ANGLES.map(angle => <span key={angle}><MathText text={angle} /></span>)}</div>
       <span className="sr-only">{mode === 'corresponding' ? 'התאמת זוויות מתאימות' : 'התאמת זוויות מתחלפות'}</span>
     </div>
   );
 }
+
+type SectorLabels = readonly [string, string, string, string];
+
+/**
+ * Numbers of the four angles at the bottom crossing, by sector 0–3 (the top crossing is always
+ * 1–4 in sector order). Each task scrambles them differently, so that no correct pair sits on
+ * one row of the printed columns (∠1…∠4 against ∠5…∠8): the student must match by POSITION.
+ *  - U1-P1-E corresponding (top k ↔ bottom k):        1↔7, 2↔5, 3↔8, 4↔6
+ *  - U1-P2-A alternate (top k ↔ bottom (k + 2) % 4):   1↔6, 2↔5, 3↔8, 4↔7
+ *  - U1-P2-B (student's own pairs):                    corresponding 1↔6, alternate 1↔5
+ */
+export const UNIT1_BOTTOM_LABELS: Readonly<Record<'U1-P1-E' | 'U1-P2-A' | 'U1-P2-B', SectorLabels>> = {
+  'U1-P1-E': ['7', '5', '8', '6'],
+  'U1-P2-A': ['8', '7', '6', '5'],
+  'U1-P2-B': ['6', '8', '5', '7'],
+};
 
 function EightAngleDiagram({
   lineLabels,
   transversalLabel,
   orientationDeg,
   transversalDeg,
+  bottomLabels,
 }: {
   lineLabels: [string, string];
   transversalLabel: string;
   orientationDeg: number;
   transversalDeg: number;
+  bottomLabels: SectorLabels;
 }) {
   return (
     <ParallelLinesDiagram
@@ -38,27 +77,18 @@ function EightAngleDiagram({
       transversalDeg={transversalDeg}
       showParallelMarks={false}
       angleMarks={[
-        { intersection: 'top', sector: 0, label: '1', tone: 'neutral' },
-        { intersection: 'top', sector: 1, label: '2', tone: 'neutral' },
-        { intersection: 'top', sector: 2, label: '3', tone: 'neutral' },
-        { intersection: 'top', sector: 3, label: '4', tone: 'neutral' },
-        { intersection: 'bottom', sector: 0, label: '5', tone: 'neutral' },
-        { intersection: 'bottom', sector: 1, label: '6', tone: 'neutral' },
-        { intersection: 'bottom', sector: 2, label: '7', tone: 'neutral' },
-        { intersection: 'bottom', sector: 3, label: '8', tone: 'neutral' },
+        { intersection: 'top', sector: 0, label: '1', role: 'marked' },
+        { intersection: 'top', sector: 1, label: '2', role: 'marked' },
+        { intersection: 'top', sector: 2, label: '3', role: 'marked' },
+        { intersection: 'top', sector: 3, label: '4', role: 'marked' },
+        ...([0, 1, 2, 3] as const).map(sector => ({ intersection: 'bottom' as const, sector, label: bottomLabels[sector], role: 'marked' as const })),
       ]}
     />
   );
 }
 
-function TrueFalseRow({ text }: { text: string }) {
-  return (
-    <div className="true-false-row">
-      <span>{text}</span>
-      <span className="true-false-options">○ נכון&nbsp;&nbsp;&nbsp;○ לא נכון</span>
-    </div>
-  );
-}
+// Theorem-completion lines: each is a sub-item (•) with its blank written in place.
+const clozeItems = (lines: string[]) => lines.map(line => ({ content: <ClozeText text={line} /> }));
 
 function Unit1Page2() {
   const corresponding = byId('U1-P1-E');
@@ -69,33 +99,38 @@ function Unit1Page2() {
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={2}>
       <QuestionBlock
+        taskId={corresponding.id}
         compact
-        diagram={<EightAngleDiagram lineLabels={['c', 'd']} transversalLabel="h" orientationDeg={-3} transversalDeg={52} />}
+        diagram={<EightAngleDiagram lineLabels={['c', 'd']} transversalLabel="h" orientationDeg={-3} transversalDeg={52} bottomLabels={UNIT1_BOTTOM_LABELS['U1-P1-E']} />}
       >
         {corresponding.stem}
         <MatchingColumns mode="corresponding" />
       </QuestionBlock>
 
       <QuestionBlock
+        taskId={alternate.id}
         compact
-        diagram={<EightAngleDiagram lineLabels={['g', 'j']} transversalLabel="n" orientationDeg={19} transversalDeg={101} />}
+        diagram={<EightAngleDiagram lineLabels={['g', 'j']} transversalLabel="n" orientationDeg={19} transversalDeg={95} bottomLabels={UNIT1_BOTTOM_LABELS['U1-P2-A']} />}
       >
         {alternate.stem}
         <MatchingColumns mode="alternate" />
       </QuestionBlock>
 
       <QuestionBlock
+        taskId={rotated.id}
         compact
-        diagram={<EightAngleDiagram lineLabels={['ℓ₁', 'ℓ₂']} transversalLabel="r" orientationDeg={78} transversalDeg={24} />}
-        subparts={(rotated.subparts ?? []).map(text => <>{text} ______________________________</>)}
+        diagram={<EightAngleDiagram lineLabels={['ℓ₁', 'ℓ₂']} transversalLabel="r" orientationDeg={78} transversalDeg={21} bottomLabels={UNIT1_BOTTOM_LABELS['U1-P2-B']} />}
+        items={(rotated.subparts ?? []).map((text, index, all) =>
+          index < all.length - 1 ? { content: <>{text}<LineSlot /></>, inline: true } : { content: text })}
       >
         {rotated.stem}
       </QuestionBlock>
 
       <QuestionBlock
+        taskId={theorem.id}
         compact
-        answerLines={1}
-        diagram={<ParallelLinesDiagram lineLabels={['e', 'f']} transversalLabel="z" orientationDeg={8} transversalDeg={67} showParallelMarks />}
+        diagram={<ParallelLinesDiagram lineLabels={['e', 'f']} transversalLabel="z" orientationDeg={8} transversalDeg={138} showParallelMarks angleMarks={markedPair(correspondingPair(0))} />}
+        items={clozeItems(theorem.subparts ?? [])}
       >
         {theorem.stem}
       </QuestionBlock>
@@ -113,24 +148,24 @@ export const unit1RelationTableCases: Array<{
 }> = [
   {
     orientationDeg: 0,
-    transversalDeg: 59,
+    transversalDeg: 131,
     parallel: true,
     relation: 'מתאימות',
     equalityConclusion: 'כן',
     marks: [
-      { intersection: 'top', sector: 0, tone: 'primary' },
-      { intersection: 'bottom', sector: 0, tone: 'primary' },
+      { intersection: 'top', sector: 0, role: 'marked' },
+      { intersection: 'bottom', sector: 0, role: 'marked' },
     ],
   },
   {
     orientationDeg: 31,
-    transversalDeg: 122,
+    transversalDeg: 107,
     parallel: false,
     relation: 'מתאימות',
     equalityConclusion: 'לא ניתן לקבוע',
     marks: [
-      { intersection: 'top', sector: 1, tone: 'primary' },
-      { intersection: 'bottom', sector: 1, tone: 'primary' },
+      { intersection: 'top', sector: 1, role: 'marked' },
+      { intersection: 'bottom', sector: 1, role: 'marked' },
     ],
   },
   {
@@ -140,19 +175,19 @@ export const unit1RelationTableCases: Array<{
     relation: 'מתחלפות',
     equalityConclusion: 'כן',
     marks: [
-      { intersection: 'top', sector: 2, tone: 'primary' },
-      { intersection: 'bottom', sector: 0, tone: 'primary' },
+      { intersection: 'top', sector: 2, role: 'marked' },
+      { intersection: 'bottom', sector: 0, role: 'marked' },
     ],
   },
   {
     orientationDeg: -18,
-    transversalDeg: 51,
+    transversalDeg: 112,
     parallel: false,
     relation: 'מתחלפות',
     equalityConclusion: 'לא ניתן לקבוע',
     marks: [
-      { intersection: 'top', sector: 0, tone: 'primary' },
-      { intersection: 'bottom', sector: 2, tone: 'primary' },
+      { intersection: 'top', sector: 0, role: 'marked' },
+      { intersection: 'bottom', sector: 2, role: 'marked' },
     ],
   },
 ];
@@ -160,12 +195,14 @@ export const unit1RelationTableCases: Array<{
 function RelationTable() {
   return (
     <table className="data-table relation-table">
-      <thead><tr><th>שרטוט</th><th>סוג הזוג</th><th>האם ניתן לקבוע שהזוויות שוות?</th></tr></thead>
+      <colgroup><col className="col-figure" /><col className="col-answer" /><col className="col-answer" /></colgroup>
+      <thead><tr><th>שרטוט</th><th>סוג הזוג: מתאימות או מתחלפות?</th><th>האם ניתן לקבוע שהזוויות שוות?</th></tr></thead>
       <tbody>
         {unit1RelationTableCases.map((item, index) => (
           <tr key={index}>
             <td>
               <ParallelLinesDiagram
+                size="table"
                 lineLabels={['a', 'c']}
                 transversalLabel="p"
                 orientationDeg={item.orientationDeg}
@@ -191,29 +228,36 @@ function Unit1Page3() {
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={3}>
       <QuestionBlock
-        answerLines={1}
-        diagram={<ParallelLinesDiagram lineLabels={['x', 'y']} transversalLabel="v" orientationDeg={-14} transversalDeg={109} showParallelMarks />}
+        taskId={theorem.id}
+        compact
+        diagram={<ParallelLinesDiagram lineLabels={['x', 'y']} transversalLabel="v" orientationDeg={-14} transversalDeg={109} showParallelMarks angleMarks={markedPair(alternateInteriorPair(-14, 109))} />}
+        items={clozeItems(theorem.subparts ?? [])}
       >
         {theorem.stem}
       </QuestionBlock>
 
-      <QuestionBlock>
+      <QuestionBlock
+        taskId={trueFalse.id}
+        items={(trueFalse.subparts ?? []).map(text => ({
+          content: text,
+          aside: <VerdictOptions options={trueFalse.verdictOptions ?? []} />,
+          after: <ItemRows label="נימוק:" rows={answerSpecById(trueFalse.id).itemRows ?? 1} />,
+        }))}
+      >
         {trueFalse.stem}
-        <div className="true-false-list">
-          {(trueFalse.subparts ?? []).map((text, index) => <TrueFalseRow key={index} text={text} />)}
-        </div>
       </QuestionBlock>
 
       <QuestionBlock
-        answerLines={4}
+        taskId={claim.id}
+        diagramLayout="stacked"
         diagram={
           <div className="paired-diagrams">
-            <ParallelLinesDiagram lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={13} transversalDeg={73} showParallelMarks />
-            <ParallelLinesDiagram lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={-9} transversalDeg={68} showParallelMarks={false} />
+            <ParallelLinesDiagram size="pair" lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={13} transversalDeg={63} showParallelMarks angleMarks={markedPair(alternateInteriorPair(13, 63))} />
+            <ParallelLinesDiagram size="pair" lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={-9} transversalDeg={131} showParallelMarks={false} secondLineSkewDeg={8} angleMarks={markedPair(alternateInteriorPair(-9, 131))} />
           </div>
         }
       >
-        {claim.stem}
+        <MathText text={claim.stem} />
       </QuestionBlock>
     </A4Page>
   );
@@ -226,46 +270,45 @@ function Unit1Page4() {
 
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={4}>
-      <QuestionBlock compact subparts={(table.subparts ?? []).map(text => <>{text}</>)}>
+      <QuestionBlock taskId={table.id} compact response={<RelationTable />}>
         {table.stem}
-        <RelationTable />
       </QuestionBlock>
 
       <QuestionBlock
+        taskId={choice.id}
         compact
         diagram={
           <ParallelLinesDiagram
             lineLabels={['b', 'd']}
             transversalLabel="f"
             orientationDeg={84}
-            transversalDeg={29}
+            transversalDeg={151}
             showParallelMarks={false}
             angleMarks={[
-              { intersection: 'top', sector: 0, label: 'א', tone: 'primary' },
-              { intersection: 'bottom', sector: 1, label: 'א', tone: 'primary' },
-              { intersection: 'top', sector: 1, label: 'ב', tone: 'secondary' },
-              { intersection: 'bottom', sector: 1, label: 'ב', tone: 'secondary' },
-              { intersection: 'top', sector: 2, label: 'ג', tone: 'neutral' },
-              { intersection: 'bottom', sector: 0, label: 'ג', tone: 'neutral' },
-              { intersection: 'top', sector: 3, label: 'ד', tone: 'primary', arcStyle: 'double' },
-              { intersection: 'bottom', sector: 3, label: 'ד', tone: 'primary', arcStyle: 'double' },
+              { intersection: 'top', sector: 0, label: 'א', role: 'marked' },
+              { intersection: 'bottom', sector: 1, label: 'א', role: 'marked' },
+              { intersection: 'top', sector: 1, label: 'ב', role: 'marked' },
+              { intersection: 'bottom', sector: 2, label: 'ב', role: 'marked' },
+              { intersection: 'top', sector: 2, label: 'ג', role: 'marked' },
+              { intersection: 'bottom', sector: 0, label: 'ג', role: 'marked' },
+              { intersection: 'top', sector: 3, label: 'ד', role: 'marked' },
+              { intersection: 'bottom', sector: 3, label: 'ד', role: 'marked' },
             ]}
           />
         }
       >
         {choice.stem}
-        <div className="choice-grid">
-          {(choice.choices ?? []).map(item => <div className="choice" key={item}>{item}</div>)}
-        </div>
+        <ChoiceGrid options={choice.choices ?? []} />
       </QuestionBlock>
 
       <QuestionBlock
+        taskId={correction.id}
         compact
-        answerLines={4}
+        diagramLayout="stacked"
         diagram={
           <div className="paired-diagrams">
-            <ParallelLinesDiagram lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={-21} transversalDeg={48} showParallelMarks />
-            <ParallelLinesDiagram lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={16} transversalDeg={62} showParallelMarks={false} />
+            <ParallelLinesDiagram size="pair" lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={-21} transversalDeg={48} showParallelMarks angleMarks={markedPair(correspondingPair(0))} />
+            <ParallelLinesDiagram size="pair" lineLabels={['h', 'k']} transversalLabel="s" orientationDeg={16} transversalDeg={54} showParallelMarks={false} secondLineSkewDeg={-8} angleMarks={markedPair(correspondingPair(0))} />
           </div>
         }
       >

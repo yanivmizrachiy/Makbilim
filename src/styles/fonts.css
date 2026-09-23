@@ -1,0 +1,53 @@
+/*
+ * Every font face of the booklet, loaded offline from the app bundle (Vite resolves the url()s to
+ * hashed assets; no CDN). The glyphs are New Computer Modern — the face MathJax 4 sets every
+ * formula in — taken unmodified from @mathjax/mathjax-newcm-font, which @mathjax/src 4.1.3 pins.
+ * Hebrew text is set in Noto Sans Hebrew (--font-body).
+ */
+
+/* Diagram labels (src/geometry/label-font.ts): math-italic letters, upright digits. Ascent/descent
+   are pinned so a label's DOM box is exactly the em box the placement engine reserves. */
+@font-face {
+  font-family: "Makbilim Math";
+  src: url("@mathjax/mathjax-newcm-font/chtml/woff2/mjx-ncm-n.woff2") format("woff2");
+  font-display: block;
+  ascent-override: 80.6%;
+  descent-override: 19.4%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Makbilim Math";
+  src: url("@mathjax/mathjax-newcm-font/chtml/woff2/mjx-ncm-s.woff2") format("woff2");
+  font-display: block;
+  unicode-range: U+2113;
+  ascent-override: 80.6%;
+  descent-override: 19.4%;
+  line-gap-override: 0%;
+}
+
+/* Symbols inside running Hebrew text — the booklet's ● / • markers, ○ answer bubbles, and the
+   mathematics that unit 5's verbatim source types as plain text (∠ ∥ △ ≅ ≠ = + − × · ′ and Greek).
+   Noto Sans Hebrew has none of them, so without this face each machine would substitute its own
+   (Cambria Math, Segoe UI, DejaVu …). The mathematical symbols keep their natural size, matching the
+   same glyphs in the MathJax formulas; the circles are scaled to the size the layout was designed with. */
+@font-face {
+  font-family: "Makbilim Symbols";
+  src: url("@mathjax/mathjax-newcm-font/chtml/woff2/mjx-ncm-n.woff2") format("woff2");
+  font-display: block;
+  unicode-range: U+002B, U+003D, U+00B7, U+00D7, U+0391-03A9, U+03B1-03C9, U+2032, U+2212, U+2220, U+2225, U+2245, U+2260, U+25B3;
+}
+
+@font-face {
+  font-family: "Makbilim Symbols";
+  src: url("@mathjax/mathjax-newcm-font/chtml/woff2/mjx-ncm-n.woff2") format("woff2");
+  font-display: block;
+  unicode-range: U+25CB, U+25CF;
+  size-adjust: 62.9%;
+}
+
+@font-face {
+  font-family: "Makbilim Symbols";
+  src: url("@mathjax/mathjax-newcm-font/chtml/woff2/mjx-ncm-sy.woff2") format("woff2");
+  font-display: block;
+  unicode-range: U+2022;
+}

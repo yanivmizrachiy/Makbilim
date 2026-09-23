@@ -123,11 +123,18 @@ const prerequisitesFor = (unit: number, task: RawTask) => {
   return base;
 };
 
-const misconceptionFor = (task: RawTask) =>
-  task.misconceptionTarget ??
-  (/T3|T4/.test((task.theoremIds ?? []).join(''))
-    ? 'שימוש במשפט ישיר במקום במשפט ההפוך'
-    : 'בחירת קשר זוויות או משפט שאינו מתאים לנתונים');
+/**
+ * SPEC 5.2 / 6 / 6.1: every original task names the specific student error it is
+ * designed to surface. The target must be authored per task in question-plan.json;
+ * there is deliberately no generic fallback, so a missing or blank value fails loudly.
+ */
+export const authoredMisconceptionTarget = (task: { id: string; misconceptionTarget?: string | undefined }): string => {
+  const target = task.misconceptionTarget?.trim() ?? '';
+  if (!target) {
+    throw new Error(`Task ${task.id} has no authored misconceptionTarget in question-plan.json (SPEC 6.1)`);
+  }
+  return target;
+};
 
 const wordingArchetypeFor = (format: string) => {
   if (/sentence-completion|fill/i.test(format)) return 'השלימו את המשפט/הנימוק';
@@ -199,7 +206,7 @@ export const didacticProfiles: DidacticProfile[] = rawUnits
     if (!question) throw new Error(`Missing authored content for didactic profile ${task.id}`);
 
     const wordingArchetype = wordingArchetypeFor(task.format);
-    const misconceptionTarget = misconceptionFor(task);
+    const misconceptionTarget = authoredMisconceptionTarget(task);
     const transferDemand = Math.max(1, Math.min(5, visual + (unit.unit >= 3 ? 1 : 0))) as DemandLevel;
     const sourceArchetypeRefs = sourceRefsFor(unit.unit);
     const topology = question.diagram?.topology ?? 'statement-only';

@@ -1,21 +1,49 @@
-import {
-  chooseRadialLabelPoint,
-  clampLabelPoint,
-  estimateLabelRect,
-  lineIntersection,
-  offsetPoint,
-  pointOnRay,
-  segmentThrough,
-  type Point,
-} from './core';
+import { normalizeAngle, type Point } from './core';
+import { resolveAngleStyle, type AngleRole } from './angle-roles';
+import { useDiagramSize, type DiagramSize } from './diagram-size';
+import { layoutFigure, type FigureMark, type FigureSpec } from './engine';
+import { Figure, type MarkPresentation } from './primitives';
 
 export type ThreeLineAngleMark = {
   line: 0 | 1 | 2;
   label?: string;
   value?: string;
+  /**
+   * Which of the two angles on the transversal's "downstream" side of the line is meant:
+   * 'right' lies between the line's forward ray (orientationDeg) and that transversal ray,
+   * 'left' between that transversal ray and the line's backward ray (see `markSector`).
+   * The same side at two crossings therefore names corresponding angles.
+   */
   side?: 'left' | 'right';
+  /** Preferred: the angle's pedagogical role, styled centrally in angle-roles.ts. */
+  role?: AngleRole;
+  /** Explicit styling — only when the task text itself refers to the arc form. Never combined with `role`. */
   tone?: 'primary' | 'secondary' | 'neutral';
+  arcStyle?: 'single' | 'double' | 'dashed';
 };
+
+/** An angle sector at a crossing: from direction `start`, clockwise (SVG) over `width` degrees. */
+export type AngleSector = { start: number; width: number };
+
+/**
+ * The sector a mark names at a crossing of a line (direction `lineDeg`) with the transversal.
+ * "Downstream" is the transversal ray that turns clockwise from the line's forward ray by less
+ * than 180°, so the result does not depend on which of the two directions `transversalDeg` uses.
+ */
+export function markSector(lineDeg: number, transversalDeg: number, side: 'left' | 'right'): AngleSector {
+  const forward = normalizeAngle(lineDeg);
+  const downstream = normalizeAngle(transversalDeg - lineDeg) < 180
+    ? normalizeAngle(transversalDeg)
+    : normalizeAngle(transversalDeg + 180);
+  const gap = normalizeAngle(downstream - forward);
+  return side === 'left' ? { start: downstream, width: 180 - gap } : { start: forward, width: gap };
+}
+
+/** Whether direction `deg` lies inside `sector`, at least `margin` degrees from both bounding rays. */
+export function directionInSector(deg: number, sector: AngleSector, margin = 0): boolean {
+  const offset = normalizeAngle(deg - sector.start);
+  return offset >= margin && offset <= sector.width - margin;
+}
 
 export type ThreeLinesDiagramProps = {
   lineLabels?: [string, string, string];
@@ -25,23 +53,46 @@ export type ThreeLinesDiagramProps = {
   parallelPair?: [0 | 1 | 2, 0 | 1 | 2];
   angleMarks?: ThreeLineAngleMark[];
   ariaLabel?: string;
+  /** Size class; by default the one of the enclosing question (see diagram-size.tsx). */
+  size?: DiagramSize | undefined;
 };
 
-const W = 520;
-const H = 280;
-const CENTER: Point = { x: W / 2, y: H / 2 };
+/** Three lines span two gaps, so their nominal gap is a little over half a two-line figure's. */
+const THREE_LINES_NOMINAL_FACTOR = 0.6;
 
-function ParallelChevron({ center, lineDeg }: { center: Point; lineDeg: number }) {
-  return (
-    <g
-      className="parallel-mark parallel-mark--chevrons"
-      transform={`translate(${center.x.toFixed(2)} ${center.y.toFixed(2)}) rotate(${lineDeg})`}
-      aria-hidden="true"
-    >
-      <polyline points="-10,-6 -2,0 -10,6" />
-      <polyline points="2,-6 10,0 2,6" />
-    </g>
-  );
+type ThreeLinesInput = Required<Omit<ThreeLinesDiagramProps, 'ariaLabel' | 'size'>>;
+
+const unitVector = (deg: number): Point => ({ x: Math.cos((deg * Math.PI) / 180), y: Math.sin((deg * Math.PI) / 180) });
+
+/**
+ * Three lines, one gap apart, crossed by one transversal through the middle line. Built on the
+ * same engine and primitives as ParallelLinesDiagram: real arcs, haloed labels, the same
+ * clearance search for every line name.
+ */
+function buildFigure(gap: number, input: ThreeLinesInput): FigureSpec {
+  const normal = unitVector(input.orientationDeg + 90);
+  const chevronLines = new Set<number>(input.parallelPair);
+  const lines: FigureSpec['lines'] = ([-1, 0, 1] as const).map((step, index) => ({
+    kind: 'given' as const,
+    anchor: { x: normal.x * step * gap, y: normal.y * step * gap },
+    deg: input.orientationDeg,
+    label: input.lineLabels[index],
+    chevrons: chevronLines.has(index as 0 | 1 | 2),
+    labelSide: (index === 2 ? 1 : -1) as 1 | -1,
+  }));
+  lines.push({ kind: 'transversal', anchor: { x: 0, y: 0 }, deg: input.transversalDeg, label: input.transversalLabel, labelSide: 1 });
+  const marks: FigureMark[] = input.angleMarks.map(mark => {
+    const sector = markSector(input.orientationDeg, input.transversalDeg, mark.side ?? 'right');
+    return {
+      given: mark.line,
+      transversal: 3,
+      start: sector.start,
+      end: sector.start + sector.width,
+      arcStyle: resolveAngleStyle(mark).arcStyle,
+      label: mark.label ?? mark.value,
+    };
+  });
+  return { lines, marks };
 }
 
 export function ThreeLinesDiagram({
@@ -52,154 +103,26 @@ export function ThreeLinesDiagram({
   parallelPair = [0, 1],
   angleMarks = [],
   ariaLabel = 'שלושה ישרים וישר חותך',
+  size: sizeProp,
 }: ThreeLinesDiagramProps) {
-  const offsets = [-72, 0, 72] as const;
-  const centers = offsets.map(offset => offsetPoint(CENTER, orientationDeg, offset));
-  const lines = centers.map(center => segmentThrough(center, 410, orientationDeg));
-  const transversal = segmentThrough(CENTER, 390, transversalDeg);
-  const intersections = lines.map((line, index) => lineIntersection(line, transversal) ?? centers[index]!);
-
-  const labelBounds = { minX: 0, minY: 0, maxX: W, maxY: H };
-  const lineLabelOptions = { minWidth: 32, maxWidth: 190, charWidth: 11.5, height: 30, baseWidth: 18 };
-  const angleBadgeOptions = { minWidth: 34, maxWidth: 120, charWidth: 11, height: 28, baseWidth: 18 };
-  const lineLabelPoints = centers.map((center, index) => {
-    const onLine = pointOnRay(center, orientationDeg, 186);
-    const normal = index === 2 ? 13 : -13;
-    return clampLabelPoint(
-      offsetPoint(onLine, orientationDeg, normal),
-      lineLabels[index] ?? '',
-      labelBounds,
-      lineLabelOptions,
-      12,
-    );
+  const size = useDiagramSize(sizeProp);
+  const input: ThreeLinesInput = { lineLabels, transversalLabel, orientationDeg, transversalDeg, parallelPair, angleMarks };
+  const layout = layoutFigure(`three|${JSON.stringify(input)}`, size, gap => buildFigure(gap, input), THREE_LINES_NOMINAL_FACTOR);
+  const presentations: MarkPresentation[] = angleMarks.map(mark => {
+    const { tone, arcStyle } = resolveAngleStyle(mark);
+    return {
+      className: `angle-mark angle-mark--${tone} angle-mark--${arcStyle} three-line-angle-mark`,
+      attributes: { 'data-angle-role': mark.role, 'data-angle-line': mark.line, 'data-angle-side': mark.side ?? 'right' },
+    };
   });
-  const occupiedLabelRects = lineLabelPoints.map((point, index) =>
-    estimateLabelRect(point, lineLabels[index] ?? '', lineLabelOptions),
-  );
-  const transversalPlaced = chooseRadialLabelPoint({
-    origin: CENTER,
-    angleDeg: transversalDeg,
-    text: transversalLabel,
-    preferredRadius: 176,
-    bounds: labelBounds,
-    occupied: occupiedLabelRects,
-    radii: [188, 200, 212],
-    inset: 12,
-    minGap: 8,
-    angleOffsets: [0, 5, -5, 10, -10, 15, -15],
-    labelOptions: lineLabelOptions,
-  });
-  const transversalLabelPoint = transversalPlaced.point;
-  occupiedLabelRects.push(transversalPlaced.rect);
-
-  const renderedMarks = angleMarks.map((mark, index) => {
-    const p = intersections[mark.line]!;
-    const label = mark.label ?? mark.value ?? '';
-    const baseAngle = mark.side === 'left'
-      ? 155 + (mark.line === 0 ? 8 : mark.line === 2 ? -8 : 0)
-      : 25 + (mark.line === 0 ? 8 : mark.line === 2 ? -8 : 0);
-    const placed = chooseRadialLabelPoint({
-      origin: p,
-      angleDeg: baseAngle,
-      text: label,
-      preferredRadius: 42,
-      bounds: labelBounds,
-      occupied: occupiedLabelRects,
-      radii: [50, 58, 66, 76, 88, 100],
-      inset: 14,
-      minGap: 8,
-      angleOffsets: [0, 7, -7, 14, -14, 21, -21, 28, -28, 35, -35],
-      labelOptions: angleBadgeOptions,
-    });
-    occupiedLabelRects.push(placed.rect);
-    return { mark, index, p, labelPoint: placed.point, label };
-  });
-
   return (
-    <svg
+    <Figure
+      layout={layout}
+      size={size}
       className="geometry-diagram geometry-diagram--premium three-lines-diagram"
-      viewBox={`0 0 ${W} ${H}`}
-      role="img"
-      aria-label={ariaLabel}
-      preserveAspectRatio="xMidYMid meet"
-      shapeRendering="geometricPrecision"
-      data-geometry-quality="premium"
-      data-label-placement="collision-aware"
-      focusable="false"
-    >
-      <title>{ariaLabel}</title>
-      <desc>שרטוט וקטורי מדויק של שלושה ישרים וישר חותך, עם סימוני מקבילות והדגשות סמנטיות.</desc>
-
-      <g className="geometry-line-underlay" aria-hidden="true">
-        {lines.map((line, index) => <line key={`underlay-${index}`} x1={line.a.x} y1={line.a.y} x2={line.b.x} y2={line.b.y} />)}
-        <line x1={transversal.a.x} y1={transversal.a.y} x2={transversal.b.x} y2={transversal.b.y} />
-      </g>
-
-      <g className="geometry-lines">
-        {lines.map((line, index) => <line key={index} x1={line.a.x} y1={line.a.y} x2={line.b.x} y2={line.b.y} />)}
-        <line x1={transversal.a.x} y1={transversal.a.y} x2={transversal.b.x} y2={transversal.b.y} />
-      </g>
-
-      {parallelPair.map(index => (
-        <ParallelChevron
-          key={index}
-          center={pointOnRay(centers[index]!, orientationDeg, -112)}
-          lineDeg={orientationDeg}
-        />
-      ))}
-
-      <g className="geometry-intersections" aria-hidden="true">
-        {intersections.map((point, index) => <circle key={index} cx={point.x} cy={point.y} r="2.55" />)}
-      </g>
-
-      <g className="geometry-labels" aria-hidden="true" direction="ltr">
-        {lineLabelPoints.map((point, index) => (
-          <text key={index} x={point.x} y={point.y} textAnchor="middle" dominantBaseline="middle">
-            {lineLabels[index]}
-          </text>
-        ))}
-        <text
-          x={transversalLabelPoint.x}
-          y={transversalLabelPoint.y}
-          textAnchor="middle"
-          dominantBaseline="middle"
-        >
-          {transversalLabel}
-        </text>
-      </g>
-
-      {renderedMarks.map(({ mark, index, p, labelPoint, label }) => (
-          <g key={index} className={`angle-mark angle-mark--${mark.tone ?? 'primary'} three-line-angle-mark`}>
-            <line
-              className="angle-callout"
-              x1={p.x}
-              y1={p.y}
-              x2={p.x + (labelPoint.x - p.x) * 0.58}
-              y2={p.y + (labelPoint.y - p.y) * 0.58}
-              aria-hidden="true"
-            />
-            <rect
-              className="angle-badge"
-              x={labelPoint.x - Math.max(17, 9 + label.length * 5.5)}
-              y={labelPoint.y - 14}
-              width={Math.max(34, Math.min(120, 18 + label.length * 11))}
-              height="28"
-              rx="8"
-              ry="8"
-              aria-hidden="true"
-            />
-            <text
-              className="angle-label-text"
-              x={labelPoint.x}
-              y={labelPoint.y}
-              textAnchor="middle"
-              dominantBaseline="middle"
-              direction="ltr"
-            >
-              {label}
-            </text>
-          </g>
-      ))}
-    </svg>
+      ariaLabel={ariaLabel}
+      description="שרטוט של שלושה ישרים וישר חותך; סימוני מקבילות מציינים את הישרים המקבילים, וזוויות מסומנות בקשתות."
+      marks={presentations}
+    />
   );
 }

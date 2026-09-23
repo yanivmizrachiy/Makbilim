@@ -1,20 +1,18 @@
-import {
-  arcPath,
-  chooseRadialLabelPoint,
-  clampLabelPoint,
-  estimateLabelRect,
-  lineIntersection,
-  offsetPoint,
-  pointOnRay,
-  segmentThrough,
-  type Point,
-} from './core';
+import { geometryTokens as T } from '../styles/tokens';
+import { useDiagramSize, type DiagramSize } from './diagram-size';
+import { layoutFigure, mm, type FigureMark, type FigureSpec } from './engine';
+import { Figure, type MarkPresentation } from './primitives';
+import { resolveAngleStyle, type AngleRole } from './angle-roles';
+import type { Point } from './core';
 
 export type AngleMark = {
   intersection: 'top' | 'bottom' | 'top-secondary' | 'bottom-secondary';
   sector: 0 | 1 | 2 | 3;
   label?: string | undefined;
   value?: string | undefined;
+  /** Preferred: the angle's pedagogical role (given / target / marked / auxiliary), styled centrally in angle-roles.ts. */
+  role?: AngleRole | undefined;
+  /** Explicit styling — only when the task text itself refers to the arc form. Never combined with `role`. */
   tone?: 'primary' | 'secondary' | 'neutral' | undefined;
   arcStyle?: 'single' | 'double' | 'dashed' | undefined;
 };
@@ -27,84 +25,197 @@ export type ParallelLinesDiagramProps = {
   transversalDeg?: number | undefined;
   secondaryTransversalDeg?: number | undefined;
   showParallelMarks?: boolean | undefined;
+  /**
+   * Rotates the second (bottom) line by this many degrees about its own
+   * centre, so the two lines are genuinely NOT parallel. 0 (the default)
+   * keeps the pair parallel and renders exactly as before. A non-zero skew
+   * always suppresses the parallel chevrons and the "parallel" wording in the
+   * accessible name/description, because the drawing is then a real
+   * counterexample: corresponding and alternate angles differ by |skew|.
+   */
+  secondLineSkewDeg?: number | undefined;
   angleMarks?: AngleMark[] | undefined;
   ariaLabel?: string | undefined;
+  /** Size class; by default the one of the enclosing question (see diagram-size.tsx). */
+  size?: DiagramSize | undefined;
 };
 
-const W = 480;
-const H = 320;
-const CENTER: Point = { x: W / 2, y: H / 2 };
-const PARALLEL_DISTANCE = 62;
-const PARALLEL_LENGTH = 300;
-const TRANSVERSAL_LENGTH = 330;
+/**
+ * Angular clearance (degrees) kept between the skewed bottom line and every
+ * transversal, so the skew leaves a clearly visible sector on both sides of
+ * each ray (arcs are trimmed only to the edge of the drawn line).
+ */
+const SKEW_SECTOR_CLEARANCE = 12;
+/**
+ * Largest allowed skew. The lines then meet at least gap / tan(20°) ≈ 2.7 gaps
+ * from the crossing — beyond the drawn ends of the lines (the engine extends a
+ * line at most lineOverhangMm.max past its crossings), so a skewed pair visibly
+ * converges but never crosses in the drawing.
+ */
+const MAX_SECOND_LINE_SKEW_DEG = 20;
+
+/**
+ * Accessible name/description state only what the drawing actually shows: a pair is called
+ * parallel only when parallel marks are drawn; an unmarked pair makes no parallel claim.
+ */
+type LineRelation = 'parallel' | 'nonParallel' | 'unmarked';
+const ARIA_LABEL: Record<LineRelation, string> = {
+  parallel: 'שרטוט של שני ישרים מקבילים וישר חותך',
+  nonParallel: 'שרטוט של שני ישרים שאינם מקבילים וישר חותך',
+  unmarked: 'שרטוט של שני ישרים וישר חותך',
+};
+const RELATION_DESC: Record<LineRelation, string> = {
+  parallel: 'שני ישרים מקבילים, המסומנים בסימני מקבילות, וישר החותך אותם.',
+  nonParallel: 'שני ישרים שאינם מקבילים וישר החותך אותם.',
+  unmarked: 'שני ישרים וישר החותך אותם; בשרטוט לא מסומן שהישרים מקבילים.',
+};
 
 function classForMark(mark: AngleMark) {
-  return `angle-mark angle-mark--${mark.tone ?? 'primary'} angle-mark--${mark.arcStyle ?? 'single'}`;
+  const { tone, arcStyle } = resolveAngleStyle(mark);
+  return `angle-mark angle-mark--${tone} angle-mark--${arcStyle}`;
 }
 
-function sectorAngles(lineDeg: number, transversalDeg: number, sector: AngleMark['sector']) {
-  const rays = [lineDeg, transversalDeg, lineDeg + 180, transversalDeg + 180]
-    .map(angle => ((angle % 360) + 360) % 360)
-    .sort((a, b) => a - b);
+/**
+ * Start/end directions of angle sector `sector` at one intersection.
+ *
+ * Sectors are indexed by sorting the rays of the REFERENCE (top) line and the
+ * transversal, so index k denotes the same position at every intersection:
+ * top sector k and bottom sector k are corresponding angles, top k and
+ * bottom (k + 2) % 4 are alternate angles (see relations.ts). `lineSkewDeg`
+ * is how far this intersection's own line is rotated from the reference
+ * line; the arc is then drawn between that line's ACTUAL rays, so a mark sits
+ * exactly on the real angle even when the lines are not parallel.
+ */
+function sectorAngles(lineDeg: number, transversalDeg: number, sector: AngleMark['sector'], lineSkewDeg = 0) {
+  const rays = [
+    { base: lineDeg, skew: lineSkewDeg },
+    { base: transversalDeg, skew: 0 },
+    { base: lineDeg + 180, skew: lineSkewDeg },
+    { base: transversalDeg + 180, skew: 0 },
+  ]
+    .map(ray => ({ base: ((ray.base % 360) + 360) % 360, skew: ray.skew }))
+    .sort((a, b) => a.base - b.base);
 
-  const start = rays[sector]!;
-  const nextBase = rays[(sector + 1) % rays.length]!;
-  const next = nextBase + (sector === rays.length - 1 ? 360 : 0);
-  return { start, end: next };
+  const startRay = rays[sector]!;
+  const nextRay = rays[(sector + 1) % rays.length]!;
+  const next = nextRay.base + (sector === rays.length - 1 ? 360 : 0);
+  return { start: startRay.base + startRay.skew, end: next + nextRay.skew };
 }
 
-function angleSectorPath(center: Point, radius: number, startDeg: number, endDeg: number) {
-  const start = pointOnRay(center, startDeg, radius);
-  const end = pointOnRay(center, endDeg, radius);
-  const delta = Math.max(0, endDeg - startDeg);
-  const largeArc = delta > 180 ? 1 : 0;
-  return [
-    `M ${center.x.toFixed(2)} ${center.y.toFixed(2)}`,
-    `L ${start.x.toFixed(2)} ${start.y.toFixed(2)}`,
-    `A ${radius} ${radius} 0 ${largeArc} 1 ${end.x.toFixed(2)} ${end.y.toFixed(2)}`,
-    'Z',
-  ].join(' ');
+/** Smallest angle (0..90°) between two undirected line directions. */
+function lineGapDeg(firstDeg: number, secondDeg: number) {
+  const diff = (((firstDeg - secondDeg) % 180) + 180) % 180;
+  return Math.min(diff, 180 - diff);
 }
 
-function ParallelMark({ center, lineDeg }: { center: Point; lineDeg: number }) {
-  return (
-    <g
-      className="parallel-mark parallel-mark--chevrons"
-      transform={`translate(${center.x.toFixed(2)} ${center.y.toFixed(2)}) rotate(${lineDeg})`}
-      aria-hidden="true"
-    >
-      <polyline points="-10,-6 -2,0 -10,6" />
-      <polyline points="2,-6 10,0 2,6" />
-    </g>
-  );
+function assertSkewKeepsSectorOrder(orientationDeg: number, skewDeg: number, transversals: number[]) {
+  if (!Number.isFinite(skewDeg) || Math.abs(skewDeg) > MAX_SECOND_LINE_SKEW_DEG) {
+    throw new RangeError(
+      `secondLineSkewDeg must be a finite number within ±${MAX_SECOND_LINE_SKEW_DEG}° (received ${skewDeg}).`,
+    );
+  }
+  for (const transversalDeg of transversals) {
+    const gap = lineGapDeg(orientationDeg, transversalDeg);
+    if (Math.abs(skewDeg) > gap - SKEW_SECTOR_CLEARANCE) {
+      throw new RangeError(
+        `secondLineSkewDeg=${skewDeg} is too large for a transversal at ${transversalDeg}° ` +
+        `(the lines at ${orientationDeg}° leave only ${gap.toFixed(1)}°); ` +
+        `the skewed line would cross the transversal's direction and scramble the angle sectors.`,
+      );
+    }
+  }
 }
 
-function labelPoint(center: Point, lineDeg: number, along: number, normal: number): Point {
-  return offsetPoint(pointOnRay(center, lineDeg, along), lineDeg, normal);
+/** Where the secondary transversal crosses the lines, relative to the primary one (in gaps). */
+const SECONDARY_OFFSET = 0.613;
+
+export type FigureInput = {
+  lineLabels: [string, string];
+  transversalLabel: string;
+  secondaryTransversalLabel: string;
+  orientationDeg: number;
+  transversalDeg: number;
+  secondaryTransversalDeg: number | undefined;
+  secondLineSkewDeg: number;
+  showParallelMarks: boolean;
+  angleMarks: AngleMark[];
+};
+
+const unitVector = (deg: number): Point => ({ x: Math.cos((deg * Math.PI) / 180), y: Math.sin((deg * Math.PI) / 180) });
+
+/**
+ * The secondary transversal passes through a point SECONDARY_OFFSET gaps along the lines from
+ * the primary one — moved farther out when either of its crossings would come closer than
+ * minIntersectionSpacingMm to the primary crossing on the same line (no near-concurrency), or
+ * when the two transversals would cross each other near a line or near their drawn ends
+ * (they must cross clearly between the lines, or well outside the drawing).
+ */
+function secondaryAnchor(gap: number, orientationDeg: number, primaryDeg: number, secondaryDeg: number): Point {
+  const along = unitVector(orientationDeg);
+  const cot = (deg: number) => {
+    const angle = ((deg - orientationDeg) * Math.PI) / 180;
+    return Math.cos(angle) / Math.sin(angle);
+  };
+  // Along-line position of a transversal's crossing with the line at normal offset n.
+  const crossingAt = (offset: number, deg: number, n: number) => offset + n * cot(deg);
+  const minSpacing = mm(T.minIntersectionSpacingMm);
+  const clearOfLines = (offset: number) => {
+    const slopeGap = cot(secondaryDeg) - cot(primaryDeg);
+    if (Math.abs(slopeGap) < 1e-9) return true;
+    // Normal offset where the two transversals meet.
+    const meet = -offset / slopeGap;
+    return Math.abs(meet) <= gap / 2 - mm(4) || Math.abs(meet) >= gap / 2 + mm(T.transversalOverhangMm + 4);
+  };
+  for (let factor = SECONDARY_OFFSET; factor < SECONDARY_OFFSET + 3; factor += 0.05) {
+    const offset = factor * gap;
+    const spaced = [-gap / 2, gap / 2].every(n => Math.abs(crossingAt(offset, secondaryDeg, n) - crossingAt(0, primaryDeg, n)) >= minSpacing);
+    if (spaced && clearOfLines(offset)) return { x: along.x * offset, y: along.y * offset };
+  }
+  return { x: along.x * SECONDARY_OFFSET * gap, y: along.y * SECONDARY_OFFSET * gap };
 }
 
-function labelRadiusFor(text: string, start: number, end: number) {
-  const span = Math.max(12, Math.min(170, end - start));
-  const textAllowance = Math.min(14, Math.max(0, text.length - 2) * 2.6);
-  const spanAllowance = span < 45 ? 12 : span < 70 ? 7 : 0;
-  return 48 + textAllowance + spanAllowance;
-}
-
-function LabelPlate({ point, label }: { point: Point; label: string }) {
-  const width = Math.max(28, Math.min(82, 17 + label.length * 10.4));
-  const height = 27;
-  return (
-    <g className="angle-label-plate" aria-hidden="true">
-      <rect
-        x={point.x - width / 2}
-        y={point.y - height / 2}
-        width={width}
-        height={height}
-        rx={7}
-        ry={7}
-      />
-    </g>
-  );
+/** The figure at a given gap (px) between the two lines, in the engine's terms. */
+export function buildFigure(gap: number, input: FigureInput): FigureSpec {
+  const { orientationDeg, transversalDeg, secondaryTransversalDeg, secondLineSkewDeg } = input;
+  const normal = unitVector(orientationDeg + 90);
+  // The top line sits half a gap toward −normal, the bottom line half a gap toward +normal.
+  const top: Point = { x: (-normal.x * gap) / 2, y: (-normal.y * gap) / 2 };
+  const bottom: Point = { x: (normal.x * gap) / 2, y: (normal.y * gap) / 2 };
+  const lines: FigureSpec['lines'] = [
+    { kind: 'given', anchor: top, deg: orientationDeg, label: input.lineLabels[0], chevrons: input.showParallelMarks, labelSide: -1 },
+    { kind: 'given', anchor: bottom, deg: orientationDeg + secondLineSkewDeg, label: input.lineLabels[1], chevrons: input.showParallelMarks, labelSide: 1 },
+    { kind: 'transversal', anchor: { x: 0, y: 0 }, deg: transversalDeg, label: input.transversalLabel, labelSide: 1 },
+  ];
+  if (secondaryTransversalDeg != null) {
+    lines.push({
+      kind: 'transversal',
+      anchor: secondaryAnchor(gap, orientationDeg, transversalDeg, secondaryTransversalDeg),
+      deg: secondaryTransversalDeg,
+      label: input.secondaryTransversalLabel,
+      labelSide: 1,
+    });
+  }
+  const vertexLines: Record<AngleMark['intersection'], { given: number; transversal: number; skew: number }> = {
+    top: { given: 0, transversal: 2, skew: 0 },
+    bottom: { given: 1, transversal: 2, skew: secondLineSkewDeg },
+    'top-secondary': { given: 0, transversal: 3, skew: 0 },
+    'bottom-secondary': { given: 1, transversal: 3, skew: secondLineSkewDeg },
+  };
+  const marks: FigureMark[] = input.angleMarks.flatMap(mark => {
+    const at = vertexLines[mark.intersection];
+    const transDeg = at.transversal === 3 ? secondaryTransversalDeg : transversalDeg;
+    if (transDeg == null) return [];
+    const { start, end } = sectorAngles(orientationDeg, transDeg, mark.sector, at.skew);
+    return [{
+      given: at.given,
+      transversal: at.transversal,
+      start,
+      end,
+      arcStyle: resolveAngleStyle(mark).arcStyle,
+      label: mark.label ?? mark.value,
+    }];
+  });
+  return { lines, marks };
 }
 
 export function ParallelLinesDiagram({
@@ -114,228 +225,63 @@ export function ParallelLinesDiagram({
   orientationDeg = 0,
   transversalDeg = 62,
   secondaryTransversalDeg,
-  showParallelMarks = true,
+  showParallelMarks: showParallelMarksProp,
+  secondLineSkewDeg = 0,
   angleMarks = [],
-  ariaLabel = 'שרטוט של שני ישרים מקבילים וישר חותך',
+  ariaLabel,
+  size: sizeProp,
 }: ParallelLinesDiagramProps) {
-  const topCenter = offsetPoint(CENTER, orientationDeg, -PARALLEL_DISTANCE);
-  const bottomCenter = offsetPoint(CENTER, orientationDeg, PARALLEL_DISTANCE);
-  const top = segmentThrough(topCenter, PARALLEL_LENGTH, orientationDeg);
-  const bottom = segmentThrough(bottomCenter, PARALLEL_LENGTH, orientationDeg);
-
-  const primary = segmentThrough(CENTER, TRANSVERSAL_LENGTH, transversalDeg);
-  const topIntersection = lineIntersection(top, primary) ?? topCenter;
-  const bottomIntersection = lineIntersection(bottom, primary) ?? bottomCenter;
-
-  const secondaryCenter = pointOnRay(CENTER, orientationDeg, 76);
-  const secondary = secondaryTransversalDeg == null
-    ? null
-    : segmentThrough(secondaryCenter, TRANSVERSAL_LENGTH, secondaryTransversalDeg);
-  const topSecondaryIntersection = secondary ? lineIntersection(top, secondary) : null;
-  const bottomSecondaryIntersection = secondary ? lineIntersection(bottom, secondary) : null;
-
-  const intersections: Record<AngleMark['intersection'], { point: Point; transDeg: number } | null> = {
-    top: { point: topIntersection, transDeg: transversalDeg },
-    bottom: { point: bottomIntersection, transDeg: transversalDeg },
-    'top-secondary': topSecondaryIntersection && secondaryTransversalDeg != null
-      ? { point: topSecondaryIntersection, transDeg: secondaryTransversalDeg }
-      : null,
-    'bottom-secondary': bottomSecondaryIntersection && secondaryTransversalDeg != null
-      ? { point: bottomSecondaryIntersection, transDeg: secondaryTransversalDeg }
-      : null,
-  };
-
-  const labelBounds = { minX: 0, minY: 0, maxX: W, maxY: H };
-  const lineLabelOptions = { minWidth: 32, maxWidth: 190, charWidth: 11.5, height: 30, baseWidth: 18 };
-  const topLabel = clampLabelPoint(
-    labelPoint(topCenter, orientationDeg, 142, -18),
-    lineLabels[0],
-    labelBounds,
-    lineLabelOptions,
-    12,
-  );
-  const bottomLabel = clampLabelPoint(
-    labelPoint(bottomCenter, orientationDeg, 142, 18),
-    lineLabels[1],
-    labelBounds,
-    lineLabelOptions,
-    12,
-  );
-
-  const occupiedLabelRects = [
-    estimateLabelRect(topLabel, lineLabels[0], lineLabelOptions),
-    estimateLabelRect(bottomLabel, lineLabels[1], lineLabelOptions),
-  ];
-
-  const primaryPlaced = chooseRadialLabelPoint({
-    origin: CENTER,
-    angleDeg: transversalDeg,
-    text: transversalLabel,
-    preferredRadius: 154,
-    bounds: labelBounds,
-    occupied: occupiedLabelRects,
-    radii: [166, 178, 190, 202],
-    inset: 12,
-    minGap: 8,
-    angleOffsets: [0, 5, -5, 10, -10, 15, -15],
-    labelOptions: lineLabelOptions,
-  });
-  const primaryLabel = primaryPlaced.point;
-  occupiedLabelRects.push(primaryPlaced.rect);
-
-  let secondaryLabel: Point | null = null;
-  if (secondary && secondaryTransversalDeg != null) {
-    const secondaryPlaced = chooseRadialLabelPoint({
-      origin: secondaryCenter,
-      angleDeg: secondaryTransversalDeg,
-      text: secondaryTransversalLabel,
-      preferredRadius: 154,
-      bounds: labelBounds,
-      occupied: occupiedLabelRects,
-      radii: [166, 178, 190, 202],
-      inset: 12,
-      minGap: 8,
-      angleOffsets: [0, 5, -5, 10, -10, 15, -15, 20, -20],
-      labelOptions: lineLabelOptions,
-    });
-    secondaryLabel = secondaryPlaced.point;
-    occupiedLabelRects.push(secondaryPlaced.rect);
-  }
-
-  const renderedMarks = angleMarks.map((mark, index) => {
-    const intersection = intersections[mark.intersection];
-    if (!intersection) return null;
-    const { start, end } = sectorAngles(orientationDeg, intersection.transDeg, mark.sector);
-    const safeStart = start + 5;
-    const safeEnd = end - 5;
-    const mid = start + (end - start) / 2;
-    const label = mark.label ?? mark.value;
-    let angleLabelPoint: Point | null = null;
-    if (label) {
-      const preferredRadius = labelRadiusFor(label, start, end);
-      const placed = chooseRadialLabelPoint({
-        origin: intersection.point,
-        angleDeg: mid,
-        text: label,
-        preferredRadius,
-        bounds: labelBounds,
-        occupied: occupiedLabelRects,
-        radii: [
-          preferredRadius + 8,
-          preferredRadius + 16,
-          preferredRadius + 24,
-          preferredRadius + 34,
-          preferredRadius + 46,
-          preferredRadius + 58,
-          preferredRadius + 72,
-          preferredRadius + 86,
-        ],
-        inset: 14,
-        minGap: 8,
-        angleOffsets: [0, 5, -5, 10, -10, 15, -15, 20, -20, 25, -25, 30, -30],
-      });
-      angleLabelPoint = placed.point;
-      occupiedLabelRects.push(placed.rect);
+  const size = useDiagramSize(sizeProp);
+  const isSkewed = secondLineSkewDeg !== 0;
+  if (isSkewed) {
+    if (showParallelMarksProp === true) {
+      throw new RangeError('ParallelLinesDiagram: parallel marks cannot be drawn on a non-parallel (skewed) pair.');
     }
-    return { mark, index, intersection, start: safeStart, end: safeEnd, label, angleLabelPoint };
-  }).filter(Boolean) as Array<{
-    mark: AngleMark;
-    index: number;
-    intersection: { point: Point; transDeg: number };
-    start: number;
-    end: number;
-    label: string | undefined;
-    angleLabelPoint: Point | null;
-  }>;
+    assertSkewKeepsSectorOrder(
+      orientationDeg,
+      secondLineSkewDeg,
+      secondaryTransversalDeg == null ? [transversalDeg] : [transversalDeg, secondaryTransversalDeg],
+    );
+  }
+  // Chevrons assert parallelism, so a skewed (non-parallel) pair never gets them.
+  const showParallelMarks = (showParallelMarksProp ?? !isSkewed) && !isSkewed;
+  const relation: LineRelation = isSkewed ? 'nonParallel' : showParallelMarks ? 'parallel' : 'unmarked';
+  const accessibleLabel = ariaLabel ?? ARIA_LABEL[relation];
+  const accessibleDesc = `${RELATION_DESC[relation]}${angleMarks.length > 0 ? ' זוויות מסומנות בקשתות.' : ''}`;
+
+  const input: FigureInput = {
+    lineLabels,
+    transversalLabel,
+    secondaryTransversalLabel,
+    orientationDeg,
+    transversalDeg,
+    secondaryTransversalDeg,
+    secondLineSkewDeg,
+    showParallelMarks,
+    angleMarks,
+  };
+  const layout = layoutFigure(`parallel|${JSON.stringify(input)}`, size, gap => buildFigure(gap, input));
+
+  // One presentation per DRAWN mark (marks at a missing secondary transversal are not drawn).
+  const presentations: MarkPresentation[] = angleMarks
+    .filter(mark => secondaryTransversalDeg != null || (mark.intersection !== 'top-secondary' && mark.intersection !== 'bottom-secondary'))
+    .map(mark => ({
+      className: classForMark(mark),
+      attributes: { 'data-angle-role': mark.role, 'data-angle-at': mark.intersection, 'data-angle-sector': mark.sector },
+    }));
 
   return (
-    <svg
+    <Figure
+      layout={layout}
+      size={size}
       className="geometry-diagram geometry-diagram--premium"
-      viewBox={`0 0 ${W} ${H}`}
-      role="img"
-      aria-label={ariaLabel}
-      preserveAspectRatio="xMidYMid meet"
-      shapeRendering="geometricPrecision"
-      data-geometry-quality="premium"
-      data-label-placement="collision-aware"
-      focusable="false"
-    >
-      <title>{ariaLabel}</title>
-      <desc>שרטוט וקטורי מדויק עם סימוני מקבילות, הדגשת זוויות ותוויות סמנטיות.</desc>
-
-      <g className="angle-sectors" aria-hidden="true">
-        {renderedMarks.map(({ mark, index, intersection, start, end }) => (
-          <path
-            key={`fill-${mark.intersection}-${mark.sector}-${index}`}
-            className={`${classForMark(mark)} angle-sector-fill`}
-            d={angleSectorPath(intersection.point, 34, start, end)}
-          />
-        ))}
-      </g>
-
-      <g className="geometry-line-underlay" aria-hidden="true">
-        <line x1={top.a.x} y1={top.a.y} x2={top.b.x} y2={top.b.y} />
-        <line x1={bottom.a.x} y1={bottom.a.y} x2={bottom.b.x} y2={bottom.b.y} />
-        <line x1={primary.a.x} y1={primary.a.y} x2={primary.b.x} y2={primary.b.y} />
-        {secondary && <line x1={secondary.a.x} y1={secondary.a.y} x2={secondary.b.x} y2={secondary.b.y} />}
-      </g>
-
-      <g className="geometry-lines">
-        <line x1={top.a.x} y1={top.a.y} x2={top.b.x} y2={top.b.y} />
-        <line x1={bottom.a.x} y1={bottom.a.y} x2={bottom.b.x} y2={bottom.b.y} />
-        <line x1={primary.a.x} y1={primary.a.y} x2={primary.b.x} y2={primary.b.y} />
-        {secondary && <line x1={secondary.a.x} y1={secondary.a.y} x2={secondary.b.x} y2={secondary.b.y} />}
-      </g>
-
-      {showParallelMarks && (
-        <>
-          <ParallelMark center={pointOnRay(topCenter, orientationDeg, -92)} lineDeg={orientationDeg} />
-          <ParallelMark center={pointOnRay(bottomCenter, orientationDeg, -92)} lineDeg={orientationDeg} />
-        </>
-      )}
-
-      <g className="geometry-intersections" aria-hidden="true">
-        <circle cx={topIntersection.x} cy={topIntersection.y} r="2.55" />
-        <circle cx={bottomIntersection.x} cy={bottomIntersection.y} r="2.55" />
-        {topSecondaryIntersection && <circle cx={topSecondaryIntersection.x} cy={topSecondaryIntersection.y} r="2.55" />}
-        {bottomSecondaryIntersection && <circle cx={bottomSecondaryIntersection.x} cy={bottomSecondaryIntersection.y} r="2.55" />}
-      </g>
-
-      <g className="geometry-labels" aria-hidden="true" direction="ltr">
-        <text x={topLabel.x} y={topLabel.y} textAnchor="middle" dominantBaseline="middle">{lineLabels[0]}</text>
-        <text x={bottomLabel.x} y={bottomLabel.y} textAnchor="middle" dominantBaseline="middle">{lineLabels[1]}</text>
-        <text x={primaryLabel.x} y={primaryLabel.y} textAnchor="middle" dominantBaseline="middle">{transversalLabel}</text>
-        {secondary && secondaryLabel && (
-          <text x={secondaryLabel.x} y={secondaryLabel.y} textAnchor="middle" dominantBaseline="middle">{secondaryTransversalLabel}</text>
-        )}
-      </g>
-
-      {renderedMarks.map(({ mark, index, intersection, start, end, label, angleLabelPoint }) => {
-        const style = mark.arcStyle ?? 'single';
-        return (
-          <g key={`${mark.intersection}-${mark.sector}-${index}`} className={classForMark(mark)}>
-            <path className="angle-arc angle-arc--inner" d={arcPath(intersection.point, 29, start, end)} />
-            {style === 'double' && (
-              <path className="angle-arc angle-arc--outer" d={arcPath(intersection.point, 36, start + 1, end - 1)} />
-            )}
-            {label && angleLabelPoint && (
-              <>
-                <LabelPlate point={angleLabelPoint} label={label} />
-                <text
-                  className="angle-label-text"
-                  x={angleLabelPoint.x}
-                  y={angleLabelPoint.y}
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  direction="ltr"
-                >
-                  {label}
-                </text>
-              </>
-            )}
-          </g>
-        );
-      })}
-    </svg>
+      ariaLabel={accessibleLabel}
+      description={accessibleDesc}
+      marks={presentations}
+      svgAttributes={{
+        'data-line-relation': isSkewed ? 'non-parallel' : undefined,
+        'data-second-line-skew': isSkewed ? secondLineSkewDeg : undefined,
+      }}
+    />
   );
 }

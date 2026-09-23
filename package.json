@@ -30,6 +30,7 @@
     "pdf:crosscheck": "node scripts/validate-pdf-crosscheck.mjs",
     "validate:schema": "node scripts/validate-schemas.mjs",
     "validate:visual-baseline": "node scripts/validate-visual-baseline.mjs",
+    "qa:rebaseline": "node scripts/update-visual-baseline.mjs",
     "build:teacher": "npm run prepare:mathjax && vite build --config vite.teacher.config.ts",
     "pdf:teacher": "npm run build:teacher && node scripts/build-teacher-pdf.mjs",
     "checksums": "node scripts/write-checksums.mjs",

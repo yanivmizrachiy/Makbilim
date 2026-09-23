@@ -1,187 +1,264 @@
 import { A4Page } from '../components/A4Page';
 import { MathText } from '../components/MathText';
 import { QuestionBlock } from '../components/QuestionBlock';
+import { ChoiceGrid } from '../components/ResponseParts';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
-import { alternatePair, correspondingPair, type Sector } from '../geometry/relations';
+import {
+  adjacentSector,
+  alternatePairOfSize,
+  correspondingPair,
+  sectorOfSize,
+  verticalSector,
+  type AnglePair,
+  type AngleSize,
+  type IntersectionName,
+  type PrimaryAngleRef,
+  type Sector,
+} from '../geometry/relations';
 import { unit2Questions, type Unit2Question } from '../content/questions-unit2';
 
+/**
+ * Angle marks for the unit-2 diagrams.
+ *
+ * Every mark declares its ROLE, never a colour: the given angle (a known value), the target (the
+ * angle to find), and auxiliary angles (intermediate steps). angle-roles.ts styles each role the
+ * same way on every page, so colour never tells the student which relation (corresponding,
+ * alternate, …) to use. An angle the stem names carries its name in the drawing (the value stays
+ * in the stem); a value is drawn only for an angle the stem refers to without naming it. A named
+ * mark still records its size in `value`: the engine draws only the name, and the independent
+ * verifier checks the drawn sector (acute / obtuse) against that size.
+ *
+ * Sectors are chosen by the SIZE of the angle they show (SPEC 10.3), so the drawing stays
+ * acute/obtuse-faithful whatever the diagram parameters in questions-unit2.ts are. The first
+ * angle of each pair is the given one; `from` puts it on the top or the bottom line, and the
+ * booklet alternates between the two on purpose (SPEC 10.2).
+ */
 function primaryMarks(q: Unit2Question): AngleMark[] {
   const o = q.diagram.orientationDeg;
   const t = q.diagram.transversalDeg ?? 62;
   const st = q.diagram.secondaryTransversalDeg;
-  const corr = (seed: Sector = 0) => correspondingPair(seed);
-  const alt = (seed = 0) => alternatePair(o, t, seed);
-  const secAlt = (seed = 0) => {
-    if (st == null) return null;
-    const [a, b] = alternatePair(o, st, seed);
-    return [
-      { intersection: 'top-secondary' as const, sector: a.sector },
-      { intersection: 'bottom-secondary' as const, sector: b.sector },
-    ] as const;
+  const second = () => {
+    if (st == null) throw new Error(`${q.id}: marks on a second transversal need secondaryTransversalDeg`);
+    return st;
   };
+  /** A sector at the main transversal that draws an angle of this size. */
+  const sized = (size: AngleSize, which: 0 | 1 = 0) => sectorOfSize(o, t, size, which);
+  /** The same at the second transversal. */
+  const sizedOnSecond = (size: AngleSize, which: 0 | 1 = 0) => sectorOfSize(o, second(), size, which);
+  const corr = (sector: Sector, from: IntersectionName) => correspondingPair(sector, from);
+  const alt = (size: AngleSize, from: IntersectionName) => alternatePairOfSize(o, t, size, from);
+  const altOnSecond = (size: AngleSize, from: IntersectionName) => onSecond(alternatePairOfSize(o, second(), size, from));
+  const at = (intersection: AngleMark['intersection'], sector: Sector) => ({ intersection, sector });
 
   switch (q.id) {
     case 'U2-P1-A': {
-      const [a, b] = corr(0);
-      return [{ ...a, value: '68°', tone: 'primary' }, { ...b, label: '?', tone: 'primary' }];
+      const [a, b] = corr(sized('acute'), 'bottom');
+      return [{ ...a, label: 'A', value: '68°', role: 'given' }, { ...b, label: 'B', role: 'target' }];
     }
     case 'U2-P1-B': {
-      const [a, b] = alt(0);
-      return [{ ...a, value: '124°', tone: 'secondary' }, { ...b, label: '?', tone: 'secondary' }];
+      const [c, d] = alt('obtuse', 'top');
+      return [{ ...c, label: 'C', value: '124°', role: 'given' }, { ...d, label: 'D', role: 'target' }];
     }
     case 'U2-P1-C': {
-      const [a, b] = corr(1);
-      return [{ ...a, value: '47°', tone: 'primary' }, { ...b, label: '?', tone: 'primary' }];
+      // The stem says "the marked angle is 47°" without naming it, so the value is drawn.
+      const [given, target] = corr(sized('acute', 1), 'bottom');
+      return [{ ...given, value: '47°', role: 'given' }, { ...target, label: '?', role: 'target' }];
     }
     case 'U2-P1-D': {
-      const [a, b] = alt(1);
-      return [{ ...a, value: '116°', tone: 'secondary' }, { ...b, label: 'α', tone: 'secondary' }];
+      const [e, alpha] = alt('obtuse', 'bottom');
+      return [{ ...e, label: 'E', value: '116°', role: 'given' }, { ...alpha, label: 'α', role: 'target' }];
     }
     case 'U2-P2-A': {
-      const [a, b] = corr(0);
+      // ∠A (bottom) → its corresponding angle (top) → β = 117°, adjacent to it. β is deliberately
+      // NOT the angle vertical to the corresponding one: that angle is alternate to ∠A, so the
+      // "two-step" chain would collapse into one step.
+      const s = sized('acute', 1);
       return [
-        { ...a, value: '63°', tone: 'primary' },
-        { ...b, tone: 'primary' },
-        { intersection: 'bottom', sector: ((b.sector + 2) % 4) as Sector, label: 'β', tone: 'neutral', arcStyle: 'double' },
+        { ...at('bottom', s), label: 'A', value: '63°', role: 'given' },
+        { ...at('top', s), role: 'auxiliary' },
+        { ...at('top', adjacentSector(s, P2A_TURN)), label: 'β', role: 'target' },
       ];
     }
     case 'U2-P2-B': {
-      const [a, b] = alt(0);
-      const adjacent = ((a.sector + 1) % 4) as Sector;
+      // 137° (bottom) → the adjacent 43° angle → γ, alternate to it.
+      const [step, gamma] = alt('acute', 'bottom');
       return [
-        { intersection: 'top', sector: adjacent, value: '137°', tone: 'primary' },
-        { ...a, tone: 'neutral', arcStyle: 'double' },
-        { ...b, label: 'γ', tone: 'secondary' },
+        { ...at('bottom', adjacentSector(step.sector)), value: '137°', role: 'given' },
+        { ...step, role: 'auxiliary' },
+        { ...gamma, label: 'γ', role: 'target' },
       ];
     }
     case 'U2-P2-C': {
-      const [a, b] = alt(1);
+      // ∠F (bottom) → its alternate angle (top) → δ, adjacent to it.
+      const [f, step] = alt('acute', 'bottom');
       return [
-        { ...a, value: '72°', tone: 'secondary' },
-        { ...b, tone: 'secondary' },
-        { intersection: 'bottom', sector: ((b.sector + 1) % 4) as Sector, label: 'δ', tone: 'neutral', arcStyle: 'double' },
+        { ...f, label: 'F', value: '72°', role: 'given' },
+        { ...step, role: 'auxiliary' },
+        { ...at(step.intersection, adjacentSector(step.sector, -1)), label: 'δ', role: 'target' },
       ];
     }
     case 'U2-P2-D': {
-      const [a, b] = corr(0);
+      // Two routes from ∠A to α: corresponding then vertical, or vertical then corresponding. The
+      // task is to find both, so neither route's middle angle is marked: only ∠A and α are drawn.
+      const s = sized('acute');
       return [
-        { ...a, value: '54°', tone: 'primary' },
-        { ...b, tone: 'primary' },
-        { intersection: 'top', sector: ((a.sector + 2) % 4) as Sector, tone: 'neutral', arcStyle: 'double' },
-        { intersection: 'bottom', sector: ((b.sector + 2) % 4) as Sector, label: 'α', tone: 'neutral', arcStyle: 'double' },
+        { ...at('top', s), label: 'A', value: '54°', role: 'given' },
+        { ...at('bottom', verticalSector(s)), label: 'α', role: 'target' },
       ];
     }
     case 'U2-P3-A': {
-      const [a, b] = corr(0);
-      const [altTop, altBottom] = alt(0);
+      // The 38° angle is interior, so its alternate angle is the alternate-interior one. The
+      // letters do not follow the table's row order (corresponding, alternate, vertical,
+      // adjacent): the student has to find each relation in the drawing.
+      const [ref, alternate] = alt('acute', 'top');
       return [
-        { ...a, value: '38°', tone: 'primary' },
-        { ...b, label: 'א', tone: 'primary' },
-        { ...altBottom, label: 'ב', tone: 'secondary' },
-        { intersection: 'top', sector: ((a.sector + 2) % 4) as Sector, label: 'ג', tone: 'neutral', arcStyle: 'double' },
-        { intersection: 'top', sector: ((a.sector + 1) % 4) as Sector, label: 'ד', tone: 'neutral', arcStyle: 'dashed' },
-        { ...altTop, tone: 'secondary' },
+        { ...ref, value: '38°', role: 'given' },
+        { ...at('top', verticalSector(ref.sector)), label: 'א', role: 'target' },
+        { ...at('bottom', ref.sector), label: 'ב', role: 'target' },
+        { ...at('top', adjacentSector(ref.sector)), label: 'ג', role: 'target' },
+        { ...alternate, label: 'ד', role: 'target' },
       ];
     }
     case 'U2-P3-B': {
-      const [a, b] = corr(0);
+      const s = sized('acute', 1);
       return [
-        { ...a, label: 'A', value: '52°', tone: 'primary' },
-        { ...b, label: 'D', tone: 'primary' },
-        { intersection: 'bottom', sector: ((b.sector + 1) % 4) as Sector, label: 'F', tone: 'neutral', arcStyle: 'double' },
+        { ...at('top', s), label: 'A', value: '52°', role: 'given' },
+        { ...at('bottom', s), label: 'D', role: 'target' },
+        { ...at('bottom', adjacentSector(s)), label: 'F', role: 'target' },
       ];
     }
     case 'U2-P3-C': {
-      const [a, b] = corr(0);
+      // ∠C sits on the second transversal s: it is the datum that is not needed. It is drawn
+      // exactly like ∠A, so its style does not give that away. ∠A takes the acute sector whose
+      // label stays clear of the parallel chevrons.
+      const [a, beta] = corr(sized('acute', 1), 'bottom');
       return [
-        { ...a, label: 'A', value: '62°', tone: 'primary' },
-        { ...b, label: 'β', tone: 'primary' },
-        { intersection: 'top-secondary', sector: 1, label: 'C', value: '77°', tone: 'secondary' },
+        { ...a, label: 'A', value: '62°', role: 'given' },
+        { ...beta, label: 'β', role: 'target' },
+        // On the line where the two transversals are farther apart (∠A is on the other line).
+        { ...at('bottom-secondary', sizedOnSecond('acute')), label: 'C', value: '77°', role: 'given' },
       ];
     }
     case 'U2-P3-D': {
-      const [a, b] = corr(1);
-      const secondary = secAlt(0);
+      // ∠A and α sit on the outer side of r; only β falls between the two transversals.
+      const [a, alpha] = corr(sized('acute', 0), 'top');
+      const [c, beta] = altOnSecond('acute', 'top');
       return [
-        { ...a, label: 'A', value: '49°', tone: 'primary' },
-        { ...b, label: 'α', tone: 'primary' },
-        ...(secondary ? [
-          { ...secondary[0], label: 'C', value: '73°', tone: 'secondary' as const },
-          { ...secondary[1], label: 'β', tone: 'secondary' as const },
-        ] : []),
+        { ...a, label: 'A', value: '49°', role: 'given' },
+        { ...alpha, label: 'α', role: 'target' },
+        { ...c, label: 'C', value: '73°', role: 'given' },
+        { ...beta, label: 'β', role: 'target' },
       ];
     }
+    // Algebra: both angles are given as expressions; the unknown is x (or y), not an angle.
     case 'U2-P4-A': {
-      const [a, b] = corr(0);
-      return [{ ...a, value: '(4x + 6)°', tone: 'primary' }, { ...b, value: '(2x + 38)°', tone: 'primary' }];
+      const [first, second] = corr(sized('acute'), 'bottom');
+      return [{ ...first, value: '(4x + 6)°', role: 'given' }, { ...second, value: '(2x + 38)°', role: 'given' }];
     }
     case 'U2-P4-B': {
-      const [a, b] = alt(0);
-      return [{ ...a, value: '(3x + 17)°', tone: 'secondary' }, { ...b, value: '(5x − 21)°', tone: 'secondary' }];
+      const [first, second] = alt('acute', 'top');
+      return [{ ...first, value: '(3x + 17)°', role: 'given' }, { ...second, value: '(5x − 21)°', role: 'given' }];
     }
     case 'U2-P4-C': {
-      const [a, b] = corr(2);
-      return [{ ...a, value: '(6x − 9)°', tone: 'primary' }, { ...b, value: '(3x + 42)°', tone: 'primary' }];
+      // x = 17 gives 93°: drawn in an obtuse sector (wide enough for the expressions to clear the lines).
+      const [first, second] = corr(sized('obtuse'), 'bottom');
+      return [{ ...first, value: '(6x − 9)°', role: 'given' }, { ...second, value: '(3x + 42)°', role: 'given' }];
     }
     case 'U2-P4-D': {
-      const [a, b] = alt(1);
-      return [{ ...a, value: '(2x + 35)°', tone: 'secondary' }, { ...b, value: '(5x − 19)°', tone: 'secondary' }];
+      // x = 18 gives 71°: the acute alternate-interior pair.
+      const [first, second] = alt('acute', 'bottom');
+      return [{ ...first, value: '(2x + 35)°', role: 'given' }, { ...second, value: '(5x − 19)°', role: 'given' }];
     }
     case 'U2-P5-A': {
-      const [a, b] = corr(2);
-      return [{ ...a, value: '(7x − 18)°', tone: 'primary' }, { ...b, value: '(3x + 46)°', tone: 'primary' }];
+      // x = 16: (7x − 18)° = 94° in an obtuse sector at p; (3x + 38)° = 86° at q sits beside the
+      // angle corresponding to it (that angle is not marked — seeing it is the task), so the two
+      // expressions are supplementary, not equal.
+      const s = sized('obtuse');
+      return [
+        { ...at('top', s), value: '(7x − 18)°', role: 'given' },
+        { ...at('bottom', adjacentSector(s, P5A_TURN)), value: '(3x + 38)°', role: 'given' },
+      ];
     }
     case 'U2-P5-B': {
-      const [a, b] = alt(0);
-      return [{ ...a, value: '(4x + 15)°', tone: 'secondary' }, { ...b, value: '(2x + 63)°', tone: 'secondary' }];
+      // x = 24 gives 111°: the obtuse alternate-interior pair.
+      const [first, second] = alt('obtuse', 'bottom');
+      return [{ ...first, value: '(4x + 15)°', role: 'given' }, { ...second, value: '(2x + 63)°', role: 'given' }];
     }
     case 'U2-P5-C': {
-      const [a, b] = corr(0);
-      const secondary = secAlt(1);
+      // A corresponding pair (72°) on r and an obtuse alternate pair (94°) on s.
+      // The long expressions face outwards (left of r, right of s); the short numbers sit in the
+      // band between the two transversals.
+      const [ex, n72] = corr(sized('acute', 0), 'bottom');
+      const [ey, n94] = altOnSecond('obtuse', 'top');
       return [
-        { ...a, value: '(3x + 12)°', tone: 'primary' },
-        { ...b, value: '72°', tone: 'primary' },
-        ...(secondary ? [
-          { ...secondary[0], value: '(2y + 18)°', tone: 'secondary' as const },
-          { ...secondary[1], value: '94°', tone: 'secondary' as const },
-        ] : []),
+        { ...ex, value: '(3x + 12)°', role: 'given' },
+        { ...n72, value: '72°', role: 'given' },
+        { ...ey, value: '(2y + 18)°', role: 'given' },
+        { ...n94, value: '94°', role: 'given' },
       ];
     }
-    case 'U2-P5-D':
+    case 'U2-P5-D': {
+      // x = 25: (2x + 20)° = 70° in an acute sector, (3x + 35)° = 110° in the obtuse one beside it
+      // (the neighbour on the side where its label clears the lines).
+      const s = sized('acute', 1);
       return [
-        { intersection: 'top', sector: 0, value: '(2x + 20)°', tone: 'primary' },
-        { intersection: 'top', sector: 1, value: '(3x + 35)°', tone: 'secondary' },
+        { ...at('top', s), value: '(2x + 20)°', role: 'given' },
+        { ...at('top', adjacentSector(s, -1)), value: '(3x + 35)°', role: 'given' },
       ];
+    }
     case 'U2-P6-A': {
-      const [a, b] = corr(0);
-      return [{ ...a, value: '64°', tone: 'primary' }, { ...b, label: '?', tone: 'primary' }];
+      // The stem names the angle at the UPPER shelf, so the given stays on the top line. The stem
+      // does not name the relation: the student recognises the corresponding pair. Of the two
+      // acute sectors there, this one keeps the '?' inside its own angle, off the rod.
+      const [given, target] = corr(sized('acute', 1), 'top');
+      return [{ ...given, value: '64°', role: 'given' }, { ...target, label: '?', role: 'target' }];
     }
     case 'U2-P6-B': {
-      const [a, b] = alt(0);
-      return [{ ...a, value: '118°', tone: 'secondary' }, { ...b, label: '?', tone: 'secondary' }];
+      // 118° → its alternate angle on the second rail (not marked) → '?' = 62°, adjacent to it.
+      const [given, step] = alt('obtuse', 'top');
+      return [
+        { ...given, value: '118°', role: 'given' },
+        { ...at(step.intersection, adjacentSector(step.sector, P6B_TURN)), label: '?', role: 'target' },
+      ];
     }
     case 'U2-P6-C': {
-      const [a, b] = corr(0);
+      // ∠A = 128° (obtuse) → its corresponding angle → α = 52°, adjacent to it. ∠C = 75° on s is
+      // not needed, and is drawn like any other given.
+      const s = sized('obtuse');
       return [
-        { ...a, label: 'A', value: '128°', tone: 'primary' },
-        { ...b, tone: 'primary' },
-        { intersection: 'bottom', sector: ((b.sector + 1) % 4) as Sector, label: 'α', tone: 'neutral', arcStyle: 'double' },
-        { intersection: 'top-secondary', sector: 1, label: 'C', value: '75°', tone: 'secondary' },
+        { ...at('top', s), label: 'A', value: '128°', role: 'given' },
+        { ...at('bottom', s), role: 'auxiliary' },
+        { ...at('bottom', adjacentSector(s)), label: 'α', role: 'target' },
+        { ...at('top-secondary', sizedOnSecond('acute')), label: 'C', value: '75°', role: 'given' },
       ];
     }
     case 'U2-P6-D': {
-      const [a, b] = corr(0);
+      // α corresponds to ∠A = 41° on r; on s, ∠C = 68° → its corresponding angle → β = 112°.
+      // The final synthesis marks no intermediate angle: finding the route is the task.
+      // These sectors keep every label inside its own angle and off the lines and chevrons.
+      const [a, alpha] = corr(sized('acute'), 'bottom');
+      const sc = sizedOnSecond('acute');
       return [
-        { ...a, label: 'A', value: '41°', tone: 'primary' },
-        { ...b, label: 'α', tone: 'primary' },
-        { intersection: 'top-secondary', sector: 1, label: 'C', value: '68°', tone: 'secondary' },
-        { intersection: 'bottom-secondary', sector: 1, tone: 'secondary' },
-        { intersection: 'bottom-secondary', sector: 2, label: 'β', tone: 'neutral', arcStyle: 'double' },
+        { ...a, label: 'A', value: '41°', role: 'given' },
+        { ...alpha, label: 'α', role: 'target' },
+        { ...at('bottom-secondary', sc), label: 'C', value: '68°', role: 'given' },
+        { ...at('top-secondary', adjacentSector(sc)), label: 'β', role: 'target' },
       ];
     }
     default:
       return [];
   }
+}
+
+/** Which neighbour of the step angle carries the target (the side where its label reads clearly). */
+const P2A_TURN = 1;
+const P5A_TURN = -1;
+const P6B_TURN = 1;
+
+/** A pair of angles at the crossings of the SECOND transversal. */
+function onSecond(pair: AnglePair) {
+  const shift = ({ intersection, sector }: PrimaryAngleRef) => ({ intersection: `${intersection}-secondary` as const, sector });
+  return [shift(pair[0]), shift(pair[1])] as const;
 }
 
 function QuestionDiagram({ q }: { q: Unit2Question }) {
@@ -205,13 +282,13 @@ function QuestionDiagram({ q }: { q: Unit2Question }) {
 function TaskTable({ rows }: { rows: NonNullable<Unit2Question['tableRows']> }) {
   return (
     <table className="data-table">
-      <thead><tr><th>זווית / קשר</th><th>סוג הקשר</th><th>גודל</th></tr></thead>
+      <thead><tr><th>זווית</th><th>סוג הקשר</th><th>גודל</th></tr></thead>
       <tbody>
         {rows.map((row, index) => (
           <tr key={index}>
             <td><MathText text={row.label} /></td>
-            <td>{row.relation ?? ''}</td>
-            <td>{row.value ? <MathText text={row.value} /> : <span className="table-write-line" />}</td>
+            <td className={row.relation ? undefined : 'write-cell'}>{row.relation ? <MathText text={row.relation} /> : null}</td>
+            <td className={row.value ? undefined : 'write-cell'}>{row.value ? <MathText text={row.value} /> : null}</td>
           </tr>
         ))}
       </tbody>
@@ -220,21 +297,10 @@ function TaskTable({ rows }: { rows: NonNullable<Unit2Question['tableRows']> }) 
 }
 
 function CalculationQuestion({ q }: { q: Unit2Question }) {
-  const outputCount = Object.keys(q.expected.values ?? {}).length;
   return (
-    <QuestionBlock
-      compact
-      diagram={<QuestionDiagram q={q} />}
-      justificationLane={q.justificationLane}
-      justificationLabel="המשפט המתאים:"
-      answerLines={q.choices || q.tableRows ? 0 : Math.max(1, Math.min(2, outputCount))}
-    >
+    <QuestionBlock taskId={q.id} compact diagram={<QuestionDiagram q={q} />}>
       <MathText text={q.stem} />
-      {q.choices && (
-        <div className="choice-grid">
-          {q.choices.map(choice => <div className="choice" key={choice}><MathText text={choice} /></div>)}
-        </div>
-      )}
+      {q.choices && <ChoiceGrid options={q.choices} />}
       {q.tableRows && <TaskTable rows={q.tableRows} />}
     </QuestionBlock>
   );

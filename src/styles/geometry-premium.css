@@ -1,178 +1,146 @@
-.geometry-diagram--premium {
+/*
+ * Geometry — the ONLY stylesheet for line diagrams (src/geometry/*).
+ *
+ * Diagrams are drawn at a fixed physical scale: one SVG user unit is one CSS px, and the SVG is
+ * rendered at its intrinsic size (width/height set by the engine from its fitted viewBox), so
+ * every length below — in mm or pt — prints at exactly that size in every slot.
+ * The numeric values mirror geometryTokens (src/styles/tokens.ts); a test keeps them equal.
+ *
+ * Colour is didactic only and never the only carrier of meaning: given / marked angles have a
+ * single solid arc, the target a double arc, an auxiliary angle a thin dashed arc.
+ */
+
+/* Label face: "Makbilim Math" (New Computer Modern, the face MathJax sets the question text in) —
+   declared with every other face in fonts.css. */
+
+.geometry-diagram {
+  --geo-ink: #1a1f24;
+  --geo-given: #0b5c68;
+  --geo-marked: #0b5c68;
+  --geo-target: #c2410c;
+  --geo-aux: #5b6470;
+  --geo-halo: #ffffff;
+
+  --geo-stroke-line: 0.4mm;
+  --geo-stroke-arc: 0.35mm;
+  --geo-stroke-arc-aux: 0.3mm;
+  --geo-stroke-chevron: 0.35mm;
+  --geo-stroke-leader: 0.2mm;
+  --geo-dash-aux: 0.9mm 0.6mm;
+  --geo-halo-width: 0.7mm;
+
+  --geo-label-size: 9.5pt;
+  --geo-line-label-size: 9.5pt;
+  --geo-index-label-size: 9pt;
+
+  display: block;
+  max-width: 100%;
+  height: auto;
   overflow: visible;
-  isolation: isolate;
   text-rendering: geometricPrecision;
 }
 
-.geometry-diagram--premium .geometry-line-underlay line {
-  stroke: #ffffff;
-  stroke-width: 6.6;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
+.geometry-diagram .geometry-lines line {
+  stroke: var(--geo-ink);
+  stroke-width: var(--geo-stroke-line);
+  stroke-linecap: butt;
 }
 
-.geometry-diagram--premium .geometry-lines line {
-  stroke: #101820;
-  stroke-width: 2.35;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
+.geometry-diagram .geometry-intersections circle {
+  fill: var(--geo-ink);
+  stroke: none;
 }
 
-.geometry-diagram--premium .geometry-intersections circle {
-  fill: #101820;
-  stroke: #ffffff;
-  stroke-width: 1.15;
-  vector-effect: non-scaling-stroke;
-}
-
-.geometry-diagram--premium .parallel-mark--chevrons polyline {
+.geometry-diagram .parallel-mark--chevrons polyline {
   fill: none;
-  stroke: #101820;
-  stroke-width: 1.85;
+  stroke: var(--geo-ink);
+  stroke-width: var(--geo-stroke-chevron);
   stroke-linecap: round;
   stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
 }
 
-.geometry-diagram--premium .angle-sector-fill {
-  stroke: none !important;
-  opacity: 1;
+/* Arc colour: by the angle's role when it has one, else by its explicit tone. */
+.geometry-diagram .angle-mark { --arc-color: var(--geo-given); }
+.geometry-diagram .angle-mark--secondary { --arc-color: var(--geo-target); }
+.geometry-diagram .angle-mark--neutral { --arc-color: var(--geo-aux); }
+.geometry-diagram .angle-mark[data-angle-role="given"] { --arc-color: var(--geo-given); }
+.geometry-diagram .angle-mark[data-angle-role="marked"] { --arc-color: var(--geo-marked); }
+.geometry-diagram .angle-mark[data-angle-role="target"] { --arc-color: var(--geo-target); }
+.geometry-diagram .angle-mark[data-angle-role="auxiliary"] { --arc-color: var(--geo-aux); }
+
+.geometry-diagram .angle-arc {
+  fill: none;
+  stroke: var(--arc-color);
+  stroke-width: var(--geo-stroke-arc);
+  stroke-linecap: butt;
 }
 
-.geometry-diagram--premium .angle-sector-fill.angle-mark--primary {
-  fill: rgb(15 111 120 / 16%);
+/* Dashes belong to the arc FORM 'dashed' (the auxiliary role), never to a colour. */
+.geometry-diagram .angle-mark--dashed .angle-arc {
+  stroke-width: var(--geo-stroke-arc-aux);
+  stroke-dasharray: var(--geo-dash-aux);
 }
 
-.geometry-diagram--premium .angle-sector-fill.angle-mark--secondary {
-  fill: rgb(164 90 22 / 11%);
+.geometry-diagram .angle-leader {
+  stroke: var(--arc-color);
+  stroke-width: var(--geo-stroke-leader);
+  stroke-linecap: butt;
 }
 
-.geometry-diagram--premium .angle-sector-fill.angle-mark--neutral {
-  fill: rgb(74 85 96 / 9%);
-}
-
-.geometry-diagram--premium .angle-arc {
-  fill: none !important;
-  stroke-width: 3.25;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-}
-
-.geometry-diagram--premium .angle-mark--primary .angle-arc {
-  stroke: #0f6f78;
-}
-
-.geometry-diagram--premium .angle-mark--secondary .angle-arc {
-  stroke: #a45a16;
-  stroke-dasharray: 8 3;
-}
-
-.geometry-diagram--premium .angle-mark--neutral .angle-arc {
-  stroke: #4a5560;
-}
-
-.geometry-diagram--premium .angle-mark--dashed .angle-arc {
-  stroke-dasharray: 5 4;
-}
-
-.geometry-diagram--premium .angle-label-plate rect {
-  fill: rgb(255 255 255 / 94%);
-  stroke: rgb(16 24 32 / 16%);
-  stroke-width: 0.9;
-  vector-effect: non-scaling-stroke;
-}
-
-.geometry-diagram--premium .geometry-labels text,
-.geometry-diagram--premium .angle-label-text {
-  fill: #101820;
-  font-family: Arial, "Noto Sans Hebrew", sans-serif;
-  font-size: 19px;
-  font-weight: 700;
+/* Textbook labels: plain text on a white knockout halo — no plates, no chips. */
+.geometry-diagram .angle-label-text,
+.geometry-diagram .line-label-text {
+  fill: var(--geo-ink);
+  font-family: "Makbilim Math", "Noto Sans Hebrew", "Arial Hebrew", Arial, sans-serif;
+  font-size: var(--geo-label-size);
+  font-style: normal;
+  font-weight: 400;
+  font-synthesis: none;
   letter-spacing: 0;
   paint-order: stroke fill;
-  stroke: #ffffff;
-  stroke-width: 4.8px;
+  stroke: var(--geo-halo);
+  stroke-width: var(--geo-halo-width);
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.geometry-diagram--premium .angle-label-text {
-  font-size: 18.5px;
-  font-weight: 800;
+.geometry-diagram .line-label-text { font-size: var(--geo-line-label-size); }
+.geometry-diagram .angle-label-text--index { font-size: var(--geo-index-label-size); }
+.geometry-diagram .label-sub { font-size: 70%; }
+
+/* Identification tasks: the diagram is the answer surface and gets the wide column. */
+.question-content--split:has(> .question-diagram > .geometry-diagram[data-diagram-size="mark"]) {
+  --diagram-col: var(--diagram-col-mark);
+}
+.question-content--split:has(> .question-diagram > .geometry-diagram[data-diagram-size="markLarge"]) {
+  --diagram-col: var(--diagram-col-mark-large);
 }
 
-.geometry-diagram--premium .three-line-angle-mark .angle-callout {
-  stroke-width: 1.45;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
+/* Figures in a side-by-side pair or a table row are centred in their cell. */
+.paired-diagrams > .geometry-diagram,
+.relation-table .geometry-diagram {
+  justify-self: center;
+  margin-inline: auto;
 }
 
-.geometry-diagram--premium .three-line-angle-mark.angle-mark--primary .angle-callout {
-  stroke: #0f6f78;
-}
-
-.geometry-diagram--premium .three-line-angle-mark.angle-mark--secondary .angle-callout {
-  stroke: #a45a16;
-  stroke-dasharray: 5 3;
-}
-
-.geometry-diagram--premium .three-line-angle-mark.angle-mark--neutral .angle-callout {
-  stroke: #4a5560;
-}
-
-.geometry-diagram--premium .three-line-angle-mark .angle-badge {
-  stroke-width: 1.2;
-  vector-effect: non-scaling-stroke;
-}
-
-.geometry-diagram--premium .three-line-angle-mark.angle-mark--primary .angle-badge {
-  fill: rgb(15 111 120 / 13%);
-  stroke: #0f6f78;
-}
-
-.geometry-diagram--premium .three-line-angle-mark.angle-mark--secondary .angle-badge {
-  fill: rgb(164 90 22 / 10%);
-  stroke: #a45a16;
-  stroke-dasharray: 4 2;
-}
-
-.geometry-diagram--premium .three-line-angle-mark.angle-mark--neutral .angle-badge {
-  fill: rgb(74 85 96 / 8%);
-  stroke: #4a5560;
-}
-
-@media print {
-  .geometry-diagram--premium .geometry-line-underlay line {
-    stroke-width: 5.8;
-  }
-
-  .geometry-diagram--premium .geometry-lines line {
-    stroke-width: 2.15;
-  }
-
-  .geometry-diagram--premium .angle-label-plate rect {
-    fill: #ffffff;
-    stroke: rgb(16 24 32 / 20%);
-  }
-
-  .geometry-diagram--premium .three-line-angle-mark .angle-badge {
-    fill: #ffffff;
+/* Grayscale print: colours collapse to greys; the arc FORM still tells given / target / auxiliary apart. */
+@media print and (monochrome) {
+  .geometry-diagram {
+    --geo-given: #222222;
+    --geo-marked: #222222;
+    --geo-target: #444444;
+    --geo-aux: #666666;
   }
 }
 
 @media (forced-colors: active) {
-  .geometry-diagram--premium .angle-sector-fill,
-  .geometry-diagram--premium .three-line-angle-mark .angle-badge {
-    fill: transparent !important;
-  }
-
-  .geometry-diagram--premium .angle-arc,
-  .geometry-diagram--premium .geometry-lines line,
-  .geometry-diagram--premium .parallel-mark--chevrons polyline,
-  .geometry-diagram--premium .three-line-angle-mark .angle-callout,
-  .geometry-diagram--premium .three-line-angle-mark .angle-badge {
-    stroke: CanvasText !important;
+  .geometry-diagram {
+    --geo-ink: CanvasText;
+    --geo-given: CanvasText;
+    --geo-marked: CanvasText;
+    --geo-target: CanvasText;
+    --geo-aux: CanvasText;
+    --geo-halo: Canvas;
+    forced-color-adjust: none;
   }
 }

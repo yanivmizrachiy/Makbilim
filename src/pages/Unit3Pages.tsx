@@ -1,84 +1,108 @@
 import { A4Page } from '../components/A4Page';
 import { MathText } from '../components/MathText';
 import { QuestionBlock } from '../components/QuestionBlock';
+import { ChoiceGrid, LineSlot, WordBank } from '../components/ResponseParts';
+import { PROOF_FORM_HEADINGS } from '../content/answer-areas';
+import { CLOZE_BLANK } from '../content/cloze';
+import { taskFormatById } from '../content/task-kinds';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
-import { alternatePair, correspondingPair, type Sector } from '../geometry/relations';
+import {
+  adjacentSector,
+  alternatePair,
+  correspondingPair,
+  sectorOfSize,
+  verticalSector,
+  type IntersectionName,
+  type Sector,
+} from '../geometry/relations';
 import { unit3Questions, type Unit3Question } from '../content/questions-unit3';
 
+/**
+ * Angle marks for the unit-3 proof diagrams.
+ *
+ * In a proof the letters only NAME angles; which relation holds between them is what the student
+ * has to argue. So every lettered angle has the same role ('marked') and therefore the same look:
+ * neither colour nor arc form tells a corresponding pair from an alternate or a vertical one, and
+ * a datum that is not needed (∠E in U3-P3-C) looks like every other angle.
+ */
 function proofMarks(q: Unit3Question): AngleMark[] {
   const o = q.diagram.orientationDeg;
   const t = q.diagram.transversalDeg ?? 62;
-  const corr = (seed: Sector = 0) => correspondingPair(seed);
-  const alt = (seed = 0) => alternatePair(o, t, seed);
+  const st = q.diagram.secondaryTransversalDeg;
+  const mark = (ref: { intersection: AngleMark['intersection']; sector: Sector }, label: string): AngleMark =>
+    ({ ...ref, label, role: 'marked' });
+  const corr = (seed: Sector, from: IntersectionName = 'top') => correspondingPair(seed, from);
+  const alt = (seed: number, from: IntersectionName = 'top') => alternatePair(o, t, seed, from);
 
   switch (q.id) {
     case 'U3-P1-A': {
       const [a, b] = corr(0);
-      return [{ ...a, label: 'A', tone: 'primary' }, { ...b, label: 'B', tone: 'primary' }];
+      return [mark(a, 'A'), mark(b, 'B')];
     }
     case 'U3-P1-B': {
-      const [a, b] = corr(1);
-      return [{ ...a, label: 'C', tone: 'primary' }, { ...b, label: 'D', tone: 'primary' }];
+      const [c, d] = corr(1, 'bottom');
+      return [mark(c, 'C'), mark(d, 'D')];
     }
     case 'U3-P1-C': {
-      const [ca, cb] = corr(0);
-      const [aa, ab] = alt(0);
+      // Corresponding ∠A/∠B and alternate ∠C/∠D on s (four different angles), and the vertical
+      // pair ∠E/∠F at the lower crossing of the second transversal t.
+      const [c, d] = alt(0);
+      const free = ([0, 1, 2, 3] as const).find(sector => sector !== c.sector && sector !== d.sector);
+      if (free === undefined) throw new Error('U3-P1-C: no corresponding pair clear of the alternate pair');
+      const [a, b] = corr(free);
       return [
-        { ...ca, label: 'A', tone: 'primary' }, { ...cb, label: 'B', tone: 'primary' },
-        { ...aa, label: 'C', tone: 'secondary' }, { ...ab, label: 'D', tone: 'secondary' },
-        { intersection: 'top', sector: 1, label: 'E', tone: 'neutral', arcStyle: 'double' },
-        { intersection: 'top', sector: 3, label: 'F', tone: 'neutral', arcStyle: 'double' },
+        mark(a, 'A'), mark(b, 'B'),
+        mark(c, 'C'), mark(d, 'D'),
+        mark({ intersection: 'bottom-secondary', sector: 0 }, 'E'),
+        mark({ intersection: 'bottom-secondary', sector: verticalSector(0) }, 'F'),
       ];
     }
     case 'U3-P1-D':
-    case 'U3-P3-A':
+    case 'U3-P3-A': {
+      // ∠A and ∠B corresponding, ∠C vertical to ∠B.
+      const [a, b] = corr(q.id === 'U3-P3-A' ? 2 : 0);
+      return [mark(a, 'A'), mark(b, 'B'), mark({ intersection: b.intersection, sector: verticalSector(b.sector) }, 'C')];
+    }
     case 'U3-P3-D': {
-      const [a, b] = corr(0);
-      return [
-        { ...a, label: 'A', tone: 'primary' },
-        { ...b, label: 'B', tone: 'primary' },
-        { intersection: 'bottom', sector: ((b.sector + 2) % 4) as Sector, label: 'C', tone: 'neutral', arcStyle: 'double' },
-      ];
+      // ∠A and ∠B corresponding, ∠C vertical to ∠B. ∠A is an interior angle, so ∠A and ∠C are
+      // alternate-interior angles — the relation proof ב names without the parallel condition.
+      const [interior] = alt(0);
+      const [a, b] = corr(interior.sector);
+      return [mark(a, 'A'), mark(b, 'B'), mark({ intersection: b.intersection, sector: verticalSector(b.sector) }, 'C')];
     }
     case 'U3-P2-A': {
-      const [a, b] = alt(0);
-      return [{ ...a, label: 'A', tone: 'secondary' }, { ...b, label: 'B', tone: 'secondary' }];
+      const [a, b] = alt(0, 'bottom');
+      return [mark(a, 'A'), mark(b, 'B')];
     }
     case 'U3-P2-B': {
-      const [a, b] = corr(0);
-      return [
-        { ...a, label: 'A', tone: 'primary' },
-        { ...b, label: 'B', tone: 'primary' },
-        { intersection: 'bottom', sector: ((b.sector + 2) % 4) as Sector, label: 'C', tone: 'neutral', arcStyle: 'double' },
-      ];
+      // ∠B and ∠C share the crossing away from the parallel marks; ∠A is alone at the other one.
+      const [a, b] = corr(3, 'bottom');
+      return [mark(a, 'A'), mark(b, 'B'), mark({ intersection: b.intersection, sector: verticalSector(b.sector) }, 'C')];
     }
     case 'U3-P2-C': {
+      // ∠A and ∠B alternate, ∠C vertical to ∠B.
       const [a, b] = alt(1);
-      return [
-        { ...a, label: 'A', tone: 'secondary' },
-        { ...b, label: 'B', tone: 'secondary' },
-        { intersection: 'bottom', sector: ((b.sector + 2) % 4) as Sector, label: 'C', tone: 'neutral', arcStyle: 'double' },
-      ];
+      return [mark(a, 'A'), mark(b, 'B'), mark({ intersection: b.intersection, sector: verticalSector(b.sector) }, 'C')];
     }
     case 'U3-P2-D': {
-      const [a, b] = corr(0);
-      return [{ ...a, label: 'A', tone: 'primary' }, { ...b, label: 'B', tone: 'primary' }];
+      const [a, b] = corr(1, 'bottom');
+      return [mark(a, 'A'), mark(b, 'B')];
     }
     case 'U3-P3-B': {
+      // ∠A and ∠B alternate, ∠C adjacent to ∠B.
       const [a, b] = alt(0);
-      return [
-        { ...a, label: 'A', tone: 'secondary' },
-        { ...b, label: 'B', tone: 'secondary' },
-        { intersection: 'bottom', sector: ((b.sector + 1) % 4) as Sector, label: 'C', tone: 'neutral', arcStyle: 'double' },
-      ];
+      return [mark(a, 'A'), mark(b, 'B'), mark({ intersection: b.intersection, sector: adjacentSector(b.sector) }, 'C')];
     }
     case 'U3-P3-C': {
+      // ∠A/∠B corresponding and ∠D vertical to ∠B on r; ∠E = 35° on s, drawn in an acute sector
+      // (SPEC 10.3), well away from ∠A, ∠B, ∠D.
+      if (st == null) throw new Error('U3-P3-C needs a second transversal');
       const [a, b] = corr(1);
       return [
-        { ...a, label: 'A', tone: 'primary' },
-        { ...b, label: 'B', tone: 'primary' },
-        { intersection: 'bottom', sector: ((b.sector + 2) % 4) as Sector, label: 'D', tone: 'neutral', arcStyle: 'double' },
-        { intersection: 'top-secondary', sector: 0, label: 'E', value: '35°', tone: 'secondary' },
+        mark(a, 'A'),
+        mark(b, 'B'),
+        mark({ intersection: b.intersection, sector: verticalSector(b.sector) }, 'D'),
+        { ...mark({ intersection: 'top-secondary', sector: sectorOfSize(o, st, 'acute') }, 'E'), value: '35°' },
       ];
     }
     default:
@@ -106,15 +130,39 @@ function ProofDiagram({ q }: { q: Unit3Question }) {
   );
 }
 
-function ProofTable({ lines }: { lines: NonNullable<Unit3Question['proofLines']> }) {
+const isBlank = (text: string | undefined) => text === undefined || CLOZE_BLANK.test(text);
+
+/** A proof cell: its text, or an empty cell to write in when the line is missing. */
+function ProofCell({ text }: { text: string | undefined }) {
+  if (isBlank(text)) return <td className="write-cell"><span className="sr-only">מקום לכתיבה</span></td>;
+  return <td><MathText text={text ?? ''} /></td>;
+}
+
+/**
+ * טענה | נימוק table. With `orderColumn`, a first 'סדר' column holds an empty cell per row, where the
+ * student writes the position of that row in the proof.
+ */
+function ProofTable({ lines, orderColumn = false }: { lines: NonNullable<Unit3Question['proofLines']>; orderColumn?: boolean }) {
   return (
-    <table className="data-table proof-table">
-      <thead><tr><th>טענה</th><th>נימוק</th></tr></thead>
+    <table className={`data-table proof-table${orderColumn ? ' proof-table--order' : ''}`}>
+      <colgroup>
+        {orderColumn && <col className="col-order" />}
+        <col className="col-claim" />
+        <col className="col-reason" />
+      </colgroup>
+      <thead>
+        <tr>
+          {orderColumn && <th>{PROOF_FORM_HEADINGS.order}</th>}
+          <th>{PROOF_FORM_HEADINGS.claim}</th>
+          <th>{PROOF_FORM_HEADINGS.reason}</th>
+        </tr>
+      </thead>
       <tbody>
         {lines.map((line, index) => (
           <tr key={index}>
-            <td><MathText text={line.claim} /></td>
-            <td>{line.reason ? <MathText text={line.reason} /> : <span className="table-write-line" />}</td>
+            {orderColumn && <td className="write-cell write-cell--order"><span className="sr-only">מקום לכתיבה</span></td>}
+            <ProofCell text={line.claim} />
+            <ProofCell text={line.reason} />
           </tr>
         ))}
       </tbody>
@@ -123,21 +171,22 @@ function ProofTable({ lines }: { lines: NonNullable<Unit3Question['proofLines']>
 }
 
 function ProofQuestion({ q }: { q: Unit3Question }) {
-  const isFullProof = q.page === 3;
+  const format = taskFormatById(q.id);
+  // Claim → reason matching: the reasons form a bank (no bubbles); every claim gets a reason slot on its line.
+  const matching = format === 'match-claim-reason';
+  const claims = q.subparts ?? [];
   return (
     <QuestionBlock
+      taskId={q.id}
       compact
       diagram={<ProofDiagram q={q} />}
-      subparts={(q.subparts ?? []).map(text => <MathText text={text} />)}
-      answerLines={isFullProof ? 3 : (q.proofLines || q.choices ? 1 : 2)}
+      {...(matching
+        ? { items: claims.map(claim => ({ content: <><MathText text={claim} /><LineSlot label="נימוק:" /></>, inline: true })) }
+        : { subparts: claims.map(text => <MathText text={text} />) })}
     >
       <MathText text={q.stem} />
-      {q.choices && (
-        <div className="choice-grid">
-          {q.choices.map(choice => <div className="choice" key={choice}><MathText text={choice} /></div>)}
-        </div>
-      )}
-      {q.proofLines && <ProofTable lines={q.proofLines} />}
+      {q.choices && (matching ? <WordBank items={q.choices} layout="list" /> : <ChoiceGrid options={q.choices} />)}
+      {q.proofLines && <ProofTable lines={q.proofLines} orderColumn={format === 'order-proof'} />}
     </QuestionBlock>
   );
 }

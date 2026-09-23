@@ -79,9 +79,9 @@
     ]
   ],
   "mathJaxStatus": {
-    "total": 167,
-    "rendered": 167,
-    "svgNodes": 167
+    "total": 250,
+    "rendered": 250,
+    "svgNodes": 250
   },
   "layout": [
     {
@@ -96,13 +96,13 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 15.859375,
-      "topGapRatio": 0.016750556976648238,
-      "bottomGapPx": 4.546875,
-      "bottomGapRatio": 0.00480237643369915,
-      "usedSpanRatio": 0.9784470665896526,
-      "maxInterQuestionGapPx": 16.109375,
-      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 18.875,
+      "bottomGapRatio": 0.019207530369522354,
+      "usedSpanRatio": 0.9673408382624181,
+      "maxInterQuestionGapPx": 25.546875,
+      "maxInterQuestionGapRatio": 0.025996947147490936,
       "questionCount": 4,
       "markerCount": 4,
       "subpartCount": 3,
@@ -147,7 +147,46 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 3.8,
+      "blocks": [
+        {
+          "taskId": "U1-P1-A",
+          "answerMode": "none",
+          "heightMm": 59.8,
+          "blockDeadMm": 3.8,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U1-P1-B",
+          "answerMode": "none",
+          "heightMm": 62.4,
+          "blockDeadMm": 3.8,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U1-P1-C",
+          "answerMode": "none",
+          "heightMm": 64.9,
+          "blockDeadMm": 3.8,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U1-P1-D",
+          "answerMode": "items",
+          "heightMm": 67.9,
+          "blockDeadMm": 3.8,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
     },
     {
       "renderIndex": 2,
@@ -161,17 +200,17 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 15.859375,
-      "topGapRatio": 0.016750556976648238,
-      "bottomGapPx": 4.53125,
-      "bottomGapRatio": 0.004785873421899497,
-      "usedSpanRatio": 0.9784635696014523,
-      "maxInterQuestionGapPx": 16.109375,
-      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 18.875,
+      "bottomGapRatio": 0.019207530369522354,
+      "usedSpanRatio": 0.9673408382624181,
+      "maxInterQuestionGapPx": 25.546875,
+      "maxInterQuestionGapRatio": 0.025996947147490936,
       "questionCount": 4,
       "markerCount": 4,
-      "subpartCount": 3,
-      "subpartMarkerCount": 3,
+      "subpartCount": 6,
+      "subpartMarkerCount": 6,
       "sourceNumberCount": 0,
       "sourceShaCount": 0,
       "geometrySvgCount": 4,
@@ -212,7 +251,46 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 0.8,
+      "blocks": [
+        {
+          "taskId": "U1-P1-E",
+          "answerMode": "none",
+          "heightMm": 50.6,
+          "blockDeadMm": 0,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U1-P2-A",
+          "answerMode": "none",
+          "heightMm": 56.7,
+          "blockDeadMm": 0,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U1-P2-B",
+          "answerMode": "work",
+          "heightMm": 95.7,
+          "blockDeadMm": 0,
+          "answerRuleCount": 5,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U1-P2-C",
+          "answerMode": "none",
+          "heightMm": 52,
+          "blockDeadMm": 0.8,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
     },
     {
       "renderIndex": 3,
@@ -226,17 +304,17 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 17.75,
-      "topGapRatio": 0.018747421404406304,
-      "bottomGapPx": 6.796875,
-      "bottomGapRatio": 0.007178810132849245,
-      "usedSpanRatio": 0.9740737684627444,
-      "maxInterQuestionGapPx": 20.265625,
-      "maxInterQuestionGapRatio": 0.021404406304150508,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 18.875,
+      "bottomGapRatio": 0.019207530369522354,
+      "usedSpanRatio": 0.9673408382624181,
+      "maxInterQuestionGapPx": 25.546875,
+      "maxInterQuestionGapRatio": 0.025996947147490936,
       "questionCount": 3,
       "markerCount": 3,
-      "subpartCount": 0,
-      "subpartMarkerCount": 0,
+      "subpartCount": 6,
+      "subpartMarkerCount": 6,
       "sourceNumberCount": 0,
       "sourceShaCount": 0,
       "geometrySvgCount": 3,
@@ -271,7 +349,37 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 0.8,
+      "blocks": [
+        {
+          "taskId": "U1-P2-D",
+          "answerMode": "none",
+          "heightMm": 48.7,
+          "blockDeadMm": 0.8,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U1-P2-E",
+          "answerMode": "items",
+          "heightMm": 83.7,
+          "blockDeadMm": 0,
+          "answerRuleCount": 6,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U1-P3-A",
+          "answerMode": "critique",
+          "heightMm": 122.6,
+          "blockDeadMm": 0,
+          "answerRuleCount": 6,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
     },
     {
       "renderIndex": 4,
@@ -285,17 +393,17 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 15.859375,
-      "topGapRatio": 0.016750556976648238,
-      "bottomGapPx": 0,
-      "bottomGapRatio": 0,
-      "usedSpanRatio": 1.032609951316115,
-      "maxInterQuestionGapPx": 16.109375,
-      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "topGapPx": 9.4375,
+      "topGapRatio": 0.009603765184761177,
+      "bottomGapPx": 16.984375,
+      "bottomGapRatio": 0.01728359727787318,
+      "usedSpanRatio": 0.9731126375373657,
+      "maxInterQuestionGapPx": 21.765625,
+      "maxInterQuestionGapRatio": 0.022149080964192585,
       "questionCount": 3,
       "markerCount": 3,
-      "subpartCount": 2,
-      "subpartMarkerCount": 2,
+      "subpartCount": 0,
+      "subpartMarkerCount": 0,
       "sourceNumberCount": 0,
       "sourceShaCount": 0,
       "geometrySvgCount": 7,
@@ -354,7 +462,37 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 0,
+      "blocks": [
+        {
+          "taskId": "U1-P3-B",
+          "answerMode": "none",
+          "heightMm": 136.5,
+          "blockDeadMm": 0,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U1-P3-C",
+          "answerMode": "none",
+          "heightMm": 45.7,
+          "blockDeadMm": 0,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U1-P3-D",
+          "answerMode": "critique",
+          "heightMm": 73.7,
+          "blockDeadMm": 0,
+          "answerRuleCount": 3,
+          "rulePitchMm": 7,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
     },
     {
       "renderIndex": 5,
@@ -368,13 +506,13 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 15.859375,
-      "topGapRatio": 0.016750556976648238,
-      "bottomGapPx": 4.53125,
-      "bottomGapRatio": 0.004785873421899497,
-      "usedSpanRatio": 0.9784635696014523,
-      "maxInterQuestionGapPx": 16.109375,
-      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 18.875,
+      "bottomGapRatio": 0.019207530369522354,
+      "usedSpanRatio": 0.9673408382624181,
+      "maxInterQuestionGapPx": 25.546875,
+      "maxInterQuestionGapRatio": 0.025996947147490936,
       "questionCount": 4,
       "markerCount": 4,
       "subpartCount": 0,
@@ -419,7 +557,46 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 0,
+      "blocks": [
+        {
+          "taskId": "U2-P1-A",
+          "answerMode": "value",
+          "heightMm": 61.3,
+          "blockDeadMm": 0,
+          "answerRuleCount": 4,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U2-P1-B",
+          "answerMode": "value",
+          "heightMm": 64.6,
+          "blockDeadMm": 0,
+          "answerRuleCount": 4,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U2-P1-C",
+          "answerMode": "none",
+          "heightMm": 46.7,
+          "blockDeadMm": 0,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U2-P1-D",
+          "answerMode": "justify",
+          "heightMm": 82.4,
+          "blockDeadMm": 0,
+          "answerRuleCount": 6,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
     },
     {
       "renderIndex": 6,
@@ -433,13 +610,13 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 15.859375,
-      "topGapRatio": 0.016750556976648238,
-      "bottomGapPx": 4.53125,
-      "bottomGapRatio": 0.004785873421899497,
-      "usedSpanRatio": 0.9784635696014523,
-      "maxInterQuestionGapPx": 16.109375,
-      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 18.875,
+      "bottomGapRatio": 0.019207530369522354,
+      "usedSpanRatio": 0.9673408382624181,
+      "maxInterQuestionGapPx": 25.546875,
+      "maxInterQuestionGapRatio": 0.025996947147490936,
       "questionCount": 4,
       "markerCount": 4,
       "subpartCount": 0,
@@ -484,7 +661,46 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 0,
+      "blocks": [
+        {
+          "taskId": "U2-P2-A",
+          "answerMode": "work",
+          "heightMm": 60.3,
+          "blockDeadMm": 0,
+          "answerRuleCount": 4,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U2-P2-B",
+          "answerMode": "work",
+          "heightMm": 63.6,
+          "blockDeadMm": 0,
+          "answerRuleCount": 4,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U2-P2-C",
+          "answerMode": "work",
+          "heightMm": 63.6,
+          "blockDeadMm": 0,
+          "answerRuleCount": 4,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U2-P2-D",
+          "answerMode": "two-ways",
+          "heightMm": 67.6,
+          "blockDeadMm": 0,
+          "answerRuleCount": 8,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
     },
     {
       "renderIndex": 7,
@@ -498,13 +714,13 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 15.859375,
-      "topGapRatio": 0.016750556976648238,
-      "bottomGapPx": 4.53125,
-      "bottomGapRatio": 0.004785873421899497,
-      "usedSpanRatio": 0.9784635696014523,
-      "maxInterQuestionGapPx": 16.109375,
-      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 18.875,
+      "bottomGapRatio": 0.019207530369522354,
+      "usedSpanRatio": 0.9673408382624181,
+      "maxInterQuestionGapPx": 25.546875,
+      "maxInterQuestionGapRatio": 0.025996947147490936,
       "questionCount": 4,
       "markerCount": 4,
       "subpartCount": 0,
@@ -549,7 +765,46 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 0,
+      "blocks": [
+        {
+          "taskId": "U2-P3-A",
+          "answerMode": "none",
+          "heightMm": 57.1,
+          "blockDeadMm": 0,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U2-P3-B",
+          "answerMode": "value",
+          "heightMm": 81.5,
+          "blockDeadMm": 0,
+          "answerRuleCount": 2,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U2-P3-C",
+          "answerMode": "work",
+          "heightMm": 58.2,
+          "blockDeadMm": 0,
+          "answerRuleCount": 3,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U2-P3-D",
+          "answerMode": "work",
+          "heightMm": 58.2,
+          "blockDeadMm": 0,
+          "answerRuleCount": 3,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
     },
     {
       "renderIndex": 8,
@@ -563,13 +818,13 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 15.859375,
-      "topGapRatio": 0.016750556976648238,
-      "bottomGapPx": 4.53125,
-      "bottomGapRatio": 0.004785873421899497,
-      "usedSpanRatio": 0.9784635696014523,
-      "maxInterQuestionGapPx": 16.109375,
-      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "topGapPx": 9.4375,
+      "topGapRatio": 0.009603765184761177,
+      "bottomGapPx": 16.984375,
+      "bottomGapRatio": 0.01728359727787318,
+      "usedSpanRatio": 0.9731126375373657,
+      "maxInterQuestionGapPx": 21.765625,
+      "maxInterQuestionGapRatio": 0.022149080964192585,
       "questionCount": 4,
       "markerCount": 4,
       "subpartCount": 0,
@@ -614,7 +869,46 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 0,
+      "blocks": [
+        {
+          "taskId": "U2-P4-A",
+          "answerMode": "algebra",
+          "heightMm": 52,
+          "blockDeadMm": 0,
+          "answerRuleCount": 3,
+          "rulePitchMm": 7,
+          "lastRuleToSeparatorMm": 3
+        },
+        {
+          "taskId": "U2-P4-B",
+          "answerMode": "algebra",
+          "heightMm": 54.8,
+          "blockDeadMm": 0,
+          "answerRuleCount": 3,
+          "rulePitchMm": 7,
+          "lastRuleToSeparatorMm": 3
+        },
+        {
+          "taskId": "U2-P4-C",
+          "answerMode": "algebra",
+          "heightMm": 60.8,
+          "blockDeadMm": 0,
+          "answerRuleCount": 3,
+          "rulePitchMm": 7,
+          "lastRuleToSeparatorMm": 3
+        },
+        {
+          "taskId": "U2-P4-D",
+          "answerMode": "algebra",
+          "heightMm": 88.5,
+          "blockDeadMm": 0,
+          "answerRuleCount": 3,
+          "rulePitchMm": 7,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
     },
     {
       "renderIndex": 9,
@@ -628,13 +922,13 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 15.859375,
-      "topGapRatio": 0.016750556976648238,
-      "bottomGapPx": 4.53125,
-      "bottomGapRatio": 0.004785873421899497,
-      "usedSpanRatio": 0.9784635696014523,
-      "maxInterQuestionGapPx": 16.109375,
-      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 18.875,
+      "bottomGapRatio": 0.019207530369522354,
+      "usedSpanRatio": 0.9673408382624181,
+      "maxInterQuestionGapPx": 25.546875,
+      "maxInterQuestionGapRatio": 0.025996947147490936,
       "questionCount": 4,
       "markerCount": 4,
       "subpartCount": 0,
@@ -679,7 +973,46 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 0,
+      "blocks": [
+        {
+          "taskId": "U2-P5-A",
+          "answerMode": "algebra",
+          "heightMm": 61.3,
+          "blockDeadMm": 0,
+          "answerRuleCount": 3,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U2-P5-B",
+          "answerMode": "algebra",
+          "heightMm": 58.6,
+          "blockDeadMm": 0,
+          "answerRuleCount": 3,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U2-P5-C",
+          "answerMode": "algebra",
+          "heightMm": 64.6,
+          "blockDeadMm": 0,
+          "answerRuleCount": 3,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U2-P5-D",
+          "answerMode": "critique",
+          "heightMm": 70.5,
+          "blockDeadMm": 0,
+          "answerRuleCount": 3,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
     },
     {
       "renderIndex": 10,
@@ -693,13 +1026,13 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 15.859375,
-      "topGapRatio": 0.016750556976648238,
-      "bottomGapPx": 4.53125,
-      "bottomGapRatio": 0.004785873421899497,
-      "usedSpanRatio": 0.9784635696014523,
-      "maxInterQuestionGapPx": 16.109375,
-      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 18.875,
+      "bottomGapRatio": 0.019207530369522354,
+      "usedSpanRatio": 0.9673408382624181,
+      "maxInterQuestionGapPx": 25.546875,
+      "maxInterQuestionGapRatio": 0.025996947147490936,
       "questionCount": 4,
       "markerCount": 4,
       "subpartCount": 0,
@@ -744,7 +1077,46 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 0,
+      "blocks": [
+        {
+          "taskId": "U2-P6-A",
+          "answerMode": "justify",
+          "heightMm": 55.3,
+          "blockDeadMm": 0,
+          "answerRuleCount": 2,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U2-P6-B",
+          "answerMode": "justify",
+          "heightMm": 58.6,
+          "blockDeadMm": 0,
+          "answerRuleCount": 2,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U2-P6-C",
+          "answerMode": "work",
+          "heightMm": 66.6,
+          "blockDeadMm": 0,
+          "answerRuleCount": 3,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U2-P6-D",
+          "answerMode": "work",
+          "heightMm": 74.6,
+          "blockDeadMm": 0,
+          "answerRuleCount": 4,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
     },
     {
       "renderIndex": 11,
@@ -758,13 +1130,13 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 15.859375,
-      "topGapRatio": 0.016750556976648238,
-      "bottomGapPx": 4.53125,
-      "bottomGapRatio": 0.004785873421899497,
-      "usedSpanRatio": 0.9784635696014523,
-      "maxInterQuestionGapPx": 16.109375,
-      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 18.875,
+      "bottomGapRatio": 0.019207530369522354,
+      "usedSpanRatio": 0.9673408382624181,
+      "maxInterQuestionGapPx": 25.546875,
+      "maxInterQuestionGapRatio": 0.025996947147490936,
       "questionCount": 4,
       "markerCount": 4,
       "subpartCount": 3,
@@ -790,7 +1162,7 @@
         },
         {
           "svgIndex": 2,
-          "labels": 9,
+          "labels": 10,
           "collisions": 0,
           "outOfBounds": 0
         },
@@ -809,7 +1181,46 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 0.7,
+      "blocks": [
+        {
+          "taskId": "U3-P1-A",
+          "answerMode": "none",
+          "heightMm": 43.5,
+          "blockDeadMm": 0,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U3-P1-B",
+          "answerMode": "none",
+          "heightMm": 46.7,
+          "blockDeadMm": 0,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U3-P1-C",
+          "answerMode": "items",
+          "heightMm": 72.9,
+          "blockDeadMm": 0.7,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U3-P1-D",
+          "answerMode": "justify",
+          "heightMm": 91.9,
+          "blockDeadMm": 0,
+          "answerRuleCount": 8,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
     },
     {
       "renderIndex": 12,
@@ -823,13 +1234,13 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 15.859375,
-      "topGapRatio": 0.016750556976648238,
-      "bottomGapPx": 4.53125,
-      "bottomGapRatio": 0.004785873421899497,
-      "usedSpanRatio": 0.9784635696014523,
-      "maxInterQuestionGapPx": 16.109375,
-      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 18.875,
+      "bottomGapRatio": 0.019207530369522354,
+      "usedSpanRatio": 0.9673408382624181,
+      "maxInterQuestionGapPx": 25.546875,
+      "maxInterQuestionGapRatio": 0.025996947147490936,
       "questionCount": 4,
       "markerCount": 4,
       "subpartCount": 0,
@@ -874,7 +1285,46 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 0,
+      "blocks": [
+        {
+          "taskId": "U3-P2-A",
+          "answerMode": "critique",
+          "heightMm": 59.9,
+          "blockDeadMm": 0,
+          "answerRuleCount": 5,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U3-P2-B",
+          "answerMode": "none",
+          "heightMm": 65.5,
+          "blockDeadMm": 0,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U3-P2-C",
+          "answerMode": "none",
+          "heightMm": 54.1,
+          "blockDeadMm": 0,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U3-P2-D",
+          "answerMode": "justify",
+          "heightMm": 75.5,
+          "blockDeadMm": 0,
+          "answerRuleCount": 3,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
     },
     {
       "renderIndex": 13,
@@ -888,13 +1338,13 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 15.859375,
-      "topGapRatio": 0.016750556976648238,
-      "bottomGapPx": 0,
-      "bottomGapRatio": 0,
-      "usedSpanRatio": 1.0243419424044888,
-      "maxInterQuestionGapPx": 16.109375,
-      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "topGapPx": 9.4375,
+      "topGapRatio": 0.009603765184761177,
+      "bottomGapPx": 16.984375,
+      "bottomGapRatio": 0.01728359727787318,
+      "usedSpanRatio": 0.9731126375373657,
+      "maxInterQuestionGapPx": 21.765625,
+      "maxInterQuestionGapRatio": 0.022149080964192585,
       "questionCount": 4,
       "markerCount": 4,
       "subpartCount": 2,
@@ -939,7 +1389,46 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 0.3,
+      "blocks": [
+        {
+          "taskId": "U3-P3-A",
+          "answerMode": "proof",
+          "heightMm": 54.2,
+          "blockDeadMm": 0.3,
+          "answerRuleCount": 6,
+          "rulePitchMm": 7,
+          "lastRuleToSeparatorMm": 3
+        },
+        {
+          "taskId": "U3-P3-B",
+          "answerMode": "proof",
+          "heightMm": 57,
+          "blockDeadMm": 0.3,
+          "answerRuleCount": 6,
+          "rulePitchMm": 7,
+          "lastRuleToSeparatorMm": 3
+        },
+        {
+          "taskId": "U3-P3-C",
+          "answerMode": "proof",
+          "heightMm": 63,
+          "blockDeadMm": 0.3,
+          "answerRuleCount": 6,
+          "rulePitchMm": 7,
+          "lastRuleToSeparatorMm": 3
+        },
+        {
+          "taskId": "U3-P3-D",
+          "answerMode": "critique",
+          "heightMm": 81.9,
+          "blockDeadMm": 0,
+          "answerRuleCount": 4,
+          "rulePitchMm": 7,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
     },
     {
       "renderIndex": 14,
@@ -953,17 +1442,17 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 15.859375,
-      "topGapRatio": 0.016750556976648238,
-      "bottomGapPx": 4.53125,
-      "bottomGapRatio": 0.004785873421899497,
-      "usedSpanRatio": 0.9784635696014523,
-      "maxInterQuestionGapPx": 16.109375,
-      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 18.875,
+      "bottomGapRatio": 0.019207530369522354,
+      "usedSpanRatio": 0.9673408382624181,
+      "maxInterQuestionGapPx": 25.546875,
+      "maxInterQuestionGapRatio": 0.025996947147490936,
       "questionCount": 4,
       "markerCount": 4,
-      "subpartCount": 4,
-      "subpartMarkerCount": 4,
+      "subpartCount": 10,
+      "subpartMarkerCount": 10,
       "sourceNumberCount": 0,
       "sourceShaCount": 0,
       "geometrySvgCount": 1,
@@ -986,7 +1475,46 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 0.8,
+      "blocks": [
+        {
+          "taskId": "U4-P1-A",
+          "answerMode": "none",
+          "heightMm": 65,
+          "blockDeadMm": 0.8,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U4-P1-B",
+          "answerMode": "none",
+          "heightMm": 68.3,
+          "blockDeadMm": 0.8,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U4-P1-C",
+          "answerMode": "items",
+          "heightMm": 68.7,
+          "blockDeadMm": 0.1,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U4-P1-D",
+          "answerMode": "justify",
+          "heightMm": 53.1,
+          "blockDeadMm": 0,
+          "answerRuleCount": 3,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
     },
     {
       "renderIndex": 15,
@@ -1000,20 +1528,20 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 15.859375,
-      "topGapRatio": 0.016750556976648238,
-      "bottomGapPx": 4.546875,
-      "bottomGapRatio": 0.00480237643369915,
-      "usedSpanRatio": 0.9784470665896526,
-      "maxInterQuestionGapPx": 16.109375,
-      "maxInterQuestionGapRatio": 0.017014605165442693,
+      "topGapPx": 9.4375,
+      "topGapRatio": 0.009603765184761177,
+      "bottomGapPx": 16.984375,
+      "bottomGapRatio": 0.01728359727787318,
+      "usedSpanRatio": 0.9731126375373657,
+      "maxInterQuestionGapPx": 21.765625,
+      "maxInterQuestionGapRatio": 0.022149080964192585,
       "questionCount": 4,
       "markerCount": 4,
-      "subpartCount": 0,
-      "subpartMarkerCount": 0,
+      "subpartCount": 5,
+      "subpartMarkerCount": 5,
       "sourceNumberCount": 0,
       "sourceShaCount": 0,
-      "geometrySvgCount": 4,
+      "geometrySvgCount": 3,
       "unlabeledGeometrySvgCount": 0,
       "geometryCollisionCount": 0,
       "geometryOutOfBoundsCount": 0,
@@ -1026,18 +1554,12 @@
         },
         {
           "svgIndex": 1,
-          "labels": 3,
-          "collisions": 0,
-          "outOfBounds": 0
-        },
-        {
-          "svgIndex": 2,
           "labels": 5,
           "collisions": 0,
           "outOfBounds": 0
         },
         {
-          "svgIndex": 3,
+          "svgIndex": 2,
           "labels": 7,
           "collisions": 0,
           "outOfBounds": 0
@@ -1051,7 +1573,46 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 1.4,
+      "blocks": [
+        {
+          "taskId": "U4-P2-A",
+          "answerMode": "justify",
+          "heightMm": 43.5,
+          "blockDeadMm": 0,
+          "answerRuleCount": 3,
+          "rulePitchMm": 7,
+          "lastRuleToSeparatorMm": 3
+        },
+        {
+          "taskId": "U4-P2-B",
+          "answerMode": "items",
+          "heightMm": 84.1,
+          "blockDeadMm": 1.4,
+          "answerRuleCount": 5,
+          "rulePitchMm": 7,
+          "lastRuleToSeparatorMm": 3
+        },
+        {
+          "taskId": "U4-P2-C",
+          "answerMode": "algebra",
+          "heightMm": 61.1,
+          "blockDeadMm": 0,
+          "answerRuleCount": 4,
+          "rulePitchMm": 7,
+          "lastRuleToSeparatorMm": 3
+        },
+        {
+          "taskId": "U4-P2-D",
+          "answerMode": "proof",
+          "heightMm": 67.3,
+          "blockDeadMm": 0.3,
+          "answerRuleCount": 6,
+          "rulePitchMm": 7,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
     },
     {
       "renderIndex": 16,
@@ -1065,13 +1626,13 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 11.328125,
-      "topGapRatio": 0.011964683554748742,
-      "bottomGapPx": 0,
-      "bottomGapRatio": 0,
-      "usedSpanRatio": 0.9880353164452512,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 5.65625,
+      "bottomGapRatio": 0.005755899001462825,
+      "usedSpanRatio": 0.9807924696304776,
       "maxInterQuestionGapPx": 15.109375,
-      "maxInterQuestionGapRatio": 0.015958412410264872,
+      "maxInterQuestionGapRatio": 0.015375564459708706,
       "questionCount": 2,
       "markerCount": 0,
       "subpartCount": 0,
@@ -1091,7 +1652,9 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": null,
+      "blocks": []
     },
     {
       "renderIndex": 17,
@@ -1105,13 +1668,13 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 11.328125,
-      "topGapRatio": 0.011964683554748742,
-      "bottomGapPx": 0,
-      "bottomGapRatio": 0,
-      "usedSpanRatio": 0.9880353164452512,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 5.65625,
+      "bottomGapRatio": 0.005755899001462825,
+      "usedSpanRatio": 0.9807924696304776,
       "maxInterQuestionGapPx": 15.109375,
-      "maxInterQuestionGapRatio": 0.015958412410264872,
+      "maxInterQuestionGapRatio": 0.015375564459708706,
       "questionCount": 2,
       "markerCount": 0,
       "subpartCount": 0,
@@ -1131,7 +1694,9 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": null,
+      "blocks": []
     },
     {
       "renderIndex": 18,
@@ -1145,13 +1710,13 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 11.328125,
-      "topGapRatio": 0.011964683554748742,
-      "bottomGapPx": 0,
-      "bottomGapRatio": 0,
-      "usedSpanRatio": 0.9880353164452512,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 5.65625,
+      "bottomGapRatio": 0.005755899001462825,
+      "usedSpanRatio": 0.9807924696304776,
       "maxInterQuestionGapPx": 15.109375,
-      "maxInterQuestionGapRatio": 0.015958412410264872,
+      "maxInterQuestionGapRatio": 0.015375564459708706,
       "questionCount": 2,
       "markerCount": 0,
       "subpartCount": 0,
@@ -1171,7 +1736,9 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": null,
+      "blocks": []
     },
     {
       "renderIndex": 19,
@@ -1185,13 +1752,13 @@
       "scrollOverflow": 0,
       "overflowingQuestions": 0,
       "internallyOverflowingQuestions": 0,
-      "topGapPx": 11.328125,
-      "topGapRatio": 0.011964683554748742,
-      "bottomGapPx": 0,
-      "bottomGapRatio": 0,
-      "usedSpanRatio": 0.9982836867728361,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 5.65625,
+      "bottomGapRatio": 0.005755899001462825,
+      "usedSpanRatio": 0.9807924696304776,
       "maxInterQuestionGapPx": 15.109375,
-      "maxInterQuestionGapRatio": 0.015958412410264872,
+      "maxInterQuestionGapRatio": 0.015375564459708706,
       "questionCount": 2,
       "markerCount": 0,
       "subpartCount": 0,
@@ -1211,7 +1778,9 @@
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
-      "footerContentOverlap": false
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": null,
+      "blocks": []
     }
   ]
 }

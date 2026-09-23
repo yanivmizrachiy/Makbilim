@@ -1,10 +1,9 @@
-.curriculum-source-page .page-content {
-  padding-top: 3mm;
-}
+/* FRAME ONLY — the page frame around the verbatim curriculum blocks. The source HTML, its numbers
+   and its inner styling below are the source's own and are never altered. */
 
 .bbb-source {
+  flex: 1 1 auto;
   min-height: 0;
-  height: 100%;
   display: grid;
   grid-template-rows: repeat(2, minmax(0, 1fr));
   gap: 4mm;
@@ -17,13 +16,7 @@
 .bbb-source-block {
   min-height: 0;
   overflow: hidden;
-  border-bottom: 0.28mm solid #cbd5e1;
-  padding-bottom: 2.2mm;
   break-inside: avoid;
-}
-
-.bbb-source-block:last-child {
-  border-bottom: 0;
 }
 
 .bbb-source .q {
@@ -32,7 +25,7 @@
   grid-template-rows: auto minmax(0, 1fr);
   gap: 1.8mm;
   border: 0.32mm solid #e1e5ec;
-  border-radius: 3mm;
+  border-radius: 0;
   padding: 3mm 4mm;
   background: #fff;
 }

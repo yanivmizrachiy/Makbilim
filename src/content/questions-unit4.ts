@@ -1,9 +1,13 @@
+import { REASONS, THEOREMS } from './theorems';
+
 export type Unit4Question = {
   id: string;
   page: number;
   stem: string;
   subparts?: string[];
   choices?: string[];
+  /** Response structure: the verdict the student marks beside each sub-item statement. */
+  verdictOptions?: string[];
   diagram?: {
     topology: string;
     lineLabels: string[];
@@ -29,28 +33,44 @@ export type Unit4Question = {
 
 export const unit4Questions: Unit4Question[] = [
   // עמוד 1 — שפה והפעלה ראשונה של המשפטים ההפוכים
+  // Converse-wording drills: each line is the full canonical converse theorem with
+  // exactly ONE word missing (never two blanks in one sentence — SPEC 3.1). The
+  // lines cover the equality premise (שוות), the parallel conclusion (מקבילים) and
+  // the angle-type word; expected.completions[i] fills subparts[i].
   {
     id: 'U4-P1-A',
     page: 1,
-    stem: 'השלימו את המשפט: אם שני ישרים נחתכים על ידי ישר שלישי, וזוג זוויות מתאימות ______ זו לזו, אז שני הישרים ______.',
-    expected: { completions: ['שוות', 'מקבילים'] }
+    stem: 'השלימו בכל שורה את המילה החסרה. בכל השורות מופיע אותו משפט הפוך.',
+    subparts: [
+      'אם שני ישרים נחתכים על ידי ישר שלישי, וזוג זוויות מתאימות ______ זו לזו, אז שני הישרים מקבילים.',
+      'אם שני ישרים נחתכים על ידי ישר שלישי, וזוג זוויות מתאימות שוות זו לזו, אז שני הישרים ______.',
+      'אם שני ישרים נחתכים על ידי ישר שלישי, וזוג זוויות ______ שוות זו לזו, אז שני הישרים מקבילים.'
+    ],
+    expected: { completions: ['שוות', 'מקבילים', 'מתאימות'] }
   },
   {
     id: 'U4-P1-B',
     page: 1,
-    stem: 'השלימו את המשפט: אם שני ישרים נחתכים על ידי ישר שלישי, וזוג זוויות מתחלפות ______ זו לזו, אז שני הישרים ______.',
-    expected: { completions: ['שוות', 'מקבילים'] }
+    stem: 'השלימו את המילה החסרה בכל שורה, כך שבכל השורות יתקבל אותו משפט הפוך.',
+    subparts: [
+      'אם שני ישרים נחתכים על ידי ישר שלישי, וזוג זוויות מתחלפות שוות זו לזו, אז שני הישרים ______.',
+      'אם שני ישרים נחתכים על ידי ישר שלישי, וזוג זוויות ______ שוות זו לזו, אז שני הישרים מקבילים.',
+      'אם שני ישרים נחתכים על ידי ישר שלישי, וזוג זוויות מתחלפות ______ זו לזו, אז שני הישרים מקבילים.'
+    ],
+    expected: { completions: ['מקבילים', 'מתחלפות', 'שוות'] }
   },
   {
     id: 'U4-P1-C',
     page: 1,
     stem: 'קבעו ליד כל טענה אם היא משפט ישיר או משפט הפוך.',
+    // The canonical statements themselves (SPEC 3.1 / 3.2), taken from theorems.ts so they can never drift.
     subparts: [
-      'אם שני ישרים מקבילים נחתכים על ידי ישר שלישי, אז זוויות מתאימות שוות זו לזו.',
-      'אם שני ישרים נחתכים על ידי ישר שלישי וזוויות מתאימות שוות זו לזו, אז שני הישרים מקבילים.',
-      'אם שני ישרים מקבילים נחתכים על ידי ישר שלישי, אז זוויות מתחלפות שוות זו לזו.',
-      'אם שני ישרים נחתכים על ידי ישר שלישי וזוויות מתחלפות שוות זו לזו, אז שני הישרים מקבילים.'
+      THEOREMS.correspondingDirect.formalText,
+      THEOREMS.correspondingConverse.text,
+      THEOREMS.alternateDirect.formalText,
+      THEOREMS.alternateConverse.text
     ],
+    verdictOptions: ['משפט ישיר', 'משפט הפוך'],
     expected: { completions: ['ישיר', 'הפוך', 'ישיר', 'הפוך'] }
   },
   {
@@ -62,57 +82,63 @@ export const unit4Questions: Unit4Question[] = [
       lineLabels: ['p', 'q', 't'],
       pointLabels: ['A', 'B'],
       orientationDeg: 6,
-      transversalDeg: 61,
+      transversalDeg: 73,
       parallelGiven: false,
       givens: ['∠A = 67°', '∠B = 67°', '∠A and ∠B are corresponding'],
       target: 'determine p ∥ q'
     },
     expected: {
       conclusion: 'p ∥ q',
-      reason: 'אם שני ישרים נחתכים על ידי ישר שלישי וזוג זוויות מתאימות שוות זו לזו, אז שני הישרים מקבילים.'
+      reason: THEOREMS.correspondingConverse.text
     }
   },
   {
     id: 'U4-P2-A',
     page: 2,
-    stem: 'בשרטוט שני ישרים נחתכים על ידי ישר שלישי. נתון כי ∠C = 112° ו־∠D = 112°, והזוויות ∠C ו־∠D מתחלפות. קבעו אם k ∥ m. נמקו.',
+    // The pair type is NOT named: the student identifies it from the drawing (the arcs sit on
+    // opposite sides of r, between k and m) and must then choose the matching converse.
+    stem: 'בשרטוט הישרים k ו־m נחתכים על ידי הישר r. נתון כי ∠C = 112° ו־∠D = 112°. ציינו אם ∠C ו־∠D הן זוויות מתאימות או מתחלפות, וקבעו אם k ∥ m. נמקו.',
     diagram: {
       topology: 'converse-alternate-equal-numeric',
       lineLabels: ['k', 'm', 'r'],
       pointLabels: ['C', 'D'],
       orientationDeg: -13,
-      transversalDeg: 118,
+      transversalDeg: 99,
       parallelGiven: false,
-      givens: ['∠C = 112°', '∠D = 112°', '∠C and ∠D are alternate'],
-      target: 'determine k ∥ m'
+      givens: ['∠C = 112°', '∠D = 112°'],
+      target: 'identify the pair type, then determine k ∥ m'
     },
     expected: {
       conclusion: 'k ∥ m',
-      reason: 'אם שני ישרים נחתכים על ידי ישר שלישי וזוג זוויות מתחלפות שוות זו לזו, אז שני הישרים מקבילים.'
+      reason: [
+        '∠C ו־∠D הן זוויות מתחלפות.',
+        THEOREMS.alternateConverse.text
+      ]
     }
   },
   {
     id: 'U4-P2-B',
     page: 2,
-    stem: 'באיזה מן המקרים אפשר לקבוע שהישרים p ו־q מקבילים? בחרו ונמקו.',
-    choices: [
-      'זוג זוויות מתאימות בין p ו־q שוות זו לזו.',
-      'זוג זוויות קודקודיות שוות זו לזו.',
-      'שתי זוויות צמודות שסכומן 180° באותו חיתוך.',
-      'שתי זוויות שוות הנמצאות באותו קודקוד.'
+    // True / false on the converse theorems (SPEC 4, unit 4): which data suffice to conclude p ∥ q.
+    // Two claims are converse conditions; the other three rest on facts that hold for ANY two lines
+    // cut by a transversal (vertical, adjacent) or on the position of a pair without its equality.
+    stem: 'הישר t חותך את p ו־q. קבעו אם כל טענה נכונה, ונמקו.',
+    subparts: [
+      'אם זוג זוויות קודקודיות בחיתוך של p ו־t שוות זו לזו, אז p ו־q מקבילים.',
+      'אם זוג זוויות מתאימות בין p ו־q שוות זו לזו, אז p ו־q מקבילים.',
+      'אם שתי זוויות הן זוויות מתחלפות בין p ו־q, אז p ו־q מקבילים.',
+      'אם זוויות צמודות בחיתוך של q ו־t משלימות ל־180°, אז p ו־q מקבילים.',
+      'אם זוג זוויות מתחלפות בין p ו־q שוות זו לזו, אז p ו־q מקבילים.'
     ],
-    diagram: {
-      topology: 'converse-data-sufficiency-four-cases',
-      lineLabels: ['p', 'q', 't'],
-      orientationDeg: 78,
-      transversalDeg: 30,
-      parallelGiven: false,
-      givens: ['four candidate angle relations'],
-      target: 'select sufficient condition for p ∥ q'
-    },
+    verdictOptions: ['נכון', 'לא נכון'],
     expected: {
-      choice: 'זוג זוויות מתאימות בין p ו־q שוות זו לזו.',
-      reason: 'שוויון של זוג זוויות מתאימות הנוצרות על ידי חותך מספיק לקביעת מקבילות באמצעות המשפט ההפוך.'
+      reason: [
+        `לא נכון — ${REASONS.vertical} זה מתקיים תמיד, גם כשהישרים אינם מקבילים, ושתי הזוויות באותו חיתוך; אין בכך מידע על הישר q.`,
+        `נכון — ${THEOREMS.correspondingConverse.text}`,
+        `לא נכון — בכל שני ישרים הנחתכים על ידי ישר שלישי יש זוויות מתחלפות; המיקום לבדו אינו מספיק. המשפט ההפוך דורש שהזוויות המתחלפות יהיו שוות זו לזו.`,
+        `לא נכון — ${REASONS.adjacent} זה מתקיים תמיד, גם כשהישרים אינם מקבילים, ושתי הזוויות באותו חיתוך; אין בכך מידע על הישר p.`,
+        `נכון — ${THEOREMS.alternateConverse.text}`
+      ]
     }
   },
   {
@@ -122,21 +148,24 @@ export const unit4Questions: Unit4Question[] = [
     diagram: {
       topology: 'converse-algebra-corresponding',
       lineLabels: ['p', 'q', 't'],
-      orientationDeg: -7,
-      transversalDeg: 64,
+      // Rising lines (the unit's one non-horizontal pose); crossing 74° = the angle at x = 20, so
+      // the drawn acute pair shows its true size.
+      orientationDeg: 28,
+      transversalDeg: 134,
       parallelGiven: false,
       givens: ['corresponding angles: (3x + 14)° and (5x − 26)°'],
       target: 'find x that guarantees p ∥ q'
     },
     justificationLane: true,
     expected: {
-      values: { x: 20, 'זווית': 74 },
-      justification: 'כדי לקבוע שהישרים p ו־q מקבילים באמצעות המשפט ההפוך, משווים את שתי הזוויות הנתונות: 3x + 14 = 5x − 26. כאשר הן שוות מתקבל x = 20, ולכן ניתן להסיק p ∥ q.',
+      // The stem asks only for x; the angle (74°) appears in the key only as the check.
+      values: { x: 20 },
+      justification: THEOREMS.correspondingConverse.text,
       conclusion: 'p ∥ q',
       reason: [
-        'כדי להפעיל את המשפט ההפוך יש להשוות את הזוויות המתאימות.',
-        '3x + 14 = 5x − 26, ולכן x = 20.',
-        'עבור x = 20 שתי הזוויות שוות ל־74°, ולכן p ∥ q.'
+        'כדי להפעיל את המשפט ההפוך של הזוויות המתאימות, דורשים ששתי הזוויות המתאימות יהיו שוות: 3x + 14 = 5x − 26.',
+        '40 = 2x, ולכן x = 20.',
+        'בדיקה: עבור x = 20 שתי הזוויות שוות ל־74°. זוג זוויות מתאימות שוות זו לזו, ולכן p ∥ q.'
       ]
     }
   },
@@ -149,7 +178,8 @@ export const unit4Questions: Unit4Question[] = [
       lineLabels: ['p', 'q', 'r', 't'],
       pointLabels: ['A', 'B', 'C'],
       orientationDeg: 12,
-      transversalDeg: 57,
+      // A shallow (42°) crossing: the proof names no sizes, and the wide obtuse sectors hold A, B, C.
+      transversalDeg: 54,
       parallelGiven: true,
       parallelGivens: ['p ∥ q'],
       givens: ['p ∥ q', '∠A corresponds to ∠B', '∠A = ∠C', '∠B and ∠C are corresponding relative to q and r'],
@@ -158,11 +188,12 @@ export const unit4Questions: Unit4Question[] = [
     expected: {
       conclusion: 'q ∥ r',
       proof: [
-        '∠A = ∠B — זוויות מתאימות בין הישרים המקבילים p ו־q שוות זו לזו.',
-        '∠A = ∠C — נתון.',
-        'לכן ∠B = ∠C — מכלל המעבר.',
-        '∠B ו־∠C הן זוויות מתאימות ביחס לישרים q ו־r.',
-        'לכן q ∥ r — לפי המשפט ההפוך של זוויות מתאימות.'
+        // Direct theorem on the GIVEN p ∥ q (stated in the stem), then the converse on q and r.
+        `∠A = ∠B — ${THEOREMS.correspondingDirect.text} (p ∥ q נתון)`,
+        `∠A = ∠C — ${REASONS.given}`,
+        `∠B = ∠C — ${REASONS.transitivity}`,
+        `∠B ו־∠C הן זוויות מתאימות ביחס לישרים q ו־r — ${REASONS.given}`,
+        `q ∥ r — ${THEOREMS.correspondingConverse.text}`
       ]
     }
   }
