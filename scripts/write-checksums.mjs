@@ -1,8 +1,11 @@
 import crypto from 'node:crypto';
+import { execFile } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { promisify } from 'node:util';
 
 const root = process.cwd();
+const execFileAsync = promisify(execFile);
 const pdfDir = path.join(root, 'artifacts', 'pdf');
 const outputPath = path.join(root, 'artifacts', 'SHA256SUMS.txt');
 const manifestPath = path.join(root, 'artifacts', 'build-manifest.json');
@@ -29,27 +32,22 @@ await fs.writeFile(
   'utf8',
 );
 
-const canonicalInputs = [
-  'SPEC.md',
-  'package.json',
-  'package-lock.json',
-  'qa/visual-baseline.json',
-  'sources/manifest.json',
-  'sources/curriculum/bbb-parallel-lines.manifest.json',
-  'src/content/page-manifest.json',
-  'src/content/unit-plan.json',
-  'src/content/question-plan.json',
-  'src/content/questions-unit1.ts',
-  'src/content/questions-unit2.ts',
-  'src/content/questions-unit3.ts',
-  'src/content/questions-unit4.ts',
-  'src/content/questions-unit5.ts',
-  'src/content/answer-key.ts',
-  'src/content/theorems.ts',
-];
+const { stdout: trackedStdout } = await execFileAsync('git', ['ls-files', '-z'], {
+  cwd: root,
+  encoding: 'utf8',
+  maxBuffer: 16 * 1024 * 1024,
+});
+const trackedInputs = trackedStdout
+  .split('\0')
+  .filter(Boolean)
+  .sort((a, b) => a.localeCompare(b, 'en'));
+
+if (trackedInputs.length < 50) {
+  throw new Error(`checksums: tracked input set is unexpectedly small: ${trackedInputs.length}`);
+}
 
 const inputs = [];
-for (const relativePath of canonicalInputs) {
+for (const relativePath of trackedInputs) {
   const bytes = await fs.readFile(path.join(root, relativePath));
   inputs.push({
     path: relativePath,
@@ -73,7 +71,7 @@ const sbom = {
 
 const packageJson = JSON.parse(await fs.readFile(path.join(root, 'package.json'), 'utf8'));
 const manifest = {
-  schemaVersion: 2,
+  schemaVersion: 3,
   project: 'Makbilim',
   title: 'זוויות בין ישרים מקבילים',
   version: packageJson.version,
@@ -82,6 +80,7 @@ const manifest = {
   runId: process.env.GITHUB_RUN_ID ?? null,
   node: process.version,
   aggregateInputSha256,
+  trackedFileCount: inputs.length,
   inputs,
   sbom,
   pdfCount: files.length,
@@ -90,10 +89,10 @@ const manifest = {
 
 await fs.writeFile(
   path.join(root, 'artifacts', 'input-fingerprint.json'),
-  JSON.stringify({ schemaVersion: 1, aggregateSha256: aggregateInputSha256, inputs }, null, 2) + '\n',
+  JSON.stringify({ schemaVersion: 2, trackedFileCount: inputs.length, aggregateSha256: aggregateInputSha256, inputs }, null, 2) + '\n',
   'utf8',
 );
 
 await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
 
-console.log(`checksums: PASS — ${files.length} PDF files hashed; canonical inputs=${inputs.length}, aggregate=${aggregateInputSha256}`);
+console.log(`checksums: PASS — ${files.length} PDF files hashed; tracked inputs=${inputs.length}, aggregate=${aggregateInputSha256}`);

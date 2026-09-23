@@ -497,12 +497,13 @@ Point, Vector, Line, Segment, ישרים מקבילים, חותך אחד/יות�
 ## 11.12 דטרמיניזם, שלמות ו־Release
 - `package-lock.json` tracked ומחייב; CI משתמש ב־`npm ci` וב־npm cache המבוסס על lockfile.
 - סביבת Node pinned במפורש ל־Node `22.23.2` ב־CI, Release, `package.json` ו־`.nvmrc`; אין שימוש בגרסת major נעה.
+- קבצי טקסט נשמרים ב־UTF-8 עם LF באמצעות `.editorconfig` ו־`.gitattributes`, גם ב־Windows; `.npmrc` אוכף `engine-strict` ו־`save-exact`.
 - כל dependency ישיר חייב להיות pinned לגרסה מדויקת; lockfile חייב להיות v3, עם registry ו־integrity תקינים.
 - CI ו־Release מריצים `npm audit --omit=dev --audit-level=high`; פגיעות production ברמת high/critical מפילות build.
 - אין שום אוטומציה מתוזמנת: אסור `schedule`, cron, Dependabot מחזורי או פעולה שבועית/יומית. אוטומציה מותרת רק על push, pull request, tag/Release או workflow ידני.
 - כל שימוש ב־GitHub Action חיצוני ב־CI/Release pinned ל־commit SHA מלא; תגי `@vN` אינם מקור אמת להרצה.
 - כל build מפיק `SHA256SUMS.txt` לכל קובצי ה־PDF.
-- `input-fingerprint.json` מכיל SHA-256 לכל קלט קנוני: SPEC, lockfile, manifests, baseline, שאלות, תשובות ומשפטים, וכן aggregate SHA-256 יחיד.
+- `input-fingerprint.json` מחושב אוטומטית מתוך `git ls-files` ומכיל SHA-256 לכל קובץ tracked בריפו וכן aggregate SHA-256 יחיד; אין רשימת קלטים ידנית שעלולה להתיישן.
 - `build-manifest.json` קושר יחד גרסת package, commit/ref/run, גרסת Node, fingerprint הקלטים, SBOM ושלושת קובצי ה־PDF.
 - כל build מפיק CycloneDX SBOM ב־`artifacts/sbom.cdx.json` ישירות מ־npm/lockfile, ללא רשימת תלויות ידנית כפולה.
 - Release נוצר אוטומטית רק ב־push של tag התואם `v*`, ורק לאחר build ו־QA מלאים מאותו tag.
@@ -601,6 +602,9 @@ Makbilim/
 ├─ package.json
 ├─ package-lock.json
 ├─ .nvmrc
+├─ .npmrc
+├─ .gitattributes
+├─ .editorconfig
 ├─ tsconfig.json
 ├─ vite.config.ts
 ├─ vite.teacher.config.ts
