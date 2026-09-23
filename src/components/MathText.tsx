@@ -616,6 +616,11 @@ function ensureMathJax(): Promise<MathJaxRuntime> {
     },
     svg: {
       fontCache: 'global',
+      // MathJax 4 breaks long inline math across lines by default. Inside an RTL paragraph
+      // the resulting pieces are reordered (e.g. a lone "°" stranded at the end of the
+      // previous line, or "180 − (5x" / "− 19)"), so every inline expression is kept atomic
+      // and the paragraph wraps around it instead.
+      linebreaks: { inline: false },
     },
     startup: {
       ...(runtime.MathJax?.startup ?? {}),

@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
 import { A4Page } from '../components/A4Page';
+import { MathText } from '../components/MathText';
 import { QuestionBlock } from '../components/QuestionBlock';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
 import { unit1Questions } from '../content/questions-unit1';
@@ -10,11 +11,16 @@ const byId = (id: string) => {
   return q;
 };
 
+// Angle names go through MathText so each is one LTR math island; as plain text inside the
+// RTL column the neutral "∠" would be placed after the digit ("1∠").
+const RIGHT_COLUMN_ANGLES = ['∠1', '∠2', '∠3', '∠4'];
+const LEFT_COLUMN_ANGLES = ['∠5', '∠6', '∠7', '∠8'];
+
 function MatchingColumns({ mode }: { mode: 'corresponding' | 'alternate' }) {
   return (
     <div className="matching-columns">
-      <div><strong>טור ימני</strong><span>∠1</span><span>∠2</span><span>∠3</span><span>∠4</span></div>
-      <div><strong>טור שמאלי</strong><span>∠5</span><span>∠6</span><span>∠7</span><span>∠8</span></div>
+      <div><strong>טור ימני</strong>{RIGHT_COLUMN_ANGLES.map(angle => <span key={angle}><MathText text={angle} /></span>)}</div>
+      <div><strong>טור שמאלי</strong>{LEFT_COLUMN_ANGLES.map(angle => <span key={angle}><MathText text={angle} /></span>)}</div>
       <span className="sr-only">{mode === 'corresponding' ? 'התאמת זוויות מתאימות' : 'התאמת זוויות מתחלפות'}</span>
     </div>
   );
