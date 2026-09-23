@@ -63,6 +63,8 @@ function labelsTouchingLines(svg: string): string[] {
 }
 
 const diagramsOf = (html: string) => [...html.matchAll(/<svg class="geometry-diagram[\s\S]*?<\/svg>/g)].map(m => m[0]);
+/** The whole student booklet, rendered once (laying out every diagram is the expensive part). */
+const booklet = renderToStaticMarkup(createElement(App));
 
 describe('labels never sit on a drawn line (SPEC 10.3)', () => {
   it('detects a label on a line (self-check of the measurement)', () => {
@@ -96,7 +98,7 @@ describe('labels never sit on a drawn line (SPEC 10.3)', () => {
   });
 
   it('holds for every label of every diagram in the student booklet', () => {
-    const svgs = diagramsOf(renderToStaticMarkup(createElement(App)));
+    const svgs = diagramsOf(booklet);
     expect(svgs.length).toBeGreaterThan(50);
     expect(svgs.filter(svg => svg.includes('three-lines-diagram')).length).toBeGreaterThan(0);
     const angleLabels = svgs.flatMap(svg => labels(svg)).filter(label => label.kind.startsWith('angle-label-text'));

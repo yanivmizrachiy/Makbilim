@@ -12,7 +12,17 @@
  */
 import { geometryTokens as T, type DiagramSize } from '../styles/tokens';
 import { clipSegmentToRect, lineIntersection, normalizeAngle, pointOnRay, type Point, type Rect, type Segment } from './core';
-import { LABEL_FONT_ASCENT, LABEL_FONT_DESCENT, shapeLabel, type ShapedLabel } from './label-font';
+import { LABEL_FONT_ASCENT, LABEL_FONT_DESCENT, shapeLabel as shapeLabelUncached, type ShapedLabel } from './label-font';
+
+const shapedCache = new Map<string, ShapedLabel>();
+function shapeLabel(text: string): ShapedLabel {
+  let shaped = shapedCache.get(text);
+  if (!shaped) {
+    shaped = shapeLabelUncached(text);
+    shapedCache.set(text, shaped);
+  }
+  return shaped;
+}
 
 export const mm = (value: number) => value * T.pxPerMm;
 export const pt = (value: number) => value * T.pxPerPt;
@@ -231,7 +241,7 @@ function placeAngleLabel(
   const gap = kind === 'index' ? mm(0.3) : mm(T.placement.gapFromArcMm);
   const near = mm(T.placement.maxBeyondArcMm);
   const far = mm(T.placement.leaderReachMm);
-  const stepPx = mm(0.4);
+  const stepPx = mm(0.5);
 
   type Candidate = { center: Point; score: number; leader: boolean; direction: number; extra: number };
   const candidates: Candidate[] = [];
@@ -687,7 +697,7 @@ export function layoutFigure(
   // 1. Scan the geometry scale from the largest down (fit is not monotonic: a bigger figure
   //    can open room for a long label between steep lines). Among the scales that fit, take the
   //    largest, where each leader line costs a quarter of scale; then refine upward by bisection.
-  const steps = 14;
+  const steps = 10;
   const lowest = nominal * 0.6;
   const grid = Array.from({ length: steps + 1 }, (_, i) => high - ((high - lowest) * i) / steps);
   const scanned = grid.map(gap => ({ gap, result: tryAt(gap, minOverhang) }));
@@ -702,7 +712,7 @@ export function layoutFigure(
     let lo = chosen.gap;
     let hi = Math.min(high, chosen.gap + (high - lowest) / steps);
     if (hi > lo) {
-      for (let i = 0; i < 6; i += 1) {
+      for (let i = 0; i < 5; i += 1) {
         const mid = (lo + hi) / 2;
         const result = tryAt(mid, minOverhang);
         if (acceptable(result)) {
@@ -726,7 +736,7 @@ export function layoutFigure(
     } else {
       let lo = minOverhang;
       let hi = maxOverhang;
-      for (let i = 0; i < 7; i += 1) {
+      for (let i = 0; i < 5; i += 1) {
         const mid = (lo + hi) / 2;
         const result = tryAt(gap, mid);
         if (noWorse(result)) {

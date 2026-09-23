@@ -225,6 +225,11 @@ describe('geometry engine — textbook labels (E3)', () => {
     expect(shapeLabel('68°').runs[0]!.text).toBe('68°');
     expect(shapeLabel('(4x + 6)°').runs[0]!.text).toBe('(4𝑥 + 6)°');
     expect(shapeLabel('ℓ₁').runs).toEqual([{ text: 'ℓ', sub: false }, { text: '1', sub: true }]);
+    // Hebrew words are text: spaces kept, set right to left (never shaped as mathematics).
+    expect(shapeLabel('מסילה 1')).toMatchObject({ rtl: true, runs: [{ text: 'מסילה 1', sub: false }] });
+    expect(shapeLabel('A').rtl).toBe(false);
+    const hebrew = diagrams.flatMap(({ svg }) => [...svg.matchAll(/<text [^>]*direction="rtl"[^>]*data-label="([^"]*)"/g)].map(m => m[1]));
+    expect(hebrew).toContain('מסילה 1');
     expect(css).toMatch(/src:\s*url\("@mathjax\/mathjax-newcm-font\/chtml\/woff2\/mjx-ncm-n\.woff2"\)/);
     expect(css).not.toMatch(/https?:\/\//);
   });
