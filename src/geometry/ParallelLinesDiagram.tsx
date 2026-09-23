@@ -9,12 +9,16 @@ import {
   segmentThrough,
   type Point,
 } from './core';
+import { resolveAngleStyle, type AngleRole } from './angle-roles';
 
 export type AngleMark = {
   intersection: 'top' | 'bottom' | 'top-secondary' | 'bottom-secondary';
   sector: 0 | 1 | 2 | 3;
   label?: string | undefined;
   value?: string | undefined;
+  /** Preferred: the angle's pedagogical role (given / target / marked / auxiliary), styled centrally in angle-roles.ts. */
+  role?: AngleRole | undefined;
+  /** Explicit styling — only when the task text itself refers to the arc form. Never combined with `role`. */
   tone?: 'primary' | 'secondary' | 'neutral' | undefined;
   arcStyle?: 'single' | 'double' | 'dashed' | undefined;
 };
@@ -66,7 +70,8 @@ const PARALLEL_DESC = 'שרטוט וקטורי מדויק עם סימוני מק
 const NON_PARALLEL_DESC = 'שרטוט וקטורי מדויק של שני ישרים שאינם מקבילים וישר החותך אותם, עם הדגשת זוויות ותוויות סמנטיות.';
 
 function classForMark(mark: AngleMark) {
-  return `angle-mark angle-mark--${mark.tone ?? 'primary'} angle-mark--${mark.arcStyle ?? 'single'}`;
+  const { tone, arcStyle } = resolveAngleStyle(mark);
+  return `angle-mark angle-mark--${tone} angle-mark--${arcStyle}`;
 }
 
 /**
@@ -396,9 +401,9 @@ export function ParallelLinesDiagram({
       </g>
 
       {renderedMarks.map(({ mark, index, intersection, start, end, label, angleLabelPoint }) => {
-        const style = mark.arcStyle ?? 'single';
+        const style = resolveAngleStyle(mark).arcStyle;
         return (
-          <g key={`${mark.intersection}-${mark.sector}-${index}`} className={classForMark(mark)}>
+          <g key={`${mark.intersection}-${mark.sector}-${index}`} className={classForMark(mark)} data-angle-role={mark.role}>
             <path className="angle-arc angle-arc--inner" d={arcPath(intersection.point, 29, start, end)} />
             {style === 'double' && (
               <path className="angle-arc angle-arc--outer" d={arcPath(intersection.point, 36, start + 1, end - 1)} />
