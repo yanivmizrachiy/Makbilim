@@ -1,5 +1,6 @@
 node_modules/
 dist/
+dist-teacher/
 artifacts/
 src/content/generated/
 *.log
