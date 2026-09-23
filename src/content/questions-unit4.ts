@@ -1,3 +1,5 @@
+import { THEOREMS } from './theorems';
+
 export type Unit4Question = {
   id: string;
   page: number;
@@ -59,11 +61,12 @@ export const unit4Questions: Unit4Question[] = [
     id: 'U4-P1-C',
     page: 1,
     stem: 'קבעו ליד כל טענה אם היא משפט ישיר או משפט הפוך.',
+    // The canonical statements themselves (SPEC 3.1 / 3.2), taken from theorems.ts so they can never drift.
     subparts: [
-      'אם שני ישרים מקבילים נחתכים על ידי ישר שלישי, אז זוויות מתאימות שוות זו לזו.',
-      'אם שני ישרים נחתכים על ידי ישר שלישי וזוויות מתאימות שוות זו לזו, אז שני הישרים מקבילים.',
-      'אם שני ישרים מקבילים נחתכים על ידי ישר שלישי, אז זוויות מתחלפות שוות זו לזו.',
-      'אם שני ישרים נחתכים על ידי ישר שלישי וזוויות מתחלפות שוות זו לזו, אז שני הישרים מקבילים.'
+      THEOREMS.correspondingDirect.formalText,
+      THEOREMS.correspondingConverse.text,
+      THEOREMS.alternateDirect.formalText,
+      THEOREMS.alternateConverse.text
     ],
     expected: { completions: ['ישיר', 'הפוך', 'ישיר', 'הפוך'] }
   },
@@ -83,7 +86,7 @@ export const unit4Questions: Unit4Question[] = [
     },
     expected: {
       conclusion: 'p ∥ q',
-      reason: 'אם שני ישרים נחתכים על ידי ישר שלישי וזוג זוויות מתאימות שוות זו לזו, אז שני הישרים מקבילים.'
+      reason: THEOREMS.correspondingConverse.text
     }
   },
   {
@@ -102,7 +105,7 @@ export const unit4Questions: Unit4Question[] = [
     },
     expected: {
       conclusion: 'k ∥ m',
-      reason: 'אם שני ישרים נחתכים על ידי ישר שלישי וזוג זוויות מתחלפות שוות זו לזו, אז שני הישרים מקבילים.'
+      reason: THEOREMS.alternateConverse.text
     }
   },
   {

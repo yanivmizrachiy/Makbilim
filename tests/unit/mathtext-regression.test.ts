@@ -259,7 +259,7 @@ describe('MathText regression over the whole booklet corpus', () => {
     expect([legacyCount, currentCount]).toContain(baseline.mathJaxStatus.total);
     expect({ legacyCount, currentCount }).toMatchInlineSnapshot(`
       {
-        "currentCount": 176,
+        "currentCount": 178,
         "legacyCount": 167,
       }
     `);
@@ -293,6 +293,9 @@ describe('MathText regression over the whole booklet corpus', () => {
       U2-P2-C.stem
         − בשרטוט הישרים c ו־d מקבילים. נתון כי ⟦∠F = 72°⟧. מצאו את ⟦δ⟧.
         + בשרטוט הישרים ⟦c⟧ ו־⟦d⟧ מקבילים. נתון כי ⟦∠F = 72°⟧. מצאו את ⟦δ⟧.
+      U2-P3-B.stem
+        − בשרטוט הישרים k ו־m מקבילים. נתון כי ⟦∠A = 52°⟧. היעזרו בשרטוט ובטבלה, ומצאו את גודלן של ⟦∠D⟧ ושל ⟦∠F⟧.
+        + בשרטוט הישרים ⟦k⟧ ו־⟦m⟧ מקבילים. נתון כי ⟦∠A = 52°⟧. היעזרו בשרטוט ובטבלה, ומצאו את גודלן של ⟦∠D⟧ ושל ⟦∠F⟧.
       U2-P3-D.stem
         − הישרים a ו־b מקבילים ונחתכים על ידי שני ישרים שונים. נתון כי ⟦∠A = 49°⟧ ו־⟦∠C = 73°⟧. חשבו את ⟦α⟧ ואת ⟦β⟧.
         + הישרים ⟦a⟧ ו־⟦b⟧ מקבילים ונחתכים על ידי שני ישרים שונים. נתון כי ⟦∠A = 49°⟧ ו־⟦∠C = 73°⟧. חשבו את ⟦α⟧ ואת ⟦β⟧.

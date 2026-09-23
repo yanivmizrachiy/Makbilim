@@ -468,7 +468,6 @@ function theoremKind(text: string): Kind | null {
 
 const asList = (value: string | string[] | undefined) => (value == null ? [] : Array.isArray(value) ? value : [value]);
 const distinct = <T,>(items: T[]) => items.filter((item, index) => items.indexOf(item) === index);
-const withoutCommas = (text: string) => text.replace(/,/g, '');
 
 /**
  * SPEC 10.3 — a drawing must not mislead about acute / obtuse. A mark is inconsistent when
@@ -645,7 +644,7 @@ const unit2Specs: Unit2Spec[] = [
   },
   {
     id: 'U2-P3-B',
-    parallelText: null,
+    parallelText: 'הישרים k ו־m מקבילים',
     stemGivens: ['∠A = 52°'],
     marks: ['A', 'D', 'F'],
     steps: [['A', 'D', 'corresponding'], ['D', 'F', 'adjacent']],
@@ -1175,12 +1174,11 @@ describe('independent verification — unit 2 algebra: unique, valid, justified'
     ]);
   });
 
-  it('U2-P3-B is the only direct-theorem computation whose parallel condition is given solely by the parallel marks of the drawing', () => {
+  it('every direct-theorem computation states its parallel condition in words, not only through the drawing\'s marks', () => {
     const drawingOnly = unit2Specs
       .filter(spec => spec.parallelText === null && spec.steps.some(([, , r]) => r === 'corresponding' || r === 'alternate'))
       .map(spec => spec.id);
-    expect(drawingOnly).toEqual(['U2-P3-B']);
-    expect(byId(unit2Questions, 'U2-P3-B').stem).not.toMatch(/∥|מקביל/);
+    expect(drawingOnly).toEqual([]);
   });
 });
 
@@ -1298,8 +1296,8 @@ describe('independent verification — unit 4 converse tasks', () => {
           expect(equivalent(parseEquation(equation!), parseEquation(`${left} = ${right}`))).toBe(true);
         } else {
           const reason = asList(q.expected.reason).join(' ');
-          // Same sentence as the canonical converse (SPEC 3.2); the key omits the comma after „שלישי”.
-          expect(withoutCommas(reason)).toBe(withoutCommas(CONVERSE[spec.converse]));
+          // Exactly the canonical converse sentence (SPEC 3.2), character for character.
+          expect(reason).toBe(CONVERSE[spec.converse]);
         }
       });
 

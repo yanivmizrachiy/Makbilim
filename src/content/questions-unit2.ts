@@ -194,7 +194,7 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P3-B',
     page: 3,
-    stem: 'היעזרו בשרטוט ובטבלה. נתון כי ∠A = 52°. מצאו את גודלן של ∠D ושל ∠F.',
+    stem: 'בשרטוט הישרים k ו־m מקבילים. נתון כי ∠A = 52°. היעזרו בשרטוט ובטבלה, ומצאו את גודלן של ∠D ושל ∠F.',
     tableRows: [
       { label: '∠A', relation: 'נתונה', value: '52°' },
       { label: '∠D', relation: 'מתאימה ל־∠A', value: '' },

@@ -2,12 +2,15 @@ export const THEOREMS = {
   correspondingDirect: {
     id: 'corresponding-direct',
     text: 'זוויות מתאימות בין ישרים מקבילים שוות.',
+    /** The full conditional statement (SPEC 3.1), e.g. for classifying direct vs converse. */
+    formalText: 'אם שני ישרים מקבילים נחתכים על ידי ישר שלישי, אז כל זוג זוויות מתאימות שוות זו לזו.',
     requiresParallelGiven: true,
     direction: 'direct'
   },
   alternateDirect: {
     id: 'alternate-direct',
     text: 'זוויות מתחלפות בין ישרים מקבילים שוות.',
+    formalText: 'אם שני ישרים מקבילים נחתכים על ידי ישר שלישי, אז כל זוג זוויות מתחלפות שוות זו לזו.',
     requiresParallelGiven: true,
     direction: 'direct'
   },
