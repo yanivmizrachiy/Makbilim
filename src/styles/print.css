@@ -131,12 +131,14 @@ body { direction: rtl; }
   padding-top: 1.15mm;
 }
 
+/* Content starts at the top of the block so the first line of the question sits level
+   with its ● marker (SPEC 11.5); any spare height of a stretched block falls below it. */
 .question-content {
   min-width: 0;
   min-height: 0;
   display: grid;
   gap: 1.4mm;
-  align-content: center;
+  align-content: start;
 }
 
 .question-content--split {
@@ -148,7 +150,7 @@ body { direction: rtl; }
     "justification justification";
   column-gap: 5mm;
   row-gap: 1.1mm;
-  align-items: center;
+  align-items: start;
 }
 
 .question-content--split .question-stem { grid-area: stem; }
