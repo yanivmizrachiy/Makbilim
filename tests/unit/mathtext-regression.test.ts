@@ -15,7 +15,10 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
+import App from '../../src/App';
 import { mathjax } from '@mathjax/src/js/mathjax.js';
 import { TeX } from '@mathjax/src/js/input/tex.js';
 import { liteAdaptor } from '@mathjax/src/js/adaptors/liteAdaptor.js';
@@ -249,20 +252,22 @@ describe('MathText regression over the whole booklet corpus', () => {
     }
   });
 
-  it('matches the MathJax token count recorded by the visual baseline (reference or current tokenizer)', () => {
+  it('matches the MathJax token count recorded by the visual baseline exactly (every island the booklet renders)', () => {
     const rendered = corpus.filter(entry => entry.audience === 'student' && entry.renderer === 'MathText');
     const legacyCount = rendered.reduce((sum, entry) => sum + mathSpans(legacyParts(entry.text)).length, 0);
     const currentCount = rendered.reduce((sum, entry) => sum + mathSpans(currentParts(entry.text)).length, 0);
     const baseline = JSON.parse(fs.readFileSync(path.join(root, 'qa', 'visual-baseline.json'), 'utf8')) as {
       mathJaxStatus: { total: number };
     };
-    // The student booklet renders exactly these runs, so the Chromium baseline must count
-    // one of the two. After the baseline is refreshed it must equal `currentCount`.
-    expect([legacyCount, currentCount]).toContain(baseline.mathJaxStatus.total);
+    // Every MathText island the student booklet renders — content runs plus the answer slots and
+    // table cells built around them — is one MathJax token in the Chromium baseline, exactly.
+    const bookletIslands = renderToStaticMarkup(createElement(App)).match(/<bdi class="math mathjax-inline"/g)?.length ?? 0;
+    expect(bookletIslands).toBeGreaterThan(currentCount);
+    expect(baseline.mathJaxStatus.total).toBe(bookletIslands);
     expect({ legacyCount, currentCount }).toMatchInlineSnapshot(`
       {
-        "currentCount": 180,
-        "legacyCount": 167,
+        "currentCount": 204,
+        "legacyCount": 164,
       }
     `);
   });
