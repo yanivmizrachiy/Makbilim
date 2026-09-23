@@ -1,4 +1,3 @@
-import React from 'react';
 import { A4Page } from './components/A4Page';
 import { QuestionBlock } from './components/QuestionBlock';
 import { ParallelLinesDiagram } from './geometry/ParallelLinesDiagram';
