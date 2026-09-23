@@ -496,6 +496,7 @@ Point, Vector, Line, Segment, ישרים מקבילים, חותך אחד/יות�
 
 ## 11.12 דטרמיניזם, שלמות ו־Release
 - `package-lock.json` tracked ומחייב; CI משתמש ב־`npm ci` וב־npm cache המבוסס על lockfile.
+- סביבת Node pinned במפורש ל־Node `22.23.2` ב־CI, Release, `package.json` ו־`.nvmrc`; אין שימוש בגרסת major נעה.
 - כל dependency ישיר חייב להיות pinned לגרסה מדויקת; lockfile חייב להיות v3, עם registry ו־integrity תקינים.
 - CI ו־Release מריצים `npm audit --omit=dev --audit-level=high`; פגיעות production ברמת high/critical מפילות build.
 - אין שום אוטומציה מתוזמנת: אסור `schedule`, cron, Dependabot מחזורי או פעולה שבועית/יומית. אוטומציה מותרת רק על push, pull request, tag/Release או workflow ידני.
@@ -599,6 +600,7 @@ Makbilim/
 ├─ README.md
 ├─ package.json
 ├─ package-lock.json
+├─ .nvmrc
 ├─ tsconfig.json
 ├─ vite.config.ts
 ├─ vite.teacher.config.ts

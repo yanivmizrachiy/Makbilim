@@ -37,7 +37,7 @@
     "validate:dependencies": "node scripts/validate-dependency-policy.mjs"
   },
   "engines": {
-    "node": ">=22"
+    "node": "22.23.2"
   },
   "dependencies": {
     "@mathjax/src": "4.1.3",
