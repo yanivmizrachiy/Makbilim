@@ -1,3 +1,11 @@
+import { REASONS, THEOREMS } from './theorems';
+
+/** Every reason in a key is the canonical sentence itself (SPEC 3.1), never a retyped variant. */
+const CORRESPONDING = THEOREMS.correspondingDirect.text;
+const ALTERNATE = THEOREMS.alternateDirect.text;
+const ADJACENT = REASONS.adjacent;
+const VERTICAL = REASONS.vertical;
+
 export type Unit2Question = {
   id: string;
   page: number;
@@ -21,8 +29,12 @@ export type Unit2Question = {
     values?: Record<string, string | number>;
     choice?: string;
     unneededDatum?: string;
+    /** One line per table row, in row order (a table the student fills from the drawing). */
+    completions?: string[];
     justification?: string | string[];
   };
+  /** A note for the teacher: other correct routes, what the error is. */
+  note?: string;
 };
 
 export const unit2Questions: Unit2Question[] = [
@@ -41,7 +53,7 @@ export const unit2Questions: Unit2Question[] = [
       givens: ['∠A = 68°'],
       targets: ['∠B corresponding to ∠A']
     },
-    expected: { values: { '∠B': 68 }, justification: 'זוויות מתאימות בין ישרים מקבילים שוות זו לזו.' }
+    expected: { values: { '∠B': 68 }, justification: CORRESPONDING }
   },
   {
     id: 'U2-P1-B',
@@ -57,7 +69,7 @@ export const unit2Questions: Unit2Question[] = [
       givens: ['∠C = 124°'],
       targets: ['∠D alternate to ∠C']
     },
-    expected: { values: { '∠D': 124 }, justification: 'זוויות מתחלפות בין ישרים מקבילים שוות זו לזו.' }
+    expected: { values: { '∠D': 124 }, justification: ALTERNATE }
   },
   {
     id: 'U2-P1-C',
@@ -73,7 +85,7 @@ export const unit2Questions: Unit2Question[] = [
       givens: ['given angle = 47°'],
       targets: ['corresponding target angle']
     },
-    expected: { choice: '47°', justification: 'זוויות מתאימות בין ישרים מקבילים שוות זו לזו.' }
+    expected: { choice: '47°', justification: CORRESPONDING }
   },
   {
     id: 'U2-P1-D',
@@ -89,28 +101,29 @@ export const unit2Questions: Unit2Question[] = [
       givens: ['∠E = 116°'],
       targets: ['α alternate to ∠E']
     },
-    expected: { values: { 'α': 116 }, justification: 'זוויות מתחלפות בין ישרים מקבילים שוות זו לזו.' }
+    expected: { values: { 'α': 116 }, justification: ALTERNATE }
   },
 
   // עמוד 2 — חישוב דו־שלבי
   {
     id: 'U2-P2-A',
     page: 2,
-    stem: 'בשרטוט p ∥ q ונתון ∠A = 63°. חשבו את β.',
+    stem: 'בשרטוט p ∥ q (הישרים p ו־q מקבילים). נתון ∠A = 63°. חשבו את β.',
     diagram: {
-      topology: 'corresponding-then-vertical',
+      topology: 'corresponding-then-adjacent',
       lineLabels: ['p', 'q', 't'],
       pointLabels: ['A'],
       orientationDeg: 3,
       transversalDeg: 120,
       parallelGiven: true,
       givens: ['∠A = 63°'],
-      targets: ['β vertical to the corresponding angle at second intersection']
+      targets: ['β adjacent to the angle corresponding to ∠A']
     },
     expected: {
-      values: { 'β': 63 },
-      justification: ['זוויות מתאימות בין ישרים מקבילים שוות זו לזו.', 'זוויות קודקודיות שוות זו לזו.']
-    }
+      values: { 'β': 117 },
+      justification: [CORRESPONDING, ADJACENT]
+    },
+    note: 'גם הסדר ההפוך נכון: הזווית הצמודה ל־∠A היא 117°, ו־β מתחלפת לה. תשובה של 63° מעתיקה את ∠A בלי לזהות ש־β צמודה לזווית המתאימה ל־∠A.'
   },
   {
     id: 'U2-P2-B',
@@ -127,7 +140,7 @@ export const unit2Questions: Unit2Question[] = [
     },
     expected: {
       values: { 'γ': 43 },
-      justification: ['זוויות צמודות על ישר משלימות ל־180°.', 'זוויות מתחלפות בין ישרים מקבילים שוות זו לזו.']
+      justification: [ADJACENT, ALTERNATE]
     }
   },
   {
@@ -146,7 +159,7 @@ export const unit2Questions: Unit2Question[] = [
     },
     expected: {
       values: { 'δ': 108 },
-      justification: ['זוויות מתחלפות בין ישרים מקבילים שוות זו לזו.', 'זוויות צמודות על ישר משלימות ל־180°.']
+      justification: [ALTERNATE, ADJACENT]
     }
   },
   {
@@ -161,24 +174,29 @@ export const unit2Questions: Unit2Question[] = [
       transversalDeg: 112,
       parallelGiven: true,
       givens: ['∠A = 54°'],
-      targets: ['α reachable by corresponding→vertical or vertical→corresponding']
+      targets: ['α alternate to ∠A; also reachable by corresponding→vertical or vertical→corresponding']
     },
     expected: {
       values: { 'α': 54 },
-      justification: ['דרך אפשרית: מתאימות ולאחר מכן קודקודיות.', 'דרך אפשרית: קודקודיות ולאחר מכן מתאימות.']
-    }
+      justification: [
+        `דרך אפשרית: ${ALTERNATE}`,
+        `דרך אפשרית: ${CORRESPONDING} ${VERTICAL}`,
+        `דרך אפשרית: ${VERTICAL} ${CORRESPONDING}`
+      ]
+    },
+    note: 'α ו־∠A מתחלפות, ולכן גם דרך בשלב אחד נכונה. כל שתי דרכים שונות מבין השלוש מתקבלות; אותו רצף קשרים שנכתב פעמיים אינו שתי דרכים.'
   },
 
   // עמוד 3 — טבלאות, בחירת נתונים ושני חותכים
   {
     id: 'U2-P3-A',
     page: 3,
-    stem: 'בשרטוט p ∥ q ונתונה זווית שגודלה 38°. השלימו את הטבלה.',
+    stem: 'בשרטוט p ∥ q ונתונה זווית שגודלה 38°. לכל זווית המסומנת באות, השלימו בטבלה את סוג הקשר שלה לזווית הנתונה ואת גודלה.',
     tableRows: [
-      { label: 'הזווית המתאימה', relation: 'מתאימות', value: '' },
-      { label: 'הזווית המתחלפת', relation: 'מתחלפות', value: '' },
-      { label: 'הזווית הקודקודית', relation: 'קודקודיות', value: '' },
-      { label: 'הזווית הצמודה', relation: 'צמודות', value: '' }
+      { label: 'א', relation: '', value: '' },
+      { label: 'ב', relation: '', value: '' },
+      { label: 'ג', relation: '', value: '' },
+      { label: 'ד', relation: '', value: '' }
     ],
     diagram: {
       topology: 'eight-angles-table',
@@ -189,7 +207,9 @@ export const unit2Questions: Unit2Question[] = [
       givens: ['reference angle = 38°'],
       targets: ['corresponding', 'alternate', 'vertical', 'adjacent']
     },
-    expected: { values: { 'מתאימה': 38, 'מתחלפת': 38, 'קודקודית': 38, 'צמודה': 142 } }
+    expected: {
+      completions: ['א: קודקודית, 38°', 'ב: מתאימה, 38°', 'ג: צמודה, 142°', 'ד: מתחלפת, 38°']
+    }
   },
   {
     id: 'U2-P3-B',
@@ -246,7 +266,7 @@ export const unit2Questions: Unit2Question[] = [
     },
     expected: {
       values: { 'α': 49, 'β': 73 },
-      justification: ['זוויות מתאימות בין ישרים מקבילים שוות זו לזו.', 'זוויות מתחלפות בין ישרים מקבילים שוות זו לזו.']
+      justification: [CORRESPONDING, ALTERNATE]
     }
   },
 
@@ -265,7 +285,7 @@ export const unit2Questions: Unit2Question[] = [
       targets: ['x']
     },
     justificationLane: true,
-    expected: { values: { x: 16 }, justification: 'זוויות מתאימות בין ישרים מקבילים שוות זו לזו.' }
+    expected: { values: { x: 16 }, justification: CORRESPONDING }
   },
   {
     id: 'U2-P4-B',
@@ -281,12 +301,12 @@ export const unit2Questions: Unit2Question[] = [
       targets: ['x']
     },
     justificationLane: true,
-    expected: { values: { x: 19 }, justification: 'זוויות מתחלפות בין ישרים מקבילים שוות זו לזו.' }
+    expected: { values: { x: 19 }, justification: ALTERNATE }
   },
   {
     id: 'U2-P4-C',
     page: 4,
-    stem: 'בשרטוט a ∥ b. הזוויות המסומנות מתאימות וגודליהן (6x − 9)° ו־(3x + 42)°. מצאו את x ולאחר מכן חשבו את גודל הזווית המסומנת.',
+    stem: 'בשרטוט a ∥ b. הזוויות המסומנות מתאימות וגודליהן (6x − 9)° ו־(3x + 42)°. מצאו את x ולאחר מכן חשבו את גודלן של הזוויות המסומנות.',
     diagram: {
       topology: 'corresponding-expressions-solve-x-then-angle',
       lineLabels: ['a', 'b', 's'],
@@ -297,7 +317,7 @@ export const unit2Questions: Unit2Question[] = [
       targets: ['x', 'marked angle']
     },
     justificationLane: true,
-    expected: { values: { x: 17, 'זווית': 93 }, justification: 'זוויות מתאימות בין ישרים מקבילים שוות זו לזו.' }
+    expected: { values: { x: 17, 'זווית': 93 }, justification: CORRESPONDING }
   },
   {
     id: 'U2-P4-D',
@@ -319,25 +339,29 @@ export const unit2Questions: Unit2Question[] = [
       targets: ['correct equation', 'x']
     },
     justificationLane: true,
-    expected: { choice: '2x + 35 = 5x − 19', values: { x: 18 }, justification: 'זוויות מתחלפות בין ישרים מקבילים שוות זו לזו.' }
+    expected: { choice: '2x + 35 = 5x − 19', values: { x: 18 }, justification: ALTERNATE }
   },
 
   // עמוד 5 — אלגברה מתקדמת יותר
   {
     id: 'U2-P5-A',
     page: 5,
-    stem: 'בשרטוט p ∥ q. גודלי שתי זוויות מתאימות הם (7x − 18)° ו־(3x + 46)°. מצאו את x ואת גודל הזוויות.',
+    stem: 'בשרטוט p ∥ q. גודלי שתי הזוויות המסומנות הם (7x − 18)° ו־(3x + 38)°. מצאו את x ואת גודלה של כל אחת מהזוויות. נמקו כל שלב.',
     diagram: {
-      topology: 'corresponding-two-expressions-advanced',
+      topology: 'corresponding-plus-adjacent-two-expressions',
       lineLabels: ['p', 'q', 'v'],
       orientationDeg: -15,
       transversalDeg: 49,
       parallelGiven: true,
-      givens: ['(7x − 18)°', '(3x + 46)°'],
-      targets: ['x', 'angle value']
+      givens: ['(7x − 18)° at p', '(3x + 38)° at q, adjacent to the angle corresponding to (7x − 18)°'],
+      targets: ['x', 'both angles']
     },
     justificationLane: true,
-    expected: { values: { x: 16, 'זווית': 94 }, justification: 'זוויות מתאימות בין ישרים מקבילים שוות זו לזו.' }
+    expected: {
+      values: { x: 16, '7x − 18': 94, '3x + 38': 86 },
+      justification: [CORRESPONDING, ADJACENT]
+    },
+    note: 'המשוואה: (7x − 18) + (3x + 38) = 180. השוואת שני הביטויים זה לזה נותנת x = 14 ושתי זוויות של 80° — אבל הזוויות המסומנות אינן מתאימות: הזווית ב־q צמודה לזווית המתאימה לזווית שב־p.'
   },
   {
     id: 'U2-P5-B',
@@ -353,7 +377,7 @@ export const unit2Questions: Unit2Question[] = [
       targets: ['x', 'angle value']
     },
     justificationLane: true,
-    expected: { values: { x: 24, 'זווית': 111 }, justification: 'זוויות מתחלפות בין ישרים מקבילים שוות זו לזו.' }
+    expected: { values: { x: 24, 'זווית': 111 }, justification: ALTERNATE }
   },
   {
     id: 'U2-P5-C',
@@ -372,34 +396,35 @@ export const unit2Questions: Unit2Question[] = [
     justificationLane: true,
     expected: {
       values: { x: 20, y: 38 },
-      justification: ['זוויות מתאימות בין ישרים מקבילים שוות זו לזו.', 'זוויות מתחלפות בין ישרים מקבילים שוות זו לזו.']
+      justification: [CORRESPONDING, ALTERNATE]
     }
   },
   {
     id: 'U2-P5-D',
     page: 5,
-    stem: 'שתי הזוויות המסומנות בשרטוט צמודות. תלמיד כתב את המשוואה 2x + 20 = 3x + 35. קבעו אם המשוואה מתאימה לנתונים. אם לא, תקנו אותה, נמקו ומצאו את x.',
+    stem: 'הישרים a ו־b מקבילים. דני כתב את המשוואה 2x + 20 = 3x + 35 והסביר: „הישרים מקבילים, ולכן שתי הזוויות המסומנות שוות.” קבעו אם המשוואה וההסבר נכונים. אם לא, כתבו משוואה נכונה, נמקו ומצאו את x.',
     diagram: {
       topology: 'adjacent-angles-error-analysis-with-parallel-context',
       lineLabels: ['a', 'b', 't'],
       orientationDeg: -4,
       transversalDeg: 112,
       parallelGiven: true,
-      givens: ['adjacent angles: (2x + 20)° and (3x + 35)°'],
+      givens: ['a ∥ b', 'marked angles (2x + 20)° and (3x + 35)° at the same intersection (adjacency is not stated in words)'],
       targets: ['correct equation', 'x']
     },
     justificationLane: true,
     expected: {
       values: { x: 25 },
-      justification: 'הזוויות צמודות על ישר ולכן סכומן 180°; המשוואה הנכונה היא (2x + 20) + (3x + 35) = 180.'
-    }
+      justification: `${ADJACENT} המשוואה הנכונה: (2x + 20) + (3x + 35) = 180.`
+    },
+    note: 'המשוואה וההסבר שגויים: שתי הזוויות המסומנות נמצאות באותה נקודת חיתוך — הן צמודות, לא מתאימות ולא מתחלפות, ולכן המקבילות אינה נותנת כאן שוויון. המשוואה של דני נותנת x = −15, כלומר זוויות של −10°.'
   },
 
   // עמוד 6 — העברה ויישום עצמאי
   {
     id: 'U2-P6-A',
     page: 6,
-    stem: 'שני מדפים מקבילים זה לזה ומוט אלכסוני חוצה אותם. הזווית שבין המוט למדף העליון היא 64°. חשבו את הזווית המתאימה לה במפגש עם המדף התחתון.',
+    stem: 'שני מדפים מקבילים זה לזה, ומוט ישר חותך את שניהם באלכסון. הזווית שבין המוט למדף העליון היא 64°. חשבו את גודל הזווית המסומנת ב־? ונמקו.',
     diagram: {
       topology: 'shelves-parallel-diagonal-support',
       lineLabels: ['מדף עליון', 'מדף תחתון', 'מוט'],
@@ -407,24 +432,25 @@ export const unit2Questions: Unit2Question[] = [
       transversalDeg: 66,
       parallelGiven: true,
       givens: ['upper angle = 64°'],
-      targets: ['corresponding lower angle']
+      targets: ['the angle marked ? at the lower shelf (corresponding to the given one)']
     },
-    expected: { values: { 'זווית': 64 }, justification: 'זוויות מתאימות בין ישרים מקבילים שוות זו לזו.' }
+    expected: { values: { 'זווית': 64 }, justification: CORRESPONDING }
   },
   {
     id: 'U2-P6-B',
     page: 6,
-    stem: 'שתי מסילות ישרות מקבילות נחתכות על ידי קו אלכסוני. אחת הזוויות המסומנות היא 118°. חשבו את הזווית המתחלפת לה.',
+    stem: 'שתי מסילות ישרות מקבילות נחתכות על ידי קו ישר אלכסוני. אחת הזוויות המסומנות היא 118°. חשבו את גודל הזווית המסומנת ב־? ונמקו.',
     diagram: {
-      topology: 'parallel-rails-transversal',
+      topology: 'parallel-rails-alternate-then-adjacent',
       lineLabels: ['מסילה 1', 'מסילה 2', 'חותך'],
       orientationDeg: -18,
       transversalDeg: 105,
       parallelGiven: true,
       givens: ['given angle = 118°'],
-      targets: ['alternate angle']
+      targets: ['the angle marked ? on the second rail, adjacent to the angle alternate to 118°']
     },
-    expected: { values: { 'זווית': 118 }, justification: 'זוויות מתחלפות בין ישרים מקבילים שוות זו לזו.' }
+    expected: { values: { 'זווית': 62 }, justification: [ALTERNATE, ADJACENT] },
+    note: 'גם הדרך דרך הזווית המתאימה ל־118° במסילה השנייה, ולאחריה הזווית הצמודה לה, נכונה. תשובה של 118° מעתיקה את הזווית הנתונה בלי השלב של הזווית הצמודה.'
   },
   {
     id: 'U2-P6-C',
@@ -446,13 +472,13 @@ export const unit2Questions: Unit2Question[] = [
     expected: {
       values: { 'α': 52 },
       unneededDatum: '∠C = 75°',
-      justification: ['זוויות מתאימות בין ישרים מקבילים שוות זו לזו.', 'זוויות צמודות על ישר משלימות ל־180°.']
+      justification: [CORRESPONDING, ADJACENT]
     }
   },
   {
     id: 'U2-P6-D',
     page: 6,
-    stem: 'הישרים k ו־m מקבילים ונחתכים על ידי שני ישרים. נתון כי ∠A = 41° ו־∠C = 68°. α מתאימה ל־∠A, ו־β צמודה לזווית המתאימה ל־∠C. חשבו את α + β ונמקו בקצרה את שלבי החישוב.',
+    stem: 'הישרים k ו־m מקבילים ונחתכים על ידי שני ישרים. נתון כי ∠A = 41° ו־∠C = 68°. חשבו את α + β. נמקו כל שלב בחישוב.',
     diagram: {
       topology: 'two-transversals-final-mixed-synthesis',
       lineLabels: ['k', 'm', 'r', 's'],
@@ -469,7 +495,7 @@ export const unit2Questions: Unit2Question[] = [
     justificationLane: true,
     expected: {
       values: { 'α': 41, 'β': 112, 'α + β': 153 },
-      justification: ['זוויות מתאימות בין ישרים מקבילים שוות זו לזו.', 'זוויות צמודות על ישר משלימות ל־180°.']
+      justification: [CORRESPONDING, ADJACENT]
     }
   }
 ];

@@ -89,14 +89,22 @@ describe('answer areas are decided in data (content/answer-areas.ts)', () => {
     }
   });
 
-  it('opens the work area with the theorem lane wherever the plan requires a justification lane', () => {
+  it('opens the work area with the theorem lane wherever the plan requires a justification lane — plural exactly when the key cites two reasons', () => {
+    const keyReasons = (id: string) => {
+      const justification = (questions.get(id) as { expected?: { justification?: string | string[] } } | undefined)?.expected?.justification;
+      return justification == null ? 0 : Array.isArray(justification) ? justification.length : 1;
+    };
     for (const task of tasks.filter(t => t.requiresJustificationLane)) {
-      expect(answerSpecById(task.id).lane, task.id).toBe('theorem');
+      const lane = keyReasons(task.id) >= 2 ? 'theorems' : 'theorem';
+      expect(answerSpecById(task.id).lane, task.id).toBe(lane);
       const area = findAll(blockOf(task.id), node => hasClass(node, 'answer-lines'))[0]!;
       const first = elementChildren(area)[0]!;
       expect(classesOf(first), task.id).toEqual(expect.arrayContaining(['rule', 'rule--lane', 'justification-lane']));
-      expect(visibleText(first).trim(), task.id).toBe(LANE_LABEL.theorem);
+      expect(visibleText(first).trim(), task.id).toBe(LANE_LABEL[lane]);
     }
+    // A singular label never promises one reason where the key needs two (and vice versa).
+    expect(LANE_LABEL.theorem).toBe('המשפט המתאים:');
+    expect(LANE_LABEL.theorems).toBe('המשפטים המתאימים:');
   });
 
   it('labels the two lanes of a two-ways task with words — never letters or numbers (SPEC 4.2)', () => {

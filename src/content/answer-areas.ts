@@ -24,14 +24,17 @@ import { unit4Questions } from './questions-unit4';
  *  justify   a decision with its reason: rules (optionally led by a 'נימוק:' lane)
  *  work      a multi-step calculation or an explanation
  *  two-ways  two labelled work lanes side by side ('דרך ראשונה' / 'דרך שנייה')
- *  algebra   'המשפט המתאים:' lane, equation work rules and the result slots
+ *  algebra   'המשפט המתאים:' (or 'המשפטים המתאימים:') lane, equation work rules and the result slots
  *  critique  judge a claim, an equation or a proof, and correct it
  *  proof     a blank טענה | נימוק proof form, ruled at the writing pitch
  */
 export type AnswerMode = 'none' | 'items' | 'value' | 'justify' | 'work' | 'two-ways' | 'algebra' | 'critique' | 'proof';
 
-/** The lane that opens the work area: the theorem that justifies the equation, or a reason. */
-export type AnswerLane = 'theorem' | 'reason';
+/**
+ * The lane that opens the work area: the theorem that justifies the equation, the theorems of a
+ * solution that rests on two of them (its label must not suggest that one reason is enough), or a reason.
+ */
+export type AnswerLane = 'theorem' | 'theorems' | 'reason';
 
 export type AnswerSpec = {
   mode: AnswerMode;
@@ -62,6 +65,7 @@ export const GROW_BY_MODE: Readonly<Record<AnswerMode, 0 | 1 | 2 | 3>> = {
 
 export const LANE_LABEL: Readonly<Record<AnswerLane, string>> = {
   theorem: 'המשפט המתאים:',
+  theorems: 'המשפטים המתאימים:',
   reason: 'נימוק:',
 };
 
@@ -92,7 +96,7 @@ export const FORMAT_ANSWER: Readonly<Record<string, AnswerSpec>> = {
   'table-lookup': { mode: 'value', minLines: 2, final: true },
   'redundant-data': { mode: 'work', minLines: 3, final: true },
   'two-transversals': { mode: 'work', minLines: 3, final: true },
-  'context-numeric': { mode: 'value', minLines: 2, final: true },
+  'context-numeric': { mode: 'justify', minLines: 1, lane: 'reason', final: true },
   'mixed-calculation': { mode: 'work', minLines: 3, final: true },
   'simple-algebra': { mode: 'algebra', minLines: 2, lane: 'theorem', final: true },
   'algebra-then-angle': { mode: 'algebra', minLines: 2, lane: 'theorem', final: true },
@@ -100,7 +104,6 @@ export const FORMAT_ANSWER: Readonly<Record<string, AnswerSpec>> = {
   'two-expression-algebra': { mode: 'algebra', minLines: 2, lane: 'theorem', final: true },
   'two-variable-light': { mode: 'algebra', minLines: 2, lane: 'theorem', final: true },
   'error-analysis': { mode: 'critique', minLines: 2, lane: 'theorem', final: true },
-  'mixed-algebra': { mode: 'algebra', minLines: 2, lane: 'theorem', final: true },
 
   // Unit 3 — reasons and proofs.
   'choose-reason': { mode: 'none', minLines: 0 },
@@ -125,8 +128,14 @@ export const FORMAT_ANSWER: Readonly<Record<string, AnswerSpec>> = {
 
 /** Tasks whose format alone does not fix the answer area. */
 export const TASK_ANSWER_OVERRIDES: Readonly<Record<string, AnswerSpec>> = {
-  // 'חשבו את α + β' — α and β are steps on the way, the asked value is their sum.
-  'U2-P6-D': { mode: 'algebra', minLines: 2, lane: 'theorem', final: true, finalKeys: ['α + β'] },
+  // Two reasons (corresponding angles, then adjacent angles): the lane label is plural. The key
+  // records both angle sizes; the slot is x only, since a slot never names an expression by its digits.
+  'U2-P5-A': { mode: 'algebra', minLines: 2, lane: 'theorems', final: true, finalKeys: ['x'] },
+  // Two equations, two theorems (corresponding for x, alternate for y).
+  'U2-P5-C': { mode: 'algebra', minLines: 2, lane: 'theorems', final: true },
+  // 'חשבו את α + β. נמקו כל שלב' — α and β are steps on the way, the asked value is their sum;
+  // every step has its own reason (corresponding angles, adjacent angles).
+  'U2-P6-D': { mode: 'work', minLines: 3, lane: 'theorems', final: true, finalKeys: ['α + β'] },
   // 'מצאו את x כך ש…' — the key also records the angle, but the task asks only for x.
   'U4-P2-C': { mode: 'algebra', minLines: 2, lane: 'theorem', final: true, finalKeys: ['x'] },
 };

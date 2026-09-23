@@ -37,6 +37,9 @@
  *               points at −18° (line r runs at 12°, t at 57°), i.e. into the angle ABOVE r,
  *               which is same-side interior with ∠B — not the angle corresponding to ∠B that
  *               the stem and the proof („∠B ו־∠C הן זוויות מתאימות ביחס לישרים q ו־r”) use.
+ * CI-14 U2-P2-A  planned as a two-step chain (corresponding, then vertical), but β was the angle
+ *               ALTERNATE to ∠A — corresponding + vertical always is — so one step solved it and
+ *               the key rejected that correct route. β is now adjacent to the corresponding angle.
  *
  * Observations that are locked as passing assertions (not certain errors):
  * - U2-P3-B is the only direct-theorem computation whose parallel condition is given solely
@@ -50,11 +53,12 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { THEOREMS, THEOREM_GUARDRAILS } from '../../src/content/theorems';
+import { teacherAnswerKey } from '../../src/content/answer-key';
+import { REASONS, THEOREMS, THEOREM_GUARDRAILS } from '../../src/content/theorems';
 import { unit2Questions, type Unit2Question } from '../../src/content/questions-unit2';
 import { unit3Questions, type Unit3Question } from '../../src/content/questions-unit3';
 import { unit4Questions, type Unit4Question } from '../../src/content/questions-unit4';
-import type { AngleMark, ParallelLinesDiagramProps } from '../../src/geometry/ParallelLinesDiagram';
+import { ParallelLinesDiagram, type AngleMark, type ParallelLinesDiagramProps } from '../../src/geometry/ParallelLinesDiagram';
 import type { ThreeLinesDiagramProps } from '../../src/geometry/ThreeLinesDiagram';
 import { Unit2Pages } from '../../src/pages/Unit2Pages';
 import { Unit3Pages } from '../../src/pages/Unit3Pages';
@@ -574,14 +578,25 @@ type Unit2Spec = {
   stemGivens: string[];
   /** Name of every drawn angle mark, in drawing order. */
   marks: string[];
+  /**
+   * Angles the page deliberately does NOT mark (finding them is the task), built from the drawn
+   * marks by name. They are added to a probe copy of the same figure, and every relation involving
+   * them is read from the probe's rendered SVG like any drawn angle.
+   */
+  probes?: Record<string, (drawn: Readonly<Record<string, AngleMark>>) => AngleMark>;
   /** Geometric steps of the hand solution; each must be a real relation in the drawing. */
   steps: Step[];
+  /**
+   * Pairs a planned two-step chain connects: they must NOT be in any one-step relation (equal or
+   * adjacent), or the chain collapses into one step (SPEC 5.5 / D2).
+   */
+  twoStep?: Array<readonly [string, string]>;
   /** Angle marks that must be geometrically unrelated (redundant data). */
   unrelated?: Array<readonly [string, string]>;
   /** Mark holding the datum that is not needed. */
   unneeded?: string;
   /** Equations built from equal / supplementary angles (algebra tasks). */
-  equations?: Array<{ left: string; right: string; kind: 'equal' | 'supplementary' }>;
+  equations?: Array<{ left: string; right: string; kind: 'equal' | 'supplementary'; via?: string }>;
   derive: () => { answer: Record<string, number>; measures: Record<string, number>; choice?: string };
 };
 
@@ -639,11 +654,12 @@ const unit2Specs: Unit2Spec[] = [
     parallelText: 'p ∥ q',
     stemGivens: ['∠A = 63°'],
     marks: ['A', 'A′', 'β'],
-    steps: [['A', 'A′', 'corresponding'], ['A′', 'β', 'vertical']],
+    steps: [['A', 'A′', 'corresponding'], ['A′', 'β', 'adjacent']],
+    twoStep: [['A', 'β']],
     derive: () => {
       const A = 63;
       const A2 = A; // corresponding, p ∥ q
-      const beta = A2; // vertical angles
+      const beta = 180 - A2; // adjacent: 180 − 63 = 117
       return { answer: { 'β': beta }, measures: { A, 'A′': A2, 'β': beta } };
     },
   },
@@ -653,6 +669,7 @@ const unit2Specs: Unit2Spec[] = [
     stemGivens: ['הזווית המסומנת היא 137°'],
     marks: ['given', 'g′', 'γ'],
     steps: [['given', 'g′', 'adjacent'], ['g′', 'γ', 'alternate']],
+    twoStep: [['given', 'γ']],
     derive: () => {
       const given = 137;
       const g2 = 180 - given; // adjacent angles on a line: 180 − 137 = 43
@@ -666,6 +683,7 @@ const unit2Specs: Unit2Spec[] = [
     stemGivens: ['∠F = 72°'],
     marks: ['F', 'F′', 'δ'],
     steps: [['F', 'F′', 'alternate'], ['F′', 'δ', 'adjacent']],
+    twoStep: [['F', 'δ']],
     derive: () => {
       const F = 72;
       const F2 = F; // alternate, c ∥ d
@@ -677,20 +695,23 @@ const unit2Specs: Unit2Spec[] = [
     id: 'U2-P2-D',
     parallelText: 'p ∥ q',
     stemGivens: ['∠A = 54°'],
-    // Only ∠A and α are drawn: finding the two routes is the task, so their middle angles (A↓ on q,
-    // A× vertical to ∠A) are not marked. Directly, ∠A and α are an alternate pair. Both routes
-    // (corresponding then vertical, vertical then corresponding) are checked on a probe copy of the
-    // figure that adds the two middle angles — see 'the cited theorems …' below.
+    // Only ∠A and α are drawn: finding the routes is the task, so the middle angles (A↓ on q, A×
+    // vertical to ∠A) are not marked; they are probes. Three routes are correct: directly, ∠A and α
+    // are an alternate pair (one step); or corresponding then vertical; or vertical then corresponding.
     marks: ['A', 'α'],
-    steps: [['A', 'α', 'alternate']],
+    probes: {
+      'A↓': ({ A }) => ({ intersection: A!.intersection === 'top' ? 'bottom' : 'top', sector: A!.sector }),
+      'A×': ({ A }) => ({ intersection: A!.intersection, sector: ((A!.sector + 2) % 4) as AngleMark['sector'] }),
+    },
+    steps: [['A', 'α', 'alternate'], ['A', 'A↓', 'corresponding'], ['A↓', 'α', 'vertical'], ['A', 'A×', 'vertical'], ['A×', 'α', 'corresponding']],
     derive: () => {
       const A = 54;
-      const Adown = A; // route 1: A → (corresponding, p ∥ q) → A↓
-      const alpha = Adown; // route 1: A↓ → (vertical) → α
-      const Across = A; // route 2: A → (vertical) → A×
-      // Route 2 lands on the same α: A× → α is corresponding (checked on the probe figure).
+      const alpha = A; // route 1: alternate, p ∥ q
+      const Adown = A; // route 2: A → (corresponding, p ∥ q) → A↓ → (vertical) → α
+      const Across = A; // route 3: A → (vertical) → A× → (corresponding, p ∥ q) → α
+      expect(Adown).toBe(alpha);
       expect(Across).toBe(alpha);
-      return { answer: { 'α': alpha }, measures: { A, 'α': alpha } };
+      return { answer: { 'α': alpha }, measures: { A, 'α': alpha, 'A↓': Adown, 'A×': Across } };
     },
   },
   {
@@ -698,7 +719,7 @@ const unit2Specs: Unit2Spec[] = [
     parallelText: 'p ∥ q',
     stemGivens: ['זווית שגודלה 38°'],
     // The 38° angle is marked ONCE (it used to carry a second, differently coloured mark). The
-    // letters deliberately do not follow the table's row order.
+    // table names only the letters: the student reads each relation off the drawing.
     marks: ['ref', 'א', 'ב', 'ג', 'ד'],
     steps: [
       ['ref', 'א', 'vertical'],
@@ -712,10 +733,8 @@ const unit2Specs: Unit2Spec[] = [
       const alternate = ref;
       const vertical = ref;
       const adjacent = 180 - ref; // 142
-      return {
-        answer: { 'מתאימה': corresponding, 'מתחלפת': alternate, 'קודקודית': vertical, 'צמודה': adjacent },
-        measures: { ref, 'א': vertical, 'ב': corresponding, 'ג': adjacent, 'ד': alternate },
-      };
+      // The answers are the table rows (letter → relation, size), checked in their own test below.
+      return { answer: {}, measures: { ref, 'א': vertical, 'ב': corresponding, 'ג': adjacent, 'ד': alternate } };
     },
   },
   {
@@ -724,6 +743,7 @@ const unit2Specs: Unit2Spec[] = [
     stemGivens: ['∠A = 52°'],
     marks: ['A', 'D', 'F'],
     steps: [['A', 'D', 'corresponding'], ['D', 'F', 'adjacent']],
+    twoStep: [['A', 'F']],
     derive: () => {
       const A = 52;
       const D = A; // corresponding (k ∥ m, marked in the drawing)
@@ -816,15 +836,20 @@ const unit2Specs: Unit2Spec[] = [
   {
     id: 'U2-P5-A',
     parallelText: 'p ∥ q',
-    stemGivens: ['(7x − 18)°', '(3x + 46)°'],
+    stemGivens: ['(7x − 18)°', '(3x + 38)°'],
+    // The two expressions are NOT a corresponding pair: (3x + 38)° sits beside the (unmarked) angle
+    // that corresponds to (7x − 18)°, so they are supplementary — equating them (x = 14) is the trap.
     marks: ['e1', 'e2'],
-    steps: [['e1', 'e2', 'corresponding']],
-    equations: [{ left: '7x − 18', right: '3x + 46', kind: 'equal' }],
+    probes: { 'e1↓': ({ e1 }) => ({ intersection: e1!.intersection === 'top' ? 'bottom' : 'top', sector: e1!.sector }) },
+    steps: [['e1', 'e1↓', 'corresponding'], ['e1↓', 'e2', 'adjacent']],
+    twoStep: [['e1', 'e2']],
+    equations: [{ left: '7x − 18', right: '3x + 38', kind: 'supplementary', via: 'e1↓' }],
     derive: () => {
-      // 7x − 18 = 3x + 46  ⇒  4x = 64  ⇒  x = 16 ; angle = 7·16 − 18 = 94
-      const x = (46 + 18) / (7 - 3);
-      const angle = 7 * x - 18;
-      return { answer: { x, 'זווית': angle }, measures: { e1: angle, e2: 3 * x + 46 } };
+      // corresponding, then adjacent: (7x − 18) + (3x + 38) = 180  ⇒  10x = 160  ⇒  x = 16
+      const x = (180 + 18 - 38) / (7 + 3);
+      const e1 = 7 * x - 18; // 94
+      const e2 = 3 * x + 38; // 86
+      return { answer: { x, '7x − 18': e1, '3x + 38': e2 }, measures: { e1, 'e1↓': e1, e2 } };
     },
   },
   {
@@ -860,8 +885,10 @@ const unit2Specs: Unit2Spec[] = [
   },
   {
     id: 'U2-P5-D',
+    // The stem states a ∥ b (the student's false argument rests on it), but the solution uses no
+    // parallel-lines theorem: the two marked angles are adjacent, and adjacency is NOT stated in words.
     parallelText: null,
-    stemGivens: ['2x + 20 = 3x + 35', 'צמודות'],
+    stemGivens: ['הישרים a ו־b מקבילים', '2x + 20 = 3x + 35', '„הישרים מקבילים, ולכן שתי הזוויות המסומנות שוות.”'],
     marks: ['e1', 'e2'],
     steps: [['e1', 'e2', 'adjacent']],
     equations: [{ left: '2x + 20', right: '3x + 35', kind: 'supplementary' }],
@@ -888,11 +915,16 @@ const unit2Specs: Unit2Spec[] = [
     parallelText: 'שתי מסילות ישרות מקבילות',
     stemGivens: ['118°'],
     marks: ['given', 'target'],
-    steps: [['given', 'target', 'alternate']],
+    probes: {
+      'g′': ({ given }) => ({ intersection: given!.intersection === 'top' ? 'bottom' : 'top', sector: ((given!.sector + 2) % 4) as AngleMark['sector'] }),
+    },
+    steps: [['given', 'g′', 'alternate'], ['g′', 'target', 'adjacent']],
+    twoStep: [['given', 'target']],
     derive: () => {
       const given = 118;
-      const target = given; // alternate, rails are parallel
-      return { answer: { 'זווית': target }, measures: { given, target } };
+      const g2 = given; // alternate, rails are parallel
+      const target = 180 - g2; // adjacent: 62
+      return { answer: { 'זווית': target }, measures: { given, 'g′': g2, target } };
     },
   },
   {
@@ -901,6 +933,7 @@ const unit2Specs: Unit2Spec[] = [
     stemGivens: ['∠A = 128°', '∠C = 75°'],
     marks: ['A', 'A′', 'α', 'C'],
     steps: [['A', 'A′', 'corresponding'], ['A′', 'α', 'adjacent']],
+    twoStep: [['A', 'α']],
     unrelated: [['C', 'A'], ['C', 'α']],
     unneeded: 'C',
     derive: () => {
@@ -915,8 +948,11 @@ const unit2Specs: Unit2Spec[] = [
     id: 'U2-P6-D',
     parallelText: 'הישרים k ו־m מקבילים',
     stemGivens: ['∠A = 41°', '∠C = 68°'],
-    marks: ['A', 'α', 'C', 'C′', 'β'],
+    // The final synthesis marks no intermediate angle: C′ (corresponding to ∠C) is a probe.
+    marks: ['A', 'α', 'C', 'β'],
+    probes: { 'C′': ({ C }) => ({ intersection: C!.intersection === 'bottom-secondary' ? 'top-secondary' : 'bottom-secondary', sector: C!.sector }) },
     steps: [['A', 'α', 'corresponding'], ['C', 'C′', 'corresponding'], ['C′', 'β', 'adjacent']],
+    twoStep: [['C', 'β']],
     derive: () => {
       const A = 41;
       const C = 68;
@@ -951,7 +987,7 @@ const regressionNote = (id: string) => (ACUTE_OBTUSE_REGRESSIONS[id] ? ` (regres
  * that forgets its justification fails instead of silently skipping the citation check.
  */
 const NO_WRITTEN_JUSTIFICATION: Record<string, string> = {
-  'U2-P3-A': 'the four relations are the table rows themselves (מתאימות / מתחלפות / קודקודיות / צמודות), checked against the drawing',
+  'U2-P3-A': 'the key lists each letter\'s relation and size per table row (completions), checked against the drawing below',
   'U2-P3-B': 'the relations are the table\'s relation column (מתאימה ל־∠A, צמודה ל־∠D); the stem asks only for the two sizes',
   'U2-P3-C': 'the stem asks only for β and for the unneeded datum (no „נמקו”); the key states unneededDatum instead',
 };
@@ -969,6 +1005,42 @@ function namedAngles(spec: { id: string; marks: string[] }) {
   expect(drawing.angles.map(a => a.label), `${spec.id}: rendered marks`).toHaveLength(spec.marks.length);
   return new Map(spec.marks.map((name, index) => [name, drawing.angles[index]!]));
 }
+
+/**
+ * The drawn angles by name, plus the spec's probe angles: the page's own marks and the probes are
+ * rendered together on a copy of the same figure, and every probe angle is read back from THAT SVG.
+ * The copy's drawn marks must coincide with the page's (relation 'same'), so the probes are placed
+ * in the page's real figure.
+ */
+function anglesWithProbes(spec: Unit2Spec): Map<string, DrawnAngle> {
+  const angles = namedAngles(spec);
+  const probeNames = Object.keys(spec.probes ?? {});
+  if (probeNames.length === 0) return angles;
+  const drawing = drawingOf(spec.id);
+  expect(drawing.kind, `${spec.id}: probes need a two-parallel figure`).toBe('parallel');
+  const byName = Object.fromEntries(spec.marks.map((name, index) => [name, drawing.marks[index]!]));
+  const probeMarks = probeNames.map(name => {
+    const { intersection, sector } = spec.probes![name]!(byName);
+    return { intersection, sector };
+  });
+  const props: ParallelLinesDiagramProps = { ...(drawing.props as ParallelLinesDiagramProps), angleMarks: [...drawing.marks, ...probeMarks] };
+  const markup = renderToStaticMarkup(createElement(ParallelLinesDiagram, props));
+  const probe = readParallelDrawing(markup.slice(markup.indexOf('<svg')), props).angles;
+  spec.marks.forEach((name, index) => {
+    expect(relationOf(probe[index]!, angles.get(name)!), `${spec.id}: the probe figure's ${name} is the drawn one`).toBe('same');
+  });
+  probeNames.forEach((name, index) => {
+    const angle = probe[spec.marks.length + index]!;
+    for (const [other, drawn] of angles) {
+      expect(relationOf(angle, drawn), `${spec.id}: probe ${name} must not be the drawn ${other}`).not.toBe('same');
+    }
+    angles.set(name, angle);
+  });
+  return angles;
+}
+
+/** A pair that one theorem or one auxiliary fact connects directly. */
+const ONE_STEP: ReadonlySet<Relation> = new Set<Relation>(['same', 'vertical', 'adjacent', 'corresponding', 'alternate', 'alternate-exterior']);
 
 /**
  * Checks what the student SEES next to each mark — the text rendered in the SVG, never the props — against the stem:
@@ -1122,7 +1194,7 @@ describe('independent verification — unit 2 hand-derived solutions', () => {
       });
 
       it('every step of the solution is a real angle relation in the rendered drawing', () => {
-        const angles = namedAngles(spec);
+        const angles = anglesWithProbes(spec);
         for (const [from, to, relation] of spec.steps) {
           expect(relationOf(angles.get(from)!, angles.get(to)!), `${spec.id}: ${from} → ${to}`).toBe(relation);
           if (relation !== 'adjacent') expect(measures[from], `${spec.id}: ${from} = ${to}`).toBe(measures[to]);
@@ -1140,42 +1212,43 @@ describe('independent verification — unit 2 hand-derived solutions', () => {
         }
       });
 
-      it('the cited theorems are exactly the relations the derivation uses', async () => {
+      if (spec.twoStep) {
+        it(`a planned two-step chain really needs two steps: its ends are in no one-step relation${spec.id === 'U2-P2-A' ? ' (regression: CI-14)' : ''}`, () => {
+          const angles = namedAngles(spec);
+          for (const [a, b] of spec.twoStep!) {
+            const relation = relationOf(angles.get(a)!, angles.get(b)!);
+            expect(ONE_STEP.has(relation), `${spec.id}: ${a} → ${b} is ${relation}, so one step solves it`).toBe(false);
+            expect(relation, `${spec.id}: ${a} → ${b} must lie on the same transversal`).not.toBe('unrelated');
+            expect(measures[a]! + measures[b]!, `${spec.id}: ${a} + ${b}`).toBe(180);
+          }
+        });
+      }
+
+      it('the cited theorems are exactly the relations the derivation uses', () => {
         const texts = asList(q.expected.justification);
         for (const text of texts) {
           for (const forbidden of THEOREM_GUARDRAILS.forbiddenStandaloneClaims) expect(text).not.toContain(forbidden);
         }
         if (spec.id === 'U2-P2-D') {
-          // Two routes, each named as an ordered pair of relations — exactly the relations of the
-          // step chains A → A↓ → α and A → A× → α. The page draws only ∠A and α, so the middle
-          // angles are added to a probe copy of the same figure (A↓: the same sector on the other
-          // line; A×: the opposite sector at ∠A's vertex), and every relation is read from the
-          // probe's SVG.
-          const angles = namedAngles(spec);
+          // Three routes, each written with the canonical sentences in its order — exactly the
+          // relations of the chains A → α, A → A↓ → α and A → A× → α. The page draws only ∠A and α;
+          // the middle angles are probes, read from the rendered probe figure.
           const drawing = drawingOf(spec.id);
           expect(drawing.marks, `${spec.id}: only ∠A and α are marked (finding the routes is the task)`).toHaveLength(2);
-          const [a, alpha] = drawing.marks as [AngleMark, AngleMark];
-          const probeMarks: AngleMark[] = [
-            a,
-            { intersection: a.intersection === 'top' ? 'bottom' : 'top', sector: a.sector },
-            { intersection: a.intersection, sector: ((a.sector + 2) % 4) as AngleMark['sector'] },
-            alpha,
-          ];
-          const { ParallelLinesDiagram } = await import('../../src/geometry/ParallelLinesDiagram');
-          const probeProps: ParallelLinesDiagramProps = { ...(drawing.props as ParallelLinesDiagramProps), angleMarks: probeMarks };
-          const probeSvg = renderToStaticMarkup(createElement(ParallelLinesDiagram, probeProps));
-          const probe = readParallelDrawing(probeSvg.slice(probeSvg.indexOf('<svg')), probeProps).angles;
-          const [pA, pDown, pCross, pAlpha] = probe as [DrawnAngle, DrawnAngle, DrawnAngle, DrawnAngle];
-          expect([relationOf(pA, angles.get('A')!), relationOf(pAlpha, angles.get('α')!)], `${spec.id}: the probe's ∠A and α are the drawn ones`).toEqual(['same', 'same']);
-          const drawnRoutes = [[relationOf(pA, pDown), relationOf(pDown, pAlpha)], [relationOf(pA, pCross), relationOf(pCross, pAlpha)]];
-          expect(drawnRoutes).toEqual([['corresponding', 'vertical'], ['vertical', 'corresponding']]);
-          expect(texts, `${spec.id}: one text per route`).toHaveLength(2);
+          const angles = anglesWithProbes(spec);
+          const rel = (a: string, b: string) => relationOf(angles.get(a)!, angles.get(b)!);
+          const drawnRoutes = [[rel('A', 'α')], [rel('A', 'A↓'), rel('A↓', 'α')], [rel('A', 'A×'), rel('A×', 'α')]];
+          expect(drawnRoutes).toEqual([['alternate'], ['corresponding', 'vertical'], ['vertical', 'corresponding']]);
+          expect(texts, `${spec.id}: one text per route, including the one-step alternate route`).toHaveLength(3);
+          expect(texts.map(relationsNamed), `${spec.id}: relations named by each route`).toEqual(drawnRoutes);
           for (const route of texts) {
-            for (const forbidden of THEOREM_GUARDRAILS.forbiddenStandaloneClaims) {
-              expect(route, `${spec.id}: route "${route}" states „${forbidden}” without the parallel condition`).not.toContain(forbidden);
+            for (const sentence of [THEOREMS.correspondingDirect.text, THEOREMS.alternateDirect.text]) {
+              if (relationsNamed(route).includes(sentence === THEOREMS.correspondingDirect.text ? 'corresponding' : 'alternate')) {
+                expect(route, `${spec.id}: route "${route}" must quote the canonical sentence`).toContain(sentence);
+              }
             }
           }
-          expect(texts.map(relationsNamed), `${spec.id}: relations named by each route`).toEqual(drawnRoutes);
+          expect(byId(teacherAnswerKey, spec.id).note, `${spec.id}: the teacher note says any two of the routes are accepted`).toMatch(/כל שתי דרכים/);
           return;
         }
         if (texts.length === 0) {
@@ -1189,8 +1262,11 @@ describe('independent verification — unit 2 hand-derived solutions', () => {
         expect(texts.map(theoremKind), `${spec.id}: justification`).toEqual(used);
         for (const text of texts) {
           const kind = theoremKind(text);
-          if (kind === 'corresponding') expect(text.startsWith(CORRESPONDING_DIRECT)).toBe(true);
-          if (kind === 'alternate') expect(text.startsWith(ALTERNATE_DIRECT)).toBe(true);
+          // D1: a key reason IS the canonical sentence (theorems.ts), never a variant of it.
+          if (kind === 'corresponding') expect(text, `${spec.id}: canonical corresponding sentence`).toBe(THEOREMS.correspondingDirect.text);
+          if (kind === 'alternate') expect(text, `${spec.id}: canonical alternate sentence`).toBe(THEOREMS.alternateDirect.text);
+          if (kind === 'vertical') expect(text, `${spec.id}: canonical vertical reason`).toBe(REASONS.vertical);
+          if (kind === 'adjacent') expect(text.startsWith(REASONS.adjacent), `${spec.id}: canonical adjacent reason`).toBe(true);
         }
       });
 
@@ -1214,9 +1290,9 @@ describe('independent verification — unit 2 hand-derived solutions', () => {
       });
 
       it(`drawn angles agree with the computed measures on acute / obtuse (SPEC 10.3)${regressionNote(spec.id)}`, () => {
-        const angles = namedAngles(spec);
+        const angles = anglesWithProbes(spec);
         const violations = acuteObtuseViolations(
-          spec.marks.map(name => ({ name, drawn: angles.get(name)!.span, measure: measures[name]! })),
+          [...spec.marks, ...Object.keys(spec.probes ?? {})].map(name => ({ name, drawn: angles.get(name)!.span, measure: measures[name]! })),
         );
         expect(violations).toEqual([]);
       });
@@ -1261,11 +1337,25 @@ describe('independent verification — unit 2 algebra: unique, valid, justified'
     // angles the equation equates (one justification per equation, in order).
     it(`${spec.id}: has a justification lane and a justification that names the relation behind the equation`, () => {
       expect(q.justificationLane, `${spec.id}: SPEC 7 requires a justification lane next to the equation`).toBe(true);
-      const drawn = spec.equations!.map(({ left, right, kind }) => {
-        const relation = relationOf(markCarrying(spec.id, left), markCarrying(spec.id, right));
-        const fits: Relation[] = kind === 'equal' ? ['corresponding', 'alternate', 'vertical'] : ['adjacent'];
+      const EQUAL: Relation[] = ['corresponding', 'alternate', 'vertical'];
+      const drawn = spec.equations!.flatMap(({ left, right, kind, via }) => {
+        const l = markCarrying(spec.id, left);
+        const r = markCarrying(spec.id, right);
+        const relation = relationOf(l, r);
+        if (via) {
+          // A two-step equation: left = via (a theorem), via + right = 180 (adjacent). The two
+          // expressions themselves must NOT be directly related, or the route is not the one taught.
+          expect(kind, `${spec.id}: a two-step equation here is supplementary`).toBe('supplementary');
+          expect(ONE_STEP.has(relation), `${spec.id}: ${left} / ${right} are drawn as ${relation} — one step, not a hidden relation`).toBe(false);
+          const middle = anglesWithProbes(spec).get(via)!;
+          const first = relationOf(l, middle);
+          expect(EQUAL, `${spec.id}: ${left} / ${via} are drawn as ${first}`).toContain(first);
+          expect(relationOf(middle, r), `${spec.id}: ${via} / ${right}`).toBe('adjacent');
+          return [first, 'adjacent' as Relation];
+        }
+        const fits: Relation[] = kind === 'equal' ? EQUAL : ['adjacent'];
         expect(fits, `${spec.id}: ${left} / ${right} are drawn as ${relation}, which does not give a ${kind} equation`).toContain(relation);
-        return relation;
+        return [relation];
       });
       const texts = asList(q.expected.justification);
       expect(texts.map(theoremKind), `${spec.id}: theorem cited for each equation`).toEqual(drawn);
@@ -1290,7 +1380,7 @@ describe('independent verification — unit 2 algebra: unique, valid, justified'
 
   it('U2-P5-D: the student equation is wrong (it gives a negative angle); the key equation is the adjacent-angle equation', () => {
     const q = byId(unit2Questions, 'U2-P5-D');
-    const student = /המשוואה ([^.]+)\./.exec(q.stem)?.[1];
+    const student = /המשוואה ([0-9xy +−=()]+?)\s*(?=[.א-ת])/.exec(q.stem)?.[1];
     expect(student).toBe('2x + 20 = 3x + 35');
     const studentSolution = solveOne(parseEquation(student!));
     expect(studentSolution).toEqual({ variable: 'x', value: -15 });
@@ -1300,6 +1390,15 @@ describe('independent verification — unit 2 algebra: unique, valid, justified'
     const keyEquation = /(\(2x \+ 20\) \+ \(3x \+ 35\) = 180)/.exec(asList(q.expected.justification).join(' '))?.[1];
     expect(keyEquation).toBeDefined();
     expect(equivalent(parseEquation(keyEquation!), supplementary)).toBe(true);
+    // The stem no longer tells the student the angles are adjacent: deciding that is the task. The
+    // student's argument rests on the parallel lines, and the key names why it fails.
+    expect(q.stem).not.toMatch(/צמוד/);
+    expect(q.stem).toMatch(/מקבילים, ולכן שתי הזוויות המסומנות שוות/);
+    const drawing = drawingOf('U2-P5-D');
+    expect(relationOf(drawing.angles[0]!, drawing.angles[1]!), 'U2-P5-D: the two marked angles').toBe('adjacent');
+    const note = byId(teacherAnswerKey, 'U2-P5-D').note ?? '';
+    expect(note).toMatch(/צמודות/);
+    expect(note).toMatch(/x = −15/);
   });
 
   it('U2-P1-C: exactly one offered size equals the corresponding angle', () => {
@@ -1308,30 +1407,38 @@ describe('independent verification — unit 2 algebra: unique, valid, justified'
     expect(new Set(q.choices).size).toBe(q.choices?.length);
   });
 
-  // The letters used to follow the table's row order (א = corresponding, ב = alternate, …), which
-  // handed the student the answer; they are now shuffled, so this checks the same consistency
-  // without fixing the order, and additionally that the order is NOT the row order.
-  it('U2-P3-A: table rows, drawn letters א–ד and answer keys describe the same four relations, and the letters do not give away the rows', () => {
+  // The table used to name every relation in its own rows („הזווית המתאימה” / „מתאימות” …), so the
+  // sizes followed from the text alone and the drawn letters had no role. Now the rows are the drawn
+  // letters and BOTH the relation and the size are the student's to fill in from the drawing.
+  it('U2-P3-A: the table rows are the drawn letters א–ד with nothing filled in, and the key gives each letter its drawn relation and hand-derived size', () => {
     const q = byId(unit2Questions, 'U2-P3-A');
-    const rowRelation = { 'מתאימה': 'corresponding', 'מתחלפת': 'alternate', 'קודקודית': 'vertical', 'צמודה': 'adjacent' } as const;
-    expect((q.tableRows ?? []).map(row => row.relation)).toEqual(['מתאימות', 'מתחלפות', 'קודקודיות', 'צמודות']);
-    expect(Object.keys(q.expected.values ?? {})).toEqual(Object.keys(rowRelation));
+    expect(q.tableRows).toEqual(['א', 'ב', 'ג', 'ד'].map(label => ({ label, relation: '', value: '' })));
+    // Nothing the student reads names a relation: finding it in the drawing is the task.
+    for (const text of [q.stem, ...(q.tableRows ?? []).flatMap(row => [row.label, row.relation ?? '', row.value ?? ''])]) {
+      expect(relationsNamed(text), `U2-P3-A: "${text}" names a relation`).toEqual([]);
+      expect(text).not.toMatch(/מתאימ|מתחלפ|קודקוד|צמוד/);
+    }
     const drawing = drawingOf('U2-P3-A');
     // The given angle once, then the four letters — no other mark.
     expect(drawing.angles.map(a => a.label)).toEqual(['38°', 'א', 'ב', 'ג', 'ד']);
     const ref = drawing.angles[0]!;
-    const letterOf = new Map(drawing.angles.slice(1).map(angle => [relationOf(ref, angle), angle.label]));
-    // Each relation of the table is drawn exactly once.
-    expect([...letterOf.keys()].sort()).toEqual(['adjacent', 'alternate', 'corresponding', 'vertical']);
-    // Each row's key value is the hand-derived measure of the letter drawn in that row's relation.
     const { measures } = unit2Specs.find(spec => spec.id === 'U2-P3-A')!.derive();
-    for (const [row, relation] of Object.entries(rowRelation)) {
-      expect(q.expected.values?.[row], `U2-P3-A row ${row}`).toBe(measures[letterOf.get(relation)!]);
-    }
-    // No letter sits at the position of its own table row.
-    Object.values(rowRelation).forEach((relation, row) => {
-      expect(letterOf.get(relation), `U2-P3-A: the ${relation} angle is lettered in table-row order`).not.toBe(['א', 'ב', 'ג', 'ד'][row]);
+    const word: Record<string, Relation> = { 'מתאימה': 'corresponding', 'מתחלפת': 'alternate', 'קודקודית': 'vertical', 'צמודה': 'adjacent' };
+    const rows = q.expected.completions ?? [];
+    expect(rows, 'U2-P3-A: one key line per table row').toHaveLength(4);
+    const relationsSeen = new Set<Relation>();
+    rows.forEach((row, index) => {
+      const letter = ['א', 'ב', 'ג', 'ד'][index]!;
+      const m = /^([א-ת]): ([א-ת]+), (\d+)°$/.exec(row);
+      expect(m, `U2-P3-A key row "${row}"`).not.toBeNull();
+      expect(m![1], `U2-P3-A key row ${index + 1} is about its own letter`).toBe(letter);
+      const drawnRelation = relationOf(ref, drawing.angles[index + 1]!);
+      expect(word[m![2]!], `U2-P3-A: ${letter} is drawn as ${drawnRelation}`).toBe(drawnRelation);
+      expect(Number(m![3]), `U2-P3-A: size of ${letter}`).toBe(measures[letter]);
+      relationsSeen.add(drawnRelation);
     });
+    // Each relation of the four is practised exactly once.
+    expect([...relationsSeen].sort()).toEqual(['adjacent', 'alternate', 'corresponding', 'vertical']);
   });
 
   it('U2-P3-B: the table states the same relations the drawing shows', () => {

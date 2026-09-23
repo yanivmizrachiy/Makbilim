@@ -50,6 +50,15 @@ describe('Unit 2 — תרגילי חישוב', () => {
     }
   });
 
+  it('ends with a synthesis page: no page-6 stem names the relation the student has to find', () => {
+    const page6 = unit2Questions.filter(q => q.page === 6);
+    expect(page6).toHaveLength(4);
+    for (const q of page6) {
+      expect(q.stem, q.id).not.toMatch(/מתאימ|מתחלפ|צמוד|קודקוד/);
+      expect(q.stem, `${q.id}: a synthesis task asks for a justification`).toMatch(/נמקו/);
+    }
+  });
+
   it('preserves numeric practice after algebra as transfer rather than introducing algebra too early', () => {
     expect(unit2Questions.filter(q => q.page === 6).every(q => !/(?:^|[^A-Za-z])[xy](?:[^A-Za-z]|$)/.test(q.stem))).toBe(true);
   });
