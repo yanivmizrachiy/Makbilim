@@ -1,4 +1,3 @@
-import React from 'react';
 import { A4Page } from '../components/A4Page';
 import { MathText } from '../components/MathText';
 import { QuestionBlock } from '../components/QuestionBlock';
