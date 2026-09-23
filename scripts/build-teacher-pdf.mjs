@@ -131,10 +131,15 @@ try {
     format: 'A4',
     printBackground: true,
     preferCSSPageSize: true,
+    tagged: true,
     margin: { top: '0', right: '0', bottom: '0', left: '0' },
   });
 
   const bytes = await fs.readFile(pdfPath);
+  const taggedStructure = bytes.includes(Buffer.from('/StructTreeRoot'));
+  if (!taggedStructure) {
+    throw new Error('Teacher PDF is missing /StructTreeRoot despite tagged: true');
+  }
   if (bytes.byteLength < 100_000) {
     throw new Error(`Teacher PDF suspiciously small: ${bytes.byteLength} bytes`);
   }
@@ -172,6 +177,7 @@ try {
     unit5SourceBlocks: Number(unit5SourceBlocks),
     mathJaxTokens: mathCount,
     accessibility: accessibilityStatus,
+    taggedStructure,
     bytes: bytes.byteLength,
     pages: pages.length,
     dimensions,
