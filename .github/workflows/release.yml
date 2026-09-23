@@ -39,6 +39,9 @@ jobs:
           EXPECTED="v$(node -p "require('./package.json').version")"
           test "$GITHUB_REF_NAME" = "$EXPECTED" || { echo "Tag $GITHUB_REF_NAME must equal package version $EXPECTED"; exit 1; }
 
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
       - name: Sync and validate canonical content
         run: |
           npm run sync:curriculum
