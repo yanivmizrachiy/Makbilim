@@ -496,6 +496,9 @@ Point, Vector, Line, Segment, ישרים מקבילים, חותך אחד/יות�
 
 ## 11.12 דטרמיניזם, שלמות ו־Release
 - `package-lock.json` tracked ומחייב; CI משתמש ב־`npm ci` וב־npm cache המבוסס על lockfile.
+- כל dependency ישיר חייב להיות pinned לגרסה מדויקת; lockfile חייב להיות v3, עם registry ו־integrity תקינים.
+- CI ו־Release מריצים `npm audit --omit=dev --audit-level=high`; פגיעות production ברמת high/critical מפילות build.
+- אין שום אוטומציה מתוזמנת: אסור `schedule`, cron, Dependabot מחזורי או פעולה שבועית/יומית. אוטומציה מותרת רק על push, pull request, tag/Release או workflow ידני.
 - כל שימוש ב־GitHub Action חיצוני ב־CI/Release pinned ל־commit SHA מלא; תגי `@vN` אינם מקור אמת להרצה.
 - כל build מפיק `SHA256SUMS.txt` לכל קובצי ה־PDF.
 - `input-fingerprint.json` מכיל SHA-256 לכל קלט קנוני: SPEC, lockfile, manifests, baseline, שאלות, תשובות ומשפטים, וכן aggregate SHA-256 יחיד.
@@ -506,7 +509,7 @@ Point, Vector, Line, Segment, ישרים מקבילים, חותך אחד/יות�
 - Release כולל את שלושת ה־PDF, checksums, build manifest, SBOM, input fingerprint, provenance manifest ודוחות ה־QA.
 - אין ליצור Release אוטומטי מכל commit ל־main.
 
-שער: `deterministic-install` + `actions-pin` + `sbom` + `input-fingerprint` + `checksums` + `release-contract`.
+שער: `deterministic-install` + `dependency-policy` + `dependency-audit` + `no-scheduled-automation` + `actions-pin` + `sbom` + `input-fingerprint` + `checksums` + `release-contract`.
 
 ---
 
@@ -713,15 +716,18 @@ Makbilim/
 29. `pdf-crosscheck`
 30. `teacher-pdf`
 31. `deterministic-install`
-32. `checksums`
-33. `actions-pin`
-34. `sbom`
-35. `input-fingerprint`
-36. `release-contract`
-37. `source-provenance`
-38. `accessibility`
-39. `tagged-pdf`
-40. `pdf`
+32. `dependency-policy`
+33. `dependency-audit`
+34. `no-scheduled-automation`
+35. `checksums`
+36. `actions-pin`
+37. `sbom`
+38. `input-fingerprint`
+39. `release-contract`
+40. `source-provenance`
+41. `accessibility`
+42. `tagged-pdf`
+43. `pdf`
 
 Validators של מקוריות/הדרגתיות/markers פועלים על יחידות 1–4. validator של `curriculum-source-integrity` פועל על יחידה 5 ומוודא שאין שינוי בתוכן המקור.
 
