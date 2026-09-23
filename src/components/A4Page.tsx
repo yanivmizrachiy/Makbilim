@@ -34,7 +34,7 @@ export function A4Page({
         <div className="page-number" aria-label={`עמוד ${pageNumber}`}>עמוד {pageNumber}</div>
       </header>
 
-      <main className="page-content">{children}</main>
+      <div className="page-content" role="group" aria-label={`תוכן עמוד ${pageNumber}`}>{children}</div>
 
       <footer className="page-footer">
         <div>{printTokens.footer.line1}</div>
