@@ -24,11 +24,39 @@ if (duplicateIds.length) {
   throw new Error(`source-manifest: duplicate Drive IDs: ${[...new Set(duplicateIds)].join(', ')}`);
 }
 
-const requiredFields = ['id', 'title', 'mimeType', 'category', 'storageStatus'];
+const requiredFields = ['id', 'title', 'mimeType', 'category', 'storageStatus', 'sourceIdType', 'usageMode', 'rightsStatus'];
 for (const item of items) {
   for (const field of requiredFields) {
     if (!item[field]) throw new Error(`source-manifest: ${item.id ?? 'unknown'} missing ${field}`);
   }
+}
+
+
+const allowedUsageModes = new Set([
+  'external-reference',
+  'visual-reference',
+  'instructional-reference',
+  'worksheet-reference',
+  'core-reference',
+]);
+for (const item of items) {
+  if (item.sourceIdType !== 'google-drive-file-id') {
+    throw new Error(`source-manifest: ${item.id} has invalid sourceIdType=${item.sourceIdType}`);
+  }
+  if (!allowedUsageModes.has(item.usageMode)) {
+    throw new Error(`source-manifest: ${item.id} has invalid usageMode=${item.usageMode}`);
+  }
+  if (item.rightsStatus !== 'not-asserted') {
+    throw new Error(`source-manifest: ${item.id} must not infer rights; got ${item.rightsStatus}`);
+  }
+}
+if (
+  manifest.provenancePolicy?.version !== 1 ||
+  manifest.provenancePolicy?.sourceIdType !== 'google-drive-file-id' ||
+  manifest.provenancePolicy?.rightsStatusDefault !== 'not-asserted' ||
+  manifest.provenancePolicy?.noLicenseInference !== true
+) {
+  throw new Error('source-manifest: provenancePolicy is missing or unsafe');
 }
 
 const categoryCounts = items.reduce((acc, item) => {
