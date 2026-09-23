@@ -401,6 +401,31 @@ try {
         if (value.startsWith('/assets/')) node.setAttribute(attribute, value);
       }
     });
+    // MathJax (fontCache: 'global') draws every glyph as <use href="#MJX-…"> into one hidden cache
+    // SVG. Vivliostyle lays each page out on its own and does not resolve those cross-page
+    // references, so every formula printed blank. Make each formula self-contained: replace every
+    // <use> by a copy of the glyph it points to, then drop the cache.
+    const XLINK = 'http://www.w3.org/1999/xlink';
+    for (const use of [...root.querySelectorAll('use')]) {
+      const ref = (use.getAttribute('href') ?? use.getAttributeNS(XLINK, 'href') ?? '').replace(/^#/, '');
+      const glyph = ref ? root.querySelector(`[id="${CSS.escape(ref)}"]`) : null;
+      if (!glyph) continue;
+      const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      for (const { name, value } of [...use.attributes]) {
+        if (name === 'href' || name === 'xlink:href' || name === 'x' || name === 'y') continue;
+        group.setAttribute(name, value);
+      }
+      const x = Number(use.getAttribute('x') ?? 0);
+      const y = Number(use.getAttribute('y') ?? 0);
+      const shift = x || y ? `translate(${x} ${y})` : '';
+      const transform = [use.getAttribute('transform') ?? '', shift].filter(Boolean).join(' ');
+      if (transform) group.setAttribute('transform', transform);
+      const copy = glyph.cloneNode(true);
+      copy.removeAttribute('id');
+      group.appendChild(copy);
+      use.replaceWith(group);
+    }
+    root.querySelector('#MJX-SVG-global-cache')?.remove();
     const body = root.querySelector('body');
     if (body) {
       body.removeAttribute('data-curriculum-ready');
@@ -408,6 +433,9 @@ try {
     }
     return '<!doctype html>\n' + root.outerHTML;
   });
+  if (/<use\b/i.test(vivliostyleSnapshot)) {
+    throw new Error('Vivliostyle snapshot must be self-contained: every MathJax <use> glyph reference must be inlined');
+  }
   if (/<script\b/i.test(vivliostyleSnapshot)) {
     throw new Error('Vivliostyle snapshot must be script-free');
   }
