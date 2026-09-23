@@ -9,11 +9,11 @@ describe('teacher answer key coverage', () => {
 
   const answerIds = teacherAnswerKey.map(entry => entry.id);
 
-  it('covers exactly the 58 authored tasks', () => {
-    expect(plannedIds).toHaveLength(58);
-    expect(answerIds).toHaveLength(58);
-    expect(new Set(plannedIds).size).toBe(58);
-    expect(new Set(answerIds).size).toBe(58);
+  it('covers exactly the 62 authored tasks', () => {
+    expect(plannedIds).toHaveLength(62);
+    expect(answerIds).toHaveLength(62);
+    expect(new Set(plannedIds).size).toBe(62);
+    expect(new Set(answerIds).size).toBe(62);
     expect([...answerIds].sort()).toEqual([...plannedIds].sort());
   });
 

@@ -58,9 +58,9 @@ const visibleText = (html: string) =>
 describe('teacher guide — locating an answer by its global number', () => {
   const pages = renderedStudentPages();
 
-  it('renders all 15 authored student pages and their 58 questions', () => {
-    expect(pages).toHaveLength(15);
-    expect(pages.flatMap(page => page.taskIds)).toHaveLength(58);
+  it('renders all 16 authored student pages and their 62 questions', () => {
+    expect(pages).toHaveLength(16);
+    expect(pages.flatMap(page => page.taskIds)).toHaveLength(62);
   });
 
   it('numbers every ● slot on each page and gives each task its global question and page number', () => {
@@ -75,15 +75,15 @@ describe('teacher guide — locating an answer by its global number', () => {
     }
   });
 
-  it('prints the answers in booklet order (curriculum first pushes authored numbers to 9..66)', () => {
+  it('prints the answers in booklet order (curriculum first pushes authored numbers to 9..70)', () => {
     const answers = renderedAnswers();
-    expect(answers).toHaveLength(58);
+    expect(answers).toHaveLength(62);
     const booklet = pages.flatMap(page => page.taskIds);
     expect(answers.map(answer => answer.id)).toEqual(booklet);
     expect(answers.map(answer => answer.questionNumber)).toEqual(booklet.map(globalQuestionNumber));
     // Authored questions start at 9 because the 8 curriculum blocks are questions 1..8.
     expect(answers[0]!.questionNumber).toBe(9);
-    expect(answers.at(-1)!.questionNumber).toBe(66);
+    expect(answers.at(-1)!.questionNumber).toBe(70);
   });
 
   it('heads every answer with its global number, task-type label, and page', () => {
@@ -186,7 +186,7 @@ describe('teacher guide — flat printed layout', () => {
 
   it('shows the topic summary as a plain table, not as statistic tiles', () => {
     const table = /<table class="teacher-contents">[\s\S]*?<\/table>/.exec(teacherHtml)?.[0] ?? '';
-    expect(visibleText(table)).toContain('58');
+    expect(visibleText(table)).toContain('62');
     expect(table).toContain('<caption>תוכן המדריך</caption>');
   });
 
@@ -196,7 +196,7 @@ describe('teacher guide — flat printed layout', () => {
     expect(answerFlow(['שוות', { values: { x: 16 }, justification: 'x'.repeat(COLUMN_FLOW_MAX_LINE) }])).toBe('columns');
 
     const grids = [...teacherHtml.matchAll(/<div class="teacher-answer-grid" data-flow="(columns|single)">([\s\S]*?)<\/section>/g)];
-    expect(grids).toHaveLength(15);
+    expect(grids).toHaveLength(16);
     const flows = grids.map(match => match[1]);
     expect(flows).toContain('columns');
     expect(flows).toContain('single');

@@ -23,6 +23,7 @@ export const BOOKLET_PAGES: readonly BookletPage[] = [
   { id: 'C-P2', topic: 'שאלות מתוך תוכנית הלימודים', curriculum: true },
   { id: 'C-P3', topic: 'שאלות מתוך תוכנית הלימודים', curriculum: true },
   { id: 'C-P4', topic: 'שאלות מתוך תוכנית הלימודים', curriculum: true },
+  { id: 'U1-P5', topic: 'הגדרות ושמונה הזוויות' },
   { id: 'U1-P1', topic: 'זוויות מתאימות ומתחלפות' },
   { id: 'U1-P2', topic: 'זוויות מתאימות ומתחלפות' },
   { id: 'U1-P3', topic: 'המשפטים הישירים' },
@@ -65,7 +66,7 @@ export const BOOKLET_PAGE_COUNT = BOOKLET_PAGES.length;
 /** The 8 curriculum block ids, in source order — the first questions of the booklet. */
 export const CURRICULUM_QUESTION_IDS: readonly string[] = unit5Questions.map(question => question.id);
 
-/** The 58 authored task ids, in booklet (document) order — question-plan.json is page-ordered. */
+/** The authored task ids, in booklet (document) order — question-plan.json lists them in that order. */
 export const AUTHORED_TASK_IDS: readonly string[] = plan.units.flatMap(unit => unit.tasks.map(task => task.id));
 
 /**

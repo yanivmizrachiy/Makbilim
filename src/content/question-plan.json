@@ -4,15 +4,19 @@
   "studentVisibleQuestionNumbers": true,
   "questionNumbering": "continuous-global",
   "subpartNumbering": "hebrew-letters",
-  "originalTaskCount": 58,
+  "originalTaskCount": 62,
   "curriculumSourceTaskBlocks": 8,
   "units": [
     {
       "unit": 1,
       "title": "מושגים בסיסיים",
-      "pages": 4,
-      "taskCount": 14,
+      "pages": 5,
+      "taskCount": 18,
       "tasks": [
+        {"id":"U1-P5-A","page":5,"difficulty":"D1","visualDemand":"V1","format":"sentence-completion","skill":"define-parallel-lines-and-segments","theoremIds":[],"instructionVerb":"השלימו","learningObjective":"להשלים את הגדרת ישרים מקבילים ואת הגדרת קטעים מקבילים","misconceptionTarget":"בלבול בין „אין נקודות משותפות” לבין „נחתכים”, או התעלמות מכך שקטעים מקבילים מונחים על ישרים מקבילים","progressionGain":"definitions"},
+        {"id":"U1-P5-B","page":5,"difficulty":"D1","visualDemand":"V2","format":"mark-on-diagram","skill":"identify-eight-angles","theoremIds":[],"instructionVerb":"סמנו","learningObjective":"לזהות שבשני מפגשי החותך נוצרות שמונה זוויות","misconceptionTarget":"ספירת ארבע זוויות בלבד, או ערבוב בין הזוויות של שני המפגשים","progressionGain":"eight-angles"},
+        {"id":"U1-P5-C","page":5,"difficulty":"D1","visualDemand":"V2","format":"sentence-completion","skill":"complete-cointerior-theorem","theoremIds":[],"instructionVerb":"השלימו","learningObjective":"לשלוף את משפט הזוויות החד-צדדיות בין ישרים מקבילים","misconceptionTarget":"הנחה שזוויות חד-צדדיות שוות במקום שהן משלימות ל־180°","progressionGain":"cointerior-theorem"},
+        {"id":"U1-P5-D","page":5,"difficulty":"D2","visualDemand":"V1","format":"true-false","skill":"judge-cointerior-vs-equal","theoremIds":[],"instructionVerb":"קבעו","learningObjective":"להבחין בין שוויון זוויות לבין השלמה ל־180°","misconceptionTarget":"החלת „שוות” על זוויות חד-צדדיות, או „משלימות ל־180°” על זוויות מתחלפות","progressionGain":"cointerior-distinction"},
         {"id":"U1-P1-A","page":1,"difficulty":"D1","visualDemand":"V1","format":"mark-on-diagram","skill":"identify-transversal","theoremIds":[],"instructionVerb":"סמנו","learningObjective":"לזהות שני ישרים וישר חותך","misconceptionTarget":"בלבול בין ישר חותך לאחד הישרים","progressionGain":"first-identification"},
         {"id":"U1-P1-B","page":1,"difficulty":"D1","visualDemand":"V1","format":"mark-on-diagram","skill":"identify-corresponding-pair","theoremIds":[],"instructionVerb":"סמנו","learningObjective":"לזהות זוג זוויות מתאימות לפי מיקום","misconceptionTarget":"בחירת זוג באותו קודקוד","progressionGain":"angle-pair-identification"},
         {"id":"U1-P1-C","page":1,"difficulty":"D1","visualDemand":"V1","format":"mark-on-diagram","skill":"identify-alternate-pair","theoremIds":[],"instructionVerb":"סמנו","learningObjective":"לזהות זוג זוויות מתחלפות לפי מיקום","misconceptionTarget":"בלבול מתאימות ומתחלפות","progressionGain":"second-angle-relation"},

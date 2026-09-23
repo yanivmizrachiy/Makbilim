@@ -22,8 +22,8 @@ const collectTasks = (node: unknown): PlanTask[] => {
 const tasks = collectTasks(plan.units);
 
 describe('task kinds (student-facing task-type layer)', () => {
-  it('covers every one of the 58 original tasks', () => {
-    expect(tasks).toHaveLength(58);
+  it('covers every one of the 62 original tasks', () => {
+    expect(tasks).toHaveLength(62);
     for (const task of tasks) expect(() => taskKindFor(task.id, task.format)).not.toThrow();
   });
 
@@ -60,10 +60,10 @@ describe('rendered task identity and task-type labels', () => {
   const sections = [...html.matchAll(/<section class="question-block[^"]*"[^>]*>/g)].map(match => match[0]);
   const renderedIds = sections.map(tag => /data-task-id="([^"]+)"/.exec(tag)?.[1]);
 
-  it('renders every one of the 58 original tasks exactly once, each tagged with its id', () => {
-    expect(sections).toHaveLength(58);
+  it('renders every one of the 62 original tasks exactly once, each tagged with its id', () => {
+    expect(sections).toHaveLength(62);
     expect(renderedIds.filter(id => id === undefined)).toEqual([]);
-    expect(new Set(renderedIds).size).toBe(58);
+    expect(new Set(renderedIds).size).toBe(62);
     expect([...renderedIds].sort()).toEqual(tasks.map(task => task.id).sort());
   });
 
@@ -73,7 +73,7 @@ describe('rendered task identity and task-type labels', () => {
       expect(tag).toContain(`data-task-kind="${taskKindById(id)}"`);
     }
     const labels = [...html.matchAll(/<span class="task-kind">([^<]+)<\/span>/g)].map(match => match[1]);
-    expect(labels).toHaveLength(58);
+    expect(labels).toHaveLength(62);
     for (const label of labels) expect(Object.values(TASK_KIND_LABEL)).toContain(label);
   });
 });

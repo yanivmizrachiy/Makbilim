@@ -69,7 +69,7 @@ import { Unit4Pages } from '../../src/pages/Unit4Pages';
 import { Unit1Page1 } from '../../src/App';
 import { unit1Questions } from '../../src/content/questions-unit1';
 import { teacherAnswerKey } from '../../src/content/answer-key';
-import { Unit1Continuation } from '../../src/pages/Unit1Continuation';
+import { Unit1Continuation, Unit1Page5 } from '../../src/pages/Unit1Continuation';
 
 // ---------------------------------------------------------------------------
 // Capture the props every page passes to the diagram engines, while still
@@ -2126,7 +2126,7 @@ type Unit1Figure = { svg: string; props: ParallelLinesDiagramProps };
 
 function unit1Figures(): Map<string, Unit1Figure[]> {
   const figures = new Map<string, Unit1Figure[]>();
-  for (const Page of [Unit1Page1, Unit1Continuation]) {
+  for (const Page of [Unit1Page1, Unit1Page5, Unit1Continuation]) {
     captured.diagrams.length = 0;
     const html = renderToStaticMarkup(createElement(Page));
     const starts = [...html.matchAll(/<svg class="geometry-diagram/g)].map(m => m.index);
@@ -2213,14 +2213,61 @@ function placeWords(bisectorDeg: number, lineDeg: number, transDeg: number, line
 }
 
 describe('independent verification — unit 1 identification keys match the rendered drawings', () => {
-  it('every unit-1 task with a figure is read back here (U1-P2-E is statements only)', () => {
-    expect([...u1Figures.keys()].sort()).toEqual(unit1Questions.map(q => q.id).filter(id => id !== 'U1-P2-E').sort());
+  it('every unit-1 task with a figure is read back here (U1-P2-E and U1-P5-D are statements only)', () => {
+    const statementsOnly = new Set(['U1-P2-E', 'U1-P5-D']);
+    expect([...u1Figures.keys()].sort()).toEqual(unit1Questions.map(q => q.id).filter(id => !statementsOnly.has(id)).sort());
   });
 
   it('the place words are right on a hand-checkable figure (horizontal line, transversal rising to the right)', () => {
     // SVG y grows down: 90° points down the page, 300° up and to the right.
     expect(placeWords(90 + 45, 0, 300, 'm', 't')).toBe('מתחת לישר m ומשמאל לישר t');
     expect(placeWords(-60 + 45, 0, 300, 'm', 't')).toBe('מעל הישר m ומימין לישר t');
+  });
+
+  it('U1-P5-A: the definitions figure marks the lines parallel and marks no angle', () => {
+    const figure = u1Figure('U1-P5-A');
+    expect(figure.props.showParallelMarks).toBe(true);
+    expect(figure.props.angleMarks ?? []).toHaveLength(0);
+    expect(figure.svg).toContain('parallel-mark--chevrons');
+    expect(figure.svg).not.toContain('angle-arc');
+  });
+
+  it('U1-P5-B: all eight angles are numbered 1–8 in their openings, four at each crossing, with no arcs', () => {
+    const { svg } = u1Figure('U1-P5-B');
+    expect(svg).not.toContain('angle-arc');
+    const angles = indexLabelledAngles(svg);
+    expect(angles.map(angle => angle.label).sort()).toEqual(['1', '2', '3', '4', '5', '6', '7', '8']);
+    for (const angle of angles) expect(angle.margin, `U1-P5-B ∠${angle.label ?? ''}: the number sits clearly inside one angle`).toBeGreaterThan(4);
+    for (const vertex of ['top', 'bottom']) {
+      const at = angles.filter(angle => angle.vertex === vertex);
+      expect(at, `U1-P5-B: four angles at the ${vertex} crossing`).toHaveLength(4);
+      // The four sectors of one crossing are distinct: both sides of the line × both sides of the transversal.
+      expect(new Set(at.map(angle => `${angle.lineSide}${angle.transSide}`)).size).toBe(4);
+    }
+    // The key's convention: 1–4 at the upper crossing, 5–8 at the lower one.
+    expect(angles.filter(angle => angle.vertex === 'top').map(angle => angle.label).sort()).toEqual(['1', '2', '3', '4']);
+    expect(angles.filter(angle => angle.vertex === 'bottom').map(angle => angle.label).sort()).toEqual(['5', '6', '7', '8']);
+  });
+
+  it('U1-P5-C: the marked pair is genuinely co-interior — one angle at each crossing, both between the lines, on the same side of the transversal — and supplementary', () => {
+    const drawing = u1Drawing('U1-P5-C');
+    expect(drawing.chevrons, 'U1-P5-C: the lines are marked parallel').toEqual([0, 1]);
+    expect(drawing.angles).toHaveLength(2);
+    const [a, b] = drawing.angles as [DrawnAngle, DrawnAngle];
+    expect(a.parallelLine).not.toBe(b.parallelLine);
+    expect(a.interior && b.interior, 'both angles lie between the parallel lines').toBe(true);
+    // Two interior angles at different crossings are either alternate (opposite sides of the
+    // transversal) or co-interior (the same side). This pair is not alternate, so it is co-interior;
+    // between parallel lines it then completes to 180° instead of being equal.
+    expect(['corresponding', 'alternate', 'alternate-exterior', 'vertical', 'adjacent', 'same']).not.toContain(relationOf(a, b));
+    expect(a.span + b.span).toBeCloseTo(180, 0);
+    expect(Math.abs(a.span - b.span), 'the drawn crossing is far from 90°, so the pair is visibly unequal').toBeGreaterThan(20);
+    const words = u1Key('U1-P5-C').answer as string[];
+    expect(words).toEqual(['180°', 'חד-צדדיות']);
+    const q = unit1Questions.find(item => item.id === 'U1-P5-C')!;
+    for (const [index, line] of q.subparts!.entries()) {
+      expect(line.replace(/_+/, words[index]!)).toBe(THEOREMS.coInteriorDirect.text);
+    }
   });
 
   it.each([

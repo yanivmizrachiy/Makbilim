@@ -13,6 +13,21 @@ export type TeacherAnswerEntry = {
 };
 
 const unit1AnswerKey: TeacherAnswerEntry[] = [
+  { id: 'U1-P5-A', unit: 1, page: 5, answer: ['משותפות', 'מקבילים'], note: 'ההגדרות: „ישרים מקבילים הם ישרים במישור שאין להם נקודות משותפות” ו„שני קטעים נקראים מקבילים אם הם נמצאים על ישרים מקבילים”.' },
+  { id: 'U1-P5-B', unit: 1, page: 5, answer: 'יש לסמן שמונה זוויות: ארבע בכל אחד משני המפגשים של החותך עם הישרים (1–4 במפגש העליון, 5–8 במפגש התחתון).' },
+  {
+    id: 'U1-P5-C', unit: 1, page: 5,
+    answer: ['180°', 'חד-צדדיות'],
+    note: `שתי השורות משלימות את המשפט „${THEOREMS.coInteriorDirect.text}”`,
+  },
+  {
+    id: 'U1-P5-D', unit: 1, page: 5,
+    answer: [
+      'לא נכון — זוויות חד-צדדיות בין ישרים מקבילים משלימות ל־180°, אינן שוות.',
+      `נכון — ${THEOREMS.coInteriorDirect.text}`,
+      `לא נכון — ${THEOREMS.alternateDirect.text} הן אינן משלימות ל־180°.`,
+    ],
+  },
   { id: 'U1-P1-A', unit: 1, page: 1, answer: 'הישר r הוא הישר החותך.' },
   {
     id: 'U1-P1-B', unit: 1, page: 1,

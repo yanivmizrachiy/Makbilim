@@ -77,7 +77,7 @@ try {
 
   await page.goto('http://127.0.0.1:4173/', { waitUntil: 'domcontentloaded', timeout: 20000 });
   await page.waitForSelector('[data-curriculum-ready="true"]', { timeout: 15000 });
-  await page.waitForFunction(() => document.querySelectorAll('.a4-page').length === 19, null, { timeout: 15000 });
+  await page.waitForFunction(() => document.querySelectorAll('.a4-page').length === 20, null, { timeout: 15000 });
   await page.evaluate(async () => { if (document.fonts?.ready) await document.fonts.ready; });
   await page.waitForFunction(() => {
     const mathNodes = [...document.querySelectorAll('.mathjax-inline > span')];
@@ -131,10 +131,10 @@ try {
   if (accessibilityStatus.lang !== 'he') accessibilityFailures.push(`html lang=${accessibilityStatus.lang}`);
   if (accessibilityStatus.dir !== 'rtl') accessibilityFailures.push(`html dir=${accessibilityStatus.dir}`);
   if (!accessibilityStatus.title) accessibilityFailures.push('document title missing');
-  if (accessibilityStatus.pageCount !== 19) accessibilityFailures.push(`pageCount=${accessibilityStatus.pageCount}`);
+  if (accessibilityStatus.pageCount !== 20) accessibilityFailures.push(`pageCount=${accessibilityStatus.pageCount}`);
   if (accessibilityStatus.mainLandmarkCount !== 0) accessibilityFailures.push(`mainLandmarkCount=${accessibilityStatus.mainLandmarkCount}`);
-  if (accessibilityStatus.pagesWithRtl !== 19) accessibilityFailures.push(`pagesWithRtl=${accessibilityStatus.pagesWithRtl}`);
-  if (accessibilityStatus.pagesWithSingleHeading !== 19) accessibilityFailures.push(`pagesWithSingleHeading=${accessibilityStatus.pagesWithSingleHeading}`);
+  if (accessibilityStatus.pagesWithRtl !== 20) accessibilityFailures.push(`pagesWithRtl=${accessibilityStatus.pagesWithRtl}`);
+  if (accessibilityStatus.pagesWithSingleHeading !== 20) accessibilityFailures.push(`pagesWithSingleHeading=${accessibilityStatus.pagesWithSingleHeading}`);
   if (accessibilityStatus.geometryTotal === 0 || accessibilityStatus.geometryAccessible !== accessibilityStatus.geometryTotal) {
     accessibilityFailures.push(`geometryAccessible=${accessibilityStatus.geometryAccessible}/${accessibilityStatus.geometryTotal}`);
   }
@@ -151,7 +151,7 @@ try {
   await page.emulateMedia({ media: 'print' });
 
   const pageCount = await page.locator('.a4-page').count();
-  if (pageCount !== 19) throw new Error(`Expected 19 A4 pages across units 1-5, found ${pageCount}`);
+  if (pageCount !== 20) throw new Error(`Expected 20 A4 pages across units 1-5, found ${pageCount}`);
 
   const layout = await page.locator('.a4-page').evaluateAll((pages) => pages.map((node, index) => {
     const PX_PER_MM = 96 / 25.4;
@@ -334,13 +334,14 @@ try {
     };
   }));
 
-  // Booklet order (SPEC 4.3): curriculum first, then the authored topics; global pages 1..19.
+  // Booklet order (SPEC 4.3): curriculum first, then the authored topics; global pages 1..20.
   // Mirrors src/content/booklet.ts BOOKLET_PAGES.
   const expectedPages = [
     { pageId: 'C-P1', topic: 'שאלות מתוך תוכנית הלימודים' },
     { pageId: 'C-P2', topic: 'שאלות מתוך תוכנית הלימודים' },
     { pageId: 'C-P3', topic: 'שאלות מתוך תוכנית הלימודים' },
     { pageId: 'C-P4', topic: 'שאלות מתוך תוכנית הלימודים' },
+    { pageId: 'U1-P5', topic: 'הגדרות ושמונה הזוויות' },
     { pageId: 'U1-P1', topic: 'זוויות מתאימות ומתחלפות' },
     { pageId: 'U1-P2', topic: 'זוויות מתאימות ומתחלפות' },
     { pageId: 'U1-P3', topic: 'המשפטים הישירים' },
@@ -467,7 +468,7 @@ try {
     mathSvg: document.querySelectorAll('.mathjax-inline svg').length,
     geometrySvg: document.querySelectorAll('svg.geometry-diagram').length,
   }));
-  if (snapshotStats.pages !== 19 || snapshotStats.mathSvg < 1 || snapshotStats.geometrySvg < 1) {
+  if (snapshotStats.pages !== 20 || snapshotStats.mathSvg < 1 || snapshotStats.geometrySvg < 1) {
     throw new Error(`Vivliostyle snapshot incomplete: ${JSON.stringify(snapshotStats)}`);
   }
 

@@ -15,12 +15,12 @@ if (!fs.existsSync(file)) {
   const units = plan.units ?? [];
   const tasks = units.flatMap((unit) => unit.tasks ?? []);
 
-  if (plan.originalTaskCount !== 58) fail('originalTaskCount must be 58');
-  if (tasks.length !== 58) fail(`expected 58 original tasks, found ${tasks.length}`);
+  if (plan.originalTaskCount !== 62) fail('originalTaskCount must be 62');
+  if (tasks.length !== 62) fail(`expected 62 original tasks, found ${tasks.length}`);
   if (plan.curriculumSourceTaskBlocks !== 8) fail('curriculumSourceTaskBlocks must be 8');
   if (units.length !== 4) fail(`question plan must contain 4 authored units, found ${units.length}`);
 
-  const expectedCounts = new Map([[1, 14], [2, 24], [3, 12], [4, 8]]);
+  const expectedCounts = new Map([[1, 18], [2, 24], [3, 12], [4, 8]]);
   const ids = new Set();
 
   for (const unit of units) {

@@ -34,10 +34,10 @@ const requiredFingerprintKeys = [
 ] as const;
 
 describe('canonical didactic profiles', () => {
-  it('covers exactly the 58 authored tasks with unique fingerprints', () => {
-    expect(didacticProfiles).toHaveLength(58);
-    expect(new Set(didacticProfiles.map(profile => profile.id)).size).toBe(58);
-    expect(new Set(didacticProfiles.map(profile => profile.fingerprint)).size).toBe(58);
+  it('covers exactly the 62 authored tasks with unique fingerprints', () => {
+    expect(didacticProfiles).toHaveLength(62);
+    expect(new Set(didacticProfiles.map(profile => profile.id)).size).toBe(62);
+    expect(new Set(didacticProfiles.map(profile => profile.fingerprint)).size).toBe(62);
   });
 
   it('keeps every mandatory profile field populated', () => {
@@ -75,7 +75,7 @@ describe('authored misconception targets (SPEC 5.2, 6, 6.1)', () => {
   const profileById = new Map(didacticProfiles.map(profile => [profile.id, profile]));
 
   it('every unit 1–4 task authors its own specific Hebrew target in question-plan.json', () => {
-    expect(planTasks).toHaveLength(58);
+    expect(planTasks).toHaveLength(62);
     expect([...new Set(planTasks.map(task => task.unit))]).toEqual([1, 2, 3, 4]);
 
     for (const task of planTasks) {
@@ -93,7 +93,7 @@ describe('authored misconception targets (SPEC 5.2, 6, 6.1)', () => {
     }
   });
 
-  it('never repeats a target: each of the 58 tasks names a distinct error', () => {
+  it('never repeats a target: each of the 62 tasks names a distinct error', () => {
     const byTarget = new Map<string, string[]>();
     for (const task of planTasks) {
       const target = (task.misconceptionTarget ?? '').trim();

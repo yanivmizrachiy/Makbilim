@@ -263,8 +263,8 @@ export const didacticProfiles: DidacticProfile[] = rawUnits
     } satisfies DidacticProfile;
   }));
 
-if (didacticProfiles.length !== 58) {
-  throw new Error(`Expected 58 complete didactic profiles, found ${didacticProfiles.length}`);
+if (didacticProfiles.length !== questionPlan.originalTaskCount) {
+  throw new Error(`Expected ${questionPlan.originalTaskCount} complete didactic profiles, found ${didacticProfiles.length}`);
 }
 
 if (new Set(didacticProfiles.map(profile => profile.fingerprint)).size !== didacticProfiles.length) {

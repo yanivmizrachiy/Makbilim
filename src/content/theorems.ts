@@ -14,6 +14,13 @@ export const THEOREMS = {
     requiresParallelGiven: true,
     direction: 'direct'
   },
+  coInteriorDirect: {
+    id: 'cointerior-direct',
+    text: 'זוויות חד-צדדיות בין ישרים מקבילים משלימות ל־180°.',
+    formalText: 'אם שני ישרים מקבילים נחתכים על ידי ישר שלישי, אז כל זוג זוויות חד-צדדיות משלימות ל־180°.',
+    requiresParallelGiven: true,
+    direction: 'direct'
+  },
   correspondingConverse: {
     id: 'corresponding-converse',
     text: 'אם שני ישרים נחתכים על ידי ישר שלישי, וזוג זוויות מתאימות שוות זו לזו, אז שני הישרים מקבילים.',

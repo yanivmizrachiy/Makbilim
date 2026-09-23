@@ -23,9 +23,9 @@ const blanksIn = (text: string) => text.match(/_+/g) ?? [];
 const WHOLE_WORD_BLANK = /(?:^|\s)______(?=[\s.,]|$)/;
 
 describe('Unit 1 conceptual integrity', () => {
-  it('contains 14 progressively structured questions', () => {
-    expect(unit1Questions).toHaveLength(14);
-    expect(new Set(unit1Questions.map(q => q.id)).size).toBe(14);
+  it('contains 18 progressively structured questions', () => {
+    expect(unit1Questions).toHaveLength(18);
+    expect(new Set(unit1Questions.map(q => q.id)).size).toBe(18);
   });
 
   it('uses grayscale-safe non-color cues for visual identification', () => {

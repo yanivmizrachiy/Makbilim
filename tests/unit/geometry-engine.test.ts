@@ -263,8 +263,9 @@ describe('geometry engine — arcs, dots, numbering (E4, E5, E7)', () => {
   });
 
   it('numbers all eight angles of the numbering diagrams in their openings, with no arc rings', () => {
+    // The three matching figures (U1-P1-E, U1-P2-A, U1-P2-B) and the eight-angles figure U1-P5-B.
     const numbering = diagrams.filter(({ svg }) => svg.includes('angle-label-text--index'));
-    expect(numbering.length).toBe(3);
+    expect(numbering.length).toBe(4);
     for (const { svg } of numbering) {
       expect(labelsOf(svg).filter(label => label.kind.includes('--index')).map(label => label.text).sort()).toEqual(['1', '2', '3', '4', '5', '6', '7', '8']);
       expect(svg).not.toContain('angle-arc');

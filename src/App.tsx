@@ -3,7 +3,7 @@ import { QuestionBlock } from './components/QuestionBlock';
 import { LineSlot, WordBank } from './components/ResponseParts';
 import { ParallelLinesDiagram } from './geometry/ParallelLinesDiagram';
 import { unit1Questions } from './content/questions-unit1';
-import { Unit1Continuation } from './pages/Unit1Continuation';
+import { Unit1Continuation, Unit1Page5 } from './pages/Unit1Continuation';
 import { Unit2Pages } from './pages/Unit2Pages';
 import { Unit3Pages } from './pages/Unit3Pages';
 import { Unit4Pages } from './pages/Unit4Pages';
@@ -67,6 +67,7 @@ export default function App() {
   return (
     <div className="preview-stack">
       <Unit5Pages />
+      <Unit1Page5 />
       <Unit1Page1 />
       <Unit1Continuation />
       <Unit2Pages />

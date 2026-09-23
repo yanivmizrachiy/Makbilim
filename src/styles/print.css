@@ -276,9 +276,46 @@ body { direction: rtl; }
    dotted light rules at a constant pitch for work · solid ink slots for final answers and blanks ·
    a solid hairline (darker than the rules) only between questions. */
 
+/* Conclusion arrow ↓ (SPEC 11.14): one shared vector arrow, always pointing down, RTL/PDF safe. */
+.conclusion-arrow {
+  display: flex;
+  justify-content: center;
+  margin: var(--arrow-gap) 0;
+}
+
+.conclusion-arrow-svg { display: block; }
+
+.conclusion-arrow-svg line,
+.conclusion-arrow-svg polyline {
+  stroke: var(--arrow-color);
+  stroke-width: var(--arrow-stroke-w);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
 .answer-lines {
   display: flex;
   flex-direction: column;
+}
+
+/* Graph-paper work grid (SPEC 11.11א / כ): squared paper for real derivation, in place of the
+   prose writing rules. Applied only to work / algebra / calculation areas, never to short-answer,
+   choose or one-word tasks. The square lines share the writing-rule colour (grayscale-mapped). */
+.answer-lines[data-grid="squares"] {
+  background-image:
+    linear-gradient(to right, var(--rule-color) var(--grid-line-w), transparent var(--grid-line-w)),
+    linear-gradient(to bottom, var(--rule-color) var(--grid-line-w), transparent var(--grid-line-w));
+  background-size: var(--grid-cell) var(--grid-cell);
+  background-position: top right;
+}
+
+.answer-lines[data-grid="squares"] > .rule { border-bottom: none; }
+
+/* Forced colours drop background images (the square grid); the bordered writing rules return so
+   the work area never loses its writing guidance. */
+@media (forced-colors: active) {
+  .answer-lines[data-grid="squares"] > .rule { border-bottom: var(--rule-w) var(--rule-style) var(--rule-color); }
 }
 
 .answer-lines > .rule {

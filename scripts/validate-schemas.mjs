@@ -18,7 +18,7 @@ const pageManifestSchema = z.object({
   canonicalSpec: z.literal('SPEC.md'),
   pageNumbering: z.literal('continuous'),
   originalUnits: z.array(pageUnitSchema).length(4),
-  originalPageCount: z.literal(15),
+  originalPageCount: z.literal(16),
   curriculumUnit: z.object({
     unit: z.literal(5),
     title: z.string().min(1),
@@ -29,7 +29,7 @@ const pageManifestSchema = z.object({
     questionsPerPage: z.literal(2),
     firstPage: z.literal(1),
   }),
-  studentPageCount: z.literal(19),
+  studentPageCount: z.literal(20),
   studentFacingRules: z.object({
     questionNumbering: z.literal('continuous'),
     subpartNumbering: z.literal('hebrew-letters'),
@@ -94,7 +94,7 @@ const questionPlanSchema = z.object({
   studentVisibleQuestionNumbers: z.literal(true),
   questionNumbering: z.literal('continuous-global'),
   subpartNumbering: z.literal('hebrew-letters'),
-  originalTaskCount: z.literal(58),
+  originalTaskCount: z.literal(62),
   curriculumSourceTaskBlocks: z.literal(8),
   units: z.array(questionUnitSchema).length(4),
 });

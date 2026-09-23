@@ -109,9 +109,9 @@ describe('publication hardening', () => {
     expect(release).toContain('npm audit --omit=dev --audit-level=high');
   });
 
-  it('tracks a canonical visual baseline for all 19 student pages', () => {
-    expect(baseline.pageCount).toBe(19);
-    expect(baseline.layout).toHaveLength(19);
+  it('tracks a canonical visual baseline for all 20 student pages', () => {
+    expect(baseline.pageCount).toBe(20);
+    expect(baseline.layout).toHaveLength(20);
     expect(pkg.scripts['validate:visual-baseline']).toContain('validate-visual-baseline.mjs');
     expect(pkg.scripts.pdf).toContain('validate:visual-baseline');
   });

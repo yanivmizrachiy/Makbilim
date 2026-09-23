@@ -107,5 +107,43 @@ export const unit1Questions: Unit1Question[] = [
   {
     id: 'U1-P3-D', page: 4, stem: 'בכל אחד משני השרטוטים מסומן זוג זוויות מתאימות. מאיה אמרה: „זוויות מתאימות שוות.” יואב טען שחסר במשפט תנאי הכרחי. כתבו את המשפט המדויק והסבירו, בעזרת השרטוטים, מה היה חסר.',
     diagram: { topology: 'two-configurations-one-parallel-one-not', lineLabels: ['h', 'k', 's'], orientationDeg: -21, transversalDeg: 48, parallelGiven: false }
+  },
+
+  // ── נושא הפתיחה: הגדרות, שמונה הזוויות וזוויות חד-צדדיות (SPEC 3.5 / 3.1 / 4.3). ──
+  // בסדר החוברת עמוד זה פותח את הנושאים הדידקטיים (מיד אחרי תוכנית הלימודים), לכן משימותיו
+  // מופיעות ראשונות במערך היחידה ובתוכנית השאלות.
+  {
+    id: 'U1-P5-A', page: 5,
+    stem: 'השלימו את ההגדרות. היעזרו במחסן המילים.',
+    subparts: [
+      'ישרים מקבילים הם ישרים במישור שאין להם נקודות ______.',
+      'שני קטעים נקראים מקבילים אם הם נמצאים על ישרים ______.'
+    ],
+    diagram: { topology: 'parallel-lines-definition', lineLabels: ['a', 'b', 'c'], orientationDeg: -2, transversalDeg: 136, parallelGiven: true }
+  },
+  {
+    id: 'U1-P5-B', page: 5,
+    stem: 'בשרטוט שני ישרים מקבילים וישר שלישי החותך אותם. סמנו את שמונה הזוויות שנוצרו בשני המפגשים.',
+    diagram: { topology: 'eight-angles-emphasis', lineLabels: ['p', 'q', 't'], pointLabels: ['A', 'B'], orientationDeg: -4, transversalDeg: 116, parallelGiven: true }
+  },
+  {
+    id: 'U1-P5-C', page: 5,
+    stem: `בשרטוט מסומן זוג זוויות חד-צדדיות. ${PARALLEL_ARROWS_CONVENTION} השלימו בכל שורה מילה אחת.`,
+    subparts: [
+      'זוויות חד-צדדיות בין ישרים מקבילים משלימות ל־______.',
+      'זוויות ______ בין ישרים מקבילים משלימות ל־180°.'
+    ],
+    diagram: { topology: 'cointerior-support', lineLabels: ['k', 'm', 'r'], orientationDeg: -11, transversalDeg: 57, parallelGiven: true }
+  },
+  {
+    id: 'U1-P5-D', page: 5,
+    stem: 'לפניכם שלוש טענות על זוגות זוויות בין ישרים מקבילים. קבעו לגבי כל טענה אם היא נכונה או לא נכונה. נמקו.',
+    subparts: [
+      'זוויות חד-צדדיות בין ישרים מקבילים הן שוות זו לזו.',
+      'זוויות חד-צדדיות בין ישרים מקבילים משלימות ל־180°.',
+      'זוויות מתחלפות בין ישרים מקבילים משלימות ל־180°.'
+    ],
+    verdictOptions: ['נכון', 'לא נכון'],
+    diagram: { topology: 'statement-only-with-small-reference-diagram', lineLabels: ['r', 's', 't'], orientationDeg: 0, transversalDeg: 71, parallelGiven: true }
   }
 ];

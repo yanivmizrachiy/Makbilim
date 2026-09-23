@@ -92,6 +92,15 @@
   --choice-bubble-stroke: 0.3mm;
   --choice-gap: 2mm;
 
+  /* ── Graph-paper work grid (SPEC 11.11א / כ): squares only where real work is written ── */
+  --grid-cell: 5mm;             /* squared-paper cell */
+  --grid-line-w: 0.15mm;        /* faint square lines (share the writing-rule colour) */
+
+  /* ── Conclusion arrow ↓ (SPEC 11.14): one shared vector arrow ── */
+  --arrow-stroke-w: 0.4mm;
+  --arrow-color: var(--ink);
+  --arrow-gap: 1.6mm;
+
   /* ── Diagram scale (owned by the geometry layer; values unchanged) ── */
 }
 

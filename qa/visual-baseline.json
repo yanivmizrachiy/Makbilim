@@ -1,5 +1,5 @@
 {
-  "pageCount": 19,
+  "pageCount": 20,
   "expectedPages": [
     {
       "pageId": "C-P1",
@@ -16,6 +16,10 @@
     {
       "pageId": "C-P4",
       "topic": "שאלות מתוך תוכנית הלימודים"
+    },
+    {
+      "pageId": "U1-P5",
+      "topic": "הגדרות ושמונה הזוויות"
     },
     {
       "pageId": "U1-P1",
@@ -79,9 +83,9 @@
     }
   ],
   "mathJaxStatus": {
-    "total": 250,
-    "rendered": 250,
-    "svgNodes": 250
+    "total": 253,
+    "rendered": 253,
+    "svgNodes": 253
   },
   "layout": [
     {
@@ -254,8 +258,106 @@
     },
     {
       "renderIndex": 5,
-      "pageId": "U1-P1",
+      "pageId": "U1-P5",
       "globalPage": 5,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 18.875,
+      "bottomGapRatio": 0.019207530369522354,
+      "usedSpanRatio": 0.9673408382624181,
+      "maxInterQuestionGapPx": 25.546875,
+      "maxInterQuestionGapRatio": 0.025996947147490936,
+      "questionCount": 4,
+      "markerCount": 4,
+      "subpartCount": 7,
+      "subpartMarkerCount": 7,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 3,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 1,
+          "labels": 11,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 2,
+          "labels": 3,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "topicTitleText": "הגדרות ושמונה הזוויות",
+      "pageNumberText": "5",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 1.1,
+      "blocks": [
+        {
+          "taskId": "U1-P5-A",
+          "answerMode": "none",
+          "heightMm": 49.9,
+          "blockDeadMm": 1.1,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U1-P5-B",
+          "answerMode": "none",
+          "heightMm": 57,
+          "blockDeadMm": 0.3,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U1-P5-C",
+          "answerMode": "none",
+          "heightMm": 58.2,
+          "blockDeadMm": 1.1,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U1-P5-D",
+          "answerMode": "items",
+          "heightMm": 89.9,
+          "blockDeadMm": 0.3,
+          "answerRuleCount": 6,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
+    },
+    {
+      "renderIndex": 6,
+      "pageId": "U1-P1",
+      "globalPage": 6,
       "isVerbatimCurriculum": false,
       "widthPx": 793.6875,
       "heightPx": 1122.515625,
@@ -309,7 +411,7 @@
       ],
       "projectTitleText": "זוויות בין ישרים מקבילים",
       "topicTitleText": "זוויות מתאימות ומתחלפות",
-      "pageNumberText": "5",
+      "pageNumberText": "6",
       "footerLines": [
         "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
@@ -357,9 +459,9 @@
       ]
     },
     {
-      "renderIndex": 6,
+      "renderIndex": 7,
       "pageId": "U1-P2",
-      "globalPage": 6,
+      "globalPage": 7,
       "isVerbatimCurriculum": false,
       "widthPx": 793.6875,
       "heightPx": 1122.515625,
@@ -413,14 +515,14 @@
       ],
       "projectTitleText": "זוויות בין ישרים מקבילים",
       "topicTitleText": "זוויות מתאימות ומתחלפות",
-      "pageNumberText": "6",
+      "pageNumberText": "7",
       "footerLines": [
         "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 0.8,
+      "maxBlockDeadMm": 39.5,
       "blocks": [
         {
           "taskId": "U1-P1-E",
@@ -444,7 +546,7 @@
           "taskId": "U1-P2-B",
           "answerMode": "work",
           "heightMm": 95.7,
-          "blockDeadMm": 0,
+          "blockDeadMm": 39.5,
           "answerRuleCount": 5,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -461,9 +563,9 @@
       ]
     },
     {
-      "renderIndex": 7,
+      "renderIndex": 8,
       "pageId": "U1-P3",
-      "globalPage": 7,
+      "globalPage": 8,
       "isVerbatimCurriculum": false,
       "widthPx": 793.6875,
       "heightPx": 1122.515625,
@@ -511,7 +613,7 @@
       ],
       "projectTitleText": "זוויות בין ישרים מקבילים",
       "topicTitleText": "המשפטים הישירים",
-      "pageNumberText": "7",
+      "pageNumberText": "8",
       "footerLines": [
         "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
@@ -550,9 +652,9 @@
       ]
     },
     {
-      "renderIndex": 8,
+      "renderIndex": 9,
       "pageId": "U1-P4",
-      "globalPage": 8,
+      "globalPage": 9,
       "isVerbatimCurriculum": false,
       "widthPx": 793.6875,
       "heightPx": 1122.515625,
@@ -624,7 +726,7 @@
       ],
       "projectTitleText": "זוויות בין ישרים מקבילים",
       "topicTitleText": "המשפטים הישירים",
-      "pageNumberText": "8",
+      "pageNumberText": "9",
       "footerLines": [
         "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
@@ -663,112 +765,8 @@
       ]
     },
     {
-      "renderIndex": 9,
-      "pageId": "U2-P1",
-      "globalPage": 9,
-      "isVerbatimCurriculum": false,
-      "widthPx": 793.6875,
-      "heightPx": 1122.515625,
-      "aspectRatio": 0.7070614273186621,
-      "a4RatioError": 0.000009279752045010525,
-      "scrollOverflow": 0,
-      "overflowingQuestions": 0,
-      "internallyOverflowingQuestions": 0,
-      "topGapPx": 13.21875,
-      "topGapRatio": 0.013451631368059531,
-      "bottomGapPx": 18.875,
-      "bottomGapRatio": 0.019207530369522354,
-      "usedSpanRatio": 0.9673408382624181,
-      "maxInterQuestionGapPx": 25.546875,
-      "maxInterQuestionGapRatio": 0.025996947147490936,
-      "questionCount": 4,
-      "markerCount": 4,
-      "subpartCount": 0,
-      "subpartMarkerCount": 0,
-      "sourceNumberCount": 0,
-      "sourceShaCount": 0,
-      "geometrySvgCount": 4,
-      "unlabeledGeometrySvgCount": 0,
-      "geometryCollisionCount": 0,
-      "geometryOutOfBoundsCount": 0,
-      "geometryCollisionReport": [
-        {
-          "svgIndex": 0,
-          "labels": 5,
-          "collisions": 0,
-          "outOfBounds": 0
-        },
-        {
-          "svgIndex": 1,
-          "labels": 5,
-          "collisions": 0,
-          "outOfBounds": 0
-        },
-        {
-          "svgIndex": 2,
-          "labels": 5,
-          "collisions": 0,
-          "outOfBounds": 0
-        },
-        {
-          "svgIndex": 3,
-          "labels": 5,
-          "collisions": 0,
-          "outOfBounds": 0
-        }
-      ],
-      "projectTitleText": "זוויות בין ישרים מקבילים",
-      "topicTitleText": "חישובי זוויות",
-      "pageNumberText": "9",
-      "footerLines": [
-        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
-        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
-      ],
-      "headerContentOverlap": false,
-      "footerContentOverlap": false,
-      "maxBlockDeadMm": 0,
-      "blocks": [
-        {
-          "taskId": "U2-P1-A",
-          "answerMode": "value",
-          "heightMm": 61.3,
-          "blockDeadMm": 0,
-          "answerRuleCount": 4,
-          "rulePitchMm": 8,
-          "lastRuleToSeparatorMm": 3.5
-        },
-        {
-          "taskId": "U2-P1-B",
-          "answerMode": "value",
-          "heightMm": 64.6,
-          "blockDeadMm": 0,
-          "answerRuleCount": 4,
-          "rulePitchMm": 8,
-          "lastRuleToSeparatorMm": 3.5
-        },
-        {
-          "taskId": "U2-P1-C",
-          "answerMode": "none",
-          "heightMm": 46.7,
-          "blockDeadMm": 0,
-          "answerRuleCount": 0,
-          "rulePitchMm": null,
-          "lastRuleToSeparatorMm": null
-        },
-        {
-          "taskId": "U2-P1-D",
-          "answerMode": "justify",
-          "heightMm": 82.4,
-          "blockDeadMm": 0,
-          "answerRuleCount": 6,
-          "rulePitchMm": 8,
-          "lastRuleToSeparatorMm": null
-        }
-      ]
-    },
-    {
       "renderIndex": 10,
-      "pageId": "U2-P2",
+      "pageId": "U2-P1",
       "globalPage": 10,
       "isVerbatimCurriculum": false,
       "widthPx": 793.6875,
@@ -830,13 +828,117 @@
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 0,
+      "maxBlockDeadMm": 17.8,
+      "blocks": [
+        {
+          "taskId": "U2-P1-A",
+          "answerMode": "value",
+          "heightMm": 61.3,
+          "blockDeadMm": 17.8,
+          "answerRuleCount": 4,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U2-P1-B",
+          "answerMode": "value",
+          "heightMm": 64.6,
+          "blockDeadMm": 17.8,
+          "answerRuleCount": 4,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": 3.5
+        },
+        {
+          "taskId": "U2-P1-C",
+          "answerMode": "none",
+          "heightMm": 46.7,
+          "blockDeadMm": 0,
+          "answerRuleCount": 0,
+          "rulePitchMm": null,
+          "lastRuleToSeparatorMm": null
+        },
+        {
+          "taskId": "U2-P1-D",
+          "answerMode": "justify",
+          "heightMm": 82.4,
+          "blockDeadMm": 0,
+          "answerRuleCount": 6,
+          "rulePitchMm": 8,
+          "lastRuleToSeparatorMm": null
+        }
+      ]
+    },
+    {
+      "renderIndex": 11,
+      "pageId": "U2-P2",
+      "globalPage": 11,
+      "isVerbatimCurriculum": false,
+      "widthPx": 793.6875,
+      "heightPx": 1122.515625,
+      "aspectRatio": 0.7070614273186621,
+      "a4RatioError": 0.000009279752045010525,
+      "scrollOverflow": 0,
+      "overflowingQuestions": 0,
+      "internallyOverflowingQuestions": 0,
+      "topGapPx": 13.21875,
+      "topGapRatio": 0.013451631368059531,
+      "bottomGapPx": 18.875,
+      "bottomGapRatio": 0.019207530369522354,
+      "usedSpanRatio": 0.9673408382624181,
+      "maxInterQuestionGapPx": 25.546875,
+      "maxInterQuestionGapRatio": 0.025996947147490936,
+      "questionCount": 4,
+      "markerCount": 4,
+      "subpartCount": 0,
+      "subpartMarkerCount": 0,
+      "sourceNumberCount": 0,
+      "sourceShaCount": 0,
+      "geometrySvgCount": 4,
+      "unlabeledGeometrySvgCount": 0,
+      "geometryCollisionCount": 0,
+      "geometryOutOfBoundsCount": 0,
+      "geometryCollisionReport": [
+        {
+          "svgIndex": 0,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 1,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 2,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        },
+        {
+          "svgIndex": 3,
+          "labels": 5,
+          "collisions": 0,
+          "outOfBounds": 0
+        }
+      ],
+      "projectTitleText": "זוויות בין ישרים מקבילים",
+      "topicTitleText": "חישובי זוויות",
+      "pageNumberText": "11",
+      "footerLines": [
+        "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
+        "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
+      ],
+      "headerContentOverlap": false,
+      "footerContentOverlap": false,
+      "maxBlockDeadMm": 20.8,
       "blocks": [
         {
           "taskId": "U2-P2-A",
           "answerMode": "work",
           "heightMm": 60.3,
-          "blockDeadMm": 0,
+          "blockDeadMm": 17,
           "answerRuleCount": 4,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -845,7 +947,7 @@
           "taskId": "U2-P2-B",
           "answerMode": "work",
           "heightMm": 63.6,
-          "blockDeadMm": 0,
+          "blockDeadMm": 17.1,
           "answerRuleCount": 4,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -854,7 +956,7 @@
           "taskId": "U2-P2-C",
           "answerMode": "work",
           "heightMm": 63.6,
-          "blockDeadMm": 0,
+          "blockDeadMm": 16.8,
           "answerRuleCount": 4,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -863,7 +965,7 @@
           "taskId": "U2-P2-D",
           "answerMode": "two-ways",
           "heightMm": 67.6,
-          "blockDeadMm": 0,
+          "blockDeadMm": 20.8,
           "answerRuleCount": 8,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": null
@@ -871,9 +973,9 @@
       ]
     },
     {
-      "renderIndex": 11,
+      "renderIndex": 12,
       "pageId": "U2-P3",
-      "globalPage": 11,
+      "globalPage": 12,
       "isVerbatimCurriculum": false,
       "widthPx": 793.6875,
       "heightPx": 1122.515625,
@@ -927,14 +1029,14 @@
       ],
       "projectTitleText": "זוויות בין ישרים מקבילים",
       "topicTitleText": "חישובי זוויות",
-      "pageNumberText": "11",
+      "pageNumberText": "12",
       "footerLines": [
         "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 0,
+      "maxBlockDeadMm": 20.9,
       "blocks": [
         {
           "taskId": "U2-P3-A",
@@ -949,7 +1051,7 @@
           "taskId": "U2-P3-B",
           "answerMode": "value",
           "heightMm": 81.5,
-          "blockDeadMm": 0,
+          "blockDeadMm": 20.9,
           "answerRuleCount": 2,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -958,7 +1060,7 @@
           "taskId": "U2-P3-C",
           "answerMode": "work",
           "heightMm": 58.2,
-          "blockDeadMm": 0,
+          "blockDeadMm": 11.5,
           "answerRuleCount": 3,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -967,7 +1069,7 @@
           "taskId": "U2-P3-D",
           "answerMode": "work",
           "heightMm": 58.2,
-          "blockDeadMm": 0,
+          "blockDeadMm": 12.1,
           "answerRuleCount": 3,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": null
@@ -975,9 +1077,9 @@
       ]
     },
     {
-      "renderIndex": 12,
+      "renderIndex": 13,
       "pageId": "U2-P4",
-      "globalPage": 12,
+      "globalPage": 13,
       "isVerbatimCurriculum": false,
       "widthPx": 793.6875,
       "heightPx": 1122.515625,
@@ -1031,20 +1133,20 @@
       ],
       "projectTitleText": "זוויות בין ישרים מקבילים",
       "topicTitleText": "אלגברה",
-      "pageNumberText": "12",
+      "pageNumberText": "13",
       "footerLines": [
         "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 0,
+      "maxBlockDeadMm": 15.4,
       "blocks": [
         {
           "taskId": "U2-P4-A",
           "answerMode": "algebra",
           "heightMm": 52,
-          "blockDeadMm": 0,
+          "blockDeadMm": 9.1,
           "answerRuleCount": 3,
           "rulePitchMm": 7,
           "lastRuleToSeparatorMm": 3
@@ -1053,7 +1155,7 @@
           "taskId": "U2-P4-B",
           "answerMode": "algebra",
           "heightMm": 54.8,
-          "blockDeadMm": 0,
+          "blockDeadMm": 9,
           "answerRuleCount": 3,
           "rulePitchMm": 7,
           "lastRuleToSeparatorMm": 3
@@ -1062,7 +1164,7 @@
           "taskId": "U2-P4-C",
           "answerMode": "algebra",
           "heightMm": 60.8,
-          "blockDeadMm": 0,
+          "blockDeadMm": 15.1,
           "answerRuleCount": 3,
           "rulePitchMm": 7,
           "lastRuleToSeparatorMm": 3
@@ -1071,7 +1173,7 @@
           "taskId": "U2-P4-D",
           "answerMode": "algebra",
           "heightMm": 88.5,
-          "blockDeadMm": 0,
+          "blockDeadMm": 15.4,
           "answerRuleCount": 3,
           "rulePitchMm": 7,
           "lastRuleToSeparatorMm": null
@@ -1079,9 +1181,9 @@
       ]
     },
     {
-      "renderIndex": 13,
+      "renderIndex": 14,
       "pageId": "U2-P5",
-      "globalPage": 13,
+      "globalPage": 14,
       "isVerbatimCurriculum": false,
       "widthPx": 793.6875,
       "heightPx": 1122.515625,
@@ -1135,20 +1237,20 @@
       ],
       "projectTitleText": "זוויות בין ישרים מקבילים",
       "topicTitleText": "אלגברה",
-      "pageNumberText": "13",
+      "pageNumberText": "14",
       "footerLines": [
         "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 0,
+      "maxBlockDeadMm": 18.4,
       "blocks": [
         {
           "taskId": "U2-P5-A",
           "answerMode": "algebra",
           "heightMm": 61.3,
-          "blockDeadMm": 0,
+          "blockDeadMm": 17.8,
           "answerRuleCount": 3,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -1157,7 +1259,7 @@
           "taskId": "U2-P5-B",
           "answerMode": "algebra",
           "heightMm": 58.6,
-          "blockDeadMm": 0,
+          "blockDeadMm": 18.4,
           "answerRuleCount": 3,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -1166,7 +1268,7 @@
           "taskId": "U2-P5-C",
           "answerMode": "algebra",
           "heightMm": 64.6,
-          "blockDeadMm": 0,
+          "blockDeadMm": 17.8,
           "answerRuleCount": 3,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -1183,9 +1285,9 @@
       ]
     },
     {
-      "renderIndex": 14,
+      "renderIndex": 15,
       "pageId": "U2-P6",
-      "globalPage": 14,
+      "globalPage": 15,
       "isVerbatimCurriculum": false,
       "widthPx": 793.6875,
       "heightPx": 1122.515625,
@@ -1239,14 +1341,14 @@
       ],
       "projectTitleText": "זוויות בין ישרים מקבילים",
       "topicTitleText": "אלגברה",
-      "pageNumberText": "14",
+      "pageNumberText": "15",
       "footerLines": [
         "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 0,
+      "maxBlockDeadMm": 26.4,
       "blocks": [
         {
           "taskId": "U2-P6-A",
@@ -1270,7 +1372,7 @@
           "taskId": "U2-P6-C",
           "answerMode": "work",
           "heightMm": 66.6,
-          "blockDeadMm": 0,
+          "blockDeadMm": 19.8,
           "answerRuleCount": 3,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -1279,7 +1381,7 @@
           "taskId": "U2-P6-D",
           "answerMode": "work",
           "heightMm": 74.6,
-          "blockDeadMm": 0,
+          "blockDeadMm": 26.4,
           "answerRuleCount": 4,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": null
@@ -1287,9 +1389,9 @@
       ]
     },
     {
-      "renderIndex": 15,
+      "renderIndex": 16,
       "pageId": "U3-P1",
-      "globalPage": 15,
+      "globalPage": 16,
       "isVerbatimCurriculum": false,
       "widthPx": 793.6875,
       "heightPx": 1122.515625,
@@ -1343,7 +1445,7 @@
       ],
       "projectTitleText": "זוויות בין ישרים מקבילים",
       "topicTitleText": "נימוק והוכחה",
-      "pageNumberText": "15",
+      "pageNumberText": "16",
       "footerLines": [
         "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
@@ -1391,9 +1493,9 @@
       ]
     },
     {
-      "renderIndex": 16,
+      "renderIndex": 17,
       "pageId": "U3-P2",
-      "globalPage": 16,
+      "globalPage": 17,
       "isVerbatimCurriculum": false,
       "widthPx": 793.6875,
       "heightPx": 1122.515625,
@@ -1447,7 +1549,7 @@
       ],
       "projectTitleText": "זוויות בין ישרים מקבילים",
       "topicTitleText": "נימוק והוכחה",
-      "pageNumberText": "16",
+      "pageNumberText": "17",
       "footerLines": [
         "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
@@ -1495,9 +1597,9 @@
       ]
     },
     {
-      "renderIndex": 17,
+      "renderIndex": 18,
       "pageId": "U3-P3",
-      "globalPage": 17,
+      "globalPage": 18,
       "isVerbatimCurriculum": false,
       "widthPx": 793.6875,
       "heightPx": 1122.515625,
@@ -1551,7 +1653,7 @@
       ],
       "projectTitleText": "זוויות בין ישרים מקבילים",
       "topicTitleText": "נימוק והוכחה",
-      "pageNumberText": "17",
+      "pageNumberText": "18",
       "footerLines": [
         "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
@@ -1599,9 +1701,9 @@
       ]
     },
     {
-      "renderIndex": 18,
+      "renderIndex": 19,
       "pageId": "U4-P1",
-      "globalPage": 18,
+      "globalPage": 19,
       "isVerbatimCurriculum": false,
       "widthPx": 793.6875,
       "heightPx": 1122.515625,
@@ -1637,7 +1739,7 @@
       ],
       "projectTitleText": "זוויות בין ישרים מקבילים",
       "topicTitleText": "המשפטים ההפוכים",
-      "pageNumberText": "18",
+      "pageNumberText": "19",
       "footerLines": [
         "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
@@ -1685,9 +1787,9 @@
       ]
     },
     {
-      "renderIndex": 19,
+      "renderIndex": 20,
       "pageId": "U4-P2",
-      "globalPage": 19,
+      "globalPage": 20,
       "isVerbatimCurriculum": false,
       "widthPx": 793.6875,
       "heightPx": 1122.515625,
@@ -1735,14 +1837,14 @@
       ],
       "projectTitleText": "זוויות בין ישרים מקבילים",
       "topicTitleText": "המשפטים ההפוכים",
-      "pageNumberText": "19",
+      "pageNumberText": "20",
       "footerLines": [
         "יניב רז - מדריך מחוזי חט\"ב בעיר ירושלים",
         "הדרכה במחוז ירושלים והעיר ירושלים - מנח\"י, בהובלת איילת קריספין"
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 1.4,
+      "maxBlockDeadMm": 15.4,
       "blocks": [
         {
           "taskId": "U4-P2-A",
@@ -1766,7 +1868,7 @@
           "taskId": "U4-P2-C",
           "answerMode": "algebra",
           "heightMm": 61.1,
-          "blockDeadMm": 0,
+          "blockDeadMm": 15.4,
           "answerRuleCount": 4,
           "rulePitchMm": 7,
           "lastRuleToSeparatorMm": 3

@@ -190,7 +190,7 @@ function assertTypesetsFaithfully(source: string, tex: string) {
 describe('MathText regression over the whole booklet corpus', () => {
   it('covers every original task of units 1–4 and every rendered page string', () => {
     const ids = [...unit1Questions, ...unit2Questions, ...unit3Questions, ...unit4Questions].map(q => q.id);
-    expect(ids).toHaveLength(58);
+    expect(ids).toHaveLength(62);
     for (const id of ids) expect(corpus.some(entry => entry.key === `${id}.stem`), id).toBe(true);
     for (const file of STUDENT_PAGE_FILES) expect(corpus.some(entry => entry.key === `${file} literal`), file).toBe(true);
     expect(corpus.filter(entry => entry.audience === 'teacher').length).toBeGreaterThan(100);
@@ -444,6 +444,9 @@ describe('MathText regression over the whole booklet corpus', () => {
       src/pages/Unit4Pages.tsx literal (printed verbatim, not through MathText)
         − שלושה ישרים p, q, r וישר חותך; p ו־q מסומנים כמקבילים
         + שלושה ישרים ⟦p⟧, ⟦q⟧, ⟦r⟧ וישר חותך; ⟦p⟧ ו־⟦q⟧ מסומנים כמקבילים
+      teacher U1-P5-B.answer (teacher guide)
+        − יש לסמן שמונה זוויות: ארבע בכל אחד משני המפגשים של החותך עם הישרים ⟦(1–4 במפגש העליון, 5–8 במפגש התחתון)⟧.
+        + יש לסמן שמונה זוויות: ארבע בכל אחד משני המפגשים של החותך עם הישרים (1–4 במפגש העליון, 5–8 במפגש התחתון).
       teacher U1-P1-A.answer (teacher guide)
         − הישר r הוא הישר החותך.
         + הישר ⟦r⟧ הוא הישר החותך.

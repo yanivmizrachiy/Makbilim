@@ -17,6 +17,13 @@ import { MathText } from './MathText';
  */
 export const RULE_POOL = 38;
 
+/**
+ * Work areas that get squared paper (SPEC 11.11א / כ): multi-step calculation, algebra and the two
+ * solution lanes. Short-answer reasons (justify / critique), completions and choices do NOT — they
+ * keep prose writing rules or no area at all.
+ */
+export const GRID_MODES: ReadonlySet<string> = new Set(['work', 'algebra', 'value', 'two-ways']);
+
 const minLinesStyle = (lines: number) => ({ '--answer-min-lines': lines }) as CSSProperties;
 
 function Rules({ count, className = 'rule' }: { count: number; className?: string }) {
@@ -26,7 +33,7 @@ function Rules({ count, className = 'rule' }: { count: number; className?: strin
 /** Dotted writing rules, optionally opened by a labelled lane ('המשפט המתאים:', 'נימוק:'). */
 function RuledArea({ spec, minLines }: { spec: AnswerSpec; minLines: number }) {
   return (
-    <div className="answer-lines" data-answer-mode={spec.mode} data-lane={spec.lane} style={minLinesStyle(minLines + (spec.lane ? 1 : 0))}>
+    <div className="answer-lines" data-answer-mode={spec.mode} data-lane={spec.lane} {...(GRID_MODES.has(spec.mode) ? { 'data-grid': 'squares' } : {})} style={minLinesStyle(minLines + (spec.lane ? 1 : 0))}>
       {spec.lane && (
         <span className="rule rule--lane justification-lane">
           <span className="justification-label">{LANE_LABEL[spec.lane]}</span>
@@ -44,7 +51,7 @@ function TwoWays({ spec }: { spec: AnswerSpec }) {
       {TWO_WAYS_LABELS.map(label => (
         <div className="answer-way" key={label}>
           <span className="answer-way-label">{label}</span>
-          <div className="answer-lines" data-answer-mode={spec.mode} style={minLinesStyle(spec.minLines)}>
+          <div className="answer-lines" data-answer-mode={spec.mode} data-grid="squares" style={minLinesStyle(spec.minLines)}>
             <Rules count={RULE_POOL} />
           </div>
         </div>
