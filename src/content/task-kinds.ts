@@ -7,6 +7,7 @@
  * different tasks, so TASK_KIND_OVERRIDES pins those tasks explicitly.
  * tests/unit/task-kinds.test.ts fails if any task (or a future new format) is unmapped.
  */
+import plan from './question-plan.json';
 
 export type TaskKind =
   | 'completion'
@@ -93,4 +94,16 @@ export function taskKindFor(taskId: string, format: string): TaskKind {
   const kind = TASK_KIND_OVERRIDES[taskId] ?? FORMAT_KIND[format];
   if (!kind) throw new Error(`Task ${taskId}: format "${format}" has no task kind — add it to FORMAT_KIND.`);
   return kind;
+}
+
+/** The didactic plan is the single source of each task's format. */
+const FORMAT_BY_TASK_ID: ReadonlyMap<string, string> = new Map(
+  plan.units.flatMap(unit => unit.tasks.map(task => [task.id, task.format] as const)),
+);
+
+/** Kind of an original task (units 1-4), looked up by its id in question-plan.json. */
+export function taskKindById(taskId: string): TaskKind {
+  const format = FORMAT_BY_TASK_ID.get(taskId);
+  if (!format) throw new Error(`Unknown task id "${taskId}" — it is not in question-plan.json.`);
+  return taskKindFor(taskId, format);
 }

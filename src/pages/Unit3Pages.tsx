@@ -126,6 +126,7 @@ function ProofQuestion({ q }: { q: Unit3Question }) {
   const isFullProof = q.page === 3;
   return (
     <QuestionBlock
+      taskId={q.id}
       compact
       diagram={<ProofDiagram q={q} />}
       subparts={(q.subparts ?? []).map(text => <MathText text={text} />)}

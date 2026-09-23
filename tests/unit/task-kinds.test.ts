@@ -1,6 +1,9 @@
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
+import App from '../../src/App';
 import plan from '../../src/content/question-plan.json';
-import { FORMAT_KIND, TASK_KIND_LABEL, TASK_KIND_OVERRIDES, taskKindFor } from '../../src/content/task-kinds';
+import { FORMAT_KIND, TASK_KIND_LABEL, TASK_KIND_OVERRIDES, taskKindById, taskKindFor } from '../../src/content/task-kinds';
 
 type PlanTask = { id: string; format: string };
 
@@ -49,5 +52,28 @@ describe('task kinds (student-facing task-type layer)', () => {
   it('uses all seven kinds somewhere in the booklet', () => {
     const usedKinds = new Set(tasks.map(task => taskKindFor(task.id, task.format)));
     expect([...usedKinds].sort()).toEqual(Object.keys(TASK_KIND_LABEL).sort());
+  });
+});
+
+describe('rendered task identity and task-type labels', () => {
+  const html = renderToStaticMarkup(createElement(App));
+  const sections = [...html.matchAll(/<section class="question-block[^"]*"[^>]*>/g)].map(match => match[0]);
+  const renderedIds = sections.map(tag => /data-task-id="([^"]+)"/.exec(tag)?.[1]);
+
+  it('renders every one of the 58 original tasks exactly once, each tagged with its id', () => {
+    expect(sections).toHaveLength(58);
+    expect(renderedIds.filter(id => id === undefined)).toEqual([]);
+    expect(new Set(renderedIds).size).toBe(58);
+    expect([...renderedIds].sort()).toEqual(tasks.map(task => task.id).sort());
+  });
+
+  it('shows the task-type label that matches each task kind', () => {
+    for (const tag of sections) {
+      const id = /data-task-id="([^"]+)"/.exec(tag)?.[1] ?? '';
+      expect(tag).toContain(`data-task-kind="${taskKindById(id)}"`);
+    }
+    const labels = [...html.matchAll(/<span class="task-kind">([^<]+)<\/span>/g)].map(match => match[1]);
+    expect(labels).toHaveLength(58);
+    for (const label of labels) expect(Object.values(TASK_KIND_LABEL)).toContain(label);
   });
 });

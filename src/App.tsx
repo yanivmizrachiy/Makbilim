@@ -33,19 +33,20 @@ function Unit1Page1() {
 
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={1}>
-      <QuestionBlock compact diagram={<ParallelLinesDiagram lineLabels={['p', 'q']} transversalLabel="r" orientationDeg={0} transversalDeg={58} showParallelMarks={false} ariaLabel="שני ישרים וישר נוסף החותך את שניהם" />}>
+      <QuestionBlock taskId={a.id} compact diagram={<ParallelLinesDiagram lineLabels={['p', 'q']} transversalLabel="r" orientationDeg={0} transversalDeg={58} showParallelMarks={false} ariaLabel="שני ישרים וישר נוסף החותך את שניהם" />}>
         {a.stem}
       </QuestionBlock>
 
-      <QuestionBlock compact diagram={<ParallelLinesDiagram lineLabels={['k', 'm']} transversalLabel="t" orientationDeg={4} transversalDeg={63} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 0, tone: 'primary' }]} ariaLabel="זווית אחת מסומנת במפגש העליון" />}>
+      <QuestionBlock taskId={b.id} compact diagram={<ParallelLinesDiagram lineLabels={['k', 'm']} transversalLabel="t" orientationDeg={4} transversalDeg={63} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 0, tone: 'primary' }]} ariaLabel="זווית אחת מסומנת במפגש העליון" />}>
         {b.stem}
       </QuestionBlock>
 
-      <QuestionBlock compact diagram={<ParallelLinesDiagram lineLabels={['a', 'b']} transversalLabel="s" orientationDeg={-7} transversalDeg={116} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 1, tone: 'secondary' }]} ariaLabel="זווית אחת מסומנת; יש לזהות את הזווית המתחלפת לה" />}>
+      <QuestionBlock taskId={c.id} compact diagram={<ParallelLinesDiagram lineLabels={['a', 'b']} transversalLabel="s" orientationDeg={-7} transversalDeg={116} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 1, tone: 'secondary' }]} ariaLabel="זווית אחת מסומנת; יש לזהות את הזווית המתחלפת לה" />}>
         {c.stem}
       </QuestionBlock>
 
       <QuestionBlock
+        taskId={d.id}
         compact
         diagram={<ParallelLinesDiagram lineLabels={['u', 'v']} transversalLabel="w" orientationDeg={11} transversalDeg={71} showParallelMarks={false} angleMarks={[
           { intersection: 'top', sector: 0, tone: 'primary', arcStyle: 'single' },

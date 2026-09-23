@@ -103,6 +103,7 @@ function Unit1Page2() {
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={2}>
       <QuestionBlock
+        taskId={corresponding.id}
         compact
         diagram={<EightAngleDiagram lineLabels={['c', 'd']} transversalLabel="h" orientationDeg={-3} transversalDeg={52} />}
       >
@@ -111,6 +112,7 @@ function Unit1Page2() {
       </QuestionBlock>
 
       <QuestionBlock
+        taskId={alternate.id}
         compact
         diagram={<EightAngleDiagram lineLabels={['g', 'j']} transversalLabel="n" orientationDeg={19} transversalDeg={101} />}
       >
@@ -119,6 +121,7 @@ function Unit1Page2() {
       </QuestionBlock>
 
       <QuestionBlock
+        taskId={rotated.id}
         compact
         diagram={<EightAngleDiagram lineLabels={['ℓ₁', 'ℓ₂']} transversalLabel="r" orientationDeg={78} transversalDeg={24} />}
         subparts={(rotated.subparts ?? []).map(text => <>{text} ______________________________</>)}
@@ -127,6 +130,7 @@ function Unit1Page2() {
       </QuestionBlock>
 
       <QuestionBlock
+        taskId={theorem.id}
         compact
         diagram={<ParallelLinesDiagram lineLabels={['e', 'f']} transversalLabel="z" orientationDeg={8} transversalDeg={67} showParallelMarks />}
       >
@@ -225,6 +229,7 @@ function Unit1Page3() {
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={3}>
       <QuestionBlock
+        taskId={theorem.id}
         compact
         diagram={<ParallelLinesDiagram lineLabels={['x', 'y']} transversalLabel="v" orientationDeg={-14} transversalDeg={109} showParallelMarks />}
       >
@@ -232,7 +237,7 @@ function Unit1Page3() {
         <ClozeLines lines={theorem.subparts ?? []} />
       </QuestionBlock>
 
-      <QuestionBlock>
+      <QuestionBlock taskId={trueFalse.id}>
         {trueFalse.stem}
         <div className="true-false-list">
           {(trueFalse.subparts ?? []).map((text, index) => <TrueFalseRow key={index} text={text} />)}
@@ -240,6 +245,7 @@ function Unit1Page3() {
       </QuestionBlock>
 
       <QuestionBlock
+        taskId={claim.id}
         answerLines={4}
         diagram={
           <div className="paired-diagrams">
@@ -261,12 +267,13 @@ function Unit1Page4() {
 
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={4}>
-      <QuestionBlock compact subparts={(table.subparts ?? []).map(text => <>{text}</>)}>
+      <QuestionBlock taskId={table.id} compact subparts={(table.subparts ?? []).map(text => <>{text}</>)}>
         {table.stem}
         <RelationTable />
       </QuestionBlock>
 
       <QuestionBlock
+        taskId={choice.id}
         compact
         diagram={
           <ParallelLinesDiagram
@@ -295,6 +302,7 @@ function Unit1Page4() {
       </QuestionBlock>
 
       <QuestionBlock
+        taskId={correction.id}
         compact
         answerLines={4}
         diagram={

@@ -103,7 +103,7 @@ function ClozeLine({ line }: { line: string }) {
 // The student writes directly in the blank of each line, so no separate answer lines.
 function TheoremCompletion({ q }: { q: Unit4Question }) {
   return (
-    <QuestionBlock compact subparts={(q.subparts ?? []).map(line => <ClozeLine line={line} />)}>
+    <QuestionBlock taskId={q.id} compact subparts={(q.subparts ?? []).map(line => <ClozeLine line={line} />)}>
       <MathText text={q.stem} />
     </QuestionBlock>
   );
@@ -114,6 +114,7 @@ function ConverseQuestion({ q }: { q: Unit4Question }) {
   const fullProof = q.id === 'U4-P2-D';
   return (
     <QuestionBlock
+      taskId={q.id}
       compact
       diagram={q.diagram ? <ConverseDiagram q={q} /> : undefined}
       subparts={(q.subparts ?? []).map(text => <MathText text={text} />)}

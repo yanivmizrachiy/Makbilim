@@ -223,6 +223,7 @@ function CalculationQuestion({ q }: { q: Unit2Question }) {
   const outputCount = Object.keys(q.expected.values ?? {}).length;
   return (
     <QuestionBlock
+      taskId={q.id}
       compact
       diagram={<QuestionDiagram q={q} />}
       justificationLane={q.justificationLane}
