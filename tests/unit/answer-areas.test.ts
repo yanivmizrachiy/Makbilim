@@ -188,7 +188,8 @@ describe('places to write that match each instruction', () => {
     for (const item of items) expect(findAll(item, node => hasClass(node, 'cloze-blank'))).toHaveLength(1);
     const bank = findAll(block, node => hasClass(node, 'word-bank'));
     expect(bank).toHaveLength(1);
-    expect(findAll(bank[0]!, node => hasClass(node, 'word-bank-item'))).toHaveLength(3);
+    // Four reasons for three claims: the last match never follows by elimination.
+    expect(findAll(bank[0]!, node => hasClass(node, 'word-bank-item'))).toHaveLength(4);
     expect(bubblesIn(block)).toHaveLength(0);
   });
 
@@ -199,6 +200,8 @@ describe('places to write that match each instruction', () => {
     const rows = findAll(table, node => node.tag === 'tr').slice(1);
     expect(rows).toHaveLength(4);
     for (const row of rows) expect(hasClass(elementChildren(row)[0]!, 'write-cell')).toBe(true);
+    // The student writes the order in the table only — no writing lines under it.
+    expect(findAll(blockOf('U3-P2-B'), node => hasClass(node, 'answer-lines'))).toHaveLength(0);
   });
 
   it('U2-P2-D: two labelled work lanes', () => {

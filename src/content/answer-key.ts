@@ -97,6 +97,7 @@ const unit3AnswerKey: TeacherAnswerEntry[] = unit3Questions.map(question => ({
   unit: 3,
   page: question.page,
   answer: question.expected,
+  ...(question.teacherNote ? { note: question.teacherNote } : {}),
 }));
 
 // For a one-word-per-line completion task, the sentence every completed line forms
