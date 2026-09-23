@@ -23,6 +23,7 @@ describe('accessibility and provenance contracts', () => {
     expect(build).toContain('duplicateIds');
     expect(build).toContain('hiddenFocusable');
     expect(build).toContain('accessibility-report.json');
+    expect(build).toContain('tagged: true');
   });
 
   it('enforces teacher accessibility in teacher PDF QA', () => {
@@ -33,6 +34,16 @@ describe('accessibility and provenance contracts', () => {
     expect(build).toContain('mathAccessible');
     expect(build).toContain('duplicateIds');
     expect(build).toContain('accessibility: accessibilityStatus');
+    expect(build).toContain('tagged: true');
+    expect(build).toContain('/StructTreeRoot');
+  });
+
+
+  it('verifies tagged PDF structure for Chromium output', () => {
+    const crosscheck = read('scripts/validate-pdf-crosscheck.mjs');
+    expect(crosscheck).toContain('/StructTreeRoot');
+    expect(crosscheck).toContain("renderer === 'chromium'");
+    expect(crosscheck).toContain('taggedStructure');
   });
 
   it('requires explicit provenance without inferring licenses', () => {
