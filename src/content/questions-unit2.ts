@@ -68,7 +68,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'parallel-lines-one-transversal-corresponding-choice',
       lineLabels: ['a', 'b', 's'],
       orientationDeg: -9,
-      transversalDeg: 124,
+      transversalDeg: 122,
       parallelGiven: true,
       givens: ['given angle = 47°'],
       targets: ['corresponding target angle']
@@ -183,8 +183,8 @@ export const unit2Questions: Unit2Question[] = [
     diagram: {
       topology: 'eight-angles-table',
       lineLabels: ['p', 'q', 't'],
-      orientationDeg: 6,
-      transversalDeg: 136,
+      orientationDeg: -36,
+      transversalDeg: 87,
       parallelGiven: true,
       givens: ['reference angle = 38°'],
       targets: ['corresponding', 'alternate', 'vertical', 'adjacent']
@@ -205,7 +205,7 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['k', 'm', 's'],
       pointLabels: ['A', 'D', 'F'],
       orientationDeg: 84,
-      transversalDeg: 136,
+      transversalDeg: 137,
       parallelGiven: true,
       givens: ['∠A = 52°'],
       targets: ['∠D corresponding to ∠A', '∠F adjacent to ∠D']
@@ -290,8 +290,8 @@ export const unit2Questions: Unit2Question[] = [
     diagram: {
       topology: 'corresponding-expressions-solve-x-then-angle',
       lineLabels: ['a', 'b', 's'],
-      orientationDeg: 71,
-      transversalDeg: 173,
+      orientationDeg: 41,
+      transversalDeg: 143,
       parallelGiven: true,
       givens: ['(6x − 9)°', '(3x + 42)°'],
       targets: ['x', 'marked angle']
@@ -330,8 +330,8 @@ export const unit2Questions: Unit2Question[] = [
     diagram: {
       topology: 'corresponding-two-expressions-advanced',
       lineLabels: ['p', 'q', 'v'],
-      orientationDeg: -17,
-      transversalDeg: 85,
+      orientationDeg: -15,
+      transversalDeg: 49,
       parallelGiven: true,
       givens: ['(7x − 18)°', '(3x + 46)°'],
       targets: ['x', 'angle value']
@@ -346,8 +346,8 @@ export const unit2Questions: Unit2Question[] = [
     diagram: {
       topology: 'alternate-two-expressions-advanced',
       lineLabels: ['c', 'd', 'w'],
-      orientationDeg: 82,
-      transversalDeg: 141,
+      orientationDeg: 46,
+      transversalDeg: 157,
       parallelGiven: true,
       givens: ['(4x + 15)°', '(2x + 63)°'],
       targets: ['x', 'angle value']
@@ -383,7 +383,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'adjacent-angles-error-analysis-with-parallel-context',
       lineLabels: ['a', 'b', 't'],
       orientationDeg: -4,
-      transversalDeg: 110,
+      transversalDeg: 112,
       parallelGiven: true,
       givens: ['adjacent angles: (2x + 20)° and (3x + 35)°'],
       targets: ['correct equation', 'x']
@@ -418,8 +418,8 @@ export const unit2Questions: Unit2Question[] = [
     diagram: {
       topology: 'parallel-rails-transversal',
       lineLabels: ['מסילה 1', 'מסילה 2', 'חותך'],
-      orientationDeg: -12,
-      transversalDeg: 116,
+      orientationDeg: -18,
+      transversalDeg: 105,
       parallelGiven: true,
       givens: ['given angle = 118°'],
       targets: ['alternate angle']

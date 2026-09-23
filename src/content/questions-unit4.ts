@@ -139,8 +139,8 @@ export const unit4Questions: Unit4Question[] = [
     diagram: {
       topology: 'converse-algebra-corresponding',
       lineLabels: ['p', 'q', 't'],
-      orientationDeg: 8,
-      transversalDeg: 80,
+      orientationDeg: 6,
+      transversalDeg: 70,
       parallelGiven: false,
       givens: ['corresponding angles: (3x + 14)° and (5x − 26)°'],
       target: 'find x that guarantees p ∥ q'

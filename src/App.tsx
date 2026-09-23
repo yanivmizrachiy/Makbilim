@@ -33,7 +33,7 @@ function Unit1Page1() {
 
   return (
     <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={1}>
-      <QuestionBlock taskId={a.id} compact diagram={<ParallelLinesDiagram lineLabels={['p', 'q']} transversalLabel="r" orientationDeg={0} transversalDeg={58} showParallelMarks={false} ariaLabel="שני ישרים וישר נוסף החותך את שניהם" />}>
+      <QuestionBlock taskId={a.id} compact diagram={<ParallelLinesDiagram lineLabels={['p', 'q']} transversalLabel="r" orientationDeg={0} transversalDeg={50} showParallelMarks={false} ariaLabel="שני ישרים וישר נוסף החותך את שניהם" />}>
         {a.stem}
       </QuestionBlock>
 

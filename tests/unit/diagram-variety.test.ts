@@ -5,6 +5,7 @@
  * the engines and the SVG they draw:
  * - crossing angles (the acute angle between the parallel lines and the transversal) are spread
  *   over about 35°–78°, with real shallow and real steep crossings, and no 10° band dominates;
+ * - diagrams with 6 or more labelled angles keep a crossing of at least 55°;
  * - the transversal leans both ways about equally often, also among near-horizontal layouts;
  * - no two diagrams on one page share a pose (orientation AND crossing angle within 6°), and no
  *   two diagrams in the booklet are the same drawing;
@@ -82,6 +83,18 @@ describe('diagram variety (SPEC 10.1 / 10.2)', () => {
     expect(flat.length).toBeGreaterThan(20);
     expect(share(flatSlash, flat.length)).toBeGreaterThanOrEqual(0.4);
     expect(share(flatSlash, flat.length)).toBeLessThanOrEqual(0.6);
+  });
+
+  it('label-dense diagrams (6 or more labelled angles) keep a crossing of at least 55°, so every label stays readable', () => {
+    // Eight numbered angles or four lettered option pairs crowd two crossings; a shallow crossing
+    // squeezes four labels into two thin sectors. The shallow quota comes from single-pair diagrams.
+    const labelled = (pose: Pose) => {
+      const props = pose.diagram.props as { angleMarks?: AngleMark[] };
+      return (props.angleMarks ?? []).filter(mark => mark.label != null || mark.value != null).length;
+    };
+    const dense = poses.filter(pose => pose.diagram.kind === 'parallel' && labelled(pose) >= 6);
+    expect(dense.map(pose => pose.diagram.taskId)).toEqual(expect.arrayContaining(['U1-P1-E', 'U1-P2-A', 'U1-P2-B', 'U1-P3-C']));
+    expect(dense.filter(pose => pose.crossing < 55).map(name)).toEqual([]);
   });
 
   it('no two diagrams on one page share a pose (orientation and crossing angle both within 6°)', () => {

@@ -59,8 +59,8 @@ export const unit3Questions: Unit3Question[] = [
       topology: 'fill-reason-corresponding',
       lineLabels: ['p', 'q', 'r'],
       pointLabels: ['C', 'D'],
-      orientationDeg: 8,
-      transversalDeg: 55,
+      orientationDeg: 5,
+      transversalDeg: 58,
       parallelGivens: ['p ∥ q'],
       target: 'complete reason for ∠C = ∠D'
     },
@@ -109,8 +109,8 @@ export const unit3Questions: Unit3Question[] = [
       topology: 'short-deduction-corresponding-vertical-rotated',
       lineLabels: ['a', 'b', 'u'],
       pointLabels: ['A', 'B', 'C'],
-      orientationDeg: 76,
-      transversalDeg: 28,
+      orientationDeg: 79,
+      transversalDeg: 26,
       parallelGivens: ['a ∥ b'],
       givens: ['∠A corresponds to ∠B', '∠B vertical to ∠C'],
       target: '∠A = ∠C'
@@ -248,8 +248,8 @@ export const unit3Questions: Unit3Question[] = [
       topology: 'full-proof-alternate-then-adjacent-supplementary',
       lineLabels: ['k', 'm', 'r'],
       pointLabels: ['A', 'B', 'C'],
-      orientationDeg: 72,
-      transversalDeg: 27,
+      orientationDeg: 68,
+      transversalDeg: 15,
       parallelGivens: ['k ∥ m'],
       givens: ['∠A alternates with ∠B', '∠B adjacent to ∠C'],
       target: '∠A + ∠C = 180°'
@@ -299,7 +299,7 @@ export const unit3Questions: Unit3Question[] = [
       lineLabels: ['p', 'q', 't'],
       pointLabels: ['A', 'B', 'C'],
       orientationDeg: -9,
-      transversalDeg: 41,
+      transversalDeg: 44,
       parallelGivens: ['p ∥ q'],
       givens: ['∠A corresponds to ∠B', '∠B vertical to ∠C', '∠A and ∠C are alternate angles; proof B never states p ∥ q'],
       target: 'evaluate two proofs of ∠A = ∠C'

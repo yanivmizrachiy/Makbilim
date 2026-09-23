@@ -23,7 +23,9 @@ import { unit2Questions, type Unit2Question } from '../content/questions-unit2';
  * angle to find), and auxiliary angles (intermediate steps). angle-roles.ts styles each role the
  * same way on every page, so colour never tells the student which relation (corresponding,
  * alternate, …) to use. An angle the stem names carries its name in the drawing (the value stays
- * in the stem); a value is drawn only for an angle the stem refers to without naming it.
+ * in the stem); a value is drawn only for an angle the stem refers to without naming it. A named
+ * mark still records its size in `value`: the engine draws only the name, and the independent
+ * verifier checks the drawn sector (acute / obtuse) against that size.
  *
  * Sectors are chosen by the SIZE of the angle they show (SPEC 10.3), so the drawing stays
  * acute/obtuse-faithful whatever the diagram parameters in questions-unit2.ts are. The first
@@ -93,12 +95,11 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
       ];
     }
     case 'U2-P2-D': {
-      // Two routes from ∠A to α: corresponding then vertical, or vertical then corresponding.
+      // Two routes from ∠A to α: corresponding then vertical, or vertical then corresponding. The
+      // task is to find both, so neither route's middle angle is marked: only ∠A and α are drawn.
       const s = sized('acute');
       return [
         { ...at('top', s), label: 'A', value: '54°', role: 'given' },
-        { ...at('bottom', s), role: 'auxiliary' },
-        { ...at('top', verticalSector(s)), role: 'auxiliary' },
         { ...at('bottom', verticalSector(s)), label: 'α', role: 'target' },
       ];
     }
@@ -125,8 +126,9 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
     }
     case 'U2-P3-C': {
       // ∠C sits on the second transversal s: it is the datum that is not needed. It is drawn
-      // exactly like ∠A, so its style does not give that away.
-      const [a, beta] = corr(sized('acute'), 'bottom');
+      // exactly like ∠A, so its style does not give that away. ∠A takes the acute sector whose
+      // label stays clear of the parallel chevrons.
+      const [a, beta] = corr(sized('acute', 1), 'bottom');
       return [
         { ...a, label: 'A', value: '62°', role: 'given' },
         { ...beta, label: 'β', role: 'target' },
@@ -155,8 +157,8 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
       return [{ ...first, value: '(3x + 17)°', role: 'given' }, { ...second, value: '(5x − 21)°', role: 'given' }];
     }
     case 'U2-P4-C': {
-      // x = 17 gives 93°: drawn in an obtuse sector.
-      const [first, second] = corr(sized('obtuse', 1), 'bottom');
+      // x = 17 gives 93°: drawn in an obtuse sector (wide enough for the expressions to clear the lines).
+      const [first, second] = corr(sized('obtuse'), 'bottom');
       return [{ ...first, value: '(6x − 9)°', role: 'given' }, { ...second, value: '(3x + 42)°', role: 'given' }];
     }
     case 'U2-P4-D': {
@@ -188,16 +190,18 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
       ];
     }
     case 'U2-P5-D': {
-      // x = 25: (2x + 20)° = 70° in an acute sector, (3x + 35)° = 110° in the obtuse one beside it.
+      // x = 25: (2x + 20)° = 70° in an acute sector, (3x + 35)° = 110° in the obtuse one beside it
+      // (the neighbour on the side where its label clears the lines).
       const s = sized('acute', 1);
       return [
         { ...at('top', s), value: '(2x + 20)°', role: 'given' },
-        { ...at('top', adjacentSector(s)), value: '(3x + 35)°', role: 'given' },
+        { ...at('top', adjacentSector(s, -1)), value: '(3x + 35)°', role: 'given' },
       ];
     }
     case 'U2-P6-A': {
-      // The stem names the angle at the UPPER shelf, so the given stays on the top line.
-      const [given, target] = corr(sized('acute'), 'top');
+      // The stem names the angle at the UPPER shelf, so the given stays on the top line. Of the two
+      // acute sectors there, this one keeps the '?' inside its own angle, off the rod.
+      const [given, target] = corr(sized('acute', 1), 'top');
       return [{ ...given, value: '64°', role: 'given' }, { ...target, label: '?', role: 'target' }];
     }
     case 'U2-P6-B': {
@@ -217,8 +221,9 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
     }
     case 'U2-P6-D': {
       // α corresponds to ∠A = 41° on r; on s, ∠C = 68° → its corresponding angle → β = 112°.
-      const [a, alpha] = corr(sized('acute', 1), 'bottom');
-      const sc = sizedOnSecond('acute', 1);
+      // These sectors keep every label inside its own angle and off the lines and chevrons.
+      const [a, alpha] = corr(sized('acute'), 'bottom');
+      const sc = sizedOnSecond('acute');
       return [
         { ...a, label: 'A', value: '41°', role: 'given' },
         { ...alpha, label: 'α', role: 'target' },
