@@ -6,6 +6,8 @@ export type Unit4Question = {
   stem: string;
   subparts?: string[];
   choices?: string[];
+  /** Response structure: the verdict the student marks beside each sub-item statement. */
+  verdictOptions?: string[];
   diagram?: {
     topology: string;
     lineLabels: string[];
@@ -68,6 +70,7 @@ export const unit4Questions: Unit4Question[] = [
       THEOREMS.alternateDirect.formalText,
       THEOREMS.alternateConverse.text
     ],
+    verdictOptions: ['משפט ישיר', 'משפט הפוך'],
     expected: { completions: ['ישיר', 'הפוך', 'ישיר', 'הפוך'] }
   },
   {

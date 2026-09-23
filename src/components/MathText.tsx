@@ -1,6 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import { CLOZE_BLANK } from '../content/cloze';
 
+/**
+ * Width of a typed blank inside an expression (x = ____, ∠B = ____°), in em of the math font:
+ * wide enough to handwrite a three-digit value such as 124.
+ */
+export const BLANK_WIDTH_EM = 4.5;
+const BLANK_TEX = `\\underline{\\hspace{${BLANK_WIDTH_EM}em}}`;
+
 // ─────────────────────────────────────────────────────────────────────────────
 // MathText — inline mathematics inside Hebrew (RTL) prose.
 //
@@ -278,7 +285,7 @@ export const MATH_OPERAND_RULES: readonly MathOperandRule[] = [
     'blank',
     'A fill-in blank inside an expression (x = ____, ∠B = ____°), kept in the same LTR run as its expression. A blank alone is not mathematics.',
     new RegExp(CLOZE_BLANK.source, 'y'),
-    () => '\\underline{\\hspace{2em}}',
+    () => BLANK_TEX,
     false,
   ),
 ];

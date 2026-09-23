@@ -4,6 +4,8 @@ export type Unit1Question = {
   stem: string;
   subparts?: string[];
   choices?: string[];
+  /** Response structure: the verdict the student marks beside each sub-item statement. */
+  verdictOptions?: string[];
   diagram: {
     topology: string;
     lineLabels: string[];
@@ -76,6 +78,7 @@ export const unit1Questions: Unit1Question[] = [
   {
     id: 'U1-P2-E', page: 3, stem: 'קבעו אם הטענה נכונה או לא נכונה. נמקו.',
     subparts: ['זוויות מתחלפות שוות.', 'זוויות מתחלפות בין ישרים מקבילים שוות.', 'זוויות מתאימות בין ישרים מקבילים שוות.'],
+    verdictOptions: ['נכון', 'לא נכון'],
     diagram: { topology: 'statement-only-with-small-reference-diagram', lineLabels: ['r', 's', 't'], orientationDeg: 0, transversalDeg: 64, parallelGiven: true }
   },
   {

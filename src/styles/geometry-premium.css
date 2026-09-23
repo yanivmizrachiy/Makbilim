@@ -128,7 +128,7 @@
 
 /* Identification tasks: the diagram is the answer surface and gets the wide column. */
 .question-content--split:has(> .question-diagram > .geometry-diagram[data-diagram-size="mark"]) {
-  grid-template-columns: 78mm minmax(0, 1fr);
+  --diagram-col: var(--diagram-col-mark);
 }
 
 /* Figures in a side-by-side pair or a table row are centred in their cell. */

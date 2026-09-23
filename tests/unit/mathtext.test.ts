@@ -2,6 +2,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import {
+  BLANK_WIDTH_EM,
   MATH_OPERAND_RULES,
   MATH_OPERATOR_RULES,
   MATH_POSTFIX_RULES,
@@ -203,7 +204,15 @@ describe('MathText hardening (review follow-ups)', () => {
     expect(mark('רשמו: x = ____')).toBe('רשמו: ⟦x = ____⟧');
     expect(mark('לכן ∠B = ____°.')).toBe('לכן ⟦∠B = ____°⟧.');
     const [, run] = segmentMathText('רשמו: x = ____');
-    expect(run?.kind === 'math' ? run.tex : '').toContain('\\underline{\\hspace{2em}}');
+    expect(run?.kind === 'math' ? run.tex : '').toContain(`\\underline{\\hspace{${BLANK_WIDTH_EM}em}}`);
+  });
+
+  it('makes a typed blank wide enough to handwrite a three-digit value', () => {
+    // 4.5em of the math font is about 18mm at 11.7pt, so '124' written by hand fits; the former
+    // 2em (about 8mm) did not. The expectation is pinned to the exact TeX so a narrowing is caught.
+    expect(BLANK_WIDTH_EM).toBeGreaterThanOrEqual(4.5);
+    const [run] = segmentMathText('∠B = ____°');
+    expect(run?.kind === 'math' ? run.tex : '').toBe(`\\angle B = \\underline{\\hspace{${BLANK_WIDTH_EM}em}}^{\\circ}`);
   });
 
   it('never treats a blank on its own as mathematics', () => {

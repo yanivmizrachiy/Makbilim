@@ -4,6 +4,7 @@ import { ClozeText } from '../components/ClozeText';
 import { MathText } from '../components/MathText';
 import { CLOZE_BLANK } from '../content/cloze';
 import { QuestionBlock } from '../components/QuestionBlock';
+import { ChoiceGrid, VerdictOptions } from '../components/ResponseParts';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
 import { ThreeLinesDiagram } from '../geometry/ThreeLinesDiagram';
 import { alternatePair, correspondingPair } from '../geometry/relations';
@@ -89,7 +90,7 @@ function ClozeLine({ line }: { line: string }) {
   );
 }
 
-// The student writes directly in the blank of each line, so no separate answer lines.
+// The student writes directly in the blank of each line, so the block has no separate work rules.
 function TheoremCompletion({ q }: { q: Unit4Question }) {
   return (
     <QuestionBlock taskId={q.id} compact subparts={(q.subparts ?? []).map(line => <ClozeLine line={line} />)}>
@@ -98,27 +99,14 @@ function TheoremCompletion({ q }: { q: Unit4Question }) {
   );
 }
 
-// One written verdict per statement (e.g. ישיר / הפוך): the statements carry no blank of their
-// own, but the key holds one completion per line, so every line gets its own write-in slot.
-const isPerLineVerdict = (q: Unit4Question) =>
-  !isTheoremCompletion(q) && (q.subparts ?? []).length > 0 && q.expected.completions?.length === q.subparts?.length;
-
-function VerdictLine({ line }: { line: string }) {
+// One verdict per statement (e.g. ○ משפט ישיר ○ משפט הפוך), set beside the statement it answers.
+function PerStatementVerdict({ q }: { q: Unit4Question }) {
   return (
-    <>
-      <MathText text={line} />
-      <span className="line-verdict">
-        <span className="line-verdict-label">סוג המשפט:</span>
-        <span className="cloze-blank" aria-hidden="true" />
-        <span className="sr-only">מילה חסרה</span>
-      </span>
-    </>
-  );
-}
-
-function PerLineVerdict({ q }: { q: Unit4Question }) {
-  return (
-    <QuestionBlock taskId={q.id} compact subparts={(q.subparts ?? []).map(line => <VerdictLine line={line} />)}>
+    <QuestionBlock
+      taskId={q.id}
+      compact
+      items={(q.subparts ?? []).map(line => ({ content: <MathText text={line} />, aside: <VerdictOptions options={q.verdictOptions ?? []} /> }))}
+    >
       <MathText text={q.stem} />
     </QuestionBlock>
   );
@@ -126,24 +114,16 @@ function PerLineVerdict({ q }: { q: Unit4Question }) {
 
 function ConverseQuestion({ q }: { q: Unit4Question }) {
   if (isTheoremCompletion(q)) return <TheoremCompletion q={q} />;
-  if (isPerLineVerdict(q)) return <PerLineVerdict q={q} />;
-  const fullProof = q.id === 'U4-P2-D';
+  if (q.verdictOptions) return <PerStatementVerdict q={q} />;
   return (
     <QuestionBlock
       taskId={q.id}
       compact
       diagram={q.diagram ? <ConverseDiagram q={q} /> : undefined}
       subparts={(q.subparts ?? []).map(text => <MathText text={text} />)}
-      justificationLane={q.justificationLane ?? false}
-      justificationLabel="המשפט המתאים:"
-      answerLines={fullProof ? 4 : (q.choices ? 1 : 2)}
     >
       <MathText text={q.stem} />
-      {q.choices && (
-        <div className="choice-grid">
-          {q.choices.map(choice => <div className="choice" key={choice}><MathText text={choice} /></div>)}
-        </div>
-      )}
+      {q.choices && <ChoiceGrid options={q.choices} />}
     </QuestionBlock>
   );
 }
