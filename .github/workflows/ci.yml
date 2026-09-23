@@ -62,6 +62,8 @@ jobs:
             artifacts/layout-report.json
             artifacts/pdf-crosscheck.json
             artifacts/teacher-pdf-report.json
+            artifacts/SHA256SUMS.txt
+            artifacts/build-manifest.json
           if-no-files-found: error
           retention-days: 30
 
