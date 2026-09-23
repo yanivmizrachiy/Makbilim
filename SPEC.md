@@ -522,6 +522,19 @@ Point, Vector, Line, Segment, ישרים מקבילים, חותך אחד/יות�
 
 שער: `teacher-pdf`.
 
+- מדריך המורה מעוצב כמפתח תשובות מודפס שטוח (בלי כרטיסים, אריחים, רקעים או פינות מעוגלות; קווי הפרדה דקים). כל תשובה מזוהה לפי מיקום ה־● בעמוד התלמיד („● 3 · חישוב” = ה־● השלישי מלמעלה, לעולם לא מספר שאלה), היחידה והעמוד, ומילות הפתיחה של השאלה. הערות מורה מתארות מיקומי זוויות במילים (מעל/מתחת לישר, מימין/משמאל לחותך) ולא במונחי המנוע.
+
+## 11.11א מערכת העיצוב — מקור אחד לכל ערך
+
+- **טוקנים:** כל custom property מוגדר ב־`src/styles/tokens.css` בלבד (טיפוגרפיה, צבעים, ריווח, מסגרת, מקצב שאלה, שורות כתיבה, משבצות). מידות השרטוט הפיזיות ב־`geometryTokens` (`src/styles/tokens.ts`). `page-tuning.css` מכיל רק presets של צפיפות (`data-density` מ־`src/content/page-layout.ts`) ורק custom properties — שער `layout-tokens`.
+- **גופנים:** כל `@font-face` ב־`src/styles/fonts.css`, נטען מקומית מהבאנדל (ללא CDN). תוויות שרטוט וסימנים בטקסט רץ (● • ○ ∠ ∥ △ ≅ ואותיות יווניות) בגופן New Computer Modern — אותו גופן שבו MathJax מסדר את הנוסחאות; עברית ב־Noto Sans Hebrew. החריג היחיד: הגופן שהמקור של יחידה 5 מצהיר עליו בתוך התרשימים שלו (נשמר verbatim).
+- **שרטוטים בקנה מידה פיזי:** כל שרטוט מצויר במנוע אחד (`src/geometry/engine.ts` + `primitives.tsx`) בגודל שנבחר מהנתונים (`diagram-size.tsx`: compact / full / mark / markLarge / pair / table / dense). תוויות מודפסות ב־9.5pt (מספור 9pt, לעולם לא פחות מ־8.5pt), קווים 0.40 מ״מ, קשתות 0.35 מ״מ. ה־viewBox מותאם לשרטוט עצמו. תווית היא טקסט עם הילה לבנה (לא "צ'יפ" ממוסגר), בתוך הסקטור של הזווית שלה, ולעולם לא על קו או על קשת. אותיות בכתב נטוי מתמטי כמו בגוף השאלה. נקודות חיתוך מלאות; קווקוו רק לתפקיד עזר.
+- **צבע לפי תפקיד בלבד:** נתון / זווית יעד / זווית מסומנת / עזר (`angle-roles.ts`). צבע לעולם אינו מקודד את סוג הקשר (מתאימות/מתחלפות); כל זווית שהשאלה מזכירה בשמה מסומנת בשרטוט באותו שם — שערים `angle-label-placement`, `stem-diagram-labels`.
+- **אזורי תשובה לפי פורמט:** `src/content/answer-areas.ts` מגדיר לכל פורמט במאגר המשימות את אזור התשובה (משבצת תשובה סופית, מסלול „המשפט המתאים”, שורות עבודה, טבלת הוכחה, פסק דין לכל טענה, שתי דרכים). שורות כתיבה מנוקדות בפסיעה 8 מ״מ (preset צפוף 7 מ״מ, לא פחות), משבצות בקו מלא, מפריד שאלות דק ורציף ורחוק ≥3 מ״מ מהשורה האחרונה. כל שאלה שמבקשת „נמקו / הסבירו / הוכיחו / ציינו / בשתי דרכים” מקבלת לפחות שתי שורות או טבלת הוכחה — שער `answer-areas`.
+- **ניצול A4:** בלוקי השאלות גדלים לפי משקל אזור התשובה שלהם; עודף הגובה בעמוד הופך לשורות כתיבה שלמות, ולא לרווח מת בתוך הבלוק. יעד: 0 חריגה מהעמוד, ורווח מת ≤ 8 מ״מ בכל בלוק.
+- **כותרת עמוד:** היחידה ושמה הם האלמנט המוביל; שם החוברת הוא running head שקט; „עמוד N” ברור. הטקסטים עצמם קבועים.
+- **PDF כפול:** ה־snapshot של Vivliostyle הוא עצמאי — כל גליף MathJax מוטמע בנוסחה שלו (בלי `<use>` למטמון משותף) — שער `vivliostyle-self-contained`.
+
 ## 11.12 דטרמיניזם, שלמות ו־Release
 - `package-lock.json` tracked ומחייב; CI משתמש ב־`npm ci` וב־npm cache המבוסס על lockfile.
 - סביבת Node pinned במפורש ל־Node `22.23.2` ב־CI, Release, `package.json` ו־`.nvmrc`; אין שימוש בגרסת major נעה.
@@ -661,9 +674,11 @@ Makbilim/
 │  │  └─ DevRefreshBar.tsx
 │  ├─ components/
 │  │  ├─ A4Page.tsx
+│  │  ├─ AnswerArea.tsx
 │  │  ├─ ClozeText.tsx
 │  │  ├─ MathText.tsx
-│  │  └─ QuestionBlock.tsx
+│  │  ├─ QuestionBlock.tsx
+│  │  └─ ResponseParts.tsx
 │  ├─ content/
 │  │  ├─ unit-plan.json
 │  │  ├─ question-plan.json
@@ -675,12 +690,19 @@ Makbilim/
 │  │  ├─ questions-unit5.ts
 │  │  ├─ theorems.ts
 │  │  ├─ task-kinds.ts
+│  │  ├─ answer-areas.ts
+│  │  ├─ page-layout.ts
 │  │  ├─ cloze.ts
+│  │  ├─ teacher-locator.ts
 │  │  └─ answer-key.ts
 │  ├─ didactics/
 │  │  └─ profile.ts
 │  ├─ geometry/
 │  │  ├─ core.ts
+│  │  ├─ engine.ts
+│  │  ├─ primitives.tsx
+│  │  ├─ label-font.ts
+│  │  ├─ diagram-size.tsx
 │  │  ├─ relations.ts
 │  │  ├─ angle-roles.ts
 │  │  ├─ ParallelLinesDiagram.tsx
@@ -692,6 +714,8 @@ Makbilim/
 │  │  ├─ Unit4Pages.tsx
 │  │  └─ Unit5Pages.tsx
 │  └─ styles/
+│     ├─ fonts.css
+│     ├─ tokens.css
 │     ├─ tokens.ts
 │     ├─ print.css
 │     ├─ teacher-print.css
@@ -784,6 +808,12 @@ Makbilim/
 46. `label-line-clearance`
 47. `independent-math-verification`
 48. `teacher-guide-copy`
+49. `answer-areas`
+50. `angle-label-placement`
+51. `stem-diagram-labels`
+52. `diagram-variety`
+53. `layout-tokens`
+54. `vivliostyle-self-contained`
 
 Validators של מקוריות/הדרגתיות/markers פועלים על יחידות 1–4. validator של `curriculum-source-integrity` פועל על יחידה 5 ומוודא שאין שינוי בתוכן המקור.
 
