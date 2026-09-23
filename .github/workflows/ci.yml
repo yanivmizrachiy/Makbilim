@@ -49,7 +49,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Build PDF and visual QA
-        timeout-minutes: 10
+        timeout-minutes: 12
         run: npm run pdf
 
       - name: Upload workbook artifacts
@@ -61,6 +61,7 @@ jobs:
             artifacts/screenshots/*.png
             artifacts/layout-report.json
             artifacts/pdf-crosscheck.json
+            artifacts/teacher-pdf-report.json
           if-no-files-found: error
           retention-days: 30
 
