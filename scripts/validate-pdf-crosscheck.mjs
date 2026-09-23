@@ -16,6 +16,10 @@ const MIN_BYTES = 100_000;
 
 async function inspect(filePath, renderer) {
   const bytes = await fs.readFile(filePath);
+  const taggedStructure = bytes.includes(Buffer.from('/StructTreeRoot'));
+  if (renderer === 'chromium' && !taggedStructure) {
+    throw new Error('chromium PDF is missing /StructTreeRoot despite tagged: true');
+  }
   const doc = await PDFDocument.load(bytes, { updateMetadata: false });
   const pages = doc.getPages();
   const dimensions = pages.map((page, index) => {
@@ -47,6 +51,7 @@ async function inspect(filePath, renderer) {
     path: path.relative(root, filePath).replaceAll('\\', '/'),
     bytes: bytes.byteLength,
     pages: pages.length,
+    taggedStructure,
     dimensions,
   };
 }
