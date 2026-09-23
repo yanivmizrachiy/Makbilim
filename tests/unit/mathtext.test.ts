@@ -48,7 +48,7 @@ describe('MathText canonical notation', () => {
 describe('MathText tokenizer structure', () => {
   it('is driven by ordered, named rule tables with sticky regexes', () => {
     expect(MATH_OPERAND_RULES.map(rule => rule.name)).toEqual([
-      'angle', 'triangle', 'group', 'vulgar-fraction', 'number', 'greek', 'script-letter', 'point-name', 'variable',
+      'angle', 'triangle', 'group', 'vulgar-fraction', 'number', 'greek', 'script-letter', 'point-name', 'variable', 'blank',
     ]);
     expect(MATH_POSTFIX_RULES.map(rule => rule.name)).toEqual(['subscript', 'prime', 'power', 'degree']);
     expect(MATH_OPERATOR_RULES.map(rule => rule.name)).toEqual([
@@ -145,7 +145,8 @@ describe('MathText never pulls Hebrew text or punctuation into math', () => {
     ['נתון ∠E = 35°; הוכיחו.', 'נתון ⟦∠E = 35°⟧; הוכיחו.'],
     ['סעיף א׳ ו־x', 'סעיף א׳ ו־⟦x⟧'],
     ['(ב) x', '(ב) ⟦x⟧'],
-    ['x = ____', '⟦x⟧ = ____'],
+    // A blank after a relation belongs to its expression: split, the RTL line could show "____ = x".
+    ['x = ____', '⟦x = ____⟧'],
     // Stays plain text: numbering, ranges, bare numbers, words, Hebrew in parentheses.
     ['שורה 1: מתאימות', 'שורה 1: מתאימות'],
     ['יחידות 1–4', 'יחידות 1–4'],
@@ -182,5 +183,30 @@ describe('MathText rendering', () => {
 
   it('renders text without math unchanged', () => {
     expect(renderToStaticMarkup(createElement(MathText, { text: 'השלימו את הטבלה.' }))).toBe('השלימו את הטבלה.');
+  });
+});
+
+describe('MathText hardening (review follow-ups)', () => {
+  it('keeps a quoted Latin letter quoted instead of turning the closing quote into a prime', () => {
+    expect(mark("סעיף 'x' בשרטוט")).toBe("סעיף '⟦x⟧' בשרטוט");
+    expect(mark("הנקודה A' היא תמונת A")).toBe("הנקודה ⟦A'⟧ היא תמונת ⟦A⟧");
+    expect(mark('α′ = 40°')).toBe('⟦α′ = 40°⟧');
+  });
+
+  it('does not typeset technical acronyms as point names', () => {
+    expect(mark('קובץ PDF להדפסה')).toBe('קובץ PDF להדפסה');
+    expect(mark('תצוגת RTL')).toBe('תצוגת RTL');
+    expect(mark('המשולש ABC והקטע AB')).toBe('המשולש ⟦ABC⟧ והקטע ⟦AB⟧');
+  });
+
+  it('keeps a fill-in blank inside its expression as one LTR run', () => {
+    expect(mark('רשמו: x = ____')).toBe('רשמו: ⟦x = ____⟧');
+    expect(mark('לכן ∠B = ____°.')).toBe('לכן ⟦∠B = ____°⟧.');
+    const [, run] = segmentMathText('רשמו: x = ____');
+    expect(run?.kind === 'math' ? run.tex : '').toContain('\\underline{\\hspace{2em}}');
+  });
+
+  it('never treats a blank on its own as mathematics', () => {
+    expect(mark('זוויות ______ בין ישרים מקבילים שוות.')).toBe('זוויות ______ בין ישרים מקבילים שוות.');
   });
 });

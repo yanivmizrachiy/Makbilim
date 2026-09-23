@@ -221,7 +221,7 @@ function TaskTable({ rows }: { rows: NonNullable<Unit2Question['tableRows']> }) 
         {rows.map((row, index) => (
           <tr key={index}>
             <td><MathText text={row.label} /></td>
-            <td>{row.relation ?? ''}</td>
+            <td>{row.relation ? <MathText text={row.relation} /> : ''}</td>
             <td>{row.value ? <MathText text={row.value} /> : <span className="table-write-line" />}</td>
           </tr>
         ))}

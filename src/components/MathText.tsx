@@ -51,6 +51,7 @@ export type MathOperandKind =
   | 'script-letter'
   | 'point-name'
   | 'variable'
+  | 'blank'
   | 'fraction';
 
 /** One recognised piece of a math run, tagged with the rule that produced it. */
@@ -260,8 +261,8 @@ export const MATH_OPERAND_RULES: readonly MathOperandRule[] = [
   regexOperand('script-letter', 'Script ell ℓ used as a line name.', /ℓ/y, () => '\\ell', true),
   regexOperand(
     'point-name',
-    'One to three capital Latin letters that are not part of a longer word: A, AB, ABC.',
-    /(?<![A-Za-z])[A-Z]{1,3}(?![A-Za-z0-9])/y,
+    'One to three capital Latin letters that are not part of a longer word: A, AB, ABC. Known technical acronyms (PDF, SVG, CSS, RTL, LTR) stay text.',
+    /(?<![A-Za-z])(?!(?:PDF|SVG|CSS|RTL|LTR)(?![A-Za-z0-9]))[A-Z]{1,3}(?![A-Za-z0-9])/y,
     match => match[0],
     true,
   ),
@@ -271,6 +272,13 @@ export const MATH_OPERAND_RULES: readonly MathOperandRule[] = [
     /(?<![A-Za-z])[a-z](?![A-Za-z0-9])/y,
     match => match[0],
     true,
+  ),
+  regexOperand(
+    'blank',
+    'A fill-in blank inside an expression (x = ____, ∠B = ____°), kept in the same LTR run as its expression. A blank alone is not mathematics.',
+    /_{3,}/y,
+    () => '\\underline{\\hspace{2em}}',
+    false,
   ),
 ];
 
@@ -290,8 +298,8 @@ export const MATH_POSTFIX_RULES: readonly MathPostfixRule[] = [
   },
   {
     name: 'prime',
-    description: 'Prime marks: A\', α′, x″.',
-    pattern: /['′]{1,3}|″|‴/y,
+    description: 'Prime marks: A\', α′, x″. An ASCII apostrophe is a prime only when it is not a closing quote (\'x\' stays quoted text).',
+    pattern: /′{1,3}|(?<!'[A-Za-z0-9₀-₉]{1,3})'{1,3}(?![A-Za-z0-9])|″|‴/y,
     appliesTo: new Set([...NAMED_OPERANDS, 'angle']),
     toTeX: match => {
       const count = [...match[0]].reduce((sum, mark) => sum + (mark === '″' ? 2 : mark === '‴' ? 3 : 1), 0);
@@ -312,7 +320,7 @@ export const MATH_POSTFIX_RULES: readonly MathPostfixRule[] = [
     name: 'degree',
     description: 'Degree sign attached to its value: 64°, 37.5°, x°, (4x + 6)°.',
     pattern: /°/y,
-    appliesTo: new Set(['number', 'vulgar-fraction', 'variable', 'greek', 'group']),
+    appliesTo: new Set(['number', 'vulgar-fraction', 'variable', 'greek', 'group', 'blank']),
     toTeX: () => '^{\\circ}',
   },
 ];
