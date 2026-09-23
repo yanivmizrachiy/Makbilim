@@ -658,6 +658,7 @@ Makbilim/
 │  ├─ prepare-mathjax.mjs
 │  ├─ sync-curriculum-source.mjs
 │  ├─ render-bbb-curriculum.py
+│  ├─ validate-dependency-policy.mjs
 │  ├─ validate-schemas.mjs
 │  ├─ validate-source-manifest.mjs
 │  ├─ validate-curriculum-source-integrity.mjs
@@ -671,6 +672,7 @@ Makbilim/
 │  ├─ build-pdf.mjs
 │  ├─ validate-pdf-crosscheck.mjs
 │  ├─ build-teacher-pdf.mjs
+│  ├─ write-sbom.mjs
 │  └─ write-checksums.mjs
 ├─ tests/
 │  └─ unit/
