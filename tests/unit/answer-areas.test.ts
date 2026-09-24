@@ -107,7 +107,7 @@ describe('answer areas are decided in data (content/answer-areas.ts)', () => {
       expect(visibleText(first), task.id).toContain(LANE_LABEL[lane]);
       const writesEquation = ['algebra', 'critique'].includes(answerSpecById(task.id).mode);
       if (writesEquation) {
-        expect(visibleText(first), task.id).toContain(EQUATION_LABEL);
+        expect(visibleText(first), task.id).toContain(answerSpecById(task.id).equationLabel ?? EQUATION_LABEL);
         expect(attrOf(first, 'data-equation-lane'), task.id).toBe('true');
       } else {
         expect(visibleText(first), task.id).not.toContain(EQUATION_LABEL);

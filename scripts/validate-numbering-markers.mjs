@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import { BOOKLET_PAGES } from './lib/booklet-pages.mjs';
+import { BOOKLET_PAGES, NUMBERING } from './lib/booklet-pages.mjs';
 
 // continuous-numbering gate (SPEC 4.1/4.2/11.5/11.6): pages and questions are numbered
 // continuously 1..N across the whole booklet (no per-unit reset, no "אין מספור, רק ●"),
@@ -16,22 +16,21 @@ const fail = (message) => {
   process.exitCode = 1;
 };
 
+// The numbering policy is stated once, in booklet-pages.json (read via scripts/lib/booklet-pages.mjs).
+const n = NUMBERING ?? {};
+if (n.structure !== 'topics-not-units') fail('booklet-pages.json must declare structure "topics-not-units"');
+if (n.curriculumFirst !== true) fail('curriculum questions must come first');
+if (n.page !== 'continuous') fail('page numbering must be continuous');
+if (n.pageDisplay !== 'circle-top-left') fail('page number must display as a top-left circle');
+if (n.question !== 'continuous-global') fail('questions must be numbered continuously across the booklet');
+if (n.subpart !== 'hebrew-letters') fail('sub-parts must be lettered (א, ב, ג…)');
+if (n.curriculumNumberIsChrome !== true) fail('the curriculum question number must be booklet chrome, never source text');
+
 if (!fs.existsSync(unitPlanPath)) {
   fail('src/content/unit-plan.json is missing');
 } else {
   const plan = JSON.parse(fs.readFileSync(unitPlanPath, 'utf8'));
-  const n = plan.numbering ?? {};
-
-  if (plan.structure !== 'topics-not-units') fail('unit-plan must declare structure "topics-not-units"');
-  if (plan.curriculumFirst !== true) fail('curriculum questions must come first');
-  if (n.pageNumbering !== 'continuous') fail('page numbering must be continuous');
-  if (n.globalContinuousPageNumbering !== true) fail('global continuous page numbering must be enabled');
-  if (n.pageNumberDisplay !== 'circle-top-left') fail('page number must display as a top-left circle');
-  if (n.questionNumbering !== 'continuous') fail('questions must be numbered continuously');
-  if (n.subpartNumbering !== 'hebrew-letters') fail('sub-parts must be lettered (א, ב, ג…)');
-
-  const units = plan.units ?? [];
-  const curriculum = units.find((unit) => unit.unit === 5);
+  const curriculum = (plan.units ?? []).find((unit) => unit.unit === 5);
   if (!curriculum) {
     fail('unit 5 curriculum source block is missing (kept as provenance)');
   } else {
@@ -41,19 +40,10 @@ if (!fs.existsSync(unitPlanPath)) {
   }
 }
 
-if (!fs.existsSync(tokensPath)) {
-  fail('src/styles/tokens.ts is missing');
-} else {
-  const tokens = fs.readFileSync(tokensPath, 'utf8');
-  const required = [
-    "numbering: 'continuous'",
-    "pageNumberDisplay: 'circle-top-left'",
-    "numbering: 'continuous-global'",
-    "subpartNumbering: 'hebrew-letters'",
-  ];
-  for (const fragment of required) {
-    if (!tokens.includes(fragment)) fail(`design token contract missing: ${fragment}`);
-  }
+// No other file restates the policy (one source of truth).
+for (const file of ['src/content/page-manifest.json', 'src/content/unit-plan.json', 'src/content/question-plan.json', 'src/styles/tokens.ts']) {
+  const text = fs.readFileSync(path.join(root, file), 'utf8');
+  if (/circle-top-left|hebrew-letters|continuous-global|"pageNumbering"|numbering: '/.test(text)) fail(`${file} restates the numbering policy — it lives only in booklet-pages.json`);
 }
 
 // The printed order lives in booklet-pages.json (read through scripts/lib/booklet-pages.mjs, the

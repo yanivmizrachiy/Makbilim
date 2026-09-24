@@ -43,5 +43,5 @@ if (!q.includes('className="question-marker"') || !q.includes('className="subpar
 for (const component of ['Unit1Continuation', 'Unit2Pages', 'Unit3Pages', 'Unit4Pages', 'Unit5Pages']) {
   if (!app.includes(component)) fail(`App is not rendering ${component}`);
 }
-if (!unit5.includes('data-curriculum-ready="true"') || !unit5.includes('blockCount !== 8')) fail('unit 5 source-integrity rendering guard missing');
+if (!unit5.includes('data-curriculum-ready="true"') || !unit5.includes('blockCount !== CURRICULUM_QUESTION_IDS.length')) fail('unit 5 source-integrity rendering guard missing');
 if (!process.exitCode) console.log(`page-contract: PASS — ${EXPECTED_PAGES} A4 student pages (${CURRICULUM_PAGE_COUNT} curriculum + ${AUTHORED_PAGE_COUNT} authored) registered in booklet-pages.json`);

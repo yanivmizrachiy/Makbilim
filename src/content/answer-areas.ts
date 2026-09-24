@@ -48,6 +48,8 @@ export type AnswerSpec = {
   final?: boolean;
   /** Which unknowns get a final slot, when not all of the task's answer values are asked for. */
   finalKeys?: readonly string[];
+  /** The equation-cell label, when the task writes more than one equation. */
+  equationLabel?: string;
   /** Writing rows under EACH sub-item (e.g. the 'נימוק:' rows of a true/false statement). */
   itemRows?: number;
 };
@@ -74,6 +76,8 @@ export const LANE_LABEL: Readonly<Record<AnswerLane, string>> = {
 
 /** The second cell of a theorem lane (SPEC 7): the row reads „המשפט המתאים | המשוואה”. */
 export const EQUATION_LABEL = 'המשוואה:';
+/** A task with two unknowns (x and y) writes two equations. */
+export const EQUATION_LABEL_PLURAL = 'המשוואות:';
 /** Lanes whose row is split into the theorem cell and the equation cell. */
 export const EQUATION_LANES: ReadonlySet<AnswerLane> = new Set<AnswerLane>(['theorem', 'theorems']);
 
@@ -141,7 +145,7 @@ export const TASK_ANSWER_OVERRIDES: Readonly<Record<string, AnswerSpec>> = {
   'U2-P5-A': { mode: 'algebra', minLines: 2, lane: 'theorems', final: true, finalKeys: ['x', 'הזווית הקטנה', 'הזווית הגדולה'] },
   'U2-P5-D': { mode: 'critique', minLines: 2, lane: 'theorem', final: true, finalKeys: ['x', 'הזווית הקטנה', 'הזווית הגדולה'] },
   // Two equations, two theorems (corresponding for x, alternate for y).
-  'U2-P5-C': { mode: 'algebra', minLines: 2, lane: 'theorems', final: true },
+  'U2-P5-C': { mode: 'algebra', minLines: 2, lane: 'theorems', final: true, equationLabel: EQUATION_LABEL_PLURAL },
   // 'חשבו את α + β. נמקו כל שלב' — α and β are steps on the way, the asked value is their sum;
   // every step has its own reason (corresponding angles, adjacent angles).
   'U2-P6-D': { mode: 'work', minLines: 3, lane: 'theorems', final: true, finalKeys: ['α + β'] },

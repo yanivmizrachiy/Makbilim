@@ -17,7 +17,6 @@ const pageUnitSchema = z.object({
 const pageManifestSchema = z.object({
   projectTitle: z.literal(PROJECT),
   canonicalSpec: z.literal('SPEC.md'),
-  pageNumbering: z.literal('continuous'),
   originalUnits: z.array(pageUnitSchema).length(4),
   curriculumUnit: z.object({
     unit: z.literal(5),
@@ -30,12 +29,6 @@ const pageManifestSchema = z.object({
     firstPage: z.literal(1),
   }),
   studentFacingRules: z.object({
-    questionNumbering: z.literal('continuous'),
-    subpartNumbering: z.literal('hebrew-letters'),
-    pageNumbering: z.literal('continuous'),
-    pageNumberDisplay: z.literal('circle-top-left'),
-    curriculumFirst: z.literal(true),
-    curriculumGlobalNumberIsChrome: z.literal(true),
     footerRequired: z.literal(true),
     projectTitleRequired: z.literal(true),
   }),
@@ -44,13 +37,6 @@ const pageManifestSchema = z.object({
 const unitPlanSchema = z.object({
   projectTitle: z.literal(PROJECT),
   canonicalSpec: z.literal('SPEC.md'),
-  numbering: z.object({
-    pageNumbering: z.literal('continuous'),
-    globalContinuousPageNumbering: z.literal(true),
-    pageNumberDisplay: z.literal('circle-top-left'),
-    questionNumbering: z.literal('continuous'),
-    subpartNumbering: z.literal('hebrew-letters'),
-  }).passthrough(),
   units: z.array(z.object({
     unit: z.number().int().min(1).max(5),
     title: z.string().min(1),
@@ -90,9 +76,6 @@ const questionUnitSchema = z.object({
 const questionPlanSchema = z.object({
   projectTitle: z.literal(PROJECT),
   canonicalSpec: z.literal('SPEC.md'),
-  studentVisibleQuestionNumbers: z.literal(true),
-  questionNumbering: z.literal('continuous-global'),
-  subpartNumbering: z.literal('hebrew-letters'),
   // The one deliberate pin against silently dropping a question: everything else derives from it.
   originalTaskCount: z.number().int().positive(),
   curriculumSourceTaskBlocks: z.literal(8),

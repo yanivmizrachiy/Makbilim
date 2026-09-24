@@ -14,6 +14,7 @@ import { unit1Questions } from '../../src/content/questions-unit1';
 import { unit2Questions } from '../../src/content/questions-unit2';
 import { unit3Questions } from '../../src/content/questions-unit3';
 import { unit4Questions } from '../../src/content/questions-unit4';
+import { teacherAnswerKey } from '../../src/content/answer-key';
 
 const html = renderToStaticMarkup(createElement(App));
 const inOrder = (attribute: string) => [...html.matchAll(new RegExp(`${attribute}="([^"]+)"`, 'g'))].map(match => match[1]!);
@@ -32,6 +33,14 @@ describe('single source of truth', () => {
     const contentPage = new Map([...unit1Questions, ...unit2Questions, ...unit3Questions, ...unit4Questions].map(q => [q.id, q.page]));
     for (const unit of plan.units) {
       for (const task of unit.tasks) expect(contentPage.get(task.id), task.id).toBe(task.page);
+    }
+  });
+
+  it('keeps the unit and page of every teacher-key entry in step with the content (never an independent copy)', () => {
+    const contentPage = new Map([...unit1Questions, ...unit2Questions, ...unit3Questions, ...unit4Questions].map(q => [q.id, q.page]));
+    for (const entry of teacherAnswerKey) {
+      expect(entry.page, entry.id).toBe(contentPage.get(entry.id));
+      expect(`U${entry.unit}-`, entry.id).toBe(entry.id.slice(0, 3));
     }
   });
 

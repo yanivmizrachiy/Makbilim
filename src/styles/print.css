@@ -305,6 +305,13 @@ body { direction: rtl; }
   margin-top: var(--space-2);
 }
 
+/* The chain is the answer surface of its question: when the page hands the block surplus height the
+   chain takes it and spaces its steps evenly (no dead band under the reason, SPEC 11.1). */
+.question-main > .deduction-chain {
+  flex: 1 0 auto;
+  justify-content: space-evenly;
+}
+
 .deduction-block {
   display: flex;
   flex-direction: column;

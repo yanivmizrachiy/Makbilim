@@ -10,8 +10,11 @@ import { fileURLToPath } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const source = path.resolve(here, '..', '..', 'src', 'content', 'booklet-pages.json');
 
+const booklet = JSON.parse(fs.readFileSync(source, 'utf8'));
 /** @type {{ id: string, topic: string, curriculum?: boolean }[]} */
-export const BOOKLET_PAGES = JSON.parse(fs.readFileSync(source, 'utf8')).pages;
+export const BOOKLET_PAGES = booklet.pages;
+/** The student-facing numbering policy — stated nowhere else. */
+export const NUMBERING = booklet.numbering;
 
 /** All student pages, in printed order (global page = index + 1). */
 export const EXPECTED_PAGES = BOOKLET_PAGES.length;

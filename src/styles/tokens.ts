@@ -2,25 +2,6 @@ export const printTokens = {
   page: {
     widthMm: 210,
     heightMm: 297,
-    numbering: 'continuous' as const,
-    firstPage: 1,
-    pageNumberDisplay: 'circle-top-left' as const,
-  },
-  markers: {
-    question: {
-      glyph: '●',
-      sizeEm: 0.82,
-      role: 'large-solid-bullet' as const,
-      ariaLabel: 'שאלה',
-    },
-    subpart: {
-      glyph: '•',
-      sizeEm: 0.50,
-      role: 'small-solid-bullet' as const,
-      ariaLabel: 'סעיף',
-    },
-    numbering: 'continuous-global' as const,
-    subpartNumbering: 'hebrew-letters' as const,
   },
   footer: {
     line1: 'יניב רז - מדריך מחוזי חט"ב בעיר ירושלים',
@@ -74,7 +55,7 @@ export const geometryTokens = {
   /** Label type sizes (pt) and the white knockout halo (mm, full stroke width). */
   label: { anglePt: 9.5, linePt: 9.5, indexPt: 9, minPt: 8.5, haloMm: 0.7 },
   /** Angle arcs (mm / degrees). */
-  arc: { radiusMm: 4.6, doubleGapMm: 1.0, acuteBoostMm: 1.2, acuteBelowDeg: 40, trimDeg: 0.5 },
+  arc: { radiusMm: 4.6, doubleGapMm: 1.0, acuteBoostMm: 1.2, acuteBelowDeg: 40, trimDeg: 0.5, neighbourStepMm: 1.1 },
   /** Solid intersection dot (mm). */
   dotRadiusMm: 0.5,
   /** Parallel chevrons: two '>' marks (mm); the line runs on at least runOnMm past them. */

@@ -473,20 +473,44 @@ function attempt(spec: FigureSpec, size: DiagramSize, gap: number, requestedOver
     });
   });
 
+  // Inner arc radius of every mark. Two differently styled arcs in sectors that share a ray at one
+  // crossing would meet on that ray and read as ONE curve (a single arc and a double arc joining into
+  // a semicircle); the later style (single → dashed → double) steps out past its neighbour's outer arc.
+  const STYLE_ORDER: Record<ArcStyle, number> = { single: 0, dashed: 1, double: 2 };
+  const sharesRay = (a: FigureMark, b: FigureMark) =>
+    [a.start, a.end].some(edge => [b.start, b.end].some(other => Math.abs(normalizeAngle(edge - other + 180) - 180) < 0.5));
+  const innerRadius = new Map<number, number>();
+  const outerRadius = (index: number) => innerRadius.get(index)! + (marks[index]!.arcStyle === 'double' ? mm(T.arc.doubleGapMm) : 0);
+  marks
+    .map((_, index) => index)
+    .filter(index => !numbering.has(index))
+    .sort((a, b) => STYLE_ORDER[marks[a]!.arcStyle] - STYLE_ORDER[marks[b]!.arcStyle] || a - b)
+    .forEach(index => {
+      const mark = marks[index]!;
+      let radius = arcRadiusFor(mark.end - mark.start);
+      for (const other of innerRadius.keys()) {
+        const neighbour = marks[other]!;
+        if (neighbour.given !== mark.given || neighbour.transversal !== mark.transversal || neighbour.arcStyle === mark.arcStyle) continue;
+        if (sharesRay(mark, neighbour)) radius = Math.max(radius, outerRadius(other) + mm(T.arc.neighbourStepMm));
+      }
+      innerRadius.set(index, radius);
+    });
+
   // Largest arc radius drawn at each crossing (a transversal must reach past it).
   const arcReach = new Map<string, number>();
   marks.forEach((mark, index) => {
     if (numbering.has(index)) return;
-    const r = arcRadiusFor(mark.end - mark.start) + (mark.arcStyle === 'double' ? mm(T.arc.doubleGapMm) : 0);
+    const r = outerRadius(index);
     const key = `${mark.given}:${mark.transversal}`;
     arcReach.set(key, Math.max(arcReach.get(key) ?? 0, r));
   });
 
   /** Radius of the widest arc at a crossing that borders the ray in direction `deg` (0 if none). */
   const reachToward = (given: number, transversal: number, deg: number) => Math.max(0, ...marks
-    .filter((mark, index) => !numbering.has(index) && mark.given === given && mark.transversal === transversal)
-    .filter(mark => [mark.start, mark.end].some(edge => Math.abs(normalizeAngle(edge - deg + 180) - 180) < 0.5))
-    .map(mark => arcRadiusFor(mark.end - mark.start) + (mark.arcStyle === 'double' ? mm(T.arc.doubleGapMm) : 0)));
+    .map((mark, index) => ({ mark, index }))
+    .filter(({ mark, index }) => !numbering.has(index) && mark.given === given && mark.transversal === transversal)
+    .filter(({ mark }) => [mark.start, mark.end].some(edge => Math.abs(normalizeAngle(edge - deg + 180) - 180) < 0.5))
+    .map(({ index }) => outerRadius(index)));
   const chevronSpan = mm(T.chevron.lengthMm + T.chevron.pitchMm);
 
   // Given lines end on a common vertical (flat lines) or horizontal (steep lines): the ends
@@ -560,7 +584,7 @@ function attempt(spec: FigureSpec, size: DiagramSize, gap: number, requestedOver
   const laidMarks: LaidOutMark[] = marks.map((mark, index) => {
     const vertex = vertexOf(lines, mark.given, mark.transversal) ?? origin;
     if (numbering.has(index)) return { mark, vertex, arcs: [], index: true };
-    const inner = arcRadiusFor(mark.end - mark.start);
+    const inner = innerRadius.get(index)!;
     const radii = mark.arcStyle === 'double' ? [inner, inner + mm(T.arc.doubleGapMm)] : [inner];
     const arcs = radii.map(radius => {
       const trim = arcTrimDeg(radius);

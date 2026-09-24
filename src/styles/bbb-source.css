@@ -22,7 +22,8 @@
 .bbb-source .q {
   height: 100%;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  /* head · source body · the card's remaining space (writing rows, below) */
+  grid-template-rows: auto auto minmax(0, 1fr);
   gap: 1.8mm;
   border: 0.32mm solid #e1e5ec;
   border-radius: 0;
@@ -159,6 +160,20 @@
 
 .bbb-source .lines {
   margin: 1.5mm 0 0;
+}
+
+/* A4 utilization (SPEC 11.1), frame-only: the space a card has left under its verbatim content
+   continues the source's own dotted writing rows (same 5.5 mm pitch and colour), drawn by a
+   pseudo-element — the source DOM and text are untouched. Rows align to the card's bottom edge. */
+.bbb-source .q::after {
+  content: '';
+  min-height: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  background-image: radial-gradient(circle at 50% calc(100% - 0.14mm), #aab2c2 0.13mm, transparent 0.17mm);
+  background-size: 1.1mm 5.5mm;
+  background-position: 0 100%;
+  background-repeat: repeat;
 }
 
 .bbb-source .ln {

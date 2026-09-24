@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { CURRICULUM_QUESTION_IDS } from '../content/booklet';
 import { A4Page } from '../components/A4Page';
 
 type CurriculumBlock = {
@@ -27,7 +28,7 @@ export function Unit5Pages() {
         return response.json() as Promise<CurriculumRendered>;
       })
       .then(data => {
-        if (data.immutable !== true || data.blockCount !== 8 || data.blocks.length !== 8) {
+        if (data.immutable !== true || data.blockCount !== CURRICULUM_QUESTION_IDS.length || data.blocks.length !== CURRICULUM_QUESTION_IDS.length) {
           throw new Error('Curriculum source integrity mismatch');
         }
         if (active) setSource(data);

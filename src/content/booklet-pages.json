@@ -1,5 +1,15 @@
 {
-  "$schema-note": "THE single source of the printed booklet: page order, topic titles and which pages are verbatim curriculum. booklet.ts (render + numbering), the PDF/layout QA scripts and the validators all derive page counts and the expected order from this file. Never restate the order or the counts elsewhere.",
+  "$schema-note": "THE single source of the printed booklet: its student-facing numbering policy, page order, topic titles and which pages are verbatim curriculum. booklet.ts (render + numbering), the PDF/layout QA scripts and the validators all derive page counts and the expected order from this file. Never restate the order or the counts elsewhere.",
+  "numbering": {
+    "structure": "topics-not-units",
+    "curriculumFirst": true,
+    "page": "continuous",
+    "pageDisplay": "circle-top-left",
+    "question": "continuous-global",
+    "subpart": "hebrew-letters",
+    "curriculumNumberIsChrome": true,
+    "unitsAreProvenanceOnly": true
+  },
   "pages": [
     { "id": "C-P1", "topic": "שאלות מתוך תוכנית הלימודים", "curriculum": true },
     { "id": "C-P2", "topic": "שאלות מתוך תוכנית הלימודים", "curriculum": true },

@@ -168,6 +168,8 @@ try {
         const tag = element.tagName.toLowerCase();
         const rect = element.getBoundingClientRect();
         if (['svg', 'table', 'mjx-container', 'img'].includes(tag)) { lowest = Math.max(lowest, rect.bottom); return; }
+        // A squared work grid is drawn over its whole box (background squares), so all of it is ink.
+        if (element.matches('.answer-lines[data-grid="squares"]')) { lowest = Math.max(lowest, rect.bottom); return; }
         if (rect.height <= 0) { [...element.children].forEach(walk); return; }
         const bordered = ['Top', 'Right', 'Bottom', 'Left'].some(side => parseFloat(style[`border${side}Width`]) > 0 && style[`border${side}Style`] !== 'none');
         if (bordered && element !== root && (element.children.length === 0 || style.display.startsWith('inline'))) lowest = Math.max(lowest, rect.bottom);

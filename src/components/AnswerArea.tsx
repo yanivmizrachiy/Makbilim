@@ -43,7 +43,7 @@ function RuledArea({ spec, minLines }: { spec: AnswerSpec; minLines: number }) {
       {spec.lane && (
         <span className="rule rule--lane justification-lane" {...(hasEquationCell(spec) ? { 'data-equation-lane': 'true' } : {})}>
           <span className="justification-label">{LANE_LABEL[spec.lane]}</span>
-          {hasEquationCell(spec) && <span className="justification-label justification-label--equation">{EQUATION_LABEL}</span>}
+          {hasEquationCell(spec) && <span className="justification-label justification-label--equation">{spec.equationLabel ?? EQUATION_LABEL}</span>}
         </span>
       )}
       <Rules count={RULE_POOL} />
