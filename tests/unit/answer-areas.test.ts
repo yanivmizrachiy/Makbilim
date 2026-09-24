@@ -102,7 +102,7 @@ describe('answer areas are decided in data (content/answer-areas.ts)', () => {
       const area = findAll(blockOf(task.id), node => hasClass(node, 'answer-lines'))[0]!;
       const first = elementChildren(area)[0]!;
       expect(classesOf(first), task.id).toEqual(expect.arrayContaining(['rule', 'rule--lane', 'justification-lane']));
-      // The lane row reads „המשפט המתאים | המשוואה” (SPEC 7) when the task writes an equation (algebra,
+      // The lane row reads „המשוואה | המשפט המתאים” (SPEC 7) when the task writes an equation (algebra,
       // or correcting a wrong equation); numeric work keeps the theorem cell alone.
       expect(visibleText(first), task.id).toContain(LANE_LABEL[lane]);
       const writesEquation = ['algebra', 'critique'].includes(answerSpecById(task.id).mode);

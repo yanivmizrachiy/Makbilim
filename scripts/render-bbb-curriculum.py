@@ -111,7 +111,7 @@ with tempfile.TemporaryDirectory(prefix='makbilim-bbb-') as tmp:
         asset_data[pathlib.Path(asset_path).name] = f'data:{mime};base64,{base64.b64encode(data).decode("ascii")}'
 
     rendered_blocks = []
-    for index, block in enumerate(manifest['blocks']):
+    for block in manifest['blocks']:
         body = captured[block['id']]
         for filename, data_uri in asset_data.items():
             body = body.replace(f'src="assets/{filename}"', f'src="{data_uri}"')
@@ -121,9 +121,8 @@ with tempfile.TemporaryDirectory(prefix='makbilim-bbb-') as tmp:
         # provenance (curriculum-source.json); this touches only what the student reads.
         body = body.replace('בין מקבילים', 'בין ישרים מקבילים')
 
-        # Continuous global question number (SPEC 4.2): the curriculum block is the booklet's
-        # chrome number. Curriculum blocks are FIRST, so the block's index is its global number.
-        label = '●'  # ● — questions are marked, not numbered (SPEC 4.2)
+        # The curriculum block opens with a ● chrome marker (SPEC 4.2); questions are marked, not numbered.
+        label = '●'
         html = (
             f'<div class="q"><div class="qhead"><span class="qnum">{label}</span>'
             f'<div class="qtags"></div></div><div class="qbody">{body}</div></div>'

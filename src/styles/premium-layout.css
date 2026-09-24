@@ -1,10 +1,10 @@
 /* Premium workbook presentation layer — flat, white, textbook-clean.
-   Adds a restrained typographic accent (unit colour on markers, labels and a square accent tick
-   under the unit title) and full print / monochrome / forced-color support, WITHOUT boxing content:
+   Adds a restrained typographic accent (one booklet-wide accent colour on markers, labels and a
+   square accent tick under the header title) and full print / monochrome / forced-color support, WITHOUT boxing content:
    every question sits directly on the white A4 page. No card backgrounds, tinted fills, drop
    shadows or side-bars. Values come from tokens.css; the A4 grid lives in print.css. */
 
-/* Page header: the unit leads. A square-ended accent tick sits on the header rule under it. */
+/* Page header: the booklet subject is the title (no unit/topic meta-label). A square-ended accent tick sits on the header rule under it. */
 .a4-page[data-layout-quality="premium"] .page-header::after {
   content: "";
   position: absolute;

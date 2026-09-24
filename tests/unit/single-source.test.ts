@@ -25,7 +25,7 @@ describe('single source of truth', () => {
     expect(rendered).toEqual(BOOKLET_PAGES.filter(page => !page.curriculum).map(page => page.id));
   });
 
-  it('prints the authored questions in the order of question-plan.json (so the global numbers are the printed order)', () => {
+  it('prints the authored questions in the order of question-plan.json', () => {
     expect([...new Set(inOrder('data-task-id'))]).toEqual([...AUTHORED_TASK_IDS]);
   });
 

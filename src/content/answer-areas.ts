@@ -27,7 +27,7 @@ import { unit4Questions } from './questions-unit4';
  *  algebra   'המשפט המתאים:' (or 'המשפטים המתאימים:') lane, equation work rules and the result slots
  *  critique  judge a claim, an equation or a proof, and correct it
  *  proof     a blank טענה | נימוק proof form, ruled at the writing pitch
- *  deduction the printed guided chain (givens ↓ equality ↓ conclusion) with its cloze reason IS the
+ *  deduction the printed guided chain (givens ⇓ equality ⇓ conclusion) with its cloze reason IS the
  *            answer surface (components/DeductionChain.tsx); no writing rows
  */
 export type AnswerMode = 'none' | 'items' | 'value' | 'justify' | 'work' | 'two-ways' | 'algebra' | 'critique' | 'proof' | 'deduction';
@@ -74,7 +74,7 @@ export const LANE_LABEL: Readonly<Record<AnswerLane, string>> = {
   reason: 'נימוק:',
 };
 
-/** The second cell of a theorem lane (SPEC 7): the row reads „המשפט המתאים | המשוואה”. */
+/** The second cell of a theorem lane (SPEC 7): the row reads „המשוואה | המשפט המתאים”. */
 export const EQUATION_LABEL = 'המשוואה:';
 /** A task with two unknowns (x and y) writes two equations. */
 export const EQUATION_LABEL_PLURAL = 'המשוואות:';
@@ -157,7 +157,7 @@ export const TASK_ANSWER_OVERRIDES: Readonly<Record<string, AnswerSpec>> = {
   // Five converse claims on a full page: one 'נימוק:' row under each verdict (five rows in all).
   'U4-P2-B': { mode: 'items', minLines: 0, itemRows: 1 },
   // The first converse applications are guided deductions (SPEC 3.2): the printed chain
-  // (givens ↓ equality ↓ conclusion) with its one-word-per-line reason is the whole answer surface.
+  // (givens ⇓ equality ⇓ conclusion) with its one-word-per-line reason is the whole answer surface.
   'U4-P1-D': { mode: 'deduction', minLines: 0 },
   'U4-P2-A': { mode: 'deduction', minLines: 0 },
 };

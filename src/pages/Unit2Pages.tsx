@@ -299,7 +299,7 @@ function TaskTable({ rows }: { rows: NonNullable<Unit2Question['tableRows']> }) 
 
 function CalculationQuestion({ q }: { q: Unit2Question }) {
   return (
-    <QuestionBlock taskId={q.id} compact diagram={<QuestionDiagram q={q} />}>
+    <QuestionBlock taskId={q.id} diagram={<QuestionDiagram q={q} />}>
       <MathText text={q.stem} />
       {q.choices && <ChoiceGrid options={q.choices} />}
       {q.tableRows && <TaskTable rows={q.tableRows} />}

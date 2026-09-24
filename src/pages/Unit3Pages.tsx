@@ -193,7 +193,6 @@ function ProofQuestion({ q }: { q: Unit3Question }) {
   return (
     <QuestionBlock
       taskId={q.id}
-      compact
       diagram={<ProofDiagram q={q} />}
       {...(matching
         ? { items: claims.map(claim => ({ content: <><MathText text={claim} /><LineSlot label="נימוק:" /></>, inline: true })) }

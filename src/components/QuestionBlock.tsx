@@ -34,7 +34,6 @@ export type QuestionBlockProps = {
   items?: SubpartItem[] | undefined;
   /** Response material that follows the sub-items (e.g. the table the sub-items explain). */
   response?: ReactNode | undefined;
-  compact?: boolean | undefined;
 };
 
 function Subpart({ item }: { item: SubpartItem }) {
@@ -71,7 +70,6 @@ export function QuestionBlock({
   subparts,
   items,
   response,
-  compact = false,
 }: QuestionBlockProps) {
   const kind = taskKindById(taskId);
   const spec = answerSpecById(taskId);
@@ -85,7 +83,6 @@ export function QuestionBlock({
 
   const blockClass = [
     'question-block',
-    compact ? 'question-block--compact' : '',
     diagram ? 'question-block--with-diagram' : '',
   ].filter(Boolean).join(' ');
 

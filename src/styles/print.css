@@ -49,8 +49,8 @@ body { direction: rtl; }
   page-break-after: always;
 }
 
-/* Header that orients: the unit leads, the project title is a quiet running head above it, the
-   local page number sits at the far end of the same baseline. */
+/* Header: the booklet subject is the title (no topic/unit meta-label), and the continuous page
+   number sits in its circle at the far (top-left in RTL) end of the same baseline. */
 .page-header {
   position: relative;
   display: grid;
@@ -130,14 +130,13 @@ body { direction: rtl; }
   flex-grow: 1;
 }
 
-/* The only separator between questions: one solid hairline with fixed clearance on both sides. */
 /* Questions are separated by quiet space only — no divider line. */
 .question-block + .question-block {
   padding-top: var(--q-sep-after);
 }
 
-/* Continuous global question number (SPEC 4.2/11.5): the number leads the question in place of the
-   retired ● marker, in the formula face, at a fixed position and alignment. */
+/* Question marker (SPEC 4.2/11.5): a large filled black dot ● opens every question, at a fixed
+   position and alignment. Questions are NOT numbered — only pages are. */
 .question-marker {
   color: var(--ink);
   font-family: "Makbilim Math", var(--font-body);
@@ -231,7 +230,7 @@ body { direction: rtl; }
 
 .subpart-after { grid-column: 2 / -1; }
 
-/* Sub-part letter (א, ב, ג…) — local to its question (SPEC 4.2/11.5), in place of the retired • bullet. */
+/* Sub-part marker (SPEC 4.2/11.5): a small filled black dot • opens every sub-part. No letters, no numbers. */
 .subpart-marker {
   color: var(--ink);
   font-size: var(--subpart-marker-size);
@@ -264,10 +263,9 @@ body { direction: rtl; }
 .question-diagram--stacked { place-items: center; margin-block: var(--space-2); }
 
 /* ── Answer system: one writing-line grammar ─────────────────────────────────
-   dotted light rules at a constant pitch for work · solid ink slots for final answers and blanks ·
-   a solid hairline (darker than the rules) only between questions. */
+   dotted light rules at a constant pitch for work · solid ink slots for final answers and blanks. */
 
-/* Conclusion arrow ↓ (SPEC 11.14): one shared vector arrow, always pointing down, RTL/PDF safe. */
+/* Conclusion arrow ⇓ (SPEC 11.14): one shared double vector arrow, always pointing down, RTL/PDF safe. */
 .conclusion-arrow {
   display: flex;
   justify-content: center;
@@ -285,8 +283,8 @@ body { direction: rtl; }
   fill: none;
 }
 
-/* Guided deduction chain (SPEC 3.2 / 11.14): a centred column — givens (tagged נתון), ↓, the
-   intermediate equality, ↓, the conclusion — every line one math island; then the reason the
+/* Guided deduction chain (SPEC 3.2 / 11.14): a centred column — givens (tagged נתון), ⇓, the
+   intermediate equality, ⇓, the conclusion — every line one math island; then the reason the
    student completes one word per line. */
 .deduction-chain {
   display: flex;
@@ -337,8 +335,8 @@ body { direction: rtl; }
   line-height: var(--leading-cloze);
 }
 
-/* Algebra lane (SPEC 7): the first work row reads „המשפט המתאים | המשוואה” — the theorem cell on the
-   right, the equation cell on the left — and the squared rows below hold x, the substitution and
+/* Algebra lane (SPEC 7): the first work row reads „המשוואה | המשפט המתאים” — the equation cell on the
+   right, the theorem cell on the left — and the squared rows below hold x, the substitution and
    the final angle. */
 .answer-lines > .rule--lane[data-equation-lane="true"] {
   display: grid;
@@ -347,7 +345,7 @@ body { direction: rtl; }
   column-gap: var(--space-4);
 }
 
-/* The two lane cells read as „המשפט המתאים | המשוואה”: a thin divider on the column boundary. */
+/* The two lane cells read as „המשוואה | המשפט המתאים”: a thin divider on the column boundary. */
 .answer-lines {
   display: flex;
   flex-direction: column;
@@ -359,8 +357,9 @@ body { direction: rtl; }
 .math-unit { white-space: nowrap; }
 
 /* Graph-paper work grid (SPEC 11.11א / כ): squared paper for real derivation, in place of the
-   prose writing rules. Applied only to work / algebra / calculation areas, never to short-answer,
-   choose or one-word tasks. The square lines share the writing-rule colour (grayscale-mapped). */
+   prose writing rules. Applied to the writing areas that carry work (RuledArea/TwoWays set
+   data-grid="squares"); choice, one-word and verdict tasks render no squared area. The square
+   lines share the writing-rule colour (grayscale-mapped). */
 .answer-lines[data-grid="squares"] {
   /* Print media drops background images unless the page asks to keep them: the squares must print. */
   -webkit-print-color-adjust: exact;

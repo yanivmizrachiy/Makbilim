@@ -101,7 +101,6 @@ function Unit1Page2() {
     <A4Page pageId="U1-P2">
       <QuestionBlock
         taskId={corresponding.id}
-        compact
         diagram={<EightAngleDiagram lineLabels={['c', 'd']} transversalLabel="h" orientationDeg={-3} transversalDeg={52} bottomLabels={UNIT1_BOTTOM_LABELS['U1-P1-E']} />}
       >
         {corresponding.stem}
@@ -110,7 +109,6 @@ function Unit1Page2() {
 
       <QuestionBlock
         taskId={alternate.id}
-        compact
         diagram={<EightAngleDiagram lineLabels={['g', 'j']} transversalLabel="n" orientationDeg={19} transversalDeg={95} bottomLabels={UNIT1_BOTTOM_LABELS['U1-P2-A']} />}
       >
         {alternate.stem}
@@ -119,7 +117,6 @@ function Unit1Page2() {
 
       <QuestionBlock
         taskId={rotated.id}
-        compact
         diagram={<EightAngleDiagram lineLabels={['ℓ₁', 'ℓ₂']} transversalLabel="r" orientationDeg={78} transversalDeg={21} bottomLabels={UNIT1_BOTTOM_LABELS['U1-P2-B']} />}
         items={(rotated.subparts ?? []).map((text, index, all) =>
           index < all.length - 1 ? { content: <>{text}<LineSlot /></>, inline: true } : { content: text })}
@@ -129,7 +126,6 @@ function Unit1Page2() {
 
       <QuestionBlock
         taskId={theorem.id}
-        compact
         hint={PARALLEL_ARROWS_CONVENTION}
         diagram={<ParallelLinesDiagram lineLabels={['e', 'f']} transversalLabel="z" orientationDeg={8} transversalDeg={138} showParallelMarks angleMarks={markedPair(correspondingPair(0))} />}
         items={clozeItems(theorem.subparts ?? [])}
@@ -231,7 +227,6 @@ function Unit1Page3() {
     <A4Page pageId="U1-P3">
       <QuestionBlock
         taskId={theorem.id}
-        compact
         diagram={<ParallelLinesDiagram lineLabels={['x', 'y']} transversalLabel="v" orientationDeg={-14} transversalDeg={109} showParallelMarks angleMarks={markedPair(alternateInteriorPair(-14, 109))} />}
         items={clozeItems(theorem.subparts ?? [])}
       >
@@ -273,13 +268,12 @@ function Unit1Page4() {
 
   return (
     <A4Page pageId="U1-P4">
-      <QuestionBlock taskId={table.id} compact hint={PARALLEL_ARROWS_TABLE_HINT} response={<RelationTable />}>
+      <QuestionBlock taskId={table.id} hint={PARALLEL_ARROWS_TABLE_HINT} response={<RelationTable />}>
         {table.stem}
       </QuestionBlock>
 
       <QuestionBlock
         taskId={choice.id}
-        compact
         diagram={
           <ParallelLinesDiagram
             lineLabels={['b', 'd']}
@@ -306,7 +300,6 @@ function Unit1Page4() {
 
       <QuestionBlock
         taskId={correction.id}
-        compact
         diagramLayout="stacked"
         diagram={
           <div className="paired-diagrams">
@@ -345,7 +338,6 @@ export function Unit1Page5() {
     <A4Page pageId="U1-P5">
       <QuestionBlock
         taskId={def.id}
-        compact
         diagram={<ParallelLinesDiagram lineLabels={['a', 'b']} transversalLabel="c" orientationDeg={-2} transversalDeg={136} showParallelMarks ariaLabel="שני ישרים מקבילים וישר החותך אותם, להמחשת ההגדרה" />}
         items={clozeItems(def.subparts ?? [])}
       >
@@ -355,7 +347,6 @@ export function Unit1Page5() {
 
       <QuestionBlock
         taskId={eight.id}
-        compact
         diagram={<ParallelLinesDiagram lineLabels={['p', 'q']} transversalLabel="t" orientationDeg={-4} transversalDeg={116} showParallelMarks angleMarks={eightMarks} ariaLabel="שמונה הזוויות שנוצרו בשני המפגשים של החותך עם הישרים המקבילים" />}
       >
         {eight.stem}
@@ -363,7 +354,6 @@ export function Unit1Page5() {
 
       <QuestionBlock
         taskId={cointerior.id}
-        compact
         hint={PARALLEL_ARROWS_CONVENTION}
         diagram={<ParallelLinesDiagram lineLabels={['k', 'm']} transversalLabel="r" orientationDeg={-11} transversalDeg={59} showParallelMarks angleMarks={markedPair(coInteriorPair(-11, 59))} />}
         items={clozeItems(cointerior.subparts ?? [])}
