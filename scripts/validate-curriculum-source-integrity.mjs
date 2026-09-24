@@ -17,7 +17,7 @@ if (!fs.existsSync(manifestPath)) {
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 
   if (manifest.sourceRepository !== 'yanivmizrachiy/bbb') fail('unexpected source repository');
-  if (manifest.sourceCommit !== 'ad12425c6b2e1d4dac84030a5cd865c2b03d3804') fail('source commit must remain pinned');
+  if (manifest.sourceCommit !== '72806f302bc1cd956ac733fefb403eb0a7252330') fail('source commit must remain pinned');
   if (manifest.mode !== 'verbatim') fail('curriculum mode must be verbatim');
   if (manifest.identifiedQuestionBlocks !== 8) fail('expected exactly 8 identified source blocks');
   if ((manifest.blocks ?? []).length !== 8) fail('manifest must contain exactly 8 source blocks');
@@ -33,7 +33,7 @@ if (!fs.existsSync(manifestPath)) {
   const requiredSourceFiles = new Map([
     ['geometry8/topics/t02_angles.py', '7902f00caa849e5e43f7d91c3c8ffb0debe3e25b'],
     ['geometry8/topics/t03_congruence.py', '0b1261cd29ad905aaf46c9a5db6b6f632823708e'],
-    ['geometry8/geo.py', 'b42dff0fc2c9034d9c6c7e21096794c329aefdb5'],
+    ['geometry8/geo.py', '9cec633fac83cb07a09c6b7ff5154142576f4f0a'],
   ]);
 
   for (const [sourcePath, sha] of requiredSourceFiles) {

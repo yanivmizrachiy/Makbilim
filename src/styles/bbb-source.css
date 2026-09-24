@@ -22,7 +22,8 @@
 .bbb-source .q {
   height: 100%;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  /* head · source body · the card's remaining space (writing rows, below) */
+  grid-template-rows: auto auto minmax(0, 1fr);
   gap: 1.8mm;
   border: 0.32mm solid #e1e5ec;
   border-radius: 0;
@@ -44,10 +45,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #0b2e4f;
-  color: #fff;
-  font-weight: 800;
-  font-size: 10.8pt;
+  /* The continuous global number is booklet chrome: the same plain digit as every authored page. */
+  background: transparent;
+  color: var(--ink);
+  font-family: "Makbilim Math", var(--font-body);
+  font-weight: 700;
+  font-size: var(--question-marker-size);
+  font-variant-numeric: tabular-nums;
 }
 
 .bbb-source .qtags {
@@ -158,15 +162,34 @@
   margin: 1.5mm 0 0;
 }
 
+/* A4 utilization (SPEC 11.1), frame-only: the space a card has left under its verbatim content
+   continues the source's own dotted writing rows (same 5.5 mm pitch and colour), drawn by a
+   pseudo-element — the source DOM and text are untouched. */
+.bbb-source .q::after {
+  content: '';
+  min-height: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  background-image: radial-gradient(circle at 50% calc(100% - 0.14mm), #aab2c2 0.13mm, transparent 0.17mm);
+  background-size: 1.1mm 5.5mm;
+  /* anchored at the top: -1.8 mm cancels the card's row gap, so the first extra row sits one full
+     5.5 mm pitch under the last source row, exactly like the source's own rows */
+  background-position: 0 -1.8mm;
+  background-repeat: repeat;
+}
+
 .bbb-source .ln {
   height: 5.5mm;
   border-bottom: 0.28mm dotted #aab2c2;
 }
 
+/* The answer row is an equation: it reads left to right („∠EGC = ▢°”) and sits at the start (right)
+   of the RTL line. Frame-only: the verbatim source DOM is untouched. */
 .bbb-source .ansrow {
   display: flex;
+  direction: ltr;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: flex-end;
   gap: 2mm;
   margin: 1.6mm 0 0;
 }

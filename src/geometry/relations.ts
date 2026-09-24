@@ -138,6 +138,44 @@ export function alternateInteriorPairs(lineDeg: number, transversalDeg: number):
 }
 
 /**
+ * Co-interior ("one-sided", חד-צדדיות) pairs: the two interior angles on the SAME side of the
+ * transversal — one at each crossing. Between parallel lines they are supplementary (sum 180°).
+ * Same construction as alternateInteriorPairs, but the bottom mate is on the same side, not opposite.
+ */
+export function coInteriorPairs(lineDeg: number, transversalDeg: number): AnglePair[] {
+  const mids = sectorMidpoints(lineDeg, transversalDeg);
+  const towardBottom = vector(lineDeg + 90);
+  const trans = vector(transversalDeg);
+
+  const topInterior = mids
+    .map((mid, sector) => ({ sector: sector as Sector, mid, interior: dot(vector(mid), towardBottom) > 0 }))
+    .filter(item => item.interior);
+  const bottomInterior = mids
+    .map((mid, sector) => ({ sector: sector as Sector, mid, interior: dot(vector(mid), towardBottom) < 0 }))
+    .filter(item => item.interior);
+
+  const pairs: AnglePair[] = [];
+  for (const top of topInterior) {
+    const topSide = Math.sign(cross(trans, vector(top.mid)));
+    const mate = bottomInterior.find(bottom => Math.sign(cross(trans, vector(bottom.mid))) === topSide);
+    if (mate) {
+      pairs.push([
+        { intersection: 'top', sector: top.sector },
+        { intersection: 'bottom', sector: mate.sector },
+      ]);
+    }
+  }
+  return pairs;
+}
+
+/** A co-interior pair; `seed` picks one of the two, `from` orders which angle is first. */
+export function coInteriorPair(lineDeg: number, transversalDeg: number, seed = 0, from: IntersectionName = 'top'): AnglePair {
+  const pairs = coInteriorPairs(lineDeg, transversalDeg);
+  if (pairs.length === 0) throw new Error('Could not derive co-interior angle pair');
+  return startingAt(pairs[seed % pairs.length]!, from);
+}
+
+/**
  * An alternate-interior pair. `seed` picks one of the two pairs; the first angle sits on line
  * `from` (pages put the given angle first).
  */

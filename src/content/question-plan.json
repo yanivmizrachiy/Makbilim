@@ -1,18 +1,19 @@
 {
   "projectTitle": "זוויות בין ישרים מקבילים",
   "canonicalSpec": "SPEC.md",
-  "studentVisibleQuestionNumbers": false,
-  "questionMarker": "●",
-  "subpartMarker": "•",
-  "originalTaskCount": 58,
+  "originalTaskCount": 62,
   "curriculumSourceTaskBlocks": 8,
   "units": [
     {
       "unit": 1,
       "title": "מושגים בסיסיים",
-      "pages": 4,
-      "taskCount": 14,
+      "pages": 5,
+      "taskCount": 18,
       "tasks": [
+        {"id":"U1-P5-A","page":5,"difficulty":"D1","visualDemand":"V1","format":"sentence-completion","skill":"define-parallel-lines-and-segments","theoremIds":[],"instructionVerb":"השלימו","learningObjective":"להשלים את הגדרת ישרים מקבילים ואת הגדרת קטעים מקבילים","misconceptionTarget":"בלבול בין „אין נקודות משותפות” לבין „נחתכים”, או התעלמות מכך שקטעים מקבילים מונחים על ישרים מקבילים","progressionGain":"definitions"},
+        {"id":"U1-P5-B","page":5,"difficulty":"D1","visualDemand":"V2","format":"mark-on-diagram","skill":"identify-eight-angles","theoremIds":[],"instructionVerb":"סמנו","learningObjective":"לזהות שבשני מפגשי החותך נוצרות שמונה זוויות","misconceptionTarget":"ספירת ארבע זוויות בלבד, או ערבוב בין הזוויות של שני המפגשים","progressionGain":"eight-angles"},
+        {"id":"U1-P5-C","page":5,"difficulty":"D1","visualDemand":"V2","format":"sentence-completion","skill":"complete-cointerior-theorem","theoremIds":[],"instructionVerb":"השלימו","learningObjective":"לשלוף את משפט הזוויות החד-צדדיות בין ישרים מקבילים","misconceptionTarget":"הנחה שזוויות חד-צדדיות שוות במקום שהן משלימות ל־180°","progressionGain":"cointerior-theorem"},
+        {"id":"U1-P5-D","page":5,"difficulty":"D2","visualDemand":"V1","format":"true-false","skill":"judge-cointerior-vs-equal","theoremIds":[],"instructionVerb":"קבעו","learningObjective":"להבחין בין שוויון זוויות לבין השלמה ל־180°","misconceptionTarget":"החלת „שוות” על זוויות חד-צדדיות, או „משלימות ל־180°” על זוויות מתחלפות","progressionGain":"cointerior-distinction"},
         {"id":"U1-P1-A","page":1,"difficulty":"D1","visualDemand":"V1","format":"mark-on-diagram","skill":"identify-transversal","theoremIds":[],"instructionVerb":"סמנו","learningObjective":"לזהות שני ישרים וישר חותך","misconceptionTarget":"בלבול בין ישר חותך לאחד הישרים","progressionGain":"first-identification"},
         {"id":"U1-P1-B","page":1,"difficulty":"D1","visualDemand":"V1","format":"mark-on-diagram","skill":"identify-corresponding-pair","theoremIds":[],"instructionVerb":"סמנו","learningObjective":"לזהות זוג זוויות מתאימות לפי מיקום","misconceptionTarget":"בחירת זוג באותו קודקוד","progressionGain":"angle-pair-identification"},
         {"id":"U1-P1-C","page":1,"difficulty":"D1","visualDemand":"V1","format":"mark-on-diagram","skill":"identify-alternate-pair","theoremIds":[],"instructionVerb":"סמנו","learningObjective":"לזהות זוג זוויות מתחלפות לפי מיקום","misconceptionTarget":"בלבול מתאימות ומתחלפות","progressionGain":"second-angle-relation"},
@@ -94,18 +95,18 @@
     {
       "unit": 4,
       "title": "משפטים הפוכים",
-      "pages": 2,
+      "pages": 3,
       "taskCount": 8,
       "tasks": [
         {"id":"U4-P1-A","page":1,"difficulty":"D3","visualDemand":"V2","format":"sentence-completion","skill":"complete-converse-corresponding","theoremIds":["T3"],"instructionVerb":"השלימו","misconceptionTarget":"אי־הבנה שבמשפט ההפוך המקבילות היא המסקנה ולא ההנחה","progressionGain":"first-converse-language"},
         {"id":"U4-P1-B","page":1,"difficulty":"D3","visualDemand":"V2","format":"sentence-completion","skill":"complete-converse-alternate","theoremIds":["T4"],"instructionVerb":"השלימו","misconceptionTarget":"ייחוס השוויון לישרים („שני הישרים שווים”) במקום המסקנה „מקבילים”","progressionGain":"second-converse-language"},
-        {"id":"U4-P1-C","page":1,"difficulty":"D3","visualDemand":"V3","format":"direct-vs-converse","skill":"classify-theorem-direction","theoremIds":["T1","T2","T3","T4"],"instructionVerb":"קבעו","misconceptionTarget":"סיווג לפי הופעת המילה „מקבילים” במשפט ולא לפי תפקידה בו — הנחה או מסקנה","progressionGain":"direction-control"},
-        {"id":"U4-P1-D","page":1,"difficulty":"D4","visualDemand":"V3","format":"numeric-parallelism","skill":"infer-parallel-lines-from-equality","theoremIds":["T3"],"instructionVerb":"קבעו ונמקו","misconceptionTarget":"הצדקת p ∥ q במשפט הישיר על זוויות מתאימות — שימוש במשפט ישיר במקום בהפוך","progressionGain":"first-converse-application"},
+        {"id":"U4-P1-D","page":1,"difficulty":"D4","visualDemand":"V3","format":"numeric-parallelism","skill":"infer-parallel-lines-from-equality","theoremIds":["T3"],"instructionVerb":"קבעו ונמקו","misconceptionTarget":"השלמת המשפט ההפוך בסוג זוג שגוי (מתחלפות במקום מתאימות) — בחירת המשפט ההפוך לפי סוג הזוג","progressionGain":"first-converse-application"},
+        {"id":"U4-P1-C","page":2,"difficulty":"D3","visualDemand":"V3","format":"direct-vs-converse","skill":"classify-theorem-direction","theoremIds":["T1","T2","T3","T4"],"instructionVerb":"קבעו","misconceptionTarget":"סיווג לפי הופעת המילה „מקבילים” במשפט ולא לפי תפקידה בו — הנחה או מסקנה","progressionGain":"direction-control"},
 
         {"id":"U4-P2-A","page":2,"difficulty":"D4","visualDemand":"V3","format":"numeric-parallelism","skill":"identify-pair-then-infer-parallel-lines","theoremIds":["T4"],"instructionVerb":"ציינו, קבעו ונמקו","misconceptionTarget":"הצדקת k ∥ m במשפט ההפוך של הזוויות המתאימות אף שהזוג מתחלף","progressionGain":"independent-converse-application: identify the pair type, then choose the converse"},
         {"id":"U4-P2-B","page":2,"difficulty":"D4","visualDemand":"V3","format":"true-false","skill":"judge-converse-claims","theoremIds":["T3","T4"],"instructionVerb":"קבעו ונמקו","misconceptionTarget":"הסקת מקבילות מעובדה שמתקיימת תמיד (זוויות קודקודיות שוות, זוויות צמודות משלימות ל־180° — שתיהן באותו חיתוך) או ממיקום זוג מתחלף בלבד, בלי שוויון הזוויות","progressionGain":"converse-sufficiency"},
-        {"id":"U4-P2-C","page":2,"difficulty":"D4","visualDemand":"V3","format":"algebra-for-parallelism","skill":"find-x-to-guarantee-parallelism","theoremIds":["T3","T4"],"instructionVerb":"מצאו ונמקו","misconceptionTarget":"הצגת 3x + 14 = 5x − 26 כתוצאה של מקבילות נתונה (משפט ישיר) ולא כתנאי שמבטיח אותה (משפט הפוך)","requiresJustificationLane":true,"progressionGain":"converse-algebra"},
-        {"id":"U4-P2-D","page":2,"difficulty":"D5","visualDemand":"V4","format":"short-parallelism-proof","skill":"combined-direct-converse-proof","theoremIds":["T1","T2","T3","T4"],"instructionVerb":"הוכיחו","misconceptionTarget":"החלפת תפקידי המשפטים: ההפוך בשלב שבו המקבילות נתונה, או הישיר בשלב שבו היא נדרשת","progressionGain":"final-synthesis"}
+        {"id":"U4-P2-C","page":3,"difficulty":"D4","visualDemand":"V3","format":"algebra-for-parallelism","skill":"find-x-to-guarantee-parallelism","theoremIds":["T3","T4"],"instructionVerb":"מצאו ונמקו","misconceptionTarget":"הצגת 3x + 14 = 5x − 26 כתוצאה של מקבילות נתונה (משפט ישיר) ולא כתנאי שמבטיח אותה (משפט הפוך)","requiresJustificationLane":true,"progressionGain":"converse-algebra"},
+        {"id":"U4-P2-D","page":3,"difficulty":"D5","visualDemand":"V4","format":"short-parallelism-proof","skill":"combined-direct-converse-proof","theoremIds":["T1","T2","T3","T4"],"instructionVerb":"הוכיחו","misconceptionTarget":"החלפת תפקידי המשפטים: ההפוך בשלב שבו המקבילות נתונה, או הישיר בשלב שבו היא נדרשת","progressionGain":"final-synthesis"}
       ]
     }
   ]

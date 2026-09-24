@@ -77,21 +77,33 @@ body { direction: rtl; }
   letter-spacing: 0.02em;
 }
 
-.unit-title {
+.topic-title {
   color: var(--ink);
-  font-size: var(--unit-title-size);
+  font-size: var(--topic-title-size);
   line-height: 1.15;
   font-weight: 800;
   letter-spacing: -0.005em;
 }
 
+/* Continuous global page number: a number-only circle at the far (top-left in RTL) corner of the
+   header (SPEC 4.1/11.6). The ring colour equals the numeral colour; transparent fill; the New
+   Computer Modern numeral matches the formulas. Principle adapted from razpages, not its look. */
 .page-number {
-  color: var(--ink);
+  width: var(--page-number-circle);
+  height: var(--page-number-circle);
+  flex: 0 0 auto;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--page-number-ring-w) solid var(--accent-dark);
+  border-radius: 50%;
+  color: var(--accent-dark);
+  font-family: "Makbilim Math", var(--font-body);
   font-size: var(--page-number-size);
-  line-height: 1.15;
-  font-weight: 700;
+  font-weight: 500;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
 }
 
 /* ── Content area: weighted, deterministic growth ─────────────────────────────
@@ -132,12 +144,17 @@ body { direction: rtl; }
   padding-top: var(--q-sep-after);
 }
 
+/* Continuous global question number (SPEC 4.2/11.5): the number leads the question in place of the
+   retired ● marker, in the formula face, at a fixed position and alignment. */
 .question-marker {
   color: var(--ink);
+  font-family: "Makbilim Math", var(--font-body);
   font-size: var(--question-marker-size);
+  font-weight: 700;
   line-height: 1;
   text-align: center;
-  padding-top: 1.15mm;
+  font-variant-numeric: tabular-nums;
+  padding-top: 0.7mm;
 }
 
 /* One text column (stem → sub-items / choices → answer slots → work area) and, beside it, the
@@ -223,12 +240,14 @@ body { direction: rtl; }
 
 .subpart-after { grid-column: 2 / -1; }
 
+/* Sub-part letter (א, ב, ג…) — local to its question (SPEC 4.2/11.5), in place of the retired • bullet. */
 .subpart-marker {
   color: var(--ink);
   font-size: var(--subpart-marker-size);
+  font-weight: 700;
   line-height: 1;
   text-align: center;
-  padding-top: 1.6mm;
+  padding-top: 1mm;
 }
 
 /* One-line sub-items that end in a write-in slot (pair → word, claim → reason). */
@@ -257,9 +276,122 @@ body { direction: rtl; }
    dotted light rules at a constant pitch for work · solid ink slots for final answers and blanks ·
    a solid hairline (darker than the rules) only between questions. */
 
+/* Conclusion arrow ↓ (SPEC 11.14): one shared vector arrow, always pointing down, RTL/PDF safe. */
+.conclusion-arrow {
+  display: flex;
+  justify-content: center;
+  margin: var(--arrow-gap) 0;
+}
+
+.conclusion-arrow-svg { display: block; }
+
+.conclusion-arrow-svg line,
+.conclusion-arrow-svg polyline {
+  stroke: var(--arrow-color);
+  stroke-width: var(--arrow-stroke-w);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+/* Guided deduction chain (SPEC 3.2 / 11.14): a centred column — givens (tagged נתון), ↓, the
+   intermediate equality, ↓, the conclusion — every line one math island; then the reason the
+   student completes one word per line. */
+.deduction-chain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+
+/* The chain is the answer surface of its question: when the page hands the block surplus height the
+   chain takes it and spaces its steps evenly (no dead band under the reason, SPEC 11.1). */
+.question-main > .deduction-chain {
+  flex: 1 0 auto;
+  justify-content: space-evenly;
+}
+
+.deduction-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.deduction-line {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+.deduction-tag {
+  color: var(--accent-dark);
+  font-size: var(--text-label);
+  font-weight: 700;
+}
+
+.deduction-block--conclusion .deduction-line { font-weight: 700; }
+
+.deduction-reason {
+  align-self: stretch;
+  margin-top: var(--space-2);
+  display: grid;
+  gap: var(--space-1);
+}
+
+.deduction-reason-line {
+  font-size: var(--text-body);
+  line-height: var(--leading-cloze);
+}
+
+/* Algebra lane (SPEC 7): the first work row reads „המשפט המתאים | המשוואה” — the theorem cell on the
+   right, the equation cell on the left — and the squared rows below hold x, the substitution and
+   the final angle. */
+.answer-lines > .rule--lane[data-equation-lane="true"] {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+  column-gap: var(--space-4);
+}
+
+/* The two lane cells read as „המשפט המתאים | המשוואה”: a thin divider on the column boundary. */
+.rule--lane[data-equation-lane="true"] > .justification-label--equation {
+  border-inline-start: var(--rule-w) solid var(--rule-color);
+  padding-inline-start: var(--space-2);
+}
+
 .answer-lines {
   display: flex;
   flex-direction: column;
+}
+
+/* A blank with the word before it and its closing punctuation (ClozeText), and a maqaf prefix with
+   its expression (MathText): one unbreakable unit each. */
+.cloze-unit,
+.math-unit { white-space: nowrap; }
+
+/* Graph-paper work grid (SPEC 11.11א / כ): squared paper for real derivation, in place of the
+   prose writing rules. Applied only to work / algebra / calculation areas, never to short-answer,
+   choose or one-word tasks. The square lines share the writing-rule colour (grayscale-mapped). */
+.answer-lines[data-grid="squares"] {
+  /* Print media drops background images unless the page asks to keep them: the squares must print. */
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  background-image:
+    linear-gradient(to right, var(--grid-color) var(--grid-line-w), transparent var(--grid-line-w)),
+    linear-gradient(to bottom, var(--grid-color) var(--grid-line-w), transparent var(--grid-line-w));
+  background-size: var(--grid-cell) var(--grid-cell);
+  background-position: top right;
+}
+
+.answer-lines[data-grid="squares"] > .rule { border-bottom: none; }
+
+/* Forced colours drop background images (the square grid); the bordered writing rules return so
+   the work area never loses its writing guidance. */
+@media (forced-colors: active) {
+  .answer-lines[data-grid="squares"] > .rule { border-bottom: var(--rule-w) var(--rule-style) var(--rule-color); }
 }
 
 .answer-lines > .rule {
@@ -293,7 +425,7 @@ body { direction: rtl; }
 .justification-label,
 .answer-way-label,
 .line-slot-label {
-  color: var(--unit-accent-dark);
+  color: var(--accent-dark);
   font-size: var(--text-label);
   line-height: 1.2;
   font-weight: 700;
@@ -323,7 +455,7 @@ body { direction: rtl; }
   display: flex;
   align-items: flex-end;
   border-bottom: var(--slot-w) solid var(--frame-rule-color);
-  color: var(--unit-accent-dark);
+  color: var(--accent-dark);
   font-size: var(--text-label);
   line-height: 1.3;
   font-weight: 700;
@@ -361,6 +493,8 @@ body { direction: rtl; }
   border-bottom: var(--slot-w) solid var(--slot-color);
   vertical-align: -0.2em;
 }
+
+.cloze-blank--before-punct { margin-inline-end: 0; }
 
 .line-slot {
   flex: 1 1 auto;

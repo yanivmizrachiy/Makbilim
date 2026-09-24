@@ -24,6 +24,8 @@ type CapturedProps =
 export type BookletDiagram = CapturedProps & {
   /** Position of the diagram in booklet order (0-based). */
   index: number;
+  /** Internal page id (U{unit}-P{page} or C-P{n}). */
+  pageId: string;
   unit: number;
   page: number;
   /** data-task-id of the question block that holds the diagram. */
@@ -78,7 +80,12 @@ export async function renderBookletDiagrams(): Promise<BookletDiagram[]> {
   return probes.map(probe => {
     const index = Number(probe[1]);
     const at = probe.index + probe[0].length;
-    const page = lastMatchBefore(html, /<article class="a4-page[^"]*" data-unit="(\d+)" data-page="(\d+)"/, at);
+    // Pages now carry a stable internal id (U{unit}-P{page} for authored, C-P{n} for curriculum);
+    // the tests still filter by unit/page, so derive them from the id.
+    const page = lastMatchBefore(html, /<article class="a4-page[^"]*" data-page-id="([^"]+)"/, at);
+    const pageId = page?.[1] ?? '';
+    const authored = /^U(\d+)-P(\d+)$/.exec(pageId);
+    const curriculum = /^C-P(\d+)$/.exec(pageId);
     const section = lastMatchBefore(html, /<section class="question-block[^"]*"([^>]*)>/, at);
     const svgStart = html.indexOf('<svg', at);
     const svg = html.slice(svgStart, html.indexOf('</svg>', svgStart) + '</svg>'.length);
@@ -86,8 +93,9 @@ export async function renderBookletDiagrams(): Promise<BookletDiagram[]> {
     return {
       ...captured,
       index,
-      unit: Number(page?.[1] ?? Number.NaN),
-      page: Number(page?.[2] ?? Number.NaN),
+      pageId,
+      unit: authored ? Number(authored[1]) : curriculum ? 5 : Number.NaN,
+      page: authored ? Number(authored[2]) : curriculum ? Number(curriculum[1]) : Number.NaN,
       taskId: /data-task-id="([^"]+)"/.exec(section?.[1] ?? '')?.[1] ?? null,
       svg,
     };

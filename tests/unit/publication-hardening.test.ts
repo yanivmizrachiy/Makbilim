@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { BOOKLET_PAGE_COUNT } from '../../src/content/booklet';
 
 const root = process.cwd();
 const read = (file: string) => fs.readFileSync(path.join(root, file), 'utf8');
@@ -109,9 +110,9 @@ describe('publication hardening', () => {
     expect(release).toContain('npm audit --omit=dev --audit-level=high');
   });
 
-  it('tracks a canonical visual baseline for all 19 student pages', () => {
-    expect(baseline.pageCount).toBe(19);
-    expect(baseline.layout).toHaveLength(19);
+  it('tracks a canonical visual baseline for every student page of booklet-pages.json', () => {
+    expect(baseline.pageCount).toBe(BOOKLET_PAGE_COUNT);
+    expect(baseline.layout).toHaveLength(BOOKLET_PAGE_COUNT);
     expect(pkg.scripts['validate:visual-baseline']).toContain('validate-visual-baseline.mjs');
     expect(pkg.scripts.pdf).toContain('validate:visual-baseline');
   });

@@ -173,12 +173,12 @@ describe('MathText never pulls Hebrew text or punctuation into math', () => {
 describe('MathText rendering', () => {
   it('isolates each run in <bdi dir="ltr"> with the source as aria-label and keeps Hebrew outside', () => {
     const html = renderToStaticMarkup(createElement(MathText, { text: 'נתון כי ∠A = 68°. חשבו את α + β.' }));
+    // The closing punctuation stays on its formula's line: one nowrap .math-unit (SPEC 11.1).
     expect(html).toBe(
       'נתון כי '
-      + '<bdi class="math mathjax-inline" dir="ltr"><span aria-label="∠A = 68°">\\(\\angle A = 68^{\\circ}\\)</span></bdi>'
-      + '. חשבו את '
-      + '<bdi class="math mathjax-inline" dir="ltr"><span aria-label="α + β">\\(\\alpha + \\beta\\)</span></bdi>'
-      + '.',
+      + '<span class="math-unit"><bdi class="math mathjax-inline" dir="ltr"><span aria-label="∠A = 68°">\\(\\angle A = 68^{\\circ}\\)</span></bdi>.</span>'
+      + ' חשבו את '
+      + '<span class="math-unit"><bdi class="math mathjax-inline" dir="ltr"><span aria-label="α + β">\\(\\alpha + \\beta\\)</span></bdi>.</span>'
     );
   });
 

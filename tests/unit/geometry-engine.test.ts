@@ -18,7 +18,8 @@ import { geometryTokens as T, type DiagramSize } from '../../src/styles/tokens';
  * numbering diagrams without bullseye rings (E7), and CSS variables mirroring the tokens (E8).
  */
 
-const css = fs.readFileSync(path.join(process.cwd(), 'src/styles/geometry-premium.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+// The --geo-* tokens live in tokens.css (SPEC 11.11א: every custom property in one sheet); the figure rules in geometry-premium.css.
+const css = ['src/styles/tokens.css', 'src/styles/geometry-premium.css'].map(file => fs.readFileSync(path.join(process.cwd(), file), 'utf8')).join('\n').replace(/\/\*[\s\S]*?\*\//g, '');
 /** Every @font-face of the booklet lives in fonts.css (offline, bundled). */
 const fontsCss = fs.readFileSync(path.join(process.cwd(), 'src/styles/fonts.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
 const html = renderToStaticMarkup(createElement(App));
@@ -263,8 +264,9 @@ describe('geometry engine — arcs, dots, numbering (E4, E5, E7)', () => {
   });
 
   it('numbers all eight angles of the numbering diagrams in their openings, with no arc rings', () => {
+    // The three matching figures (U1-P1-E, U1-P2-A, U1-P2-B) and the eight-angles figure U1-P5-B.
     const numbering = diagrams.filter(({ svg }) => svg.includes('angle-label-text--index'));
-    expect(numbering.length).toBe(3);
+    expect(numbering.length).toBe(4);
     for (const { svg } of numbering) {
       expect(labelsOf(svg).filter(label => label.kind.includes('--index')).map(label => label.text).sort()).toEqual(['1', '2', '3', '4', '5', '6', '7', '8']);
       expect(svg).not.toContain('angle-arc');

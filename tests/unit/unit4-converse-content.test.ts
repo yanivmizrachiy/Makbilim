@@ -1,4 +1,7 @@
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
+import { Unit4Pages } from '../../src/pages/Unit4Pages';
 import { unit4Questions } from '../../src/content/questions-unit4';
 import { REASONS, THEOREMS } from '../../src/content/theorems';
 import { answerSpecById } from '../../src/content/answer-areas';
@@ -13,6 +16,7 @@ const allStrings = (q: (typeof unit4Questions)[number]) => [
   q.stem, ...(q.subparts ?? []), ...(q.choices ?? []), ...(q.verdictOptions ?? []),
   ...asList(q.expected.reason), ...asList(q.expected.justification), ...(q.expected.proof ?? []),
   ...(q.expected.completions ?? []), q.expected.choice ?? '', q.expected.conclusion ?? '',
+  ...(q.deduction?.reasonLines ?? []), ...(q.deduction?.givens ?? []), ...(q.deduction?.steps ?? []),
 ];
 
 const BLANK = '______';
@@ -20,11 +24,11 @@ const blanksIn = (text: string) => text.match(/_+/g) ?? [];
 const WHOLE_WORD_BLANK = /(?:^|\s)______(?=[\s.,]|$)/;
 
 describe('Unit 4 — משפטים הפוכים', () => {
-  it('contains exactly 8 questions across two pages', () => {
+  it('contains exactly 8 questions across three pages (the guided chains need their room)', () => {
     expect(unit4Questions).toHaveLength(8);
     const counts = new Map<number, number>();
     for (const q of unit4Questions) counts.set(q.page, (counts.get(q.page) ?? 0) + 1);
-    expect([...counts.entries()]).toEqual([[1, 4], [2, 4]]);
+    expect([...counts.entries()]).toEqual([[1, 3], [2, 3], [3, 2]]);
   });
 
   it('has unique ids and stems', () => {
@@ -73,7 +77,7 @@ describe('Unit 4 — משפטים הפוכים', () => {
 
   it('never puts two blanks in the same sentence anywhere in the converse unit', () => {
     for (const q of unit4Questions) {
-      for (const text of [q.stem, ...(q.subparts ?? []), ...(q.choices ?? [])]) {
+      for (const text of [q.stem, ...(q.subparts ?? []), ...(q.choices ?? []), ...(q.deduction?.reasonLines ?? [])]) {
         expect(blanksIn(text).length, `${q.id}: "${text}"`).toBeLessThanOrEqual(1);
       }
     }
@@ -111,7 +115,7 @@ describe('Unit 4 — משפטים הפוכים', () => {
   });
 
   it('keeps every theorem wording canonical: no retyped direct theorem, converses only from theorems.ts', () => {
-    const converses = [THEOREMS.correspondingConverse.text, THEOREMS.alternateConverse.text];
+    const converses = [THEOREMS.correspondingConverse.text, THEOREMS.alternateConverse.text, THEOREMS.coInteriorConverse.text];
     for (const q of unit4Questions) {
       for (const text of allStrings(q)) {
         expect(text, `${q.id}: retyped direct theorem`).not.toMatch(/בין (ה)?ישרים (ה)?מקבילים שוות זו לזו/);
@@ -135,9 +139,18 @@ describe('Unit 4 — משפטים הפוכים', () => {
     expect(q.diagram?.givens.join(' ')).not.toMatch(/alternate|corresponding/);
     expect(asList(q.expected.reason)).toEqual(['∠C ו־∠D הן זוויות מתחלפות.', THEOREMS.alternateConverse.text]);
     expect(planOf('U4-P2-A').instructionVerb).toContain('ציינו');
-    // Three things to write (the pair type, k ∥ m, the full converse): at least three rows.
-    expect(answerSpecById('U4-P2-A').minLines).toBeGreaterThanOrEqual(3);
-    expect(answerSpecById('U4-P2-A').minLines).toBeGreaterThan(answerSpecById('U4-P1-D').minLines);
+    // The guided chain (SPEC 3.2 / 11.14) is the reasoning surface: givens ↓ ∠C = ∠D ↓ k ∥ m, then the
+    // converse completed one word per line — the pair-type word is the student's identification.
+    expect(answerSpecById('U4-P2-A').mode).toBe('deduction');
+    expect(q.deduction?.givens).toEqual(['∠C = 112°', '∠D = 112°']);
+    expect(q.deduction?.steps).toEqual(['∠C = ∠D']);
+    // Graded scaffolding: the 67° chain models its conclusion; here the student writes it after the ↓.
+    expect(q.deduction?.conclusion).toMatch(WHOLE_WORD_BLANK);
+    expect(q.expected.conclusion).toBe('k ∥ m');
+    expect(q.deduction?.reasonLines.some(line => WHOLE_WORD_BLANK.test(line))).toBe(true);
+    expect(q.expected.completions).toEqual(['מתחלפות', 'מקבילים']);
+    // The printed chain names no pair type (the stem only ASKS "מתאימות או מתחלפות") — the drawing decides.
+    expect([...(q.deduction?.givens ?? []), ...(q.deduction?.steps ?? []), q.deduction?.conclusion ?? ''].join(' ')).not.toMatch(/מתאימות|מתחלפות/);
     // It is no longer the same path as the guided U4-P1-D, which names the type.
     expect(byId('U4-P1-D').stem).toContain('מתאימות');
     expect(planOf('U4-P2-A').progressionGain).not.toBe(planOf('U4-P1-D').progressionGain);
@@ -177,13 +190,47 @@ describe('Unit 4 — משפטים הפוכים', () => {
     expect(answerSpecById('U4-P2-B').itemRows ?? 0).toBeGreaterThanOrEqual(1);
   });
 
-  it('U4-P2-C: the key names the corresponding converse in the theorem lane and asks only for x', () => {
+  it('U4-P2-C: the key names the corresponding converse in the theorem lane and ends at the angle', () => {
     const q = byId('U4-P2-C');
     expect(q.expected.justification).toBe(THEOREMS.correspondingConverse.text);
-    expect(Object.keys(q.expected.values ?? {})).toEqual(['x']);
+    // SPEC 7: x, then the angle it produces (74°).
+    expect(q.expected.values).toEqual({ x: 20, 'זווית': 74 });
     expect(asList(q.expected.reason).join(' ')).toContain('המשפט ההפוך של הזוויות המתאימות');
     // The lane holds the theorem; the equation, its solution and the check need rows of their own.
     expect(answerSpecById('U4-P2-C').lane).toBe('theorem');
     expect(answerSpecById('U4-P2-C').minLines).toBeGreaterThanOrEqual(asList(q.expected.reason).length);
+  });
+});
+
+describe('guided deductions (SPEC 3.2 / 11.14) — the shared ↓ arrow', () => {
+  const html = renderToStaticMarkup(createElement(Unit4Pages));
+  const guided = unit4Questions.filter(q => q.deduction);
+
+  it('the two numeric converse applications are guided chains whose reason completes to the canonical converse', () => {
+    expect(guided.map(q => q.id)).toEqual(['U4-P1-D', 'U4-P2-A']);
+    for (const q of guided) {
+      const lines = q.deduction!.reasonLines;
+      const words = q.expected.completions ?? [];
+      expect(words).toHaveLength(lines.length);
+      for (const [index, line] of lines.entries()) expect(blanksIn(line), `${q.id} line ${index + 1}`).toHaveLength(1);
+      const completed = lines.map((line, index) => line.replace(BLANK, words[index]!)).join(' ');
+      // "אם זוג זוויות X שוות זו לזו, אז שני הישרים מקבילים." — the completed lines are exactly the
+      // tail of the canonical converse (after "אם שני ישרים נחתכים על ידי ישר שלישי, ו").
+      const converse = q.id === 'U4-P1-D' ? THEOREMS.correspondingConverse.text : THEOREMS.alternateConverse.text;
+      expect(converse.endsWith(completed.replace(/^אם /, ''))).toBe(true);
+      expect(words.every(word => /^[א-ת]+$/u.test(word))).toBe(true);
+    }
+  });
+
+  it('renders every chain with the shared vector ↓ (one before each printed step and the conclusion), never a text arrow', () => {
+    const chains = html.split('class="deduction-chain"').slice(1);
+    expect(chains).toHaveLength(guided.length);
+    chains.forEach((chain, index) => {
+      const q = guided[index]!;
+      const arrows = chain.split('class="conclusion-arrow-svg"').length - 1;
+      expect(arrows, q.id).toBe(q.deduction!.steps.length + 1);
+      expect(chain).not.toContain('↓');
+      expect(chain).toContain('נתון');
+    });
   });
 });

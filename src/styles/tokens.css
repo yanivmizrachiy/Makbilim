@@ -50,8 +50,10 @@
   --header-accent-w: 22mm;
   --header-accent-h: 0.8mm;
   --running-head-size: 8.7pt;
-  --unit-title-size: 13.6pt;
+  --topic-title-size: 13.6pt;
   --page-number-size: 10.6pt;
+  --page-number-circle: 9mm;       /* number-only page circle, top-left (SPEC 4.1/11.6) */
+  --page-number-ring-w: 0.4mm;
   --footer-size: 7pt;
   --footer-color: #7a8490;
 
@@ -90,15 +92,23 @@
   --choice-bubble-stroke: 0.3mm;
   --choice-gap: 2mm;
 
+  /* ── Graph-paper work grid (SPEC 11.11א / כ): squares only where real work is written ── */
+  --grid-cell: 5mm;             /* squared-paper cell */
+  --grid-line-w: 0.2mm;         /* faint square lines */
+  --grid-color: #c3ccd6;        /* lighter than the writing rule: squares guide, never compete */
+
+  /* ── Conclusion arrow ↓ (SPEC 11.14): one shared vector arrow ── */
+  --arrow-stroke-w: 0.4mm;
+  --arrow-color: var(--ink);
+  --arrow-gap: 1.6mm;
+
   /* ── Diagram scale (owned by the geometry layer; values unchanged) ── */
 }
 
-/* Unit accent: a restrained typographic accent on markers, labels and the header tick. */
-.a4-page[data-layout-quality="premium"] { --unit-accent: #0f6f78; --unit-accent-dark: #183b56; }
-.a4-page[data-unit="2"] { --unit-accent: #126782; --unit-accent-dark: #174968; }
-.a4-page[data-unit="3"] { --unit-accent: #315b7d; --unit-accent-dark: #213f5b; }
-.a4-page[data-unit="4"] { --unit-accent: #6b526f; --unit-accent-dark: #4c3b51; }
-.a4-page[data-unit="5"] { --unit-accent: #5d6670; --unit-accent-dark: #3f4851; }
+/* One uniform accent across the whole booklet (SPEC 11.2 / כח: a single visual language, not a
+   colour per topic). A restrained typographic accent on the page number, question numbers, labels
+   and the header tick. */
+.a4-page[data-layout-quality="premium"] { --accent: #0f6f78; --accent-dark: #183b56; }
 
 @media print and (monochrome) {
   :root {
@@ -107,12 +117,19 @@
     --amber: #555;
     --soft: #f2f2f2;
     --rule-color: #888;
+    --grid-color: #b4b4b4;
     --q-sep-color: #555;
+  }
+  .geometry-diagram {
+    --geo-given: #222222;
+    --geo-marked: #222222;
+    --geo-target: #444444;
+    --geo-aux: #666666;
   }
 
   .a4-page[data-layout-quality="premium"] {
-    --unit-accent: #222;
-    --unit-accent-dark: #111;
+    --accent: #222;
+    --accent-dark: #111;
   }
 }
 
@@ -123,4 +140,37 @@
     --slot-color: CanvasText;
     --frame-rule-color: CanvasText;
   }
+  .geometry-diagram {
+    --geo-ink: CanvasText;
+    --geo-given: CanvasText;
+    --geo-marked: CanvasText;
+    --geo-target: CanvasText;
+    --geo-aux: CanvasText;
+    --geo-halo: Canvas;
+  }
+
 }
+
+/* Geometry (SPEC 10): the figure palette and strokes, scoped to the SVG figure. Colours encode the
+   ROLE of a mark (given / marked / target / auxiliary), never the theorem. */
+.geometry-diagram {
+  --geo-ink: #1a1f24;
+  --geo-given: #0b5c68;
+  --geo-marked: #0b5c68;
+  --geo-target: #c2410c;
+  --geo-aux: #5b6470;
+  --geo-halo: #ffffff;
+
+  --geo-stroke-line: 0.4mm;
+  --geo-stroke-arc: 0.35mm;
+  --geo-stroke-arc-aux: 0.3mm;
+  --geo-stroke-chevron: 0.35mm;
+  --geo-stroke-leader: 0.2mm;
+  --geo-dash-aux: 0.9mm 0.6mm;
+  --geo-halo-width: 0.7mm;
+
+  --geo-label-size: 9.5pt;
+  --geo-line-label-size: 9.5pt;
+  --geo-index-label-size: 9pt;
+}
+

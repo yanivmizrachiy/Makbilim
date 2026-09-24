@@ -39,7 +39,7 @@ function measureLiveQa(): LiveQa {
       const content = page.querySelector<HTMLElement>('.page-content');
       return content ? content.scrollHeight - content.clientHeight > 1 : false;
     })
-    .map(page => `U${page.dataset.unit ?? '?'}-P${page.dataset.page ?? '?'}`);
+    .map(page => page.dataset.pageId ?? `page-${page.dataset.page ?? '?'}`);
   const islands = document.querySelectorAll('bdi.math.mathjax-inline');
   const done = document.querySelectorAll('bdi.math.mathjax-inline mjx-container');
   return { clipped, mathTotal: islands.length, mathDone: done.length };

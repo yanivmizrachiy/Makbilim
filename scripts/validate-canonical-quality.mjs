@@ -29,7 +29,7 @@ const originalTasks = (plan.units ?? [])
   .filter(u => u.unit <= 4)
   .flatMap(u => (u.tasks ?? []).map((task, index) => ({ ...task, unit: u.unit, _index: index })));
 
-gate('coverage', originalTasks.length === 58, `expected 58 original tasks, found ${originalTasks.length}`);
+gate('coverage', originalTasks.length === plan.originalTaskCount, `expected ${plan.originalTaskCount} original tasks (question-plan originalTaskCount), found ${originalTasks.length}`);
 
 gate('unique-ids', new Set(originalTasks.map(t => t.id)).size === originalTasks.length, 'task ids must be unique');
 
@@ -112,7 +112,7 @@ gate('student-facing-copy', bannedHits.length === 0, bannedHits.join('; '));
 
 // Stems are single-quoted literals, or template literals when they quote a canonical sentence from theorems.ts.
 const stemValues = [...allQuestionText.matchAll(/stem:\s*(?:'([^']+)'|`([^`]+)`)/g)].map(m => m[1] ?? m[2]);
-gate('hebrew', stemValues.length >= 58 && stemValues.every(s => /[\u0590-\u05FF]/.test(s)), `found ${stemValues.length} Hebrew stems`);
+gate('hebrew', stemValues.length >= plan.originalTaskCount && stemValues.every(s => /[\u0590-\u05FF]/.test(s)), `found ${stemValues.length} Hebrew stems`);
 
 const normalizedStemCounts = new Map();
 for (const stem of stemValues) {
@@ -135,9 +135,11 @@ const authoredPagesUseSvg = ['Unit1Continuation.tsx', 'Unit2Pages.tsx', 'Unit3Pa
   });
 gate('svg-geometry', authoredPagesUseSvg && /ParallelLinesDiagram/.test(read('src/App.tsx')), 'authored units must render vector geometry');
 
-const hasQuestionMarker = pageText.includes('QuestionBlock') && spec.includes('●');
-const hasSubpartMarker = spec.includes('•');
-gate('markers', hasQuestionMarker && hasSubpartMarker, 'question/subpart marker contract must be present');
+// SPEC 4.2 / 11.5: every question prints its continuous global number; sub-parts print Hebrew letters.
+const questionBlock = read('src/components/QuestionBlock.tsx');
+const hasQuestionMarker = pageText.includes('QuestionBlock') && questionBlock.includes('globalQuestionNumber(taskId)') && questionBlock.includes('className="question-marker"');
+const hasSubpartMarker = questionBlock.includes('className="subpart-marker"') && questionBlock.includes('SUBPART_LETTERS');
+gate('markers', hasQuestionMarker && hasSubpartMarker && spec.includes('1..N'), 'question/subpart marker contract (continuous global number + Hebrew letters) must be present');
 
 const visualDemandOrder = { V1: 1, V2: 2, V3: 3, V4: 4 };
 let visualProgressionOk = true;

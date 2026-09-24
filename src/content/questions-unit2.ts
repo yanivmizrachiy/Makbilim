@@ -5,6 +5,7 @@ const CORRESPONDING = THEOREMS.correspondingDirect.text;
 const ALTERNATE = THEOREMS.alternateDirect.text;
 const ADJACENT = REASONS.adjacent;
 const VERTICAL = REASONS.vertical;
+const COINTERIOR = THEOREMS.coInteriorDirect.text;
 
 export type Unit2Question = {
   id: string;
@@ -75,12 +76,13 @@ export const unit2Questions: Unit2Question[] = [
     id: 'U2-P1-C',
     page: 1,
     stem: 'בשרטוט הישרים a ו־b מקבילים. נתון כי הזווית המסומנת היא 47°. בחרו את גודלה של הזווית המתאימה לה.',
-    choices: ['47°', '43°', '90°', '133°'],
+    // 'אי אפשר לקבוע' is the error of ignoring the given a ∥ b; 43° confuses with 90°; 133° with adjacent.
+    choices: ['47°', '43°', 'אי אפשר לקבוע מהנתונים', '133°'],
     diagram: {
       topology: 'parallel-lines-one-transversal-corresponding-choice',
       lineLabels: ['a', 'b', 's'],
       orientationDeg: -9,
-      transversalDeg: 122,
+      transversalDeg: 124,
       parallelGiven: true,
       givens: ['given angle = 47°'],
       targets: ['corresponding target angle']
@@ -123,7 +125,7 @@ export const unit2Questions: Unit2Question[] = [
       values: { 'β': 117 },
       justification: [CORRESPONDING, ADJACENT]
     },
-    note: 'גם הסדר ההפוך נכון: הזווית הצמודה ל־∠A היא 117°, ו־β מתחלפת לה. תשובה של 63° מעתיקה את ∠A בלי לזהות ש־β צמודה לזווית המתאימה ל־∠A.'
+    note: `גם הסדר ההפוך נכון: הזווית הצמודה ל־∠A היא 117°, ו־β מתחלפת לה. נכונה גם דרך בשלב אחד: ∠A ו־β הן זוויות חד-צדדיות, ולכן β = 180° − 63° = 117° — ${COINTERIOR} תשובה של 63° מעתיקה את ∠A בלי לזהות ש־β צמודה לזווית המתאימה ל־∠A.`
   },
   {
     id: 'U2-P2-B',
@@ -133,7 +135,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'straight-angle-then-alternate',
       lineLabels: ['m', 'n', 'v'],
       orientationDeg: -5,
-      transversalDeg: 45,
+      transversalDeg: 38,
       parallelGiven: true,
       givens: ['given angle = 137°'],
       targets: ['γ alternate to the adjacent supplementary angle']
@@ -141,7 +143,8 @@ export const unit2Questions: Unit2Question[] = [
     expected: {
       values: { 'γ': 43 },
       justification: [ADJACENT, ALTERNATE]
-    }
+    },
+    note: `נכונה גם דרך בשלב אחד: הזווית של 137° ו־γ הן זוויות חד-צדדיות, ולכן γ = 180° − 137° = 43° — ${COINTERIOR}`
   },
   {
     id: 'U2-P2-C',
@@ -184,7 +187,7 @@ export const unit2Questions: Unit2Question[] = [
         `דרך אפשרית: ${VERTICAL} ${CORRESPONDING}`
       ]
     },
-    note: 'α ו־∠A מתחלפות, ולכן גם דרך בשלב אחד נכונה. כל שתי דרכים שונות מבין השלוש מתקבלות; אותו רצף קשרים שנכתב פעמיים אינו שתי דרכים.'
+    note: 'α ו־∠A מתחלפות, ולכן גם דרך בשלב אחד נכונה. מתקבלת גם דרך דרך הזווית החד-צדדית ל־∠A (126°) ו־α הצמודה לה. כל שתי דרכים שונות ונכונות מתקבלות; אותו רצף קשרים שנכתב פעמיים אינו שתי דרכים.'
   },
 
   // עמוד 3 — טבלאות, בחירת נתונים ושני חותכים
@@ -201,8 +204,8 @@ export const unit2Questions: Unit2Question[] = [
     diagram: {
       topology: 'eight-angles-table',
       lineLabels: ['p', 'q', 't'],
-      orientationDeg: -36,
-      transversalDeg: 87,
+      orientationDeg: 10,
+      transversalDeg: 152,
       parallelGiven: true,
       givens: ['reference angle = 38°'],
       targets: ['corresponding', 'alternate', 'vertical', 'adjacent']
@@ -225,7 +228,7 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['k', 'm', 's'],
       pointLabels: ['A', 'D', 'F'],
       orientationDeg: 84,
-      transversalDeg: 137,
+      transversalDeg: 136,
       parallelGiven: true,
       givens: ['∠A = 52°'],
       targets: ['∠D corresponding to ∠A', '∠F adjacent to ∠D']
@@ -258,8 +261,8 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['a', 'b', 'r', 's'],
       pointLabels: ['A', 'C'],
       orientationDeg: -11,
-      transversalDeg: 47,
-      secondaryTransversalDeg: 61,
+      transversalDeg: 38,
+      secondaryTransversalDeg: 96,
       parallelGiven: true,
       givens: ['∠A = 49° on transversal r', '∠C = 73° on transversal s'],
       targets: ['α corresponding to ∠A', 'β alternate to ∠C']
@@ -274,7 +277,7 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P4-A',
     page: 4,
-    stem: 'בשרטוט p ∥ q. שתי הזוויות המסומנות הן מתאימות וגודליהן (4x + 6)° ו־(2x + 38)°. מצאו את x.',
+    stem: 'בשרטוט p ∥ q. גודלי שתי הזוויות המסומנות הם (4x + 6)° ו־(2x + 38)°. זהו את סוג הזוויות, כתבו את המשפט המתאים, מצאו את x וחשבו את גודל הזוויות.',
     diagram: {
       topology: 'corresponding-two-expressions-simple',
       lineLabels: ['p', 'q', 't'],
@@ -282,36 +285,36 @@ export const unit2Questions: Unit2Question[] = [
       transversalDeg: 114,
       parallelGiven: true,
       givens: ['(4x + 6)°', '(2x + 38)°'],
-      targets: ['x']
+      targets: ['x', 'marked angle']
     },
     justificationLane: true,
-    expected: { values: { x: 16 }, justification: CORRESPONDING }
+    expected: { values: { x: 16, 'זווית': 70 }, justification: CORRESPONDING }
   },
   {
     id: 'U2-P4-B',
     page: 4,
-    stem: 'הישרים k ו־m מקבילים. שתי הזוויות המסומנות הן מתחלפות וגודליהן (3x + 17)° ו־(5x − 21)°. מצאו את x.',
+    stem: 'הישרים k ו־m מקבילים. שתי הזוויות המסומנות הן (3x + 17)° ו־(5x − 21)°. איזה סוג זוויות הן? כתבו את המשפט המתאים, מצאו את x ואת גודל הזוויות.',
     diagram: {
       topology: 'alternate-two-expressions-simple',
       lineLabels: ['k', 'm', 'r'],
       orientationDeg: -8,
-      transversalDeg: 58,
+      transversalDeg: 66,
       parallelGiven: true,
       givens: ['(3x + 17)°', '(5x − 21)°'],
-      targets: ['x']
+      targets: ['x', 'marked angle']
     },
     justificationLane: true,
-    expected: { values: { x: 19 }, justification: ALTERNATE }
+    expected: { values: { x: 19, 'זווית': 74 }, justification: ALTERNATE }
   },
   {
     id: 'U2-P4-C',
     page: 4,
-    stem: 'בשרטוט a ∥ b. הזוויות המסומנות מתאימות וגודליהן (6x − 9)° ו־(3x + 42)°. מצאו את x ולאחר מכן חשבו את גודלן של הזוויות המסומנות.',
+    stem: 'בשרטוט a ∥ b. הזוויות המסומנות הן (6x − 9)° ו־(3x + 42)°. זהו את סוג הזוויות ורשמו את המשפט המתאים. מצאו את x ולאחר מכן חשבו את גודלן של הזוויות המסומנות.',
     diagram: {
       topology: 'corresponding-expressions-solve-x-then-angle',
       lineLabels: ['a', 'b', 's'],
       orientationDeg: 38,
-      transversalDeg: 140,
+      transversalDeg: 131,
       parallelGiven: true,
       givens: ['(6x − 9)°', '(3x + 42)°'],
       targets: ['x', 'marked angle']
@@ -322,24 +325,24 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P4-D',
     page: 4,
-    stem: 'בשרטוט הישרים r ו־s מקבילים. גודלי שתי זוויות מתחלפות הם (2x + 35)° ו־(5x − 19)°. בחרו את המשוואה המתאימה, נמקו ופתרו.',
+    stem: 'בשרטוט הישרים r ו־s מקבילים. גודלי שתי הזוויות המסומנות הם (2x + 35)° ו־(5x − 19)°. זהו את סוג הזוויות, בחרו את המשוואה המתאימה, נמקו ופתרו, וחשבו את גודל הזוויות.',
     choices: [
       '2x + 35 = 5x − 19',
       '(2x + 35) + (5x − 19) = 180',
-      '2x + 35 = 180 − (5x − 19)',
+      '(2x + 35) + (5x − 19) = 90',
       '2x + 35 = 5x + 19'
     ],
     diagram: {
       topology: 'alternate-equation-choice',
       lineLabels: ['r', 's', 'u'],
       orientationDeg: 15,
-      transversalDeg: 80,
+      transversalDeg: 86,
       parallelGiven: true,
       givens: ['(2x + 35)°', '(5x − 19)°'],
-      targets: ['correct equation', 'x']
+      targets: ['correct equation', 'x', 'marked angle']
     },
     justificationLane: true,
-    expected: { choice: '2x + 35 = 5x − 19', values: { x: 18 }, justification: ALTERNATE }
+    expected: { choice: '2x + 35 = 5x − 19', values: { x: 18, 'זווית': 71 }, justification: ALTERNATE }
   },
 
   // עמוד 5 — אלגברה מתקדמת יותר
@@ -351,7 +354,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'corresponding-plus-adjacent-two-expressions',
       lineLabels: ['p', 'q', 'v'],
       orientationDeg: -15,
-      transversalDeg: 49,
+      transversalDeg: 71,
       parallelGiven: true,
       givens: ['(7x − 18)° at p', '(3x + 38)° at q, adjacent to the angle corresponding to (7x − 18)°'],
       targets: ['x', 'both angles']
@@ -366,7 +369,7 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P5-B',
     page: 5,
-    stem: 'הישרים c ו־d מקבילים. גודלי שתי זוויות מתחלפות הם (4x + 15)° ו־(2x + 63)°. מצאו את x ואת גודל הזוויות.',
+    stem: 'הישרים c ו־d מקבילים. גודלי שתי הזוויות המסומנות הם (4x + 15)° ו־(2x + 63)°. זהו את סוג הזוויות, כתבו את המשפט, מצאו את x ואת גודל הזוויות.',
     diagram: {
       topology: 'alternate-two-expressions-advanced',
       lineLabels: ['c', 'd', 'w'],
@@ -382,13 +385,13 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P5-C',
     page: 5,
-    stem: 'בשרטוט p ∥ q ושני ישרים חותכים אותם. בזוג אחד נתונות זוויות מתאימות שגודליהן (3x + 12)° ו־72°. בזוג השני נתונות זוויות מתחלפות שגודליהן (2y + 18)° ו־94°. מצאו את x ואת y.',
+    stem: 'בשרטוט p ∥ q ושני ישרים חותכים אותם. בזוג זוויות אחד הגדלים הם (3x + 12)° ו־72°, ובזוג השני (2y + 18)° ו־94°. זהו את סוג כל זוג, כתבו את המשפטים המתאימים ומצאו את x ואת y.',
     diagram: {
       topology: 'two-transversals-two-independent-equations',
       lineLabels: ['p', 'q', 'r', 's'],
       orientationDeg: 9,
       transversalDeg: 117,
-      secondaryTransversalDeg: 109,
+      secondaryTransversalDeg: 103,
       parallelGiven: true,
       givens: ['(3x + 12)° corresponds to 72°', '(2y + 18)° alternates with 94°'],
       targets: ['x', 'y']
@@ -402,19 +405,19 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P5-D',
     page: 5,
-    stem: 'הישרים a ו־b מקבילים. דני כתב את המשוואה 2x + 20 = 3x + 35 והסביר: „הישרים מקבילים, ולכן שתי הזוויות המסומנות שוות.” קבעו אם המשוואה וההסבר נכונים. אם לא, כתבו משוואה נכונה, נמקו ומצאו את x.',
+    stem: 'הישרים a ו־b מקבילים. דני כתב את המשוואה 2x + 20 = 3x + 35 והסביר: „הישרים מקבילים, ולכן שתי הזוויות המסומנות שוות.” קבעו אם המשוואה וההסבר נכונים. אם לא, כתבו משוואה נכונה, נמקו, מצאו את x וחשבו את גודל שתי הזוויות.',
     diagram: {
       topology: 'adjacent-angles-error-analysis-with-parallel-context',
       lineLabels: ['a', 'b', 't'],
       orientationDeg: -4,
-      transversalDeg: 112,
+      transversalDeg: 106,
       parallelGiven: true,
       givens: ['a ∥ b', 'marked angles (2x + 20)° and (3x + 35)° at the same intersection (adjacency is not stated in words)'],
       targets: ['correct equation', 'x']
     },
     justificationLane: true,
     expected: {
-      values: { x: 25 },
+      values: { x: 25, '2x + 20': 70, '3x + 35': 110 },
       justification: `${ADJACENT} המשוואה הנכונה: (2x + 20) + (3x + 35) = 180.`
     },
     note: 'המשוואה וההסבר שגויים: שתי הזוויות המסומנות נמצאות באותה נקודת חיתוך — הן צמודות, לא מתאימות ולא מתחלפות, ולכן המקבילות אינה נותנת כאן שוויון. המשוואה של דני נותנת x = −15, כלומר זוויות של −10°.'
@@ -444,13 +447,13 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'parallel-rails-alternate-then-adjacent',
       lineLabels: ['מסילה 1', 'מסילה 2', 'חותך'],
       orientationDeg: -18,
-      transversalDeg: 105,
+      transversalDeg: 100,
       parallelGiven: true,
       givens: ['given angle = 118°'],
       targets: ['the angle marked ? on the second rail, adjacent to the angle alternate to 118°']
     },
     expected: { values: { 'זווית': 62 }, justification: [ALTERNATE, ADJACENT] },
-    note: 'גם הדרך דרך הזווית המתאימה ל־118° במסילה השנייה, ולאחריה הזווית הצמודה לה, נכונה. תשובה של 118° מעתיקה את הזווית הנתונה בלי השלב של הזווית הצמודה.'
+    note: 'גם הדרך דרך הזווית המתאימה ל־118° במסילה השנייה, ולאחריה הזווית הצמודה לה, נכונה. תשובה של 118° מעתיקה את הזווית הנתונה בלי השלב של הזווית הצמודה. נכונה גם דרך בשלב אחד: הזווית של 118° והזווית המסומנת ב־? הן זוויות חד-צדדיות בין המסילות, ולכן ? = 180° − 118° = 62°.'
   },
   {
     id: 'U2-P6-C',
@@ -463,7 +466,7 @@ export const unit2Questions: Unit2Question[] = [
       orientationDeg: 18,
       // 258° / 273° are the same lines as 78° / 93°; the upper end carries the line label,
       // away from where the two transversals meet below q.
-      transversalDeg: 258,
+      transversalDeg: 146,
       secondaryTransversalDeg: 273,
       parallelGiven: true,
       givens: ['∠A = 128° on transversal r', '∠C = 75° on transversal s'],
@@ -486,8 +489,8 @@ export const unit2Questions: Unit2Question[] = [
       orientationDeg: 74,
       // 202° / 189° (the lines through 22° / 9°): each line label sits at the end where the
       // two transversals spread apart.
-      transversalDeg: 202,
-      secondaryTransversalDeg: 189,
+      transversalDeg: 213,
+      secondaryTransversalDeg: 186,
       parallelGiven: true,
       givens: ['∠A = 41°', '∠C = 68°'],
       targets: ['α corresponding to ∠A', 'β adjacent to angle corresponding to ∠C', 'α + β']

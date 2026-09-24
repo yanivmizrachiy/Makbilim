@@ -2,6 +2,7 @@ import { chromium } from '@playwright/test';
 import { spawn } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { BOOKLET_PAGES, EXPECTED_PAGES } from './lib/booklet-pages.mjs';
 
 const root = process.cwd();
 const pdfDir = path.join(root, 'artifacts', 'pdf');
@@ -77,7 +78,7 @@ try {
 
   await page.goto('http://127.0.0.1:4173/', { waitUntil: 'domcontentloaded', timeout: 20000 });
   await page.waitForSelector('[data-curriculum-ready="true"]', { timeout: 15000 });
-  await page.waitForFunction(() => document.querySelectorAll('.a4-page').length === 19, null, { timeout: 15000 });
+  await page.waitForFunction(expected => document.querySelectorAll('.a4-page').length === expected, EXPECTED_PAGES, { timeout: 15000 });
   await page.evaluate(async () => { if (document.fonts?.ready) await document.fonts.ready; });
   await page.waitForFunction(() => {
     const mathNodes = [...document.querySelectorAll('.mathjax-inline > span')];
@@ -131,10 +132,10 @@ try {
   if (accessibilityStatus.lang !== 'he') accessibilityFailures.push(`html lang=${accessibilityStatus.lang}`);
   if (accessibilityStatus.dir !== 'rtl') accessibilityFailures.push(`html dir=${accessibilityStatus.dir}`);
   if (!accessibilityStatus.title) accessibilityFailures.push('document title missing');
-  if (accessibilityStatus.pageCount !== 19) accessibilityFailures.push(`pageCount=${accessibilityStatus.pageCount}`);
+  if (accessibilityStatus.pageCount !== EXPECTED_PAGES) accessibilityFailures.push(`pageCount=${accessibilityStatus.pageCount}`);
   if (accessibilityStatus.mainLandmarkCount !== 0) accessibilityFailures.push(`mainLandmarkCount=${accessibilityStatus.mainLandmarkCount}`);
-  if (accessibilityStatus.pagesWithRtl !== 19) accessibilityFailures.push(`pagesWithRtl=${accessibilityStatus.pagesWithRtl}`);
-  if (accessibilityStatus.pagesWithSingleHeading !== 19) accessibilityFailures.push(`pagesWithSingleHeading=${accessibilityStatus.pagesWithSingleHeading}`);
+  if (accessibilityStatus.pagesWithRtl !== EXPECTED_PAGES) accessibilityFailures.push(`pagesWithRtl=${accessibilityStatus.pagesWithRtl}`);
+  if (accessibilityStatus.pagesWithSingleHeading !== EXPECTED_PAGES) accessibilityFailures.push(`pagesWithSingleHeading=${accessibilityStatus.pagesWithSingleHeading}`);
   if (accessibilityStatus.geometryTotal === 0 || accessibilityStatus.geometryAccessible !== accessibilityStatus.geometryTotal) {
     accessibilityFailures.push(`geometryAccessible=${accessibilityStatus.geometryAccessible}/${accessibilityStatus.geometryTotal}`);
   }
@@ -151,7 +152,7 @@ try {
   await page.emulateMedia({ media: 'print' });
 
   const pageCount = await page.locator('.a4-page').count();
-  if (pageCount !== 19) throw new Error(`Expected 19 A4 pages across units 1-5, found ${pageCount}`);
+  if (pageCount !== EXPECTED_PAGES) throw new Error(`Expected ${EXPECTED_PAGES} A4 booklet pages (booklet-pages.json), found ${pageCount}`);
 
   const layout = await page.locator('.a4-page').evaluateAll((pages) => pages.map((node, index) => {
     const PX_PER_MM = 96 / 25.4;
@@ -167,6 +168,8 @@ try {
         const tag = element.tagName.toLowerCase();
         const rect = element.getBoundingClientRect();
         if (['svg', 'table', 'mjx-container', 'img'].includes(tag)) { lowest = Math.max(lowest, rect.bottom); return; }
+        // A squared work grid is drawn over its whole box (background squares), so all of it is ink.
+        if (element.matches('.answer-lines[data-grid="squares"]')) { lowest = Math.max(lowest, rect.bottom); return; }
         if (rect.height <= 0) { [...element.children].forEach(walk); return; }
         const bordered = ['Top', 'Right', 'Bottom', 'Left'].some(side => parseFloat(style[`border${side}Width`]) > 0 && style[`border${side}Style`] !== 'none');
         if (bordered && element !== root && (element.children.length === 0 || style.display.startsWith('inline'))) lowest = Math.max(lowest, rect.bottom);
@@ -188,9 +191,9 @@ try {
     const contentRect = content?.getBoundingClientRect();
     const footer = el.querySelector('.page-footer');
     const footerRect = footer?.getBoundingClientRect();
-    const unit = Number(el.getAttribute('data-unit'));
-    const localPage = Number(el.getAttribute('data-page'));
-    const isVerbatimCurriculum = unit === 5;
+    const pageId = el.getAttribute('data-page-id') ?? '';
+    const globalPage = Number(el.getAttribute('data-page'));
+    const isVerbatimCurriculum = el.getAttribute('data-curriculum') === 'true';
     const questions = [...el.querySelectorAll(isVerbatimCurriculum ? '.bbb-source-block' : '.question-block')];
     const questionContents = [...el.querySelectorAll(isVerbatimCurriculum ? '.bbb-source-block' : '.question-content')];
     const markerCount = el.querySelectorAll('.question-marker').length;
@@ -240,7 +243,7 @@ try {
     const geometryCollisionCount = geometryCollisionReport.reduce((sum, item) => sum + item.collisions, 0);
     const geometryOutOfBoundsCount = geometryCollisionReport.reduce((sum, item) => sum + item.outOfBounds, 0);
     const projectTitleText = el.querySelector('.page-title-group h1')?.textContent?.trim() ?? '';
-    const unitTitleText = el.querySelector('.unit-title')?.textContent?.trim() ?? '';
+    const topicTitleText = el.querySelector('.topic-title')?.textContent?.trim() ?? '';
     const pageNumberText = el.querySelector('.page-number')?.textContent?.trim() ?? '';
     const footerLines = [...el.querySelectorAll('.page-footer > div')].map(n => n.textContent?.trim() ?? '');
     const overflowingQuestions = questions.filter(q => {
@@ -295,8 +298,8 @@ try {
     const maxBlockDeadMm = blocks.length ? Math.max(...blocks.map(block => block.blockDeadMm)) : null;
     return {
       renderIndex: index + 1,
-      unit,
-      localPage,
+      pageId,
+      globalPage,
       isVerbatimCurriculum,
       widthPx: rect.width,
       heightPx: rect.height,
@@ -324,7 +327,7 @@ try {
       geometryOutOfBoundsCount,
       geometryCollisionReport,
       projectTitleText,
-      unitTitleText,
+      topicTitleText,
       pageNumberText,
       footerLines,
       headerContentOverlap,
@@ -334,13 +337,9 @@ try {
     };
   }));
 
-  const expectedPages = [
-    [1,1],[1,2],[1,3],[1,4],
-    [2,1],[2,2],[2,3],[2,4],[2,5],[2,6],
-    [3,1],[3,2],[3,3],
-    [4,1],[4,2],
-    [5,1],[5,2],[5,3],[5,4],
-  ];
+  // Booklet order (SPEC 4.3) from booklet-pages.json: curriculum first, then the authored topics; global pages 1..N.
+  // Mirrors src/content/booklet.ts BOOKLET_PAGES.
+  const expectedPages = BOOKLET_PAGES.map(page => ({ pageId: page.id, topic: page.topic }));
   const canonicalProjectTitle = 'זוויות בין ישרים מקבילים';
   const canonicalFooter = [
     'יניב רז - מדריך מחוזי חט"ב בעיר ירושלים',
@@ -360,10 +359,12 @@ try {
     const curriculumFidelityFailure = item.isVerbatimCurriculum && (
       item.questionCount !== 2 || item.sourceNumberCount !== 2 || item.sourceShaCount !== 2
     );
+    const expected = expectedPages[index] ?? { pageId: '', topic: '' };
     const pageChromeFailure = (
       item.projectTitleText !== canonicalProjectTitle ||
-      !item.unitTitleText.includes(`יחידה ${item.unit}`) ||
-      item.pageNumberText !== `עמוד ${item.localPage}` ||
+      item.topicTitleText !== expected.topic ||
+      item.topicTitleText.includes('יחידה') ||
+      item.pageNumberText !== String(index + 1) ||
       item.footerLines.length !== 2 ||
       item.footerLines[0] !== canonicalFooter[0] ||
       item.footerLines[1] !== canonicalFooter[1] ||
@@ -384,8 +385,8 @@ try {
       (item.bottomGapRatio != null && item.bottomGapRatio > 0.12) ||
       (item.usedSpanRatio != null && item.usedSpanRatio < 0.76) ||
       item.maxInterQuestionGapRatio > 0.19 ||
-      item.unit !== expectedPages[index][0] ||
-      item.localPage !== expectedPages[index][1]
+      item.pageId !== expected.pageId ||
+      item.globalPage !== index + 1
     );
   });
   if (failures.length) throw new Error(`A4 layout QA failed: ${JSON.stringify(failures)}`);
@@ -449,7 +450,7 @@ try {
     mathSvg: document.querySelectorAll('.mathjax-inline svg').length,
     geometrySvg: document.querySelectorAll('svg.geometry-diagram').length,
   }));
-  if (snapshotStats.pages !== 19 || snapshotStats.mathSvg < 1 || snapshotStats.geometrySvg < 1) {
+  if (snapshotStats.pages !== EXPECTED_PAGES || snapshotStats.mathSvg < 1 || snapshotStats.geometrySvg < 1) {
     throw new Error(`Vivliostyle snapshot incomplete: ${JSON.stringify(snapshotStats)}`);
   }
 
@@ -457,7 +458,7 @@ try {
     for (let index = 0; index < pageCount; index += 1) {
       const locator = page.locator('.a4-page').nth(index);
       const item = layout[index];
-      const stem = `u${item.unit}-p${item.localPage}`;
+      const stem = item.pageId.toLowerCase();
       await locator.screenshot({
         path: path.join(shotsDir, `${stem}-${suffix}.png`),
         animations: 'disabled',
@@ -493,7 +494,7 @@ try {
 
   await fs.writeFile(
     path.join(root, 'artifacts', 'layout-report.json'),
-    `${JSON.stringify({ pageCount, expectedPages, mathJaxStatus, layout }, null, 2)}\n`,
+    `${JSON.stringify({ pageCount, mathJaxStatus, layout }, null, 2)}\n`,
     'utf8',
   );
   await fs.writeFile(

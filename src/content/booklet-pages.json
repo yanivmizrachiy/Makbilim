@@ -1,0 +1,36 @@
+{
+  "$schema-note": "THE single source of the printed booklet: its student-facing numbering policy, page order, topic titles and which pages are verbatim curriculum. booklet.ts (render + numbering), the PDF/layout QA scripts and the validators all derive page counts and the expected order from this file. Never restate the order or the counts elsewhere.",
+  "numbering": {
+    "structure": "topics-not-units",
+    "curriculumFirst": true,
+    "page": "continuous",
+    "pageDisplay": "circle-top-left",
+    "question": "continuous-global",
+    "subpart": "hebrew-letters",
+    "curriculumNumberIsChrome": true,
+    "unitsAreProvenanceOnly": true
+  },
+  "pages": [
+    { "id": "C-P1", "topic": "שאלות מתוך תוכנית הלימודים", "curriculum": true },
+    { "id": "C-P2", "topic": "שאלות מתוך תוכנית הלימודים", "curriculum": true },
+    { "id": "C-P3", "topic": "שאלות מתוך תוכנית הלימודים", "curriculum": true },
+    { "id": "C-P4", "topic": "שאלות מתוך תוכנית הלימודים", "curriculum": true },
+    { "id": "U1-P5", "topic": "הגדרות ושמונה הזוויות" },
+    { "id": "U1-P1", "topic": "זוויות מתאימות ומתחלפות" },
+    { "id": "U1-P2", "topic": "זוויות מתאימות ומתחלפות" },
+    { "id": "U1-P3", "topic": "המשפטים הישירים" },
+    { "id": "U1-P4", "topic": "המשפטים הישירים" },
+    { "id": "U2-P1", "topic": "חישובי זוויות" },
+    { "id": "U2-P2", "topic": "חישובי זוויות" },
+    { "id": "U2-P3", "topic": "חישובי זוויות" },
+    { "id": "U2-P4", "topic": "אלגברה" },
+    { "id": "U2-P5", "topic": "אלגברה" },
+    { "id": "U2-P6", "topic": "יישומים" },
+    { "id": "U3-P1", "topic": "נימוק והוכחה" },
+    { "id": "U3-P2", "topic": "נימוק והוכחה" },
+    { "id": "U3-P3", "topic": "נימוק והוכחה" },
+    { "id": "U4-P1", "topic": "המשפטים ההפוכים" },
+    { "id": "U4-P2", "topic": "המשפטים ההפוכים" },
+    { "id": "U4-P3", "topic": "המשפטים ההפוכים" }
+  ]
+}

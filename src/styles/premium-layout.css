@@ -12,11 +12,7 @@
   bottom: calc(-1 * var(--frame-rule-w));
   width: var(--header-accent-w);
   height: var(--header-accent-h);
-  background: var(--unit-accent);
-}
-
-.a4-page[data-layout-quality="premium"] .unit-title .unit-no {
-  color: var(--unit-accent-dark);
+  background: var(--accent);
 }
 
 /* Questions sit directly on the white page: no card, no fill, no shadow, no side-bar. */
@@ -27,7 +23,7 @@
 }
 
 .question-block[data-question-surface="premium"] .question-marker {
-  color: var(--unit-accent-dark);
+  color: var(--accent-dark);
 }
 
 .question-block[data-question-surface="premium"] .question-stem {
@@ -41,7 +37,7 @@
   margin-inline-end: 1.8mm;
   padding-inline-end: 1.8mm;
   border-inline-end: 0.3mm solid currentColor;
-  color: var(--unit-accent);
+  color: var(--accent);
   font-size: var(--task-kind-size);
   font-weight: 800;
   line-height: 1.05;
@@ -55,10 +51,11 @@
   box-shadow: none;
 }
 
-/* Writing rules and lanes stay light and dotted: they must never read as the separator. */
+/* Writing rules and lanes stay light and dotted: they must never read as the separator. Only the
+   colour is cleared — the squared work grid (print.css) is a background IMAGE and must survive. */
 .question-block[data-question-surface="premium"] .answer-lines,
 .question-block[data-question-surface="premium"] .justification-lane {
-  background: transparent;
+  background-color: transparent;
   box-shadow: none;
 }
 
@@ -69,7 +66,7 @@
 }
 
 .a4-page[data-layout-quality="premium"] .choice::before {
-  color: var(--unit-accent-dark);
+  color: var(--accent-dark);
 }
 
 .a4-page[data-layout-quality="premium"] .matching-columns > div {
@@ -78,12 +75,12 @@
 }
 
 .a4-page[data-layout-quality="premium"] .matching-columns strong {
-  color: var(--unit-accent-dark);
+  color: var(--accent-dark);
 }
 
 /* Tables keep the clean base borders; only the header ink picks up the unit accent. */
 .a4-page[data-layout-quality="premium"] .data-table th {
-  color: var(--unit-accent-dark);
+  color: var(--accent-dark);
 }
 
 .a4-page[data-layout-quality="premium"] .page-footer {

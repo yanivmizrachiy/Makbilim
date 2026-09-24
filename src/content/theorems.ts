@@ -14,6 +14,13 @@ export const THEOREMS = {
     requiresParallelGiven: true,
     direction: 'direct'
   },
+  coInteriorDirect: {
+    id: 'cointerior-direct',
+    text: 'זוויות חד-צדדיות בין ישרים מקבילים משלימות ל־180°.',
+    formalText: 'אם שני ישרים מקבילים נחתכים על ידי ישר שלישי, אז כל זוג זוויות חד-צדדיות משלימות ל־180°.',
+    requiresParallelGiven: true,
+    direction: 'direct'
+  },
   correspondingConverse: {
     id: 'corresponding-converse',
     text: 'אם שני ישרים נחתכים על ידי ישר שלישי, וזוג זוויות מתאימות שוות זו לזו, אז שני הישרים מקבילים.',
@@ -23,6 +30,12 @@ export const THEOREMS = {
   alternateConverse: {
     id: 'alternate-converse',
     text: 'אם שני ישרים נחתכים על ידי ישר שלישי, וזוג זוויות מתחלפות שוות זו לזו, אז שני הישרים מקבילים.',
+    concludesParallel: true,
+    direction: 'converse'
+  },
+  coInteriorConverse: {
+    id: 'cointerior-converse',
+    text: 'אם שני ישרים נחתכים על ידי ישר שלישי, וזוג זוויות חד-צדדיות משלימות ל־180°, אז שני הישרים מקבילים.',
     concludesParallel: true,
     direction: 'converse'
   }
@@ -45,5 +58,5 @@ export const THEOREM_GUARDRAILS = {
     'זוויות מתאימות שוות'
   ],
   distinction: 'זיהוי זוג זוויות מתאימות או מתחלפות מתאר את מיקומן; שוויון נובע במשפט הישיר רק כאשר נתון שהישרים מקבילים.',
-  conversePlacement: 'משפטים הפוכים נלמדים רק ביחידה המתקדמת לאחר שליטה במשפטים הישירים.'
+  conversePlacement: 'משפטים הפוכים נלמדים רק בנושא „המשפטים ההפוכים”, האחרון בחוברת, לאחר שליטה במשפטים הישירים.'
 } as const;

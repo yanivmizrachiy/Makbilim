@@ -69,7 +69,7 @@ import { Unit4Pages } from '../../src/pages/Unit4Pages';
 import { Unit1Page1 } from '../../src/App';
 import { unit1Questions } from '../../src/content/questions-unit1';
 import { teacherAnswerKey } from '../../src/content/answer-key';
-import { Unit1Continuation } from '../../src/pages/Unit1Continuation';
+import { Unit1Continuation, Unit1Page5 } from '../../src/pages/Unit1Continuation';
 
 // ---------------------------------------------------------------------------
 // Capture the props every page passes to the diagram engines, while still
@@ -561,6 +561,18 @@ function acuteObtuseViolations(pairs: Array<{ name: string; drawn: number; measu
     .map(({ name, drawn, measure }) => `${name}: measure ${measure}° but drawn as ${drawn.toFixed(1)}°`);
 }
 
+/**
+ * SPEC 10 / כז — protractor accuracy: a drawn angle IS its written measure. The engine draws the
+ * crossing at exactly |transversalDeg − orientationDeg|, so every marked value must match the sector
+ * it sits in to within 1° (rounding of the pose); a student measuring the figure must read the number.
+ */
+const PROTRACTOR_TOLERANCE_DEG = 1;
+function exactnessViolations(pairs: Array<{ name: string; drawn: number; measure: number }>) {
+  return pairs
+    .filter(({ drawn, measure }) => Math.abs(drawn - measure) > PROTRACTOR_TOLERANCE_DEG)
+    .map(({ name, drawn, measure }) => `${name}: measure ${measure}° but drawn as ${drawn.toFixed(1)}° (protractor accuracy)`);
+}
+
 const isDegreeValue = (value: string) => /^\d+°$/.test(value);
 const isExpressionValue = (value: string) => /^\(.*[xy].*\)°$/.test(value);
 const bareExpression = (value: string) => value.replace(/^\(/, '').replace(/\)°$/, '');
@@ -797,7 +809,8 @@ const unit2Specs: Unit2Spec[] = [
     derive: () => {
       // 4x + 6 = 2x + 38  ⇒  2x = 32  ⇒  x = 16
       const x = (38 - 6) / (4 - 2);
-      return { answer: { x }, measures: { e1: 4 * x + 6, e2: 2 * x + 38 } };
+      // SPEC 7: finding x is not the end — the answer is the angle, 4·16 + 6 = 70°.
+      return { answer: { x, 'זווית': 4 * x + 6 }, measures: { e1: 4 * x + 6, e2: 2 * x + 38 } };
     },
   },
   {
@@ -810,7 +823,8 @@ const unit2Specs: Unit2Spec[] = [
     derive: () => {
       // 3x + 17 = 5x − 21  ⇒  38 = 2x  ⇒  x = 19
       const x = (17 + 21) / (5 - 3);
-      return { answer: { x }, measures: { e1: 3 * x + 17, e2: 5 * x - 21 } };
+      // SPEC 7: the answer is the angle, 3·19 + 17 = 74°.
+      return { answer: { x, 'זווית': 3 * x + 17 }, measures: { e1: 3 * x + 17, e2: 5 * x - 21 } };
     },
   },
   {
@@ -837,7 +851,8 @@ const unit2Specs: Unit2Spec[] = [
     derive: () => {
       // alternate angles are equal: 2x + 35 = 5x − 19  ⇒  54 = 3x  ⇒  x = 18
       const x = (35 + 19) / (5 - 2);
-      return { answer: { x }, measures: { e1: 2 * x + 35, e2: 5 * x - 19 }, choice: '2x + 35 = 5x − 19' };
+      // SPEC 7: the answer is the angle, 2·18 + 35 = 71°.
+      return { answer: { x, 'זווית': 2 * x + 35 }, measures: { e1: 2 * x + 35, e2: 5 * x - 19 }, choice: '2x + 35 = 5x − 19' };
     },
   },
   {
@@ -902,7 +917,8 @@ const unit2Specs: Unit2Spec[] = [
     derive: () => {
       // adjacent angles: (2x + 20) + (3x + 35) = 180  ⇒  5x = 125  ⇒  x = 25
       const x = (180 - 20 - 35) / (2 + 3);
-      return { answer: { x }, measures: { e1: 2 * x + 20, e2: 3 * x + 35 } };
+      // SPEC 7: substitute back — the two angles are 70° and 110°.
+      return { answer: { x, '2x + 20': 2 * x + 20, '3x + 35': 3 * x + 35 }, measures: { e1: 2 * x + 20, e2: 3 * x + 35 } };
     },
   },
   {
@@ -1298,10 +1314,9 @@ describe('independent verification — unit 2 hand-derived solutions', () => {
 
       it(`drawn angles agree with the computed measures on acute / obtuse (SPEC 10.3)${regressionNote(spec.id)}`, () => {
         const angles = anglesWithProbes(spec);
-        const violations = acuteObtuseViolations(
-          [...spec.marks, ...Object.keys(spec.probes ?? {})].map(name => ({ name, drawn: angles.get(name)!.span, measure: measures[name]! })),
-        );
-        expect(violations).toEqual([]);
+        const pairs = [...spec.marks, ...Object.keys(spec.probes ?? {})].map(name => ({ name, drawn: angles.get(name)!.span, measure: measures[name]! }));
+        expect(acuteObtuseViolations(pairs)).toEqual([]);
+        expect(exactnessViolations(pairs)).toEqual([]);
       });
     });
   }
@@ -1472,6 +1487,7 @@ describe('independent verification — unit 2 algebra: unique, valid, justified'
 const CONVERSE = {
   corresponding: THEOREMS.correspondingConverse.text,
   alternate: THEOREMS.alternateConverse.text,
+  coInterior: THEOREMS.coInteriorConverse.text,
 } as const;
 
 /** A sentence that invokes a converse theorem, by name or by its canonical wording. */
@@ -1534,10 +1550,10 @@ const unit4Specs: Unit4Spec[] = [
     conclusion: 'p ∥ q',
     derive: () => {
       // p ∥ q follows from the converse exactly when the corresponding angles are equal:
-      // 3x + 14 = 5x − 26  ⇒  40 = 2x  ⇒  x = 20 ; angle = 3·20 + 14 = 74 (a check, not asked)
+      // 3x + 14 = 5x − 26  ⇒  40 = 2x  ⇒  x = 20 ; the corresponding angles are 3·20 + 14 = 74°
       const x = (14 + 26) / (5 - 3);
       const angle = 3 * x + 14;
-      return { answer: { x }, measures: { e1: angle, e2: 5 * x - 26 } };
+      return { answer: { x, 'זווית': angle }, measures: { e1: angle, e2: 5 * x - 26 } };
     },
   },
 ];
@@ -1642,10 +1658,9 @@ describe('independent verification — unit 4 converse tasks', () => {
 
       it(`drawn angles agree with the computed measures on acute / obtuse (SPEC 10.3)${regressionNote(spec.id)}`, () => {
         const angles = namedAngles(spec);
-        const violations = acuteObtuseViolations(
-          spec.marks.map(name => ({ name, drawn: angles.get(name)!.span, measure: measures[name]! })),
-        );
-        expect(violations).toEqual([]);
+        const pairs = spec.marks.map(name => ({ name, drawn: angles.get(name)!.span, measure: measures[name]! }));
+        expect(acuteObtuseViolations(pairs)).toEqual([]);
+        expect(exactnessViolations(pairs)).toEqual([]);
       });
     });
   }
@@ -1684,6 +1699,8 @@ describe('independent verification — unit 4 converse tasks', () => {
       if (/זוויות מתאימות בין p ו־q שוות זו לזו/.test(claim)) return { kind: 'equal-pair', holds: (a, b, c) => between(a, c) === between(b, c) };
       // An equal alternate pair: q→t at q against the opposite rays (opposite p)→(opposite t) at p.
       if (/זוויות מתחלפות בין p ו־q שוות זו לזו/.test(claim)) return { kind: 'equal-pair', holds: (a, b, c) => between(a + 180, c + 180) === between(b, c) };
+      // A co-interior pair on the same side of t, between p and q: p→t at p and t→(opposite q) at q.
+      if (/זוויות חד-צדדיות בין p ו־q משלימות ל־180°/.test(claim)) return { kind: 'supplementary-pair', holds: (a, b, c) => between(a, c) + between(c, b + 180) === 180 };
       // The position of a pair only, with no equality: such a pair exists for ANY two lines.
       if (/הן זוויות (מתאימות|מתחלפות) בין p ו־q, /.test(claim) && !/שוות/.test(claim)) return { kind: 'position', holds: () => true };
       throw new Error(`U4-P2-B: unmodelled claim "${claim}"`);
@@ -1700,18 +1717,18 @@ describe('independent verification — unit 4 converse tasks', () => {
     });
 
     // Both verdicts occur; every „always true” fact and the position-only claim are false.
-    expect(derived.map(d => d.kind).sort()).toEqual(['adjacent', 'equal-pair', 'equal-pair', 'position', 'vertical']);
-    expect(derived.filter(d => d.verdict === 'נכון').map(d => d.kind)).toEqual(['equal-pair', 'equal-pair']);
+    expect(derived.map(d => d.kind).sort()).toEqual(['adjacent', 'equal-pair', 'position', 'supplementary-pair', 'vertical']);
+    expect(derived.filter(d => d.verdict === 'נכון').map(d => d.kind)).toEqual(['equal-pair', 'supplementary-pair']);
 
     const keyed = asList(q.expected.reason);
     expect(keyed).toHaveLength(claims.length);
     derived.forEach(({ claim, verdict }, index) => {
       const key = keyed[index]!;
       expect(key.startsWith(`${verdict} — `), `U4-P2-B "${claim}": key "${key}" vs derived ${verdict}`).toBe(true);
-      const pair = /זוויות (מתאימות|מתחלפות) בין p ו־q שוות/.exec(claim)?.[1];
+      const pair = /זוויות (מתאימות|מתחלפות|חד-צדדיות) בין p ו־q (?:שוות|משלימות)/.exec(claim)?.[1];
       if (verdict === 'נכון') {
         // A true claim is justified by exactly the converse of the pair it names (SPEC 3.2).
-        const converse = pair === 'מתאימות' ? CONVERSE.corresponding : CONVERSE.alternate;
+        const converse = pair === 'מתאימות' ? CONVERSE.corresponding : pair === 'חד-צדדיות' ? CONVERSE.coInterior : CONVERSE.alternate;
         expect(key).toBe(`נכון — ${converse}`);
       } else {
         // A false claim never cites a converse (or a direct theorem) as if it applied.
@@ -1963,7 +1980,8 @@ describe('independent verification — unit 3 proof relations match the drawing'
     expect(new Set(used).size).toBe(3);
     for (const reason of used) expect(q.choices).toContain(reason);
     const unused = (q.choices ?? []).filter(choice => !used.includes(choice));
-    expect(unused).toEqual([REASONS.adjacent]);
+    // The spare reason is the incomplete theorem (no parallel condition): it proves nothing.
+    expect(unused).toEqual(['זוויות מתחלפות שוות.']);
     // No drawn pair among the claims is adjacent, so the spare reason really fits nothing.
     expect(unit3Claims['U3-P1-C']!.map(([, , kind]) => kind)).not.toContain('adjacent');
     // The bank does not list the reasons in the order of the claims.
@@ -2073,6 +2091,7 @@ describe('independent verification — unit 3 proof relations match the drawing'
     const index = drawing.marks.findIndex(mark => mark.label === 'E');
     expect(drawing.marks[index]!.value).toBe('35°');
     expect(acuteObtuseViolations([{ name: 'E', drawn: drawing.angles[index]!.span, measure: 35 }])).toEqual([]);
+    expect(exactnessViolations([{ name: 'E', drawn: drawing.angles[index]!.span, measure: 35 }])).toEqual([]);
   });
 
   it('unit 3: every drawn numeric value agrees with its sector on acute / obtuse', () => {
@@ -2080,7 +2099,9 @@ describe('independent verification — unit 3 proof relations match the drawing'
       const drawing = drawingOf(q.id);
       drawing.marks.forEach((mark, index) => {
         if (!mark.value || !isDegreeValue(mark.value)) return;
-        expect(acuteObtuseViolations([{ name: `${q.id} ${mark.label}`, drawn: drawing.angles[index]!.span, measure: Number.parseInt(mark.value, 10) }])).toEqual([]);
+        const pair = { name: `${q.id} ${mark.label}`, drawn: drawing.angles[index]!.span, measure: Number.parseInt(mark.value, 10) };
+        expect(acuteObtuseViolations([pair])).toEqual([]);
+        expect(exactnessViolations([pair])).toEqual([]);
       });
     }
   });
@@ -2126,7 +2147,7 @@ type Unit1Figure = { svg: string; props: ParallelLinesDiagramProps };
 
 function unit1Figures(): Map<string, Unit1Figure[]> {
   const figures = new Map<string, Unit1Figure[]>();
-  for (const Page of [Unit1Page1, Unit1Continuation]) {
+  for (const Page of [Unit1Page1, Unit1Page5, Unit1Continuation]) {
     captured.diagrams.length = 0;
     const html = renderToStaticMarkup(createElement(Page));
     const starts = [...html.matchAll(/<svg class="geometry-diagram/g)].map(m => m.index);
@@ -2213,14 +2234,64 @@ function placeWords(bisectorDeg: number, lineDeg: number, transDeg: number, line
 }
 
 describe('independent verification — unit 1 identification keys match the rendered drawings', () => {
-  it('every unit-1 task with a figure is read back here (U1-P2-E is statements only)', () => {
-    expect([...u1Figures.keys()].sort()).toEqual(unit1Questions.map(q => q.id).filter(id => id !== 'U1-P2-E').sort());
+  it('every unit-1 task with a figure is read back here (U1-P2-E and U1-P5-D are statements only)', () => {
+    const statementsOnly = new Set(['U1-P2-E', 'U1-P5-D']);
+    expect([...u1Figures.keys()].sort()).toEqual(unit1Questions.map(q => q.id).filter(id => !statementsOnly.has(id)).sort());
   });
 
   it('the place words are right on a hand-checkable figure (horizontal line, transversal rising to the right)', () => {
     // SVG y grows down: 90° points down the page, 300° up and to the right.
     expect(placeWords(90 + 45, 0, 300, 'm', 't')).toBe('מתחת לישר m ומשמאל לישר t');
     expect(placeWords(-60 + 45, 0, 300, 'm', 't')).toBe('מעל הישר m ומימין לישר t');
+  });
+
+  it('U1-P5-A: the definitions figure marks the lines parallel and marks no angle', () => {
+    const figure = u1Figure('U1-P5-A');
+    expect(figure.props.showParallelMarks).toBe(true);
+    expect(figure.props.angleMarks ?? []).toHaveLength(0);
+    expect(figure.svg).toContain('parallel-mark--chevrons');
+    expect(figure.svg).not.toContain('angle-arc');
+  });
+
+  it('U1-P5-B: all eight angles are numbered 1–8 in their openings, four at each crossing, with no arcs', () => {
+    const { svg } = u1Figure('U1-P5-B');
+    expect(svg).not.toContain('angle-arc');
+    const angles = indexLabelledAngles(svg);
+    expect(angles.map(angle => angle.label).sort()).toEqual(['1', '2', '3', '4', '5', '6', '7', '8']);
+    for (const angle of angles) expect(angle.margin, `U1-P5-B ∠${angle.label ?? ''}: the number sits clearly inside one angle`).toBeGreaterThan(4);
+    for (const vertex of ['top', 'bottom']) {
+      const at = angles.filter(angle => angle.vertex === vertex);
+      expect(at, `U1-P5-B: four angles at the ${vertex} crossing`).toHaveLength(4);
+      // The four sectors of one crossing are distinct: both sides of the line × both sides of the transversal.
+      expect(new Set(at.map(angle => `${angle.lineSide}${angle.transSide}`)).size).toBe(4);
+    }
+    // The key's convention: 1–4 at the upper crossing, 5–8 at the lower one.
+    expect(angles.filter(angle => angle.vertex === 'top').map(angle => angle.label).sort()).toEqual(['1', '2', '3', '4']);
+    expect(angles.filter(angle => angle.vertex === 'bottom').map(angle => angle.label).sort()).toEqual(['5', '6', '7', '8']);
+  });
+
+  it('U1-P5-C: the marked pair is genuinely co-interior — one angle at each crossing, both between the lines, on the same side of the transversal — and supplementary', () => {
+    const drawing = u1Drawing('U1-P5-C');
+    expect(drawing.chevrons, 'U1-P5-C: the lines are marked parallel').toEqual([0, 1]);
+    expect(drawing.angles).toHaveLength(2);
+    const [a, b] = drawing.angles as [DrawnAngle, DrawnAngle];
+    expect(a.parallelLine).not.toBe(b.parallelLine);
+    expect(a.interior && b.interior, 'both angles lie between the parallel lines').toBe(true);
+    // Two interior angles at different crossings are either alternate (opposite sides of the
+    // transversal) or co-interior (the same side). This pair is not alternate, so it is co-interior;
+    // between parallel lines it then completes to 180° instead of being equal.
+    expect(['corresponding', 'alternate', 'alternate-exterior', 'vertical', 'adjacent', 'same']).not.toContain(relationOf(a, b));
+    expect(a.span + b.span).toBeCloseTo(180, 0);
+    expect(Math.abs(a.span - b.span), 'the drawn crossing is far from 90°, so the pair is visibly unequal').toBeGreaterThan(20);
+    const words = u1Key('U1-P5-C').answer as string[];
+    // Line 2 applies the theorem: 180° − 70° = 110°.
+    expect(words).toEqual(['180°', '110°']);
+    const q = unit1Questions.find(item => item.id === 'U1-P5-C')!;
+    expect(q.subparts![0]!.replace(/_+/, words[0]!)).toBe(THEOREMS.coInteriorDirect.text);
+    expect(q.subparts![1]).toContain('70°');
+    expect(180 - 70).toBe(Number.parseInt(words[1]!, 10));
+    // Protractor accuracy: the acute angle of the marked pair is drawn at the 70° the line names.
+    expect(Math.min(a.span, b.span)).toBeCloseTo(70, 0);
   });
 
   it.each([

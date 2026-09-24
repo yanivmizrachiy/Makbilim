@@ -2,10 +2,10 @@ import { A4Page } from '../components/A4Page';
 import { ClozeText } from '../components/ClozeText';
 import { MathText } from '../components/MathText';
 import { QuestionBlock } from '../components/QuestionBlock';
-import { ChoiceGrid, ItemRows, LineSlot, VerdictOptions } from '../components/ResponseParts';
+import { ChoiceGrid, ItemRows, LineSlot, VerdictOptions, WordBank } from '../components/ResponseParts';
 import { answerSpecById } from '../content/answer-areas';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
-import { alternateInteriorPairs, correspondingPair, type AnglePair } from '../geometry/relations';
+import { alternateInteriorPairs, coInteriorPair, correspondingPair, type AnglePair } from '../geometry/relations';
 import { unit1Questions } from '../content/questions-unit1';
 
 /** A pair of angles the task text points to ("the marked pair"), drawn with the marked role. */
@@ -97,7 +97,7 @@ function Unit1Page2() {
   const theorem = byId('U1-P2-C');
 
   return (
-    <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={2}>
+    <A4Page pageId="U1-P2">
       <QuestionBlock
         taskId={corresponding.id}
         compact
@@ -226,7 +226,7 @@ function Unit1Page3() {
   const claim = byId('U1-P3-A');
 
   return (
-    <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={3}>
+    <A4Page pageId="U1-P3">
       <QuestionBlock
         taskId={theorem.id}
         compact
@@ -269,7 +269,7 @@ function Unit1Page4() {
   const correction = byId('U1-P3-D');
 
   return (
-    <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={4}>
+    <A4Page pageId="U1-P4">
       <QuestionBlock taskId={table.id} compact response={<RelationTable />}>
         {table.stem}
       </QuestionBlock>
@@ -313,6 +313,70 @@ function Unit1Page4() {
         }
       >
         {correction.stem}
+      </QuestionBlock>
+    </A4Page>
+  );
+}
+
+const DEFINITION_BANK = ['משותפות', 'מקבילים'];
+
+/**
+ * The opening didactic page (SPEC 3.5 / 4.3): the definitions of parallel lines and segments, the
+ * eight angles a transversal forms, the one-sided (co-interior) theorem, and a true/false pass that
+ * separates "supplementary to 180°" from "equal". Placed first among the authored topics in the
+ * booklet (App renders it before Unit1Page1).
+ */
+export function Unit1Page5() {
+  const def = byId('U1-P5-A');
+  const eight = byId('U1-P5-B');
+  const cointerior = byId('U1-P5-C');
+  const trueFalse = byId('U1-P5-D');
+
+  // The eight angles: all four sectors at each crossing, numbered 1–8.
+  const eightMarks: AngleMark[] = [
+    ...([0, 1, 2, 3] as const).map(sector => ({ intersection: 'top' as const, sector, label: String(sector + 1), role: 'marked' as const })),
+    ...([0, 1, 2, 3] as const).map(sector => ({ intersection: 'bottom' as const, sector, label: String(sector + 5), role: 'marked' as const })),
+  ];
+
+  return (
+    <A4Page pageId="U1-P5">
+      <QuestionBlock
+        taskId={def.id}
+        compact
+        diagram={<ParallelLinesDiagram lineLabels={['a', 'b']} transversalLabel="c" orientationDeg={-2} transversalDeg={136} showParallelMarks ariaLabel="שני ישרים מקבילים וישר החותך אותם, להמחשת ההגדרה" />}
+        items={clozeItems(def.subparts ?? [])}
+      >
+        {def.stem}
+        <WordBank items={DEFINITION_BANK} />
+      </QuestionBlock>
+
+      <QuestionBlock
+        taskId={eight.id}
+        compact
+        diagram={<ParallelLinesDiagram lineLabels={['p', 'q']} transversalLabel="t" orientationDeg={-4} transversalDeg={116} showParallelMarks angleMarks={eightMarks} ariaLabel="שמונה הזוויות שנוצרו בשני המפגשים של החותך עם הישרים המקבילים" />}
+      >
+        {eight.stem}
+      </QuestionBlock>
+
+      <QuestionBlock
+        taskId={cointerior.id}
+        compact
+        diagram={<ParallelLinesDiagram lineLabels={['k', 'm']} transversalLabel="r" orientationDeg={-11} transversalDeg={59} showParallelMarks angleMarks={markedPair(coInteriorPair(-11, 59))} />}
+        items={clozeItems(cointerior.subparts ?? [])}
+      >
+        {cointerior.stem}
+      </QuestionBlock>
+
+      <QuestionBlock
+        taskId={trueFalse.id}
+        items={(trueFalse.subparts ?? []).map(text => ({
+          // Each claim goes through MathText, so any mathematics in it is typeset as an island.
+          content: <MathText text={text} />,
+          aside: <VerdictOptions options={trueFalse.verdictOptions ?? []} />,
+          after: <ItemRows label="נימוק:" rows={answerSpecById(trueFalse.id).itemRows ?? 1} />,
+        }))}
+      >
+        {trueFalse.stem}
       </QuestionBlock>
     </A4Page>
   );

@@ -194,7 +194,7 @@ function ProofQuestion({ q }: { q: Unit3Question }) {
 function Unit3Page({ page }: { page: number }) {
   const questions = unit3Questions.filter(q => q.page === page);
   return (
-    <A4Page unitNumber={3} unitTitle="תרגילי הוכחה" pageNumber={page}>
+    <A4Page pageId={`U3-P${page}`}>
       {questions.map(q => <ProofQuestion key={q.id} q={q} />)}
     </A4Page>
   );

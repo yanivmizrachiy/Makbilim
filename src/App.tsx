@@ -3,7 +3,7 @@ import { QuestionBlock } from './components/QuestionBlock';
 import { LineSlot, WordBank } from './components/ResponseParts';
 import { ParallelLinesDiagram } from './geometry/ParallelLinesDiagram';
 import { unit1Questions } from './content/questions-unit1';
-import { Unit1Continuation } from './pages/Unit1Continuation';
+import { Unit1Continuation, Unit1Page5 } from './pages/Unit1Continuation';
 import { Unit2Pages } from './pages/Unit2Pages';
 import { Unit3Pages } from './pages/Unit3Pages';
 import { Unit4Pages } from './pages/Unit4Pages';
@@ -26,7 +26,7 @@ export function Unit1Page1() {
   const d = byId('U1-P1-D');
 
   return (
-    <A4Page unitNumber={1} unitTitle="מושגים בסיסיים" pageNumber={1}>
+    <A4Page pageId="U1-P1">
       <QuestionBlock taskId={a.id} compact diagram={<ParallelLinesDiagram lineLabels={['p', 'q']} transversalLabel="r" orientationDeg={0} transversalDeg={50} showParallelMarks={false} ariaLabel="שני ישרים וישר נוסף החותך את שניהם" />}>
         {a.stem}
       </QuestionBlock>
@@ -66,12 +66,13 @@ export function Unit1Page1() {
 export default function App() {
   return (
     <div className="preview-stack">
+      <Unit5Pages />
+      <Unit1Page5 />
       <Unit1Page1 />
       <Unit1Continuation />
       <Unit2Pages />
       <Unit3Pages />
       <Unit4Pages />
-      <Unit5Pages />
     </div>
   );
 }

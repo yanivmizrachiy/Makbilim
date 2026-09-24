@@ -105,8 +105,15 @@ describe('one design-token system (src/styles/tokens.css)', () => {
     expect(luminance(tokens.get('--rule-color')!)).toBeLessThan(0.72);
     expect(luminance(tokens.get('--q-sep-color')!)).toBeLessThan(luminance(tokens.get('--rule-color')!) - 0.1);
     expect(mmOf(tokens.get('--rule-w') ?? '')).toBeLessThanOrEqual(0.25);
-    const ruleCss = rules(printCss).filter(rule => /\.rule\b|answer-lines/.test(rule.selector));
+    // The squared work grid (SPEC 11.11א) is the one gradient-drawn rule set. Forced colours drop
+    // it, so print.css must restore the bordered rules under it — the writing guidance survives.
+    const ruleCss = rules(printCss).filter(rule => /\.rule\b|answer-lines/.test(rule.selector) && !rule.selector.includes('data-grid="squares"'));
     expect(ruleCss.flatMap(rule => rule.declarations).filter(([, value]) => /gradient/.test(value))).toEqual([]);
+    const gridFallback = rules(printCss).find(rule =>
+      rule.selector === '.answer-lines[data-grid="squares"] > .rule' &&
+      rule.declarations.some(([property, value]) => property === 'border-bottom' && value.includes('var(--rule-w)')),
+    );
+    expect(gridFallback, 'forced-colours fallback restores the bordered rules under the square grid').toBeDefined();
   });
 
   it('uses two text sizes for what students read (body, secondary) instead of per-component literals', () => {
@@ -137,22 +144,23 @@ describe('density presets (src/content/page-layout.ts)', () => {
       expect(['regular', 'dense']).toContain(density);
       expect(tuningCss).toContain(`[data-density="${density}"]`);
     }
-    const [unit, page] = Object.keys(PAGE_DENSITY)[0]!.match(/\d+/g)!.map(Number) as [number, number];
-    const markup = renderToStaticMarkup(createElement(A4Page, { unitNumber: unit, unitTitle: 't', pageNumber: page, children: null }));
-    expect(markup).toContain(`data-density="${pageDensity(unit, page)}"`);
-    expect(pageDensity(5, 1)).toBe('regular');
+    const pageId = Object.keys(PAGE_DENSITY)[0]!;
+    const markup = renderToStaticMarkup(createElement(A4Page, { pageId, children: null }));
+    expect(markup).toContain(`data-density="${pageDensity(pageId)}"`);
+    expect(pageDensity('C-P1')).toBe('regular');
   });
 });
 
 describe('page header and footer', () => {
-  const markup = renderToStaticMarkup(createElement(A4Page, { unitNumber: 2, unitTitle: 'תרגילי חישוב', pageNumber: 3, children: null }));
+  // U2-P4 is global page 13 (curriculum 1–4, definitions 5, unit-1 6–9, U2-P1..P3 10–12), topic "אלגברה".
+  const markup = renderToStaticMarkup(createElement(A4Page, { pageId: 'U2-P4', children: null }));
   const tree = parseMarkup(markup);
   const text = (className: string) => visibleText(findAll(tree, node => hasClass(node, className))[0]!).trim();
 
   it('keeps every header and footer text exactly as the visual baseline compares it', () => {
     expect(visibleText(findAll(tree, node => node.tag === 'h1')[0]!).trim()).toBe('זוויות בין ישרים מקבילים');
-    expect(text('unit-title')).toBe('יחידה 2 — תרגילי חישוב');
-    expect(text('page-number')).toBe('עמוד 3');
+    expect(text('topic-title')).toBe('אלגברה');
+    expect(text('page-number')).toBe('13');
     const footer = findAll(tree, node => hasClass(node, 'page-footer'))[0]!;
     expect(findAll(footer, node => node.tag === 'div').map(node => visibleText(node).trim())).toEqual([
       printTokens.footer.line1,
@@ -163,8 +171,8 @@ describe('page header and footer', () => {
   it('lets the unit lead: the unit title is larger than the running head, which is quiet', () => {
     const tokens = baseTokens();
     const pt = (name: string) => Number(/^([\d.]+)pt$/.exec(tokens.get(name) ?? '')?.[1]);
-    expect(pt('--unit-title-size')).toBeGreaterThanOrEqual(13);
-    expect(pt('--unit-title-size')).toBeLessThanOrEqual(14);
+    expect(pt('--topic-title-size')).toBeGreaterThanOrEqual(13);
+    expect(pt('--topic-title-size')).toBeLessThanOrEqual(14);
     expect(pt('--running-head-size')).toBeGreaterThanOrEqual(8.6);
     expect(pt('--running-head-size')).toBeLessThanOrEqual(8.8);
     expect(pt('--page-number-size')).toBeGreaterThanOrEqual(10);

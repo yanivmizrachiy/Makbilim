@@ -1,18 +1,6 @@
 {
   "projectTitle": "זוויות בין ישרים מקבילים",
   "canonicalSpec": "SPEC.md",
-  "numbering": {
-    "unitNumbering": "numeric",
-    "pageNumbering": "reset-per-unit",
-    "firstPageInEveryUnit": 1,
-    "globalContinuousPageNumbering": false,
-    "questionNumbering": "none",
-    "subpartNumbering": "none",
-    "questionMarker": "●",
-    "subpartMarker": "•",
-    "questionMarkerRole": "large-solid-bullet",
-    "subpartMarkerRole": "small-solid-bullet"
-  },
   "units": [
     {
       "unit": 1,
@@ -35,7 +23,9 @@
         "table",
         "multiple-choice",
         "true-false",
-        "claim-comparison"
+        "claim-comparison",
+        "construction-and-explain",
+        "error-correction"
       ],
       "forbiddenAtThisStage": ["algebra", "converse-theorems", "formal-proof"]
     },

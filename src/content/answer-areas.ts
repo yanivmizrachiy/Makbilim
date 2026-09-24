@@ -27,8 +27,10 @@ import { unit4Questions } from './questions-unit4';
  *  algebra   'המשפט המתאים:' (or 'המשפטים המתאימים:') lane, equation work rules and the result slots
  *  critique  judge a claim, an equation or a proof, and correct it
  *  proof     a blank טענה | נימוק proof form, ruled at the writing pitch
+ *  deduction the printed guided chain (givens ↓ equality ↓ conclusion) with its cloze reason IS the
+ *            answer surface (components/DeductionChain.tsx); no writing rows
  */
-export type AnswerMode = 'none' | 'items' | 'value' | 'justify' | 'work' | 'two-ways' | 'algebra' | 'critique' | 'proof';
+export type AnswerMode = 'none' | 'items' | 'value' | 'justify' | 'work' | 'two-ways' | 'algebra' | 'critique' | 'proof' | 'deduction';
 
 /**
  * The lane that opens the work area: the theorem that justifies the equation, the theorems of a
@@ -46,6 +48,8 @@ export type AnswerSpec = {
   final?: boolean;
   /** Which unknowns get a final slot, when not all of the task's answer values are asked for. */
   finalKeys?: readonly string[];
+  /** The equation-cell label, when the task writes more than one equation. */
+  equationLabel?: string;
   /** Writing rows under EACH sub-item (e.g. the 'נימוק:' rows of a true/false statement). */
   itemRows?: number;
 };
@@ -61,6 +65,7 @@ export const GROW_BY_MODE: Readonly<Record<AnswerMode, 0 | 1 | 2 | 3>> = {
   algebra: 3,
   critique: 3,
   proof: 3,
+  deduction: 1,
 };
 
 export const LANE_LABEL: Readonly<Record<AnswerLane, string>> = {
@@ -68,6 +73,13 @@ export const LANE_LABEL: Readonly<Record<AnswerLane, string>> = {
   theorems: 'המשפטים המתאימים:',
   reason: 'נימוק:',
 };
+
+/** The second cell of a theorem lane (SPEC 7): the row reads „המשפט המתאים | המשוואה”. */
+export const EQUATION_LABEL = 'המשוואה:';
+/** A task with two unknowns (x and y) writes two equations. */
+export const EQUATION_LABEL_PLURAL = 'המשוואות:';
+/** Lanes whose row is split into the theorem cell and the equation cell. */
+export const EQUATION_LANES: ReadonlySet<AnswerLane> = new Set<AnswerLane>(['theorem', 'theorems']);
 
 /** Labels of the two lanes of a 'two-ways' task — words, never letters or numbers (SPEC 4.2). */
 export const TWO_WAYS_LABELS = ['דרך ראשונה', 'דרך שנייה'] as const;
@@ -80,7 +92,8 @@ export const FORMAT_ANSWER: Readonly<Record<string, AnswerSpec>> = {
   'mark-on-diagram': { mode: 'none', minLines: 0 },
   classification: { mode: 'items', minLines: 0 },
   matching: { mode: 'none', minLines: 0 },
-  'construction-and-explain': { mode: 'work', minLines: 2 },
+  // A short verbal explanation: prose rules, not the squared derivation grid (SPEC 11.11א).
+  'construction-and-explain': { mode: 'justify', minLines: 2 },
   'sentence-completion': { mode: 'none', minLines: 0 },
   'true-false': { mode: 'items', minLines: 0, itemRows: 2 },
   'claim-comparison': { mode: 'critique', minLines: 3 },
@@ -129,16 +142,23 @@ export const FORMAT_ANSWER: Readonly<Record<string, AnswerSpec>> = {
 export const TASK_ANSWER_OVERRIDES: Readonly<Record<string, AnswerSpec>> = {
   // Two reasons (corresponding angles, then adjacent angles): the lane label is plural. The key
   // records both angle sizes; the slot is x only, since a slot never names an expression by its digits.
-  'U2-P5-A': { mode: 'algebra', minLines: 2, lane: 'theorems', final: true, finalKeys: ['x'] },
+  'U2-P5-A': { mode: 'algebra', minLines: 2, lane: 'theorems', final: true, finalKeys: ['x', 'הזווית הקטנה', 'הזווית הגדולה'] },
+  'U2-P5-D': { mode: 'critique', minLines: 2, lane: 'theorem', final: true, finalKeys: ['x', 'הזווית הקטנה', 'הזווית הגדולה'] },
   // Two equations, two theorems (corresponding for x, alternate for y).
-  'U2-P5-C': { mode: 'algebra', minLines: 2, lane: 'theorems', final: true },
+  // Q36: the table's empty cells ARE the answers — no second pair of slots under it.
+  'U2-P3-B': { mode: 'value', minLines: 2 },
+  // Q37 asks for β AND for the datum that is not needed: each answer has its own slot.
+  'U2-P3-C': { mode: 'work', minLines: 3, final: true, finalKeys: ['β', 'הנתון שאינו נחוץ'] },
+  'U2-P5-C': { mode: 'algebra', minLines: 2, lane: 'theorems', final: true, equationLabel: EQUATION_LABEL_PLURAL },
   // 'חשבו את α + β. נמקו כל שלב' — α and β are steps on the way, the asked value is their sum;
   // every step has its own reason (corresponding angles, adjacent angles).
   'U2-P6-D': { mode: 'work', minLines: 3, lane: 'theorems', final: true, finalKeys: ['α + β'] },
   // Five converse claims on a full page: one 'נימוק:' row under each verdict (five rows in all).
   'U4-P2-B': { mode: 'items', minLines: 0, itemRows: 1 },
-  // Name the pair type, conclude k ∥ m and cite the full converse: three rows (the guided U4-P1-D keeps two).
-  'U4-P2-A': { mode: 'justify', minLines: 3 },
+  // The first converse applications are guided deductions (SPEC 3.2): the printed chain
+  // (givens ↓ equality ↓ conclusion) with its one-word-per-line reason is the whole answer surface.
+  'U4-P1-D': { mode: 'deduction', minLines: 0 },
+  'U4-P2-A': { mode: 'deduction', minLines: 0 },
 };
 
 const FORMAT_BY_TASK_ID: ReadonlyMap<string, string> = new Map(
@@ -164,6 +184,10 @@ export const growOf = (spec: AnswerSpec): 0 | 1 | 2 | 3 => GROW_BY_MODE[spec.mod
 const PURE_NUMBER = new Set(['x', 'y']);
 /** The unknown named in words ('the angle'), labelled in the stem's own number (זווית / זוויות). */
 const WORD_ANGLE = 'זווית';
+/** Two different angles, named by size in words — a slot never names an expression by its digits. */
+const NAMED_ANGLES = new Set(['הזווית הקטנה', 'הזווית הגדולה']);
+/** A word answer (not a measure): a blank without a degree sign. */
+const WORD_ANSWERS = new Set(['הנתון שאינו נחוץ']);
 
 /**
  * One final-answer slot as a MathText line with a typed blank: '∠B = ____°', 'x = ____',
@@ -171,6 +195,8 @@ const WORD_ANGLE = 'זווית';
  */
 export function finalSlotText(key: string, stem = ''): string {
   if (key === WORD_ANGLE) return `${stem.includes('הזוויות') ? 'גודל הזוויות' : 'גודל הזווית'}: ____°`;
+  if (NAMED_ANGLES.has(key)) return `גודל ${key}: ____°`;
+  if (WORD_ANSWERS.has(key)) return `${key}: ____`;
   return PURE_NUMBER.has(key) ? `${key} = ____` : `${key} = ____°`;
 }
 

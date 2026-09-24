@@ -27,10 +27,10 @@ describe('premium workbook layout contract', () => {
 
   it('keeps canonical page and question DOM contracts while exposing premium hooks', () => {
     expect(page).toContain('data-layout-quality="premium"');
-    expect(page).toContain('עמוד {pageNumber}');
+    expect(page).toContain('data-page={pageNumber}');
     expect(question).toContain('data-question-surface="premium"');
-    expect(question).toContain('>●</div>');
-    expect(question).toContain('>•</span>');
+    expect(question).toContain('globalQuestionNumber(taskId)');
+    expect(question).toContain('className="subpart-marker"');
   });
 
   it('supports print, monochrome and forced-color output structurally', () => {

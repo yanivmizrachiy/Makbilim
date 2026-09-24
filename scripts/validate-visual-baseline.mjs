@@ -12,7 +12,7 @@ const [baseline, current] = await Promise.all([
 ]);
 
 const fail = (message) => {
-  throw new Error(`visual-regression: ${message}`);
+  throw new Error(`visual-baseline: ${message}`);
 };
 
 // 1. The current render must be healthy on its own: no clipping/overflow past the content
@@ -34,5 +34,5 @@ if (drift.length) {
 }
 
 console.log(
-  `visual-regression: PASS — ${current.pageCount} pages healthy and matching the canonical structural baseline within bounded layout tolerances`,
+  `visual-baseline: PASS — ${current.pageCount} pages healthy and matching the canonical structural baseline within bounded layout tolerances`,
 );

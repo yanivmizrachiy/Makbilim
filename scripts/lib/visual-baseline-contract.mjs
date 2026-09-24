@@ -7,15 +7,18 @@
  *
  * Inputs are the layout reports written by scripts/build-pdf.mjs
  * (artifacts/layout-report.json) and the committed qa/visual-baseline.json,
- * which share one shape: { pageCount, expectedPages, mathJaxStatus, layout[] }.
+ * which share one shape: { pageCount, mathJaxStatus, layout[] } (the page order itself lives in booklet-pages.json).
  */
 
-export const EXPECTED_PAGES = 19;
+import { EXPECTED_PAGES } from './booklet-pages.mjs';
+
+/** The booklet page count, derived from booklet-pages.json (re-exported for the gate, the tool and the tests). */
+export { EXPECTED_PAGES };
 
 /** Structural facts per page that must match the baseline exactly. */
 export const EXACT_KEYS = [
-  'unit',
-  'localPage',
+  'pageId',
+  'globalPage',
   'isVerbatimCurriculum',
   'questionCount',
   'markerCount',
@@ -28,7 +31,7 @@ export const EXACT_KEYS = [
   'geometryCollisionCount',
   'geometryOutOfBoundsCount',
   'projectTitleText',
-  'unitTitleText',
+  'topicTitleText',
   'pageNumberText',
   'headerContentOverlap',
   'footerContentOverlap',
@@ -61,7 +64,7 @@ const MUST_BE_ZERO = [
   'unlabeledGeometrySvgCount',
 ];
 
-export const pageName = page => `U${page.unit}-P${page.localPage}`;
+export const pageName = page => page.pageId ?? `page-${page.globalPage ?? '?'}`;
 
 /** Problems that make a single rendered page unacceptable, independent of any baseline. */
 export function pageHealthIssues(page) {

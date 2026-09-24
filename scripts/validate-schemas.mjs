@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { z } from 'zod';
+import { AUTHORED_PAGE_COUNT, BOOKLET_PAGES, CURRICULUM_PAGE_COUNT } from './lib/booklet-pages.mjs';
 
 const root = process.cwd();
 const readJson = relativePath => JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
@@ -16,43 +17,26 @@ const pageUnitSchema = z.object({
 const pageManifestSchema = z.object({
   projectTitle: z.literal(PROJECT),
   canonicalSpec: z.literal('SPEC.md'),
-  pageNumbering: z.literal('reset-per-unit'),
   originalUnits: z.array(pageUnitSchema).length(4),
-  originalPageCount: z.literal(15),
   curriculumUnit: z.object({
     unit: z.literal(5),
     title: z.string().min(1),
     sourceMode: z.literal('verbatim'),
     identifiedQuestionBlocks: z.literal(8),
-    pages: z.literal(4),
-    pageNumbers: z.array(z.number().int().positive()).length(4),
+    pages: z.literal(CURRICULUM_PAGE_COUNT),
+    pageNumbers: z.array(z.number().int().positive()).length(CURRICULUM_PAGE_COUNT),
     questionsPerPage: z.literal(2),
     firstPage: z.literal(1),
   }),
-  studentPageCount: z.literal(19),
   studentFacingRules: z.object({
-    originalUnitsQuestionMarker: z.literal('●'),
-    originalUnitsSubpartMarker: z.literal('•'),
-    originalUnitsQuestionNumbering: z.literal(false),
-    originalUnitsSubpartNumbering: z.literal(false),
-    curriculumUnitPreservesSourceNumbering: z.literal(true),
     footerRequired: z.literal(true),
     projectTitleRequired: z.literal(true),
   }),
-});
+}).passthrough();
 
 const unitPlanSchema = z.object({
   projectTitle: z.literal(PROJECT),
   canonicalSpec: z.literal('SPEC.md'),
-  numbering: z.object({
-    pageNumbering: z.literal('reset-per-unit'),
-    firstPageInEveryUnit: z.literal(1),
-    globalContinuousPageNumbering: z.literal(false),
-    questionNumbering: z.literal('none'),
-    subpartNumbering: z.literal('none'),
-    questionMarker: z.literal('●'),
-    subpartMarker: z.literal('•'),
-  }).passthrough(),
   units: z.array(z.object({
     unit: z.number().int().min(1).max(5),
     title: z.string().min(1),
@@ -92,10 +76,8 @@ const questionUnitSchema = z.object({
 const questionPlanSchema = z.object({
   projectTitle: z.literal(PROJECT),
   canonicalSpec: z.literal('SPEC.md'),
-  studentVisibleQuestionNumbers: z.literal(false),
-  questionMarker: z.literal('●'),
-  subpartMarker: z.literal('•'),
-  originalTaskCount: z.literal(58),
+  // The one deliberate pin against silently dropping a question: everything else derives from it.
+  originalTaskCount: z.number().int().positive(),
   curriculumSourceTaskBlocks: z.literal(8),
   units: z.array(questionUnitSchema).length(4),
 });
@@ -136,14 +118,14 @@ const questionPlan = questionPlanSchema.parse(readJson('src/content/question-pla
 const sourceManifest = sourceManifestSchema.parse(readJson('sources/manifest.json'));
 
 const assert = (condition, message) => {
-  if (!condition) throw new Error(`schema-crosscheck: ${message}`);
+  if (!condition) throw new Error(`schema-validation: ${message}`);
 };
 
 assert(pageManifest.originalUnits.map(x => x.unit).join(',') === '1,2,3,4', 'page-manifest units must be 1–4 in order');
 assert(unitPlan.units.map(x => x.unit).join(',') === '1,2,3,4,5', 'unit-plan units must be 1–5 in order');
 assert(questionPlan.units.map(x => x.unit).join(',') === '1,2,3,4', 'question-plan units must be 1–4 in order');
-assert(pageManifest.originalUnits.reduce((sum, x) => sum + x.pages, 0) === pageManifest.originalPageCount, 'original page subtotal mismatch');
-assert(pageManifest.originalPageCount + pageManifest.curriculumUnit.pages === pageManifest.studentPageCount, 'student page total mismatch');
+assert(pageManifest.originalUnits.reduce((sum, x) => sum + x.pages, 0) === AUTHORED_PAGE_COUNT, 'original page subtotal must equal the authored pages of booklet-pages.json');
+assert(new Set(BOOKLET_PAGES.map(x => x.id)).size === BOOKLET_PAGES.length, 'booklet-pages.json ids must be unique');
 assert(questionPlan.units.reduce((sum, x) => sum + x.taskCount, 0) === questionPlan.originalTaskCount, 'task-count subtotal mismatch');
 
 const ids = questionPlan.units.flatMap(unit => unit.tasks.map(task => task.id));
@@ -157,6 +139,7 @@ for (const unit of questionPlan.units) {
   const manifestUnit = pageManifest.originalUnits.find(x => x.unit === unit.unit);
   assert(Boolean(manifestUnit), `unit ${unit.unit} missing from page manifest`);
   assert(manifestUnit.pages === unit.pages, `unit ${unit.unit} page count differs between manifests`);
+  assert(BOOKLET_PAGES.filter(x => x.id.startsWith(`U${unit.unit}-`)).length === unit.pages, `unit ${unit.unit} page count differs from booklet-pages.json`);
 }
 
 const sourceIds = sourceManifest.items.map(item => item.id);

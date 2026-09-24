@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import questionPlan from '../../src/content/question-plan.json';
+
+const AUTHORED = questionPlan.originalTaskCount;
 import { teacherAnswerKey } from '../../src/content/answer-key';
 
 describe('teacher answer key coverage', () => {
@@ -9,11 +11,11 @@ describe('teacher answer key coverage', () => {
 
   const answerIds = teacherAnswerKey.map(entry => entry.id);
 
-  it('covers exactly the 58 authored tasks', () => {
-    expect(plannedIds).toHaveLength(58);
-    expect(answerIds).toHaveLength(58);
-    expect(new Set(plannedIds).size).toBe(58);
-    expect(new Set(answerIds).size).toBe(58);
+  it('covers exactly the authored tasks pinned by question-plan originalTaskCount', () => {
+    expect(plannedIds).toHaveLength(AUTHORED);
+    expect(answerIds).toHaveLength(AUTHORED);
+    expect(new Set(plannedIds).size).toBe(AUTHORED);
+    expect(new Set(answerIds).size).toBe(AUTHORED);
     expect([...answerIds].sort()).toEqual([...plannedIds].sort());
   });
 

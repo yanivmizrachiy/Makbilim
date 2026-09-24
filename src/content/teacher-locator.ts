@@ -1,45 +1,40 @@
 /**
- * Teacher locator — how the teacher guide points at a question on an UNNUMBERED student page.
+ * Teacher locator — how the teacher guide points at a question in the student booklet.
  *
- * Student pages of units 1–4 carry no question numbers: every question starts with ●. The
- * guide therefore names a question by its unit, its student page and its ● POSITION on that
- * page (1 = the first ● from the top), and quotes the opening words of its stem.
- *
- * The position is derived from the same content arrays and page filters the student pages
- * render (units 2–4: `questions.filter(q => q.page === page)`; unit 1 in array order), and
- * tests/unit/teacher-guide.test.ts proves it against the rendered booklet: the n-th ● on every
- * rendered student page is the task this module calls position n.
+ * Student questions now carry a CONTINUOUS GLOBAL NUMBER (SPEC 4.2/11.5), so the guide names a
+ * question by that number and its global page number, and quotes the opening words of its stem.
+ * The old "n-th ● on an unnumbered page" model is retired. The numbers come from the single
+ * booklet order in src/content/booklet.ts; the per-task `page` fields (local page inside a unit
+ * file) map to a global page id `U{unit}-P{page}`.
  */
 import { segmentMathText } from '../components/MathText';
+import { globalPageNumber, globalQuestionNumber, topicOf } from './booklet';
 import { unit1Questions } from './questions-unit1';
 import { unit2Questions } from './questions-unit2';
 import { unit3Questions } from './questions-unit3';
 import { unit4Questions } from './questions-unit4';
 
-export type TeacherUnit = 1 | 2 | 3 | 4;
-
 export type TaskLocation = {
   readonly id: string;
-  readonly unit: TeacherUnit;
-  /** Student page number inside the unit (numbering resets per unit, as in the booklet). */
-  readonly page: number;
-  /** 1-based position of the task's ● on its student page, counted from the top. */
-  readonly position: number;
-  /** How many ● questions that student page has. */
-  readonly questionsOnPage: number;
+  /** Continuous global question number (1..N) printed beside the question. */
+  readonly questionNumber: number;
+  /** Continuous global page number (1..N) of the page the question is printed on. */
+  readonly pageNumber: number;
+  /** The natural topic title of that page. */
+  readonly topic: string;
   /** The full student-facing stem. */
   readonly stem: string;
   /** The first words of the stem, cut only between words and never inside a math run. */
   readonly stemOpening: string;
 };
 
-type StudentTask = { id: string; unit: TeacherUnit; page: number; stem: string };
+type StudentTask = { id: string; pageId: string; stem: string };
 
 const studentTasks: readonly StudentTask[] = [
-  ...unit1Questions.map(q => ({ id: q.id, unit: 1 as const, page: q.page, stem: q.stem })),
-  ...unit2Questions.map(q => ({ id: q.id, unit: 2 as const, page: q.page, stem: q.stem })),
-  ...unit3Questions.map(q => ({ id: q.id, unit: 3 as const, page: q.page, stem: q.stem })),
-  ...unit4Questions.map(q => ({ id: q.id, unit: 4 as const, page: q.page, stem: q.stem })),
+  ...unit1Questions.map(q => ({ id: q.id, pageId: `U1-P${q.page}`, stem: q.stem })),
+  ...unit2Questions.map(q => ({ id: q.id, pageId: `U2-P${q.page}`, stem: q.stem })),
+  ...unit3Questions.map(q => ({ id: q.id, pageId: `U3-P${q.page}`, stem: q.stem })),
+  ...unit4Questions.map(q => ({ id: q.id, pageId: `U4-P${q.page}`, stem: q.stem })),
 ];
 
 /** Words of the stem opening. A stem at most STEM_OPENING_SLACK words longer is shown whole. */
@@ -60,7 +55,6 @@ const ELLIPSIS = '…';
  * never splits an expression and the opening re-segments into the same math islands.
  */
 export function stemOpening(stem: string, maxWords = STEM_OPENING_WORDS): string {
-  // Character ranges of every math run: whitespace inside them is not a word boundary.
   const protectedRanges: Array<[number, number]> = [];
   let offset = 0;
   for (const segment of segmentMathText(stem)) {
@@ -69,7 +63,6 @@ export function stemOpening(stem: string, maxWords = STEM_OPENING_WORDS): string
   }
   const insideMath = (index: number) => protectedRanges.some(([start, end]) => index > start && index < end);
 
-  // End offsets (exclusive) of each word.
   const wordEnds: number[] = [];
   let inWord = false;
   for (let index = 0; index <= stem.length; index += 1) {
@@ -85,7 +78,6 @@ export function stemOpening(stem: string, maxWords = STEM_OPENING_WORDS): string
   while (count > 4 && DANGLING_WORDS.has(wordAt(count).replace(/[.,:;]$/, ''))) count -= 1;
 
   let opening = stem.slice(0, wordEnds[count - 1]).replace(/[\s.,:;־-]+$/u, '');
-  // Close a quotation that the cut left open, after the ellipsis.
   const opens = (opening.match(/„/g) ?? []).length;
   const closes = (opening.match(/”/g) ?? []).length;
   opening += ELLIPSIS;
@@ -94,31 +86,16 @@ export function stemOpening(stem: string, maxWords = STEM_OPENING_WORDS): string
 }
 
 const locations: ReadonlyMap<string, TaskLocation> = (() => {
-  const byPage = new Map<string, StudentTask[]>();
-  for (const task of studentTasks) {
-    const key = `${task.unit}-${task.page}`;
-    byPage.set(key, [...(byPage.get(key) ?? []), task]);
-  }
   const result = new Map<string, TaskLocation>();
-  for (const tasks of byPage.values()) {
-    // Openings must tell the questions of one page apart: lengthen colliding ones until they differ.
-    const openings = tasks.map(task => stemOpening(task.stem));
-    for (let words = STEM_OPENING_WORDS + 1; words <= 40; words += 1) {
-      const collides = openings.map((opening, index) => openings.some((other, j) => j !== index && other === opening));
-      if (!collides.includes(true)) break;
-      tasks.forEach((task, index) => { if (collides[index]) openings[index] = stemOpening(task.stem, words); });
-    }
-    tasks.forEach((task, index) => {
-      if (result.has(task.id)) throw new Error(`Duplicate student task id: ${task.id}`);
-      result.set(task.id, {
-        id: task.id,
-        unit: task.unit,
-        page: task.page,
-        position: index + 1,
-        questionsOnPage: tasks.length,
-        stem: task.stem,
-        stemOpening: openings[index]!,
-      });
+  for (const task of studentTasks) {
+    if (result.has(task.id)) throw new Error(`Duplicate student task id: ${task.id}`);
+    result.set(task.id, {
+      id: task.id,
+      questionNumber: globalQuestionNumber(task.id),
+      pageNumber: globalPageNumber(task.pageId),
+      topic: topicOf(task.pageId),
+      stem: task.stem,
+      stemOpening: stemOpening(task.stem),
     });
   }
   return result;
@@ -130,16 +107,7 @@ export function locateTask(id: string): TaskLocation {
   return location;
 }
 
-/** Hebrew feminine ordinals ("השאלה השלישית"), for the spoken/accessible form of a ● position. */
-const ORDINALS = ['הראשונה', 'השנייה', 'השלישית', 'הרביעית', 'החמישית', 'השישית', 'השביעית', 'השמינית'];
-
-export function positionOrdinal(position: number): string {
-  const word = ORDINALS[position - 1];
-  if (!word) throw new Error(`No Hebrew ordinal for question position ${position}.`);
-  return word;
-}
-
-/** Full plain-language locator, e.g. "השאלה השלישית בעמוד 2 של יחידה 1". */
-export function describeLocation(location: Pick<TaskLocation, 'unit' | 'page' | 'position'>): string {
-  return `השאלה ${positionOrdinal(location.position)} בעמוד ${location.page} של יחידה ${location.unit}`;
+/** Plain-language locator, e.g. "שאלה 12 · עמוד 6". */
+export function describeLocation(location: Pick<TaskLocation, 'questionNumber' | 'pageNumber'>): string {
+  return `שאלה ${location.questionNumber} · עמוד ${location.pageNumber}`;
 }
