@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
-      contents: read
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -78,6 +78,29 @@ jobs:
             artifacts/build-manifest.json
           if-no-files-found: error
           retention-days: 30
+
+      - name: Deploy validated main build to gh-pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.ENABLE_GITHUB_PAGES != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          deploy_dir="$(mktemp -d)"
+          git clone --depth 1 --branch gh-pages "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$deploy_dir"
+          cd "$deploy_dir"
+          git rm -r .
+          cp -a "${GITHUB_WORKSPACE}/dist/." .
+          touch .nojekyll
+          git add -A
+          if git diff --cached --quiet; then
+            echo "gh-pages already matches ${GITHUB_SHA}"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Deploy validated main build ${GITHUB_SHA::7} to GitHub Pages"
+          git push origin HEAD:gh-pages
 
       - name: Upload validated preview for Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.ENABLE_GITHUB_PAGES == 'true'
