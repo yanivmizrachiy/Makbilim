@@ -153,7 +153,8 @@ export const unit4Questions: Unit4Question[] = [
     id: 'U4-P2-B',
     page: 2,
     // True / false on the converse theorems (SPEC 4, unit 4): which data suffice to conclude p ∥ q.
-    // Two claims are converse conditions; the other three rest on facts that hold for ANY two lines
+    // Two claims are converse conditions (corresponding equal; co-interior supplementary — SPEC 3.2
+    // no. 6, set against the adjacent pair of ד); the other three rest on facts that hold for ANY two lines
     // cut by a transversal (vertical, adjacent) or on the position of a pair without its equality.
     stem: 'הישר t חותך את p ו־q. קבעו אם כל טענה נכונה, ונמקו.',
     subparts: [
@@ -161,7 +162,7 @@ export const unit4Questions: Unit4Question[] = [
       'אם זוג זוויות מתאימות בין p ו־q שוות זו לזו, אז p ו־q מקבילים.',
       'אם שתי זוויות הן זוויות מתחלפות בין p ו־q, אז p ו־q מקבילים.',
       'אם זוויות צמודות בחיתוך של q ו־t משלימות ל־180°, אז p ו־q מקבילים.',
-      'אם זוג זוויות מתחלפות בין p ו־q שוות זו לזו, אז p ו־q מקבילים.'
+      'אם זוג זוויות חד-צדדיות בין p ו־q משלימות ל־180°, אז p ו־q מקבילים.'
     ],
     verdictOptions: ['נכון', 'לא נכון'],
     expected: {
@@ -170,7 +171,7 @@ export const unit4Questions: Unit4Question[] = [
         `נכון — ${THEOREMS.correspondingConverse.text}`,
         `לא נכון — בכל שני ישרים הנחתכים על ידי ישר שלישי יש זוויות מתחלפות; המיקום לבדו אינו מספיק. המשפט ההפוך דורש שהזוויות המתחלפות יהיו שוות זו לזו.`,
         `לא נכון — ${REASONS.adjacent} זה מתקיים תמיד, גם כשהישרים אינם מקבילים, ושתי הזוויות באותו חיתוך; אין בכך מידע על הישר p.`,
-        `נכון — ${THEOREMS.alternateConverse.text}`
+        `נכון — ${THEOREMS.coInteriorConverse.text}`
       ]
     }
   },

@@ -11,7 +11,8 @@ const read = (file: string) => fs.readFileSync(path.join(root, file), 'utf8');
 
 /** Stylesheets without comments, so rule matching sees selectors and declarations only. */
 const css = (file: string) => read(file).replace(/\/\*[\s\S]*?\*\//g, '');
-const premiumCss = css('src/styles/geometry-premium.css');
+// The --geo-* tokens (and their print / forced-colors overrides) live in tokens.css.
+const premiumCss = css('src/styles/tokens.css') + '\n' + css('src/styles/geometry-premium.css');
 const printCss = css('src/styles/print.css');
 const pageTuning = css('src/styles/page-tuning.css');
 const main = read('src/main.tsx');

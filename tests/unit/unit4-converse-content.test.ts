@@ -115,7 +115,7 @@ describe('Unit 4 — משפטים הפוכים', () => {
   });
 
   it('keeps every theorem wording canonical: no retyped direct theorem, converses only from theorems.ts', () => {
-    const converses = [THEOREMS.correspondingConverse.text, THEOREMS.alternateConverse.text];
+    const converses = [THEOREMS.correspondingConverse.text, THEOREMS.alternateConverse.text, THEOREMS.coInteriorConverse.text];
     for (const q of unit4Questions) {
       for (const text of allStrings(q)) {
         expect(text, `${q.id}: retyped direct theorem`).not.toMatch(/בין (ה)?ישרים (ה)?מקבילים שוות זו לזו/);

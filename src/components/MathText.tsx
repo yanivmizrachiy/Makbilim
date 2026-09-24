@@ -709,15 +709,31 @@ function MathInline({ source, tex }: { source: string; tex: string }) {
   );
 }
 
+/** A Hebrew prefix bound by maqaf ('ו־', 'ל־') to the expression right after it. */
+const MAQAF_PREFIX = /\S*\u05BE$/u;
+
 export function MathText({ text }: { text: string }) {
   const segments = segmentMathText(text);
-  return (
-    <>
-      {segments.map((segment, index) => (
-        segment.kind === 'math'
-          ? <MathInline source={segment.source} tex={segment.tex} key={`${index}-${segment.source}`} />
-          : <React.Fragment key={`${index}-${segment.source}`}>{segment.source}</React.Fragment>
-      ))}
-    </>
-  );
+  const nodes: React.ReactNode[] = [];
+  for (let index = 0; index < segments.length; index += 1) {
+    const segment = segments[index]!;
+    const next = segments[index + 1];
+    const key = `${index}-${segment.source}`;
+    if (segment.kind === 'math') {
+      nodes.push(<MathInline source={segment.source} tex={segment.tex} key={key} />);
+      continue;
+    }
+    // 'ו־(3x + 42)°': the prefix and its expression form one unbreakable unit, so the prefix is
+    // never left alone at the end of a line.
+    const prefix = next?.kind === 'math' ? MAQAF_PREFIX.exec(segment.source)?.[0] : undefined;
+    if (next?.kind === 'math' && prefix) {
+      const head = segment.source.slice(0, segment.source.length - prefix.length);
+      if (head) nodes.push(<React.Fragment key={key}>{head}</React.Fragment>);
+      nodes.push(<span className="math-unit" key={`${key}-unit`}>{prefix}<MathInline source={next.source} tex={next.tex} /></span>);
+      index += 1;
+      continue;
+    }
+    nodes.push(<React.Fragment key={key}>{segment.source}</React.Fragment>);
+  }
+  return <>{nodes}</>;
 }

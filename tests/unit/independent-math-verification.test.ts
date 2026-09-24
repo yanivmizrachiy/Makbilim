@@ -1487,6 +1487,7 @@ describe('independent verification — unit 2 algebra: unique, valid, justified'
 const CONVERSE = {
   corresponding: THEOREMS.correspondingConverse.text,
   alternate: THEOREMS.alternateConverse.text,
+  coInterior: THEOREMS.coInteriorConverse.text,
 } as const;
 
 /** A sentence that invokes a converse theorem, by name or by its canonical wording. */
@@ -1698,6 +1699,8 @@ describe('independent verification — unit 4 converse tasks', () => {
       if (/זוויות מתאימות בין p ו־q שוות זו לזו/.test(claim)) return { kind: 'equal-pair', holds: (a, b, c) => between(a, c) === between(b, c) };
       // An equal alternate pair: q→t at q against the opposite rays (opposite p)→(opposite t) at p.
       if (/זוויות מתחלפות בין p ו־q שוות זו לזו/.test(claim)) return { kind: 'equal-pair', holds: (a, b, c) => between(a + 180, c + 180) === between(b, c) };
+      // A co-interior pair on the same side of t, between p and q: p→t at p and t→(opposite q) at q.
+      if (/זוויות חד-צדדיות בין p ו־q משלימות ל־180°/.test(claim)) return { kind: 'supplementary-pair', holds: (a, b, c) => between(a, c) + between(c, b + 180) === 180 };
       // The position of a pair only, with no equality: such a pair exists for ANY two lines.
       if (/הן זוויות (מתאימות|מתחלפות) בין p ו־q, /.test(claim) && !/שוות/.test(claim)) return { kind: 'position', holds: () => true };
       throw new Error(`U4-P2-B: unmodelled claim "${claim}"`);
@@ -1714,18 +1717,18 @@ describe('independent verification — unit 4 converse tasks', () => {
     });
 
     // Both verdicts occur; every „always true” fact and the position-only claim are false.
-    expect(derived.map(d => d.kind).sort()).toEqual(['adjacent', 'equal-pair', 'equal-pair', 'position', 'vertical']);
-    expect(derived.filter(d => d.verdict === 'נכון').map(d => d.kind)).toEqual(['equal-pair', 'equal-pair']);
+    expect(derived.map(d => d.kind).sort()).toEqual(['adjacent', 'equal-pair', 'position', 'supplementary-pair', 'vertical']);
+    expect(derived.filter(d => d.verdict === 'נכון').map(d => d.kind)).toEqual(['equal-pair', 'supplementary-pair']);
 
     const keyed = asList(q.expected.reason);
     expect(keyed).toHaveLength(claims.length);
     derived.forEach(({ claim, verdict }, index) => {
       const key = keyed[index]!;
       expect(key.startsWith(`${verdict} — `), `U4-P2-B "${claim}": key "${key}" vs derived ${verdict}`).toBe(true);
-      const pair = /זוויות (מתאימות|מתחלפות) בין p ו־q שוות/.exec(claim)?.[1];
+      const pair = /זוויות (מתאימות|מתחלפות|חד-צדדיות) בין p ו־q (?:שוות|משלימות)/.exec(claim)?.[1];
       if (verdict === 'נכון') {
         // A true claim is justified by exactly the converse of the pair it names (SPEC 3.2).
-        const converse = pair === 'מתאימות' ? CONVERSE.corresponding : CONVERSE.alternate;
+        const converse = pair === 'מתאימות' ? CONVERSE.corresponding : pair === 'חד-צדדיות' ? CONVERSE.coInterior : CONVERSE.alternate;
         expect(key).toBe(`נכון — ${converse}`);
       } else {
         // A false claim never cites a converse (or a direct theorem) as if it applied.

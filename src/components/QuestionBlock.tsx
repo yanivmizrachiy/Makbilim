@@ -54,7 +54,7 @@ function Subpart({ item, letter }: { item: SubpartItem; letter: string }) {
 }
 
 /**
- * One question on the white page (SPEC 11.5 / 11.7): the ● marker, then one text column that reads
+ * One question on the white page (SPEC 11.5 / 11.7): the continuous global question number, then one text column that reads
  * stem → sub-items / choices → answer slots → work area, with the diagram in its own column beside it.
  * The block's grow weight comes from its answer spec, so surplus page height becomes whole writing
  * rules where the student writes, never empty bands.

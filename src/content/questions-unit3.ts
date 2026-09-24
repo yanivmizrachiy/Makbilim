@@ -312,7 +312,8 @@ export const unit3Questions: Unit3Question[] = [
         `∠B + ∠C = 180° — ${ADJACENT}`,
         'לכן ∠A + ∠C = 180°.'
       ]
-    }
+    },
+    teacherNote: `גם הוכחה בשלב אחד נכונה, כי ∠A ו־∠C הן זוויות חד-צדדיות: ∠A + ∠C = 180° — ${THEOREMS.coInteriorDirect.text} שתי הדרכים מתקבלות.`
   },
   {
     id: 'U3-P3-C',

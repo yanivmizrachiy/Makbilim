@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CURRICULUM_QUESTION_IDS } from '../content/booklet';
+import { BOOKLET_PAGES, CURRICULUM_QUESTION_IDS } from '../content/booklet';
 import { A4Page } from '../components/A4Page';
 
 type CurriculumBlock = {
@@ -41,16 +41,17 @@ export function Unit5Pages() {
 
   if (!source) return null;
 
-  const pages = Array.from({ length: 4 }, (_, pageIndex) =>
-    source.blocks.slice(pageIndex * 2, pageIndex * 2 + 2)
-  );
+  // The curriculum pages and how many blocks each holds come from booklet-pages.json (one source).
+  const curriculumPages = BOOKLET_PAGES.filter(page => page.curriculum);
+  const perPage = Math.ceil(source.blocks.length / curriculumPages.length);
+  const pages = curriculumPages.map((_, pageIndex) => source.blocks.slice(pageIndex * perPage, (pageIndex + 1) * perPage));
 
   return (
     <>
       {pages.map((blocks, pageIndex) => (
         <A4Page
-          key={`curriculum-page-${pageIndex + 1}`}
-          pageId={`C-P${pageIndex + 1}`}
+          key={curriculumPages[pageIndex]!.id}
+          pageId={curriculumPages[pageIndex]!.id}
           className="curriculum-source-page"
         >
           <div className="bbb-source" data-curriculum-ready="true">

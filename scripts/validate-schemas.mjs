@@ -118,7 +118,7 @@ const questionPlan = questionPlanSchema.parse(readJson('src/content/question-pla
 const sourceManifest = sourceManifestSchema.parse(readJson('sources/manifest.json'));
 
 const assert = (condition, message) => {
-  if (!condition) throw new Error(`schema-crosscheck: ${message}`);
+  if (!condition) throw new Error(`schema-validation: ${message}`);
 };
 
 assert(pageManifest.originalUnits.map(x => x.unit).join(',') === '1,2,3,4', 'page-manifest units must be 1–4 in order');

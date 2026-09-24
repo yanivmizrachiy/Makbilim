@@ -23,7 +23,9 @@
         "table",
         "multiple-choice",
         "true-false",
-        "claim-comparison"
+        "claim-comparison",
+        "construction-and-explain",
+        "error-correction"
       ],
       "forbiddenAtThisStage": ["algebra", "converse-theorems", "formal-proof"]
     },

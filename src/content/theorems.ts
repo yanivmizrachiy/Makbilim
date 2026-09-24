@@ -32,6 +32,12 @@ export const THEOREMS = {
     text: 'אם שני ישרים נחתכים על ידי ישר שלישי, וזוג זוויות מתחלפות שוות זו לזו, אז שני הישרים מקבילים.',
     concludesParallel: true,
     direction: 'converse'
+  },
+  coInteriorConverse: {
+    id: 'cointerior-converse',
+    text: 'אם שני ישרים נחתכים על ידי ישר שלישי, וזוג זוויות חד-צדדיות משלימות ל־180°, אז שני הישרים מקבילים.',
+    concludesParallel: true,
+    direction: 'converse'
   }
 } as const;
 

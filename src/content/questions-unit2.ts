@@ -5,6 +5,7 @@ const CORRESPONDING = THEOREMS.correspondingDirect.text;
 const ALTERNATE = THEOREMS.alternateDirect.text;
 const ADJACENT = REASONS.adjacent;
 const VERTICAL = REASONS.vertical;
+const COINTERIOR = THEOREMS.coInteriorDirect.text;
 
 export type Unit2Question = {
   id: string;
@@ -124,7 +125,7 @@ export const unit2Questions: Unit2Question[] = [
       values: { 'β': 117 },
       justification: [CORRESPONDING, ADJACENT]
     },
-    note: 'גם הסדר ההפוך נכון: הזווית הצמודה ל־∠A היא 117°, ו־β מתחלפת לה. תשובה של 63° מעתיקה את ∠A בלי לזהות ש־β צמודה לזווית המתאימה ל־∠A.'
+    note: `גם הסדר ההפוך נכון: הזווית הצמודה ל־∠A היא 117°, ו־β מתחלפת לה. נכונה גם דרך בשלב אחד: ∠A ו־β הן זוויות חד-צדדיות, ולכן β = 180° − 63° = 117° — ${COINTERIOR} תשובה של 63° מעתיקה את ∠A בלי לזהות ש־β צמודה לזווית המתאימה ל־∠A.`
   },
   {
     id: 'U2-P2-B',
@@ -142,7 +143,8 @@ export const unit2Questions: Unit2Question[] = [
     expected: {
       values: { 'γ': 43 },
       justification: [ADJACENT, ALTERNATE]
-    }
+    },
+    note: `נכונה גם דרך בשלב אחד: הזווית של 137° ו־γ הן זוויות חד-צדדיות, ולכן γ = 180° − 137° = 43° — ${COINTERIOR}`
   },
   {
     id: 'U2-P2-C',
@@ -185,7 +187,7 @@ export const unit2Questions: Unit2Question[] = [
         `דרך אפשרית: ${VERTICAL} ${CORRESPONDING}`
       ]
     },
-    note: 'α ו־∠A מתחלפות, ולכן גם דרך בשלב אחד נכונה. כל שתי דרכים שונות מבין השלוש מתקבלות; אותו רצף קשרים שנכתב פעמיים אינו שתי דרכים.'
+    note: 'α ו־∠A מתחלפות, ולכן גם דרך בשלב אחד נכונה. מתקבלת גם דרך דרך הזווית החד-צדדית ל־∠A (126°) ו־α הצמודה לה. כל שתי דרכים שונות ונכונות מתקבלות; אותו רצף קשרים שנכתב פעמיים אינו שתי דרכים.'
   },
 
   // עמוד 3 — טבלאות, בחירת נתונים ושני חותכים
@@ -202,8 +204,8 @@ export const unit2Questions: Unit2Question[] = [
     diagram: {
       topology: 'eight-angles-table',
       lineLabels: ['p', 'q', 't'],
-      orientationDeg: -20,
-      transversalDeg: 122,
+      orientationDeg: 10,
+      transversalDeg: 152,
       parallelGiven: true,
       givens: ['reference angle = 38°'],
       targets: ['corresponding', 'alternate', 'vertical', 'adjacent']
@@ -451,7 +453,7 @@ export const unit2Questions: Unit2Question[] = [
       targets: ['the angle marked ? on the second rail, adjacent to the angle alternate to 118°']
     },
     expected: { values: { 'זווית': 62 }, justification: [ALTERNATE, ADJACENT] },
-    note: 'גם הדרך דרך הזווית המתאימה ל־118° במסילה השנייה, ולאחריה הזווית הצמודה לה, נכונה. תשובה של 118° מעתיקה את הזווית הנתונה בלי השלב של הזווית הצמודה.'
+    note: 'גם הדרך דרך הזווית המתאימה ל־118° במסילה השנייה, ולאחריה הזווית הצמודה לה, נכונה. תשובה של 118° מעתיקה את הזווית הנתונה בלי השלב של הזווית הצמודה. נכונה גם דרך בשלב אחד: הזווית של 118° והזווית המסומנת ב־? הן זוויות חד-צדדיות בין המסילות, ולכן ? = 180° − 118° = 62°.'
   },
   {
     id: 'U2-P6-C',

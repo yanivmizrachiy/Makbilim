@@ -24,7 +24,7 @@ export function ClozeText({ text }: { text: string }) {
             {index < parts.length - 1 && (
               <span className="cloze-unit">
                 {tail && <MathText text={tail} />}
-                <span className="cloze-blank" aria-hidden="true" /><span className="sr-only">מילה חסרה</span>
+                <span className={lead[index + 1] ? 'cloze-blank cloze-blank--before-punct' : 'cloze-blank'} aria-hidden="true" /><span className="sr-only">מילה חסרה</span>
                 {lead[index + 1] && <MathText text={lead[index + 1]!} />}
               </span>
             )}

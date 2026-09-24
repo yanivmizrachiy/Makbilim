@@ -9,6 +9,7 @@ import {
   TWO_WAYS_LABELS,
   type AnswerSpec,
 } from '../content/answer-areas';
+import { ClozeText } from './ClozeText';
 import { MathText } from './MathText';
 
 /**
@@ -91,7 +92,8 @@ export function AnswerSlots({ taskId }: { taskId: string }) {
   if (slots.length === 0) return null;
   return (
     <div className="answer-slots">
-      {slots.map(slot => <span className="answer-slot" key={slot}><MathText text={slot} /></span>)}
+      {/* A measure slot ('∠B = ____°') is math; a word answer ('הנתון שאינו נחוץ: ____') is a cloze line. */}
+      {slots.map(slot => <span className="answer-slot" key={slot}>{/[=°]/.test(slot) ? <MathText text={slot} /> : <ClozeText text={slot} />}</span>)}
     </div>
   );
 }

@@ -18,7 +18,8 @@ import { geometryTokens as T, type DiagramSize } from '../../src/styles/tokens';
  * numbering diagrams without bullseye rings (E7), and CSS variables mirroring the tokens (E8).
  */
 
-const css = fs.readFileSync(path.join(process.cwd(), 'src/styles/geometry-premium.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+// The --geo-* tokens live in tokens.css (SPEC 11.11א: every custom property in one sheet); the figure rules in geometry-premium.css.
+const css = ['src/styles/tokens.css', 'src/styles/geometry-premium.css'].map(file => fs.readFileSync(path.join(process.cwd(), file), 'utf8')).join('\n').replace(/\/\*[\s\S]*?\*\//g, '');
 /** Every @font-face of the booklet lives in fonts.css (offline, bundled). */
 const fontsCss = fs.readFileSync(path.join(process.cwd(), 'src/styles/fonts.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
 const html = renderToStaticMarkup(createElement(App));

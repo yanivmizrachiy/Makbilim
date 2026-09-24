@@ -145,6 +145,10 @@ export const TASK_ANSWER_OVERRIDES: Readonly<Record<string, AnswerSpec>> = {
   'U2-P5-A': { mode: 'algebra', minLines: 2, lane: 'theorems', final: true, finalKeys: ['x', 'הזווית הקטנה', 'הזווית הגדולה'] },
   'U2-P5-D': { mode: 'critique', minLines: 2, lane: 'theorem', final: true, finalKeys: ['x', 'הזווית הקטנה', 'הזווית הגדולה'] },
   // Two equations, two theorems (corresponding for x, alternate for y).
+  // Q36: the table's empty cells ARE the answers — no second pair of slots under it.
+  'U2-P3-B': { mode: 'value', minLines: 2 },
+  // Q37 asks for β AND for the datum that is not needed: each answer has its own slot.
+  'U2-P3-C': { mode: 'work', minLines: 3, final: true, finalKeys: ['β', 'הנתון שאינו נחוץ'] },
   'U2-P5-C': { mode: 'algebra', minLines: 2, lane: 'theorems', final: true, equationLabel: EQUATION_LABEL_PLURAL },
   // 'חשבו את α + β. נמקו כל שלב' — α and β are steps on the way, the asked value is their sum;
   // every step has its own reason (corresponding angles, adjacent angles).
@@ -182,6 +186,8 @@ const PURE_NUMBER = new Set(['x', 'y']);
 const WORD_ANGLE = 'זווית';
 /** Two different angles, named by size in words — a slot never names an expression by its digits. */
 const NAMED_ANGLES = new Set(['הזווית הקטנה', 'הזווית הגדולה']);
+/** A word answer (not a measure): a blank without a degree sign. */
+const WORD_ANSWERS = new Set(['הנתון שאינו נחוץ']);
 
 /**
  * One final-answer slot as a MathText line with a typed blank: '∠B = ____°', 'x = ____',
@@ -190,6 +196,7 @@ const NAMED_ANGLES = new Set(['הזווית הקטנה', 'הזווית הגדו�
 export function finalSlotText(key: string, stem = ''): string {
   if (key === WORD_ANGLE) return `${stem.includes('הזוויות') ? 'גודל הזוויות' : 'גודל הזווית'}: ____°`;
   if (NAMED_ANGLES.has(key)) return `גודל ${key}: ____°`;
+  if (WORD_ANSWERS.has(key)) return `${key}: ____`;
   return PURE_NUMBER.has(key) ? `${key} = ____` : `${key} = ____°`;
 }
 

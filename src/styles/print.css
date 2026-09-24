@@ -367,8 +367,10 @@ body { direction: rtl; }
   flex-direction: column;
 }
 
-/* A blank with the word before it and its closing punctuation (ClozeText): one unbreakable unit. */
-.cloze-unit { white-space: nowrap; }
+/* A blank with the word before it and its closing punctuation (ClozeText), and a maqaf prefix with
+   its expression (MathText): one unbreakable unit each. */
+.cloze-unit,
+.math-unit { white-space: nowrap; }
 
 /* Graph-paper work grid (SPEC 11.11א / כ): squared paper for real derivation, in place of the
    prose writing rules. Applied only to work / algebra / calculation areas, never to short-answer,
@@ -491,6 +493,8 @@ body { direction: rtl; }
   border-bottom: var(--slot-w) solid var(--slot-color);
   vertical-align: -0.2em;
 }
+
+.cloze-blank--before-punct { margin-inline-end: 0; }
 
 .line-slot {
   flex: 1 1 auto;

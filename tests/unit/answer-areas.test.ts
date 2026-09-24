@@ -140,6 +140,11 @@ describe('answer areas are decided in data (content/answer-areas.ts)', () => {
       for (const slot of slots) {
         expect(slot, task.id).toMatch(/_{4}/);
         expect(slot, `${task.id}: a slot must not reveal a number`).not.toMatch(/\d/);
+        // A word answer names what the stem asks for in its own words.
+        if (slot.startsWith('הנתון שאינו נחוץ')) {
+          expect(stem, `${task.id}: slot "${slot}"`).toMatch(/אינו נחוץ/);
+          continue;
+        }
         // Two different angles are named by size in words; the stem must ask for the angles.
         if (/^גודל הזווית ה(קטנה|גדולה)/.test(slot)) {
           expect(stem, `${task.id}: slot "${slot}" but the stem asks for no angles`).toMatch(/הזוויות/);

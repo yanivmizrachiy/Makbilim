@@ -164,7 +164,7 @@
 
 /* A4 utilization (SPEC 11.1), frame-only: the space a card has left under its verbatim content
    continues the source's own dotted writing rows (same 5.5 mm pitch and colour), drawn by a
-   pseudo-element — the source DOM and text are untouched. Rows align to the card's bottom edge. */
+   pseudo-element — the source DOM and text are untouched. */
 .bbb-source .q::after {
   content: '';
   min-height: 0;
@@ -172,7 +172,9 @@
   print-color-adjust: exact;
   background-image: radial-gradient(circle at 50% calc(100% - 0.14mm), #aab2c2 0.13mm, transparent 0.17mm);
   background-size: 1.1mm 5.5mm;
-  background-position: 0 100%;
+  /* anchored at the top: -1.8 mm cancels the card's row gap, so the first extra row sits one full
+     5.5 mm pitch under the last source row, exactly like the source's own rows */
+  background-position: 0 -1.8mm;
   background-repeat: repeat;
 }
 

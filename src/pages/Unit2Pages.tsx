@@ -235,14 +235,15 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
     case 'U2-P6-D': {
       // α corresponds to ∠A = 41° on r; on s, ∠C = 68° → its corresponding angle → β = 112°.
       // The final synthesis marks no intermediate angle: finding the route is the task.
-      // These sectors keep every label inside its own angle and off the lines and chevrons.
-      const [a, alpha] = corr(sized('acute'), 'bottom');
+      // These sectors keep every label beside its own arc (α by the r-crossing on k, β above s),
+      // inside its own angle and off the lines and chevrons.
+      const [a, alpha] = corr(sized('acute', 1), 'bottom');
       const sc = sizedOnSecond('acute');
       return [
         { ...a, label: 'A', value: '41°', role: 'given' },
         { ...alpha, label: 'α', role: 'target' },
         { ...at('bottom-secondary', sc), label: 'C', value: '68°', role: 'given' },
-        { ...at('top-secondary', adjacentSector(sc)), label: 'β', role: 'target' },
+        { ...at('top-secondary', adjacentSector(sc, -1)), label: 'β', role: 'target' },
       ];
     }
     default:

@@ -1,9 +1,9 @@
 {
   "pageCount": 21,
   "mathJaxStatus": {
-    "total": 267,
-    "rendered": 267,
-    "svgNodes": 267
+    "total": 264,
+    "rendered": 264,
+    "svgNodes": 264
   },
   "layout": [
     {
@@ -336,13 +336,13 @@
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 3.8,
+      "maxBlockDeadMm": 3.2,
       "blocks": [
         {
           "taskId": "U1-P1-A",
           "answerMode": "none",
-          "heightMm": 59.8,
-          "blockDeadMm": 3.8,
+          "heightMm": 59.2,
+          "blockDeadMm": 3.2,
           "answerRuleCount": 0,
           "rulePitchMm": null,
           "lastRuleToSeparatorMm": null
@@ -350,8 +350,8 @@
         {
           "taskId": "U1-P1-B",
           "answerMode": "none",
-          "heightMm": 62.4,
-          "blockDeadMm": 3.8,
+          "heightMm": 61.9,
+          "blockDeadMm": 3.2,
           "answerRuleCount": 0,
           "rulePitchMm": null,
           "lastRuleToSeparatorMm": null
@@ -359,8 +359,8 @@
         {
           "taskId": "U1-P1-C",
           "answerMode": "none",
-          "heightMm": 64.9,
-          "blockDeadMm": 3.8,
+          "heightMm": 64.3,
+          "blockDeadMm": 3.2,
           "answerRuleCount": 0,
           "rulePitchMm": null,
           "lastRuleToSeparatorMm": null
@@ -368,8 +368,8 @@
         {
           "taskId": "U1-P1-D",
           "answerMode": "items",
-          "heightMm": 67.9,
-          "blockDeadMm": 3.8,
+          "heightMm": 69.6,
+          "blockDeadMm": 3.2,
           "answerRuleCount": 0,
           "rulePitchMm": null,
           "lastRuleToSeparatorMm": null
@@ -746,13 +746,13 @@
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 17.8,
+      "maxBlockDeadMm": 0,
       "blocks": [
         {
           "taskId": "U2-P1-A",
           "answerMode": "value",
           "heightMm": 61.3,
-          "blockDeadMm": 17.8,
+          "blockDeadMm": 0,
           "answerRuleCount": 4,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -761,7 +761,7 @@
           "taskId": "U2-P1-B",
           "answerMode": "value",
           "heightMm": 64.6,
-          "blockDeadMm": 17.8,
+          "blockDeadMm": 0,
           "answerRuleCount": 4,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -850,13 +850,13 @@
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 20.8,
+      "maxBlockDeadMm": 0,
       "blocks": [
         {
           "taskId": "U2-P2-A",
           "answerMode": "work",
           "heightMm": 60.3,
-          "blockDeadMm": 17,
+          "blockDeadMm": 0,
           "answerRuleCount": 4,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -865,7 +865,7 @@
           "taskId": "U2-P2-B",
           "answerMode": "work",
           "heightMm": 63.6,
-          "blockDeadMm": 17.6,
+          "blockDeadMm": 0,
           "answerRuleCount": 4,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -874,7 +874,7 @@
           "taskId": "U2-P2-C",
           "answerMode": "work",
           "heightMm": 63.6,
-          "blockDeadMm": 16.8,
+          "blockDeadMm": 0,
           "answerRuleCount": 4,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -883,7 +883,7 @@
           "taskId": "U2-P2-D",
           "answerMode": "two-ways",
           "heightMm": 67.6,
-          "blockDeadMm": 20.8,
+          "blockDeadMm": 0,
           "answerRuleCount": 8,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": null
@@ -954,7 +954,7 @@
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 20.9,
+      "maxBlockDeadMm": 0,
       "blocks": [
         {
           "taskId": "U2-P3-A",
@@ -968,8 +968,8 @@
         {
           "taskId": "U2-P3-B",
           "answerMode": "value",
-          "heightMm": 81.5,
-          "blockDeadMm": 20.9,
+          "heightMm": 74.3,
+          "blockDeadMm": 0,
           "answerRuleCount": 2,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -977,18 +977,18 @@
         {
           "taskId": "U2-P3-C",
           "answerMode": "work",
-          "heightMm": 58.2,
-          "blockDeadMm": 11.5,
-          "answerRuleCount": 3,
+          "heightMm": 61.8,
+          "blockDeadMm": 0,
+          "answerRuleCount": 4,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
         },
         {
           "taskId": "U2-P3-D",
           "answerMode": "work",
-          "heightMm": 58.2,
-          "blockDeadMm": 11.4,
-          "answerRuleCount": 3,
+          "heightMm": 61.8,
+          "blockDeadMm": 0,
+          "answerRuleCount": 4,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": null
         }
@@ -1058,13 +1058,13 @@
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 14,
+      "maxBlockDeadMm": 0,
       "blocks": [
         {
           "taskId": "U2-P4-A",
           "answerMode": "algebra",
           "heightMm": 55,
-          "blockDeadMm": 12.1,
+          "blockDeadMm": 0,
           "answerRuleCount": 3,
           "rulePitchMm": 7,
           "lastRuleToSeparatorMm": 3
@@ -1073,7 +1073,7 @@
           "taskId": "U2-P4-B",
           "answerMode": "algebra",
           "heightMm": 57.8,
-          "blockDeadMm": 12,
+          "blockDeadMm": 0,
           "answerRuleCount": 3,
           "rulePitchMm": 7,
           "lastRuleToSeparatorMm": 3
@@ -1082,7 +1082,7 @@
           "taskId": "U2-P4-C",
           "answerMode": "algebra",
           "heightMm": 57.8,
-          "blockDeadMm": 12,
+          "blockDeadMm": 0,
           "answerRuleCount": 3,
           "rulePitchMm": 7,
           "lastRuleToSeparatorMm": 3
@@ -1091,7 +1091,7 @@
           "taskId": "U2-P4-D",
           "answerMode": "algebra",
           "heightMm": 85.5,
-          "blockDeadMm": 14,
+          "blockDeadMm": 0,
           "answerRuleCount": 3,
           "rulePitchMm": 7,
           "lastRuleToSeparatorMm": null
@@ -1162,13 +1162,13 @@
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 14,
+      "maxBlockDeadMm": 0,
       "blocks": [
         {
           "taskId": "U2-P5-A",
           "answerMode": "algebra",
           "heightMm": 62.9,
-          "blockDeadMm": 14,
+          "blockDeadMm": 0,
           "answerRuleCount": 3,
           "rulePitchMm": 7,
           "lastRuleToSeparatorMm": 3
@@ -1177,7 +1177,7 @@
           "taskId": "U2-P5-B",
           "answerMode": "algebra",
           "heightMm": 57.8,
-          "blockDeadMm": 14,
+          "blockDeadMm": 0,
           "answerRuleCount": 3,
           "rulePitchMm": 7,
           "lastRuleToSeparatorMm": 3
@@ -1186,7 +1186,7 @@
           "taskId": "U2-P5-C",
           "answerMode": "algebra",
           "heightMm": 57.8,
-          "blockDeadMm": 12,
+          "blockDeadMm": 0,
           "answerRuleCount": 3,
           "rulePitchMm": 7,
           "lastRuleToSeparatorMm": 3
@@ -1266,7 +1266,7 @@
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 26.4,
+      "maxBlockDeadMm": 0,
       "blocks": [
         {
           "taskId": "U2-P6-A",
@@ -1290,7 +1290,7 @@
           "taskId": "U2-P6-C",
           "answerMode": "work",
           "heightMm": 66.6,
-          "blockDeadMm": 19.8,
+          "blockDeadMm": 0,
           "answerRuleCount": 3,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5
@@ -1299,7 +1299,7 @@
           "taskId": "U2-P6-D",
           "answerMode": "work",
           "heightMm": 74.6,
-          "blockDeadMm": 26.4,
+          "blockDeadMm": 0,
           "answerRuleCount": 4,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": null
@@ -1664,7 +1664,7 @@
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 43.7,
+      "maxBlockDeadMm": 9.4,
       "blocks": [
         {
           "taskId": "U4-P1-A",
@@ -1688,7 +1688,7 @@
           "taskId": "U4-P1-D",
           "answerMode": "deduction",
           "heightMm": 139.1,
-          "blockDeadMm": 43.7,
+          "blockDeadMm": 9.4,
           "answerRuleCount": 0,
           "rulePitchMm": null,
           "lastRuleToSeparatorMm": null
@@ -1741,7 +1741,7 @@
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 3.6,
+      "maxBlockDeadMm": 2.4,
       "blocks": [
         {
           "taskId": "U4-P1-C",
@@ -1756,7 +1756,7 @@
           "taskId": "U4-P2-A",
           "answerMode": "deduction",
           "heightMm": 99,
-          "blockDeadMm": 3.6,
+          "blockDeadMm": 1.4,
           "answerRuleCount": 0,
           "rulePitchMm": null,
           "lastRuleToSeparatorMm": null
@@ -1824,13 +1824,13 @@
       ],
       "headerContentOverlap": false,
       "footerContentOverlap": false,
-      "maxBlockDeadMm": 80,
+      "maxBlockDeadMm": 0.3,
       "blocks": [
         {
           "taskId": "U4-P2-C",
           "answerMode": "algebra",
           "heightMm": 128.4,
-          "blockDeadMm": 80,
+          "blockDeadMm": 0,
           "answerRuleCount": 11,
           "rulePitchMm": 8,
           "lastRuleToSeparatorMm": 3.5

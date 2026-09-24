@@ -25,6 +25,7 @@ if (n.pageDisplay !== 'circle-top-left') fail('page number must display as a top
 if (n.question !== 'continuous-global') fail('questions must be numbered continuously across the booklet');
 if (n.subpart !== 'hebrew-letters') fail('sub-parts must be lettered (א, ב, ג…)');
 if (n.curriculumNumberIsChrome !== true) fail('the curriculum question number must be booklet chrome, never source text');
+if (n.unitsAreProvenanceOnly !== true) fail('internal unit ids (questions-unit*.ts, U*-P*) are provenance only and never a student-facing structure');
 
 if (!fs.existsSync(unitPlanPath)) {
   fail('src/content/unit-plan.json is missing');

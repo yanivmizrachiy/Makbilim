@@ -1,7 +1,7 @@
 /*
  * Teacher guide — a printed answer key, typeset like the student booklet's companion:
  * white page, hairline rules, no cards, tiles, tints or shadows around answers. Every
- * answer is found by its ● position on the (unnumbered) student page.
+ * answer is found by its global question number and page number (SPEC 11.11).
  */
 
 @page {
@@ -319,7 +319,7 @@ body {
 }
 
 /* One printed row: a single answer, or two side by side in the two-column flow
-   (● 1 | ● 2, then ● 3 | ● 4). The row is the unit kept whole on a sheet, and the
+   (27 | 28, then 29 | 30). The row is the unit kept whole on a sheet, and the
    hairline above it separates it from the previous row. */
 .teacher-answer-row {
   display: grid;
@@ -353,7 +353,7 @@ body {
   line-height: 1.2;
 }
 
-/* "● 3" — the student's own marker, followed by the question's place on the page. */
+/* "27" — the question's global number (SPEC 4.2); the page follows as „עמוד N”. */
 .teacher-answer-position {
   display: inline-flex;
   align-items: baseline;
