@@ -49,8 +49,8 @@ body { direction: rtl; }
   page-break-after: always;
 }
 
-/* Header that orients: the unit leads, the project title is a quiet running head above it, the
-   local page number sits at the far end of the same baseline. */
+/* Header: the booklet subject is the title (no topic/unit meta-label), and the continuous page
+   number sits in its circle at the far (top-left in RTL) end of the same baseline. */
 .page-header {
   position: relative;
   display: grid;
@@ -136,8 +136,8 @@ body { direction: rtl; }
   padding-top: var(--q-sep-after);
 }
 
-/* Continuous global question number (SPEC 4.2/11.5): the number leads the question in place of the
-   retired ● marker, in the formula face, at a fixed position and alignment. */
+/* Question marker (SPEC 4.2/11.5): a large filled black dot ● opens every question, at a fixed
+   position and alignment. Questions are NOT numbered — only pages are. */
 .question-marker {
   color: var(--ink);
   font-family: "Makbilim Math", var(--font-body);
@@ -231,7 +231,7 @@ body { direction: rtl; }
 
 .subpart-after { grid-column: 2 / -1; }
 
-/* Sub-part letter (א, ב, ג…) — local to its question (SPEC 4.2/11.5), in place of the retired • bullet. */
+/* Sub-part marker (SPEC 4.2/11.5): a small filled black dot • opens every sub-part. No letters, no numbers. */
 .subpart-marker {
   color: var(--ink);
   font-size: var(--subpart-marker-size);

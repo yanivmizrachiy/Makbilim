@@ -27,7 +27,6 @@
   --leading-slot: 1.7;          /* final-answer slots */
   --body-size: var(--text-body);
   --body-leading: var(--leading-body);
-  --task-kind-size: 8.6pt;
   --measure: 128mm;             /* prose line length where there is no diagram column */
 
   /* ── Spacing scale (≈ ×1.5) ── */
@@ -100,7 +99,7 @@
   --grid-line-w: 0.2mm;         /* faint square lines */
   --grid-color: #c3ccd6;        /* lighter than the writing rule: squares guide, never compete */
 
-  /* ── Conclusion arrow ↓ (SPEC 11.14): one shared vector arrow ── */
+  /* ── Conclusion arrow ⇓ (SPEC 11.14): one shared double vector arrow ── */
   --arrow-stroke-w: 0.4mm;
   --arrow-color: var(--ink);
   --arrow-gap: 1.6mm;
@@ -109,8 +108,7 @@
 }
 
 /* One uniform accent across the whole booklet (SPEC 11.2 / כח: a single visual language, not a
-   colour per topic). A restrained typographic accent on the page number, question numbers, labels
-   and the header tick. */
+   colour per topic). A restrained accent on the page-number ring, answer-area labels and the crest. */
 .a4-page[data-layout-quality="premium"] { --accent: #0f6f78; --accent-dark: #183b56; }
 
 @media print and (monochrome) {
