@@ -5,6 +5,7 @@ import { THEOREMS } from './theorems';
  * every unit-1 task whose answer depends on reading them (U1-P3-B).
  */
 export const PARALLEL_ARROWS_CONVENTION = 'חצים זהים על שני ישרים מסמנים שהישרים מקבילים.';
+export const PARALLEL_ARROWS_TABLE_HINT = 'חצים זהים על שני ישרים מסמנים שהישרים מקבילים. כשאין חצים — לא נתון שהישרים מקבילים, גם אם הם נראים מקבילים.';
 
 export type Unit1Question = {
   id: string;
@@ -66,7 +67,7 @@ export const unit1Questions: Unit1Question[] = [
   // the other lines never give the angle-type word away: the first line's blank (the angle type)
   // is decided only by the pair marked in the drawing, which the instruction points to.
   {
-    id: 'U1-P2-C', page: 2, stem: `בשרטוט מסומן זוג זוויות. ${PARALLEL_ARROWS_CONVENTION} השלימו בכל שורה מילה אחת. בשורה הראשונה השלימו את סוג הזוויות לפי הזוג המסומן בשרטוט.`,
+    id: 'U1-P2-C', page: 2, stem: `בשרטוט מסומן זוג זוויות. השלימו בכל שורה מילה אחת. בשורה הראשונה השלימו את סוג הזוויות לפי הזוג המסומן בשרטוט.`,
     subparts: [
       'זוויות ______ בין ישרים מקבילים שוות.',
       'זוויות מתאימות בין ישרים ______ שוות.',
@@ -75,7 +76,7 @@ export const unit1Questions: Unit1Question[] = [
     diagram: { topology: 'minimal-theorem-support', lineLabels: ['e', 'f', 'z'], orientationDeg: 8, transversalDeg: 138, parallelGiven: true }
   },
   {
-    id: 'U1-P2-D', page: 3, stem: 'בשרטוט מסומן זוג זוויות. השלימו בכל שורה מילה אחת. בשורה הראשונה השלימו את סוג הזוויות לפי הזוג המסומן בשרטוט.',
+    id: 'U1-P2-D', page: 3, stem: 'בשרטוט מסומן זוג זוויות. השלימו את המילה החסרה בכל שורה. בשורה הראשונה זהו את סוג הזוויות לפי הזוג המסומן.',
     subparts: [
       'זוויות ______ בין ישרים מקבילים שוות.',
       'זוויות מתחלפות בין ישרים מקבילים ______.',
@@ -96,7 +97,7 @@ export const unit1Questions: Unit1Question[] = [
   {
     id: 'U1-P3-B', page: 4,
     // The whole instruction sits above the table; the column headings name what each cell asks.
-    stem: `השלימו את הטבלה לפי השרטוטים. ${PARALLEL_ARROWS_CONVENTION} כשאין חצים — לא נתון שהישרים מקבילים, גם אם הם נראים מקבילים.`,
+    stem: `השלימו את הטבלה לפי השרטוטים.`,
     diagram: { topology: 'four-mini-diagrams-table', lineLabels: ['a', 'c', 'p'], orientationDeg: 31, transversalDeg: 107, parallelGiven: false }
   },
   {
@@ -128,7 +129,7 @@ export const unit1Questions: Unit1Question[] = [
   },
   {
     id: 'U1-P5-C', page: 5,
-    stem: `בשרטוט מסומן זוג זוויות חד-צדדיות. ${PARALLEL_ARROWS_CONVENTION} השלימו בכל שורה מילה אחת.`,
+    stem: `בשרטוט מסומן זוג זוויות חד-צדדיות. השלימו בכל שורה מילה אחת.`,
     subparts: [
       'זוויות חד-צדדיות בין ישרים מקבילים משלימות ל־______.',
       'לכן, אם אחת הזוויות המסומנות היא 70°, הזווית השנייה היא ______.'

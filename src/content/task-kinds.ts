@@ -34,7 +34,6 @@ export const TASK_KIND_LABEL: Record<TaskKind, string> = {
  * instruction itself — הוכיחו, נמקו, השלימו, סדרו — already says what to do, and the „נימוק והוכחה”
  * eyebrow only spent space. The label still names the kind in the teacher guide.
  */
-export const STUDENT_HIDDEN_KIND_LABELS: ReadonlySet<TaskKind> = new Set<TaskKind>(['proof']);
 
 export const FORMAT_KIND: Readonly<Record<string, TaskKind>> = {
   'sentence-completion': 'completion',

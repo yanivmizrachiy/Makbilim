@@ -217,11 +217,11 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P3-B',
     page: 3,
-    stem: 'בשרטוט הישרים k ו־m מקבילים. נתון כי ∠A = 52°. היעזרו בשרטוט ובטבלה, ומצאו את גודלן של ∠D ושל ∠F.',
+    stem: 'בשרטוט הישרים k ו־m מקבילים. נתון כי ∠A = 52°. לכל אחת מן הזוויות ∠D ו־∠F רשמו בטבלה את סוג הקשר לזווית שלפניה ואת גודלה.',
     tableRows: [
       { label: '∠A', relation: 'נתונה', value: '52°' },
-      { label: '∠D', relation: 'מתאימה ל־∠A', value: '' },
-      { label: '∠F', relation: 'צמודה ל־∠D', value: '' }
+      { label: '∠D', relation: '', value: '' },
+      { label: '∠F', relation: '', value: '' }
     ],
     diagram: {
       topology: 'rotated-table-cross-representation',
@@ -277,14 +277,14 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P4-A',
     page: 4,
-    stem: 'בשרטוט p ∥ q. גודלי שתי הזוויות המסומנות הם (4x + 6)° ו־(2x + 38)°. זהו את סוג הזוויות, כתבו את המשפט המתאים, מצאו את x וחשבו את גודל הזוויות.',
+    stem: 'בשרטוט p ∥ q. גודלי שתי הזוויות המסומנות הם 4x + 6° ו־2x + 38°. זהו את סוג הזוויות, כתבו את המשפט המתאים, מצאו את x וחשבו את גודל הזוויות.',
     diagram: {
       topology: 'corresponding-two-expressions-simple',
       lineLabels: ['p', 'q', 't'],
       orientationDeg: 4,
       transversalDeg: 114,
       parallelGiven: true,
-      givens: ['(4x + 6)°', '(2x + 38)°'],
+      givens: ['4x + 6°', '2x + 38°'],
       targets: ['x', 'marked angle']
     },
     justificationLane: true,
@@ -293,14 +293,14 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P4-B',
     page: 4,
-    stem: 'הישרים k ו־m מקבילים. שתי הזוויות המסומנות הן (3x + 17)° ו־(5x − 21)°. איזה סוג זוויות הן? כתבו את המשפט המתאים, מצאו את x ואת גודל הזוויות.',
+    stem: 'הישרים k ו־m מקבילים. שתי הזוויות המסומנות הן 3x + 17° ו־5x − 21°. איזה סוג זוויות הן? כתבו את המשפט המתאים, מצאו את x ואת גודל הזוויות.',
     diagram: {
       topology: 'alternate-two-expressions-simple',
       lineLabels: ['k', 'm', 'r'],
       orientationDeg: -8,
       transversalDeg: 66,
       parallelGiven: true,
-      givens: ['(3x + 17)°', '(5x − 21)°'],
+      givens: ['3x + 17°', '5x − 21°'],
       targets: ['x', 'marked angle']
     },
     justificationLane: true,
@@ -309,14 +309,14 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P4-C',
     page: 4,
-    stem: 'בשרטוט a ∥ b. הזוויות המסומנות הן (6x − 9)° ו־(3x + 42)°. זהו את סוג הזוויות ורשמו את המשפט המתאים. מצאו את x ולאחר מכן חשבו את גודלן של הזוויות המסומנות.',
+    stem: 'בשרטוט a ∥ b. הזוויות המסומנות הן 6x − 9° ו־3x + 42°. זהו את סוג הזוויות ורשמו את המשפט המתאים. מצאו את x ולאחר מכן חשבו את גודלן של הזוויות המסומנות.',
     diagram: {
       topology: 'corresponding-expressions-solve-x-then-angle',
       lineLabels: ['a', 'b', 's'],
       orientationDeg: 38,
       transversalDeg: 131,
       parallelGiven: true,
-      givens: ['(6x − 9)°', '(3x + 42)°'],
+      givens: ['6x − 9°', '3x + 42°'],
       targets: ['x', 'marked angle']
     },
     justificationLane: true,
@@ -325,11 +325,11 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P4-D',
     page: 4,
-    stem: 'בשרטוט הישרים r ו־s מקבילים. גודלי שתי הזוויות המסומנות הם (2x + 35)° ו־(5x − 19)°. זהו את סוג הזוויות, בחרו את המשוואה המתאימה, נמקו ופתרו, וחשבו את גודל הזוויות.',
+    stem: 'בשרטוט הישרים r ו־s מקבילים. גודלי שתי הזוויות המסומנות הם 2x + 35° ו־5x − 19°. זהו את סוג הזוויות, בחרו את המשוואה המתאימה, נמקו ופתרו, וחשבו את גודל הזוויות.',
     choices: [
       '2x + 35 = 5x − 19',
-      '(2x + 35) + (5x − 19) = 180',
-      '(2x + 35) + (5x − 19) = 90',
+      '2x + 35 + 5x − 19 = 180',
+      '2x + 35 + 5x − 19 = 90',
       '2x + 35 = 5x + 19'
     ],
     diagram: {
@@ -338,7 +338,7 @@ export const unit2Questions: Unit2Question[] = [
       orientationDeg: 15,
       transversalDeg: 86,
       parallelGiven: true,
-      givens: ['(2x + 35)°', '(5x − 19)°'],
+      givens: ['2x + 35°', '5x − 19°'],
       targets: ['correct equation', 'x', 'marked angle']
     },
     justificationLane: true,
@@ -349,14 +349,14 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P5-A',
     page: 5,
-    stem: 'בשרטוט p ∥ q. גודלי שתי הזוויות המסומנות הם (7x − 18)° ו־(3x + 38)°. מצאו את x ואת גודלה של כל אחת מהזוויות. נמקו כל שלב.',
+    stem: 'בשרטוט p ∥ q. גודלי שתי הזוויות המסומנות הם 7x − 18° ו־3x + 38°. מצאו את x ואת גודלה של כל אחת מהזוויות. נמקו כל שלב.',
     diagram: {
       topology: 'corresponding-plus-adjacent-two-expressions',
       lineLabels: ['p', 'q', 'v'],
       orientationDeg: -15,
       transversalDeg: 71,
       parallelGiven: true,
-      givens: ['(7x − 18)° at p', '(3x + 38)° at q, adjacent to the angle corresponding to (7x − 18)°'],
+      givens: ['7x − 18° at p', '3x + 38° at q, adjacent to the angle corresponding to 7x − 18°'],
       targets: ['x', 'both angles']
     },
     justificationLane: true,
@@ -364,19 +364,19 @@ export const unit2Questions: Unit2Question[] = [
       values: { x: 16, '7x − 18': 94, '3x + 38': 86 },
       justification: [CORRESPONDING, ADJACENT]
     },
-    note: 'המשוואה: (7x − 18) + (3x + 38) = 180. השוואת שני הביטויים זה לזה נותנת x = 14 ושתי זוויות של 80° — אבל הזוויות המסומנות אינן מתאימות: הזווית ב־q צמודה לזווית המתאימה לזווית שב־p.'
+    note: 'המשוואה: 7x − 18 + 3x + 38 = 180. השוואת שני הביטויים זה לזה נותנת x = 14 ושתי זוויות של 80° — אבל הזוויות המסומנות אינן מתאימות: הזווית ב־q צמודה לזווית המתאימה לזווית שב־p.'
   },
   {
     id: 'U2-P5-B',
     page: 5,
-    stem: 'הישרים c ו־d מקבילים. גודלי שתי הזוויות המסומנות הם (4x + 15)° ו־(2x + 63)°. זהו את סוג הזוויות, כתבו את המשפט, מצאו את x ואת גודל הזוויות.',
+    stem: 'הישרים c ו־d מקבילים. גודלי שתי הזוויות המסומנות הם 4x + 15° ו־2x + 63°. זהו את סוג הזוויות, כתבו את המשפט, מצאו את x ואת גודל הזוויות.',
     diagram: {
       topology: 'alternate-two-expressions-advanced',
       lineLabels: ['c', 'd', 'w'],
       orientationDeg: 46,
       transversalDeg: 157,
       parallelGiven: true,
-      givens: ['(4x + 15)°', '(2x + 63)°'],
+      givens: ['4x + 15°', '2x + 63°'],
       targets: ['x', 'angle value']
     },
     justificationLane: true,
@@ -385,7 +385,7 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P5-C',
     page: 5,
-    stem: 'בשרטוט p ∥ q ושני ישרים חותכים אותם. בזוג זוויות אחד הגדלים הם (3x + 12)° ו־72°, ובזוג השני (2y + 18)° ו־94°. זהו את סוג כל זוג, כתבו את המשפטים המתאימים ומצאו את x ואת y.',
+    stem: 'בשרטוט p ∥ q ושני ישרים חותכים אותם. בזוג זוויות אחד הגדלים הם 3x + 12° ו־72°, ובזוג השני 2y + 18° ו־94°. זהו את סוג כל זוג, כתבו את המשפטים המתאימים ומצאו את x ואת y.',
     diagram: {
       topology: 'two-transversals-two-independent-equations',
       lineLabels: ['p', 'q', 'r', 's'],
@@ -393,7 +393,7 @@ export const unit2Questions: Unit2Question[] = [
       transversalDeg: 117,
       secondaryTransversalDeg: 103,
       parallelGiven: true,
-      givens: ['(3x + 12)° corresponds to 72°', '(2y + 18)° alternates with 94°'],
+      givens: ['3x + 12° corresponds to 72°', '2y + 18° alternates with 94°'],
       targets: ['x', 'y']
     },
     justificationLane: true,
@@ -412,13 +412,13 @@ export const unit2Questions: Unit2Question[] = [
       orientationDeg: -4,
       transversalDeg: 106,
       parallelGiven: true,
-      givens: ['a ∥ b', 'marked angles (2x + 20)° and (3x + 35)° at the same intersection (adjacency is not stated in words)'],
+      givens: ['a ∥ b', 'marked angles 2x + 20° and 3x + 35° at the same intersection (adjacency is not stated in words)'],
       targets: ['correct equation', 'x']
     },
     justificationLane: true,
     expected: {
       values: { x: 25, '2x + 20': 70, '3x + 35': 110 },
-      justification: `${ADJACENT} המשוואה הנכונה: (2x + 20) + (3x + 35) = 180.`
+      justification: `${ADJACENT} המשוואה הנכונה: 2x + 20 + 3x + 35 = 180.`
     },
     note: 'המשוואה וההסבר שגויים: שתי הזוויות המסומנות נמצאות באותה נקודת חיתוך — הן צמודות, לא מתאימות ולא מתחלפות, ולכן המקבילות אינה נותנת כאן שוויון. המשוואה של דני נותנת x = −15, כלומר זוויות של −10°.'
   },

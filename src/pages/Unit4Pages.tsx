@@ -35,7 +35,7 @@ function marks(q: Unit4Question): AngleMark[] {
     case 'U4-P2-C': {
       // x = 20 gives 74°: an acute corresponding pair.
       const [a, b] = correspondingPair(sectorOfSize(o, t, 'acute'), 'top');
-      return [{ ...a, value: '(3x + 14)°', role: 'given' }, { ...b, value: '(5x − 26)°', role: 'given' }];
+      return [{ ...a, value: '3x + 14°', role: 'given' }, { ...b, value: '5x − 26°', role: 'given' }];
     }
     default:
       return [];

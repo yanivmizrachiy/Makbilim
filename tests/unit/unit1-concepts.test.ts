@@ -158,11 +158,15 @@ describe('Unit 1 conceptual integrity', () => {
     const firstWithArrows = sections.find(section => section.includes('parallel-mark--chevrons'));
     expect(/data-task-id="([^"]+)"/.exec(firstWithArrows ?? '')?.[1]).toBe('U1-P2-C');
     expect(PARALLEL_ARROWS_CONVENTION).toMatch(/חצים.*מקבילים/);
-    for (const id of ['U1-P2-C', 'U1-P3-B']) {
-      expect(unit1Questions.find(q => q.id === id)!.stem, id).toContain(PARALLEL_ARROWS_CONVENTION);
+    const plain = markup.replace(/<[^>]+>/g, ' ');
+    // The convention is shown as an explanation NOTE (hint-note), set apart from the instruction.
+    expect(markup).toContain('hint-note');
+    expect(plain).toContain('חצים זהים על שני ישרים מסמנים שהישרים מקבילים');
+    for (const id of ['U1-P2-C', 'U1-P5-C']) {
+      expect(unit1Questions.find(q => q.id === id)!.stem, id).not.toContain(PARALLEL_ARROWS_CONVENTION);
     }
-    // U1-P3-B: lines without arrows are NOT given parallel, even when they look parallel (SPEC 10.5).
-    expect(unit1Questions.find(q => q.id === 'U1-P3-B')!.stem).toContain('לא נתון שהישרים מקבילים');
+    // U1-P3-B: lines without arrows are NOT given parallel — stated in the note, not the instruction (SPEC 10.5).
+    expect(plain).toContain('לא נתון שהישרים מקבילים');
   });
 
   it('scrambles the bottom crossing\'s numbers so that no matched pair lies on one printed row', () => {

@@ -159,22 +159,20 @@ describe('page header and footer', () => {
 
   it('keeps every header and footer text exactly as the visual baseline compares it', () => {
     expect(visibleText(findAll(tree, node => node.tag === 'h1')[0]!).trim()).toBe('זוויות בין ישרים מקבילים');
-    expect(text('topic-title')).toBe('אלגברה');
+    expect(findAll(tree, node => hasClass(node, 'topic-title'))).toEqual([]);
     expect(text('page-number')).toBe('13');
-    const footer = findAll(tree, node => hasClass(node, 'page-footer'))[0]!;
-    expect(findAll(footer, node => node.tag === 'div').map(node => visibleText(node).trim())).toEqual([
+    const footerText = findAll(tree, node => hasClass(node, 'footer-text'))[0]!;
+    expect(findAll(footerText, node => node.tag === 'div').map(node => visibleText(node).trim())).toEqual([
       printTokens.footer.line1,
       printTokens.footer.line2,
     ]);
   });
 
-  it('lets the unit lead: the unit title is larger than the running head, which is quiet', () => {
+  it('makes the booklet subject the header title, no topic meta-label', () => {
     const tokens = baseTokens();
     const pt = (name: string) => Number(/^([\d.]+)pt$/.exec(tokens.get(name) ?? '')?.[1]);
-    expect(pt('--topic-title-size')).toBeGreaterThanOrEqual(13);
-    expect(pt('--topic-title-size')).toBeLessThanOrEqual(14);
-    expect(pt('--running-head-size')).toBeGreaterThanOrEqual(8.6);
-    expect(pt('--running-head-size')).toBeLessThanOrEqual(8.8);
+    expect(pt('--header-title-size')).toBeGreaterThanOrEqual(12);
+    expect(pt('--header-title-size')).toBeLessThanOrEqual(14);
     expect(pt('--page-number-size')).toBeGreaterThanOrEqual(10);
     expect(pt('--page-number-size')).toBeLessThanOrEqual(11);
     expect(mmOf(tokens.get('--header-height') ?? '')).toBeGreaterThanOrEqual(13);

@@ -245,7 +245,7 @@ try {
     const projectTitleText = el.querySelector('.page-title-group h1')?.textContent?.trim() ?? '';
     const topicTitleText = el.querySelector('.topic-title')?.textContent?.trim() ?? '';
     const pageNumberText = el.querySelector('.page-number')?.textContent?.trim() ?? '';
-    const footerLines = [...el.querySelectorAll('.page-footer > div')].map(n => n.textContent?.trim() ?? '');
+    const footerLines = [...el.querySelectorAll('.page-footer .footer-text > div')].map(n => n.textContent?.trim() ?? '');
     const overflowingQuestions = questions.filter(q => {
       const qRect = q.getBoundingClientRect();
       return qRect.bottom > rect.bottom + 1 || qRect.top < rect.top - 1 || qRect.right > rect.right + 1 || qRect.left < rect.left - 1;
@@ -362,8 +362,7 @@ try {
     const expected = expectedPages[index] ?? { pageId: '', topic: '' };
     const pageChromeFailure = (
       item.projectTitleText !== canonicalProjectTitle ||
-      item.topicTitleText !== expected.topic ||
-      item.topicTitleText.includes('יחידה') ||
+      item.topicTitleText !== '' ||
       item.pageNumberText !== String(index + 1) ||
       item.footerLines.length !== 2 ||
       item.footerLines[0] !== canonicalFooter[0] ||

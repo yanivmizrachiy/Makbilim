@@ -70,16 +70,8 @@ body { direction: rtl; }
 
 .page-title-group h1 {
   margin: 0;
-  color: var(--muted);
-  font-size: var(--running-head-size);
-  line-height: 1.2;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-.topic-title {
   color: var(--ink);
-  font-size: var(--topic-title-size);
+  font-size: var(--header-title-size);
   line-height: 1.15;
   font-weight: 800;
   letter-spacing: -0.005em;
@@ -139,8 +131,8 @@ body { direction: rtl; }
 }
 
 /* The only separator between questions: one solid hairline with fixed clearance on both sides. */
+/* Questions are separated by quiet space only — no divider line. */
 .question-block + .question-block {
-  border-top: var(--q-sep-w) solid var(--q-sep-color);
   padding-top: var(--q-sep-after);
 }
 
@@ -153,8 +145,7 @@ body { direction: rtl; }
   font-weight: 700;
   line-height: 1;
   text-align: center;
-  font-variant-numeric: tabular-nums;
-  padding-top: 0.7mm;
+  padding-top: 0.4mm;
 }
 
 /* One text column (stem → sub-items / choices → answer slots → work area) and, beside it, the
@@ -270,7 +261,7 @@ body { direction: rtl; }
   overflow: visible;
 }
 
-.question-diagram--stacked { place-items: center; }
+.question-diagram--stacked { place-items: center; margin-block: var(--space-4); }
 
 /* ── Answer system: one writing-line grammar ─────────────────────────────────
    dotted light rules at a constant pitch for work · solid ink slots for final answers and blanks ·
@@ -357,11 +348,6 @@ body { direction: rtl; }
 }
 
 /* The two lane cells read as „המשפט המתאים | המשוואה”: a thin divider on the column boundary. */
-.rule--lane[data-equation-lane="true"] > .justification-label--equation {
-  border-inline-start: var(--rule-w) solid var(--rule-color);
-  padding-inline-start: var(--space-2);
-}
-
 .answer-lines {
   display: flex;
   flex-direction: column;
@@ -387,6 +373,14 @@ body { direction: rtl; }
 }
 
 .answer-lines[data-grid="squares"] > .rule { border-bottom: none; }
+
+/* The whole label row of a squared area is solid white, so the student writes on clean squares and
+   the labels („המשוואה:”, „המשפט המתאים:”, „נימוק:”) never sit on a grid line. */
+.answer-lines[data-grid="squares"] > .rule--lane {
+  background: var(--paper);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
 
 /* Forced colours drop background images (the square grid); the bordered writing rules return so
    the work area never loses its writing guidance. */
@@ -652,14 +646,40 @@ body { direction: rtl; }
 
 /* ── Footer: quiet, canonical two lines ── */
 
+/* Footer (SPEC 11.8): a thin dark-blue full-width rule, then the round district crest on the right
+   (inline-start, RTL) beside the two-line credit set in a stronger weight. */
 .page-footer {
   align-self: end;
-  display: grid;
-  gap: 0.5mm;
+  direction: rtl;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 3mm;
+  padding-top: 1.5mm;
+  border-top: var(--footer-rule-w) solid var(--footer-rule-color);
   color: var(--footer-color);
-  text-align: center;
   font-size: var(--footer-size);
-  line-height: 1.2;
+  line-height: 1.28;
+  font-weight: 700;
+}
+
+.footer-logo {
+  flex: 0 0 auto;
+  width: var(--footer-logo-size);
+  height: var(--footer-logo-size);
+  border-radius: 50%;
+  object-fit: cover;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.footer-text {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+@media (forced-colors: active) {
+  .page-footer { border-top-color: CanvasText; }
 }
 
 .sr-only {
@@ -682,4 +702,36 @@ body { direction: rtl; }
 
 @media screen and (max-width: 900px) {
   .preview-stack { transform-origin: top center; }
+}
+
+
+/* Explanation note (SPEC 11.5א): a convention or reminder set APART from the instruction — a quiet
+   tinted callout with an inline-start accent rule and an ⓘ mark, in an explanatory (italic) voice,
+   never mistaken for a question instruction. Grayscale/forced-colors safe. */
+.hint-note {
+  display: flex;
+  align-items: baseline;
+  gap: 1.6mm;
+  margin: var(--space-2) 0;
+  padding: 1.4mm 2.4mm;
+  border-inline-start: 0.7mm solid var(--accent);
+  border-radius: 0 1mm 1mm 0;
+  background: var(--soft);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  font-size: var(--text-label);
+  line-height: 1.3;
+  color: var(--ink);
+}
+.hint-note-icon { flex: 0 0 auto; color: var(--accent); font-weight: 700; }
+.hint-note-text { font-style: italic; }
+@media (forced-colors: active) {
+  .hint-note { background: Canvas; border: 0.3mm solid CanvasText; border-inline-start-width: 0.7mm; }
+}
+
+/* Questions built around equations read in slightly smaller type: the algebra is dense and the
+   figure carries the load, so the instruction stays compact (SPEC 7). */
+.question-block[data-answer-mode="algebra"] .question-stem,
+.question-block[data-answer-mode="critique"] .question-stem {
+  font-size: var(--text-body-dense);
 }

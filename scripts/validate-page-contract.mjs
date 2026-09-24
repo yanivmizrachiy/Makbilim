@@ -38,7 +38,9 @@ for (const fragment of ['size: A4 portrait', 'width: 210mm', 'height: 297mm', '.
 }
 if (!a4.includes("projectTitle = 'זוויות בין ישרים מקבילים'")) fail('A4Page must carry canonical project title');
 if (!a4.includes('printTokens.footer.line1') || !a4.includes('printTokens.footer.line2')) fail('canonical two-line footer missing');
-if (!q.includes('globalQuestionNumber(taskId)')) fail('question must render its continuous global number');
+if (!q.includes('●')) fail('a question must open with a ● marker');
+if (!q.includes('•')) fail('a sub-part must open with a • marker');
+if (q.includes('globalQuestionNumber') || q.includes('className="task-kind"')) fail('student pages must not print a question number or a task-type label');
 if (!q.includes('className="question-marker"') || !q.includes('className="subpart-marker"')) fail('question/subpart marker slots missing');
 for (const component of ['Unit1Continuation', 'Unit2Pages', 'Unit3Pages', 'Unit4Pages', 'Unit5Pages']) {
   if (!app.includes(component)) fail(`App is not rendering ${component}`);

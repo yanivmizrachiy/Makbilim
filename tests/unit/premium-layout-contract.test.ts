@@ -29,7 +29,9 @@ describe('premium workbook layout contract', () => {
     expect(page).toContain('data-layout-quality="premium"');
     expect(page).toContain('data-page={pageNumber}');
     expect(question).toContain('data-question-surface="premium"');
-    expect(question).toContain('globalQuestionNumber(taskId)');
+    expect(question).toContain('className="question-marker"');
+    expect(question).toContain('●');
+    expect(question).not.toContain('globalQuestionNumber');
     expect(question).toContain('className="subpart-marker"');
   });
 

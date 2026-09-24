@@ -153,36 +153,36 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
     // Algebra: both angles are given as expressions; the unknown is x (or y), not an angle.
     case 'U2-P4-A': {
       const [first, second] = corr(sized('acute'), 'bottom');
-      return [{ ...first, value: '(4x + 6)°', role: 'given' }, { ...second, value: '(2x + 38)°', role: 'given' }];
+      return [{ ...first, value: '4x + 6°', role: 'given' }, { ...second, value: '2x + 38°', role: 'given' }];
     }
     case 'U2-P4-B': {
       const [first, second] = alt('acute', 'top');
-      return [{ ...first, value: '(3x + 17)°', role: 'given' }, { ...second, value: '(5x − 21)°', role: 'given' }];
+      return [{ ...first, value: '3x + 17°', role: 'given' }, { ...second, value: '5x − 21°', role: 'given' }];
     }
     case 'U2-P4-C': {
       // x = 17 gives 93°: drawn in an obtuse sector (wide enough for the expressions to clear the lines).
       const [first, second] = corr(sized('obtuse'), 'bottom');
-      return [{ ...first, value: '(6x − 9)°', role: 'given' }, { ...second, value: '(3x + 42)°', role: 'given' }];
+      return [{ ...first, value: '6x − 9°', role: 'given' }, { ...second, value: '3x + 42°', role: 'given' }];
     }
     case 'U2-P4-D': {
       // x = 18 gives 71°: the acute alternate-interior pair.
       const [first, second] = alt('acute', 'bottom');
-      return [{ ...first, value: '(2x + 35)°', role: 'given' }, { ...second, value: '(5x − 19)°', role: 'given' }];
+      return [{ ...first, value: '2x + 35°', role: 'given' }, { ...second, value: '5x − 19°', role: 'given' }];
     }
     case 'U2-P5-A': {
-      // x = 16: (7x − 18)° = 94° in an obtuse sector at p; (3x + 38)° = 86° at q sits beside the
+      // x = 16: 7x − 18° = 94° in an obtuse sector at p; 3x + 38° = 86° at q sits beside the
       // angle corresponding to it (that angle is not marked — seeing it is the task), so the two
       // expressions are supplementary, not equal.
       const s = sized('obtuse');
       return [
-        { ...at('top', s), value: '(7x − 18)°', role: 'given' },
-        { ...at('bottom', adjacentSector(s, P5A_TURN)), value: '(3x + 38)°', role: 'given' },
+        { ...at('top', s), value: '7x − 18°', role: 'given' },
+        { ...at('bottom', adjacentSector(s, P5A_TURN)), value: '3x + 38°', role: 'given' },
       ];
     }
     case 'U2-P5-B': {
       // x = 24 gives 111°: the obtuse alternate-interior pair.
       const [first, second] = alt('obtuse', 'bottom');
-      return [{ ...first, value: '(4x + 15)°', role: 'given' }, { ...second, value: '(2x + 63)°', role: 'given' }];
+      return [{ ...first, value: '4x + 15°', role: 'given' }, { ...second, value: '2x + 63°', role: 'given' }];
     }
     case 'U2-P5-C': {
       // A corresponding pair (72°) on r and an obtuse alternate pair (94°) on s.
@@ -191,19 +191,19 @@ function primaryMarks(q: Unit2Question): AngleMark[] {
       const [ex, n72] = corr(sized('acute', 0), 'bottom');
       const [ey, n94] = altOnSecond('obtuse', 'top');
       return [
-        { ...ex, value: '(3x + 12)°', role: 'given' },
+        { ...ex, value: '3x + 12°', role: 'given' },
         { ...n72, value: '72°', role: 'given' },
-        { ...ey, value: '(2y + 18)°', role: 'given' },
+        { ...ey, value: '2y + 18°', role: 'given' },
         { ...n94, value: '94°', role: 'given' },
       ];
     }
     case 'U2-P5-D': {
-      // x = 25: (2x + 20)° = 70° in an acute sector, (3x + 35)° = 110° in the obtuse one beside it
+      // x = 25: 2x + 20° = 70° in an acute sector, 3x + 35° = 110° in the obtuse one beside it
       // (the neighbour on the side where its label clears the lines).
       const s = sized('acute', 1);
       return [
-        { ...at('top', s), value: '(2x + 20)°', role: 'given' },
-        { ...at('top', adjacentSector(s, -1)), value: '(3x + 35)°', role: 'given' },
+        { ...at('top', s), value: '2x + 20°', role: 'given' },
+        { ...at('top', adjacentSector(s, -1)), value: '3x + 35°', role: 'given' },
       ];
     }
     case 'U2-P6-A': {
