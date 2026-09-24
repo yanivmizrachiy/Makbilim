@@ -149,6 +149,7 @@ export const TASK_ANSWER_OVERRIDES: Readonly<Record<string, AnswerSpec>> = {
   'U2-P3-B': { mode: 'value', minLines: 2 },
   // Q37 asks for β AND for the datum that is not needed: each answer has its own slot.
   'U2-P3-C': { mode: 'work', minLines: 3, final: true, finalKeys: ['β', 'הנתון שאינו נחוץ'] },
+  'U1-P3-A': { mode: 'critique', minLines: 2 },
   'U2-P5-C': { mode: 'algebra', minLines: 2, lane: 'theorems', final: true, equationLabel: EQUATION_LABEL_PLURAL },
   // 'חשבו את α + β. נמקו כל שלב' — α and β are steps on the way, the asked value is their sum;
   // every step has its own reason (corresponding angles, adjacent angles).

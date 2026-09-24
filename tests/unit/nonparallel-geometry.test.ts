@@ -325,7 +325,9 @@ describe('Unit 1 teaching pairs — one parallel configuration, one NOT', () => 
   it.each(['U1-P3-A', 'U1-P3-D'])('%s pairs a parallel diagram with a genuinely non-parallel one', id => {
     const pairSections = sections.filter(section => section.includes('class="paired-diagrams"') && section.includes(sectionOf(id)));
     expect(pairSections).toHaveLength(1);
-    const svgs = pairSections[0]!.split('<svg').slice(1);
+    // Only the two figures inside .paired-diagrams (the question may also hold a comic with avatar SVGs).
+    const paired = /class="paired-diagrams">([\s\S]*?)<\/div>/.exec(pairSections[0]!)?.[1] ?? '';
+    const svgs = paired.split('<svg').slice(1);
     expect(svgs).toHaveLength(2);
     const [parallelSvg, skewedSvg] = svgs as [string, string];
 
