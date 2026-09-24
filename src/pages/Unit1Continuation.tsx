@@ -41,6 +41,25 @@ function MatchingColumns({ mode }: { mode: 'corresponding' | 'alternate' }) {
   );
 }
 
+// The alternate-angle task is sentence-completion (each line gives a top angle 1–4 and blanks its
+// alternate), a different format from the two-column match of U1-P1-E right before it.
+const ALTERNATE_COMPLETION_LINES = [
+  'זווית 1 מתחלפת לזווית ___',
+  'זווית 2 מתחלפת לזווית ___',
+  'זווית 3 מתחלפת לזווית ___',
+  'זווית 4 מתחלפת לזווית ___',
+];
+
+function CompletionLines() {
+  return (
+    <div className="completion-list">
+      {ALTERNATE_COMPLETION_LINES.map((line, index) => (
+        <div className="completion-line" key={index}><ClozeText text={line} /></div>
+      ))}
+    </div>
+  );
+}
+
 type SectorLabels = readonly [string, string, string, string];
 
 /**
@@ -112,7 +131,7 @@ function Unit1Page2() {
         diagram={<EightAngleDiagram lineLabels={['g', 'j']} transversalLabel="n" orientationDeg={19} transversalDeg={95} bottomLabels={UNIT1_BOTTOM_LABELS['U1-P2-A']} />}
       >
         {alternate.stem}
-        <MatchingColumns mode="alternate" />
+        <CompletionLines />
       </QuestionBlock>
 
       <QuestionBlock

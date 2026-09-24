@@ -135,16 +135,22 @@ body { direction: rtl; }
   padding-top: var(--q-sep-after);
 }
 
-/* Question marker (SPEC 4.2/11.5): a large filled black dot ● opens every question, at a fixed
-   position and alignment. Questions are NOT numbered — only pages are. */
+/* Question marker (SPEC 4.2/11.5): a large filled black dot ● opens every question — a hanging
+   bullet at the START of the first stem line, snug to the first word, never floating in the corner.
+   `align-self: start` keeps the marker on the first line while the content column still stretches to
+   fill the page; a one-line-tall flex box centres the dot on that first line. Questions are NOT
+   numbered — only pages are. */
 .question-marker {
+  align-self: start;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: calc(var(--text-body) * var(--leading-body));
   color: var(--ink);
   font-family: "Makbilim Math", var(--font-body);
   font-size: var(--question-marker-size);
   font-weight: 700;
   line-height: 1;
-  text-align: center;
-  padding-top: 0.4mm;
 }
 
 /* One text column (stem → sub-items / choices → answer slots → work area) and, beside it, the
@@ -591,9 +597,23 @@ body { direction: rtl; }
 }
 
 .matching-columns strong {
-  color: var(--navy);
+  color: var(--ink);
   font-size: var(--text-label);
   font-weight: 700;
+}
+
+/* Sentence-completion lines (e.g. „זווית 1 מתחלפת לזווית ___”): a clean stack with room to write
+   above each blank. The blank itself is the answer surface, so no extra writing rows follow. */
+.completion-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.completion-line {
+  font-size: var(--text-body);
+  line-height: var(--leading-cloze);
 }
 
 .paired-diagrams {
@@ -648,13 +668,19 @@ body { direction: rtl; }
 /* Footer (SPEC 11.8): a thin dark-blue full-width rule, then the round district crest on the right
    (inline-start, RTL) beside the two-line credit set in a stronger weight. */
 .page-footer {
-  align-self: end;
+  align-self: stretch;
   direction: rtl;
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 3mm;
-  padding-top: 1.5mm;
+  justify-content: center;
+  gap: 2.4mm;
+  /* the rule bleeds past the inline page padding to both paper edges — truly full width */
+  margin-inline: calc(-1 * var(--page-pad-inline));
+  padding-inline: var(--page-pad-inline);
+  /* the band reaches down to the page bottom edge; the credit is centred within it (rule → bottom) */
+  margin-bottom: calc(-1 * var(--page-pad-bottom));
+  min-height: calc(var(--footer-height) + var(--page-pad-bottom));
   border-top: var(--footer-rule-w) solid var(--footer-rule-color);
   color: var(--footer-color);
   font-size: var(--footer-size);
@@ -673,7 +699,7 @@ body { direction: rtl; }
 }
 
 .footer-text {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   text-align: center;
 }
 

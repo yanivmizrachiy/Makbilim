@@ -22,44 +22,46 @@
 .bbb-source .q {
   height: 100%;
   display: grid;
-  /* head · source body · the card's remaining space (writing rows, below) */
-  grid-template-rows: auto auto minmax(0, 1fr);
-  gap: 1.8mm;
+  /* marker column · [ source body over the card's remaining writing space ] — the ● hangs at the
+     START of the first body line, exactly like an authored question's ● (SPEC 4.2/11.5). */
+  grid-template-columns: var(--q-marker-col) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  column-gap: var(--q-marker-gap);
+  row-gap: 1.8mm;
   border: 0.32mm solid #e1e5ec;
   border-radius: 0;
   padding: 3mm 4mm;
   background: #fff;
 }
 
+/* The marker cell: a hanging ● on the first body line (align-self keeps it on that line while the
+   body column stretches down into the writing rows). */
 .bbb-source .qhead {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
   display: flex;
   align-items: center;
-  gap: 2.5mm;
+  justify-content: flex-end;
+  min-height: calc(10.6pt * 1.42);
 }
 
 .bbb-source .qnum {
-  min-width: 8mm;
-  height: 8mm;
-  padding-inline: 2.2mm;
-  border-radius: 4mm;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  /* The continuous global number is booklet chrome: the same plain digit as every authored page. */
-  background: transparent;
   color: var(--ink);
   font-family: "Makbilim Math", var(--font-body);
   font-weight: 700;
   font-size: var(--question-marker-size);
-  font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
+/* Task-kind tags were removed from the student page (no demo/meta label, SPEC 6). */
 .bbb-source .qtags {
-  display: flex;
-  gap: 1.5mm;
+  display: none;
 }
 
 .bbb-source .qbody {
+  grid-column: 2;
+  grid-row: 1;
   min-height: 0;
   font-size: 10.6pt;
   line-height: 1.42;
@@ -89,7 +91,7 @@
   flex: 0 0 auto;
   min-width: 7mm;
   font-weight: 800;
-  color: #0f6b78;
+  color: var(--ink);
 }
 
 .bbb-source .ptext {
@@ -167,6 +169,8 @@
    pseudo-element — the source DOM and text are untouched. */
 .bbb-source .q::after {
   content: '';
+  grid-column: 2;
+  grid-row: 2;
   min-height: 0;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -210,7 +214,7 @@
 .bbb-source .jlab,
 .bbb-source .alab {
   font-weight: 700;
-  color: #0b2e4f;
+  color: var(--ink);
 }
 
 .bbb-source table {
@@ -230,14 +234,11 @@
 
 .bbb-source th {
   background: #eef4f7;
-  color: #0b2e4f;
+  color: var(--ink);
   font-weight: 800;
 }
 
 @media print and (monochrome) {
-  .bbb-source .qnum {
-    background: #111;
-  }
   .bbb-source .plab,
   .bbb-source .jlab,
   .bbb-source .alab {
