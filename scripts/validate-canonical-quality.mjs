@@ -135,11 +135,12 @@ const authoredPagesUseSvg = ['Unit1Continuation.tsx', 'Unit2Pages.tsx', 'Unit3Pa
   });
 gate('svg-geometry', authoredPagesUseSvg && /ParallelLinesDiagram/.test(read('src/App.tsx')), 'authored units must render vector geometry');
 
-// SPEC 4.2 / 11.5: every question prints its continuous global number; sub-parts print Hebrew letters.
+// SPEC 4.2 / 11.5: a question opens with a ● marker, a sub-part with a •; questions are NOT numbered.
 const questionBlock = read('src/components/QuestionBlock.tsx');
-const hasQuestionMarker = pageText.includes('QuestionBlock') && questionBlock.includes('globalQuestionNumber(taskId)') && questionBlock.includes('className="question-marker"');
-const hasSubpartMarker = questionBlock.includes('className="subpart-marker"') && questionBlock.includes('SUBPART_LETTERS');
-gate('markers', hasQuestionMarker && hasSubpartMarker && spec.includes('1..N'), 'question/subpart marker contract (continuous global number + Hebrew letters) must be present');
+const hasQuestionMarker = pageText.includes('QuestionBlock') && questionBlock.includes('●') && questionBlock.includes('className="question-marker"');
+const hasSubpartMarker = questionBlock.includes('className="subpart-marker"') && questionBlock.includes('•');
+const noNumberNoLabel = !questionBlock.includes('globalQuestionNumber') && !questionBlock.includes('className="task-kind"');
+gate('markers', hasQuestionMarker && hasSubpartMarker && noNumberNoLabel && spec.includes('●') && spec.includes('•'), 'question opens with ●, sub-part with •, no question number and no task-type label');
 
 const visualDemandOrder = { V1: 1, V2: 2, V3: 3, V4: 4 };
 let visualProgressionOk = true;

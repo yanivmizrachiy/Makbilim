@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import { globalPageNumber, isCurriculumPage, topicOf } from '../content/booklet';
 import { pageDensity } from '../content/page-layout';
 import { printTokens } from '../styles/tokens';
+import districtLogo from '../assets/district-logo.png';
 
 export type A4PageProps = {
   projectTitle?: string;
@@ -39,8 +40,8 @@ export function A4Page({
     >
       <header className="page-header">
         <div className="page-title-group">
+          {/* The booklet's own subject is the header title. No topic/unit meta-label (SPEC 4.3 / 11.5). */}
           <h1>{projectTitle}</h1>
-          <div className="topic-title">{topic}</div>
         </div>
         <div className="page-number" aria-label={`עמוד ${pageNumber}`}>{pageNumber}</div>
       </header>
@@ -48,8 +49,11 @@ export function A4Page({
       <div className="page-content" role="group" aria-label={`תוכן עמוד ${pageNumber}`}>{children}</div>
 
       <footer className="page-footer">
-        <div>{printTokens.footer.line1}</div>
-        <div>{printTokens.footer.line2}</div>
+        <img className="footer-logo" src={districtLogo} alt="" aria-hidden="true" />
+        <div className="footer-text">
+          <div>{printTokens.footer.line1}</div>
+          <div>{printTokens.footer.line2}</div>
+        </div>
       </footer>
     </article>
   );

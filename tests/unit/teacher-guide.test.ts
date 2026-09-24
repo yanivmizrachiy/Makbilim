@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 import App from '../../src/App';
 import TeacherApp, { answerFlow, COLUMN_FLOW_MAX_LINE } from '../../src/TeacherApp';
 import { segmentMathText } from '../../src/components/MathText';
-import { AUTHORED_PAGE_COUNT, AUTHORED_TASK_IDS, globalPageNumber, globalQuestionNumber } from '../../src/content/booklet';
+import { AUTHORED_PAGE_COUNT, AUTHORED_TASK_IDS, globalPageNumber } from '../../src/content/booklet';
 import { teacherAnswerKey } from '../../src/content/answer-key';
 import { TASK_KIND_LABEL, taskKindById } from '../../src/content/task-kinds';
 import { describeLocation, locateTask, stemOpening, STEM_OPENING_WORDS } from '../../src/content/teacher-locator';
@@ -48,14 +48,14 @@ function renderedStudentPages(): RenderedStudentPage[] {
 
 /** The rendered teacher answers, in document order. */
 function renderedAnswers() {
-  const articles = [...teacherHtml.matchAll(/<article class="teacher-answer-card" data-task-id="([^"]+)" data-question-number="(\d+)">([\s\S]*?)<\/article>/g)];
-  return articles.map(match => ({ id: match[1]!, questionNumber: Number(match[2]), html: match[3]! }));
+  const articles = [...teacherHtml.matchAll(/<article class="teacher-answer-card" data-task-id="([^"]+)" data-question-position="(\d+)">([\s\S]*?)<\/article>/g)];
+  return articles.map(match => ({ id: match[1]!, positionOnPage: Number(match[2]), html: match[3]! }));
 }
 
 const visibleText = (html: string) =>
   decode(html.replace(/<span aria-label="([^"]*)">[\s\S]*?<\/span>/g, ' $1 ').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
 
-describe('teacher guide — locating an answer by its global number', () => {
+describe('teacher guide — locating an answer by its page and position', () => {
   const pages = renderedStudentPages();
 
   it('renders every authored student page and its questions', () => {
@@ -64,38 +64,37 @@ describe('teacher guide — locating an answer by its global number', () => {
     expect(pages.flatMap(page => page.taskIds)).toHaveLength(62);
   });
 
-  it('prints the continuous global number in every question-marker slot on each page and gives each task its global question and page number', () => {
+  it('opens every question with a ● marker and locates each task by its page and position', () => {
     for (const page of pages) {
       expect(page.markers, page.pageId).toBe(page.taskIds.length);
       expect(page.globalPage).toBe(globalPageNumber(page.pageId));
-      for (const id of page.taskIds) {
+      page.taskIds.forEach((id, index) => {
         const location = locateTask(id);
-        expect(location.questionNumber).toBe(globalQuestionNumber(id));
-        expect(location.pageNumber).toBe(page.globalPage);
-      }
+        expect(location.positionOnPage, id).toBe(index + 1);
+        expect(location.pageNumber, id).toBe(page.globalPage);
+      });
     }
   });
 
-  it('prints the answers in booklet order (curriculum first pushes authored numbers to 9..70)', () => {
+  it('prints the answers in booklet order; positions restart on every page', () => {
     const answers = renderedAnswers();
     expect(answers).toHaveLength(62);
     const booklet = pages.flatMap(page => page.taskIds);
     expect(answers.map(answer => answer.id)).toEqual(booklet);
-    expect(answers.map(answer => answer.questionNumber)).toEqual(booklet.map(globalQuestionNumber));
-    // Authored questions start at 9 because the 8 curriculum blocks are questions 1..8.
-    expect(answers[0]!.questionNumber).toBe(9);
-    expect(answers.at(-1)!.questionNumber).toBe(70);
+    for (const answer of answers) {
+      expect(answer.positionOnPage).toBe(locateTask(answer.id).positionOnPage);
+    }
   });
 
-  it('heads every answer with its global number, task-type label, and page', () => {
+  it('heads every answer with its ● marker, its page and its position on the page', () => {
     for (const answer of renderedAnswers()) {
       const location = locateTask(answer.id);
-      expect(answer.questionNumber).toBe(location.questionNumber);
-      expect(answer.html).toContain(`<span class="teacher-answer-position-number">${location.questionNumber}</span>`);
+      expect(answer.positionOnPage).toBe(location.positionOnPage);
+      expect(answer.html).toContain('<span class="teacher-answer-position-number" aria-hidden="true">●</span>');
       expect(answer.html).toContain(`<span class="teacher-answer-kind">${TASK_KIND_LABEL[taskKindById(answer.id)]}</span>`);
       expect(visibleText(answer.html)).toContain(`עמוד ${location.pageNumber}`);
       expect(answer.html).toContain(`title="${describeLocation(location)}"`);
-      expect(describeLocation(location)).toMatch(/^שאלה \d+ · עמוד \d+$/);
+      expect(describeLocation(location)).toMatch(/^עמוד \d+ · שאלה \d+ בעמוד$/);
     }
   });
 
@@ -103,17 +102,16 @@ describe('teacher guide — locating an answer by its global number', () => {
     expect(visibleText(teacherHtml)).not.toContain('יחידה');
   });
 
-  it('heads every page group with the page number, its topic and its question range', () => {
+  it('heads every page group with the page number, its topic and how many questions it holds', () => {
     for (const page of pages) {
-      const heading = new RegExp(`<h3 id="teacher-p${page.globalPage}">[\\s\\S]*?</header>`).exec(teacherHtml)?.[0];
+      const heading = new RegExp(`<h3 id="teacher-p${page.globalPage}">[^]*?</header>`).exec(teacherHtml)?.[0];
       expect(heading, page.pageId).toBeDefined();
       expect(visibleText(heading!)).toContain(`עמוד ${page.globalPage}`);
-      const numbers = page.taskIds.map(globalQuestionNumber);
-      expect(visibleText(heading!)).toContain(`${numbers[0]}–${numbers[numbers.length - 1]}`);
+      expect(visibleText(heading!)).toContain(locateTask(page.taskIds[0]!).topic);
+      expect(visibleText(heading!)).toContain('בעמוד');
     }
   });
 });
-
 describe('teacher guide — stem openings', () => {
   const openingText = (opening: string) => opening.replace(/…”?$/, '');
 

@@ -6,7 +6,7 @@ import { ChoiceGrid, ItemRows, LineSlot, VerdictOptions, WordBank } from '../com
 import { answerSpecById } from '../content/answer-areas';
 import { ParallelLinesDiagram, type AngleMark } from '../geometry/ParallelLinesDiagram';
 import { alternateInteriorPairs, coInteriorPair, correspondingPair, type AnglePair } from '../geometry/relations';
-import { unit1Questions } from '../content/questions-unit1';
+import { PARALLEL_ARROWS_CONVENTION, PARALLEL_ARROWS_TABLE_HINT, unit1Questions } from '../content/questions-unit1';
 
 /** A pair of angles the task text points to ("the marked pair"), drawn with the marked role. */
 const markedPair = (pair: AnglePair): AngleMark[] =>
@@ -129,6 +129,7 @@ function Unit1Page2() {
       <QuestionBlock
         taskId={theorem.id}
         compact
+        hint={PARALLEL_ARROWS_CONVENTION}
         diagram={<ParallelLinesDiagram lineLabels={['e', 'f']} transversalLabel="z" orientationDeg={8} transversalDeg={138} showParallelMarks angleMarks={markedPair(correspondingPair(0))} />}
         items={clozeItems(theorem.subparts ?? [])}
       >
@@ -270,7 +271,7 @@ function Unit1Page4() {
 
   return (
     <A4Page pageId="U1-P4">
-      <QuestionBlock taskId={table.id} compact response={<RelationTable />}>
+      <QuestionBlock taskId={table.id} compact hint={PARALLEL_ARROWS_TABLE_HINT} response={<RelationTable />}>
         {table.stem}
       </QuestionBlock>
 
@@ -361,6 +362,7 @@ export function Unit1Page5() {
       <QuestionBlock
         taskId={cointerior.id}
         compact
+        hint={PARALLEL_ARROWS_CONVENTION}
         diagram={<ParallelLinesDiagram lineLabels={['k', 'm']} transversalLabel="r" orientationDeg={-11} transversalDeg={59} showParallelMarks angleMarks={markedPair(coInteriorPair(-11, 59))} />}
         items={clozeItems(cointerior.subparts ?? [])}
       >

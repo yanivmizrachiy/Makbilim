@@ -37,14 +37,19 @@ function Rules({ count, className = 'rule' }: { count: number; className?: strin
 const EQUATION_MODES = new Set(['algebra', 'critique']);
 const hasEquationCell = (spec: AnswerSpec) => EQUATION_MODES.has(spec.mode) && spec.lane !== undefined && EQUATION_LANES.has(spec.lane);
 
-/** Dotted writing rules, optionally opened by a labelled lane ('המשפט המתאים:', 'נימוק:'). */
+/**
+ * Squared work paper (SPEC 11.5 / 11.11א), optionally opened by a labelled lane. On an equation
+ * lane the row reads „המשוואה | המשפט המתאים”: the equation cell on the RIGHT (the start of the
+ * RTL row), the theorem cell on the left. The labels sit on an opaque white background so they
+ * never read over the grid squares.
+ */
 function RuledArea({ spec, minLines }: { spec: AnswerSpec; minLines: number }) {
   return (
-    <div className="answer-lines" data-answer-mode={spec.mode} data-lane={spec.lane} {...(GRID_MODES.has(spec.mode) ? { 'data-grid': 'squares' } : {})} style={minLinesStyle(minLines + (spec.lane ? 1 : 0))}>
+    <div className="answer-lines" data-answer-mode={spec.mode} data-lane={spec.lane} data-grid="squares" style={minLinesStyle(minLines + (spec.lane ? 1 : 0))}>
       {spec.lane && (
         <span className="rule rule--lane justification-lane" {...(hasEquationCell(spec) ? { 'data-equation-lane': 'true' } : {})}>
-          <span className="justification-label">{LANE_LABEL[spec.lane]}</span>
           {hasEquationCell(spec) && <span className="justification-label justification-label--equation">{spec.equationLabel ?? EQUATION_LABEL}</span>}
+          <span className="justification-label">{LANE_LABEL[spec.lane]}</span>
         </span>
       )}
       <Rules count={RULE_POOL} />

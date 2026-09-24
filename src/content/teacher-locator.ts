@@ -1,14 +1,14 @@
 /**
  * Teacher locator — how the teacher guide points at a question in the student booklet.
  *
- * Student questions now carry a CONTINUOUS GLOBAL NUMBER (SPEC 4.2/11.5), so the guide names a
- * question by that number and its global page number, and quotes the opening words of its stem.
- * The old "n-th ● on an unnumbered page" model is retired. The numbers come from the single
- * booklet order in src/content/booklet.ts; the per-task `page` fields (local page inside a unit
- * file) map to a global page id `U{unit}-P{page}`.
+ * Questions are NOT numbered on the page (only pages are, SPEC 4.1/4.2); each question opens with a
+ * ● marker. So the guide names a question by its GLOBAL PAGE NUMBER and its POSITION on that page
+ * (the n-th ● on the page), and quotes the opening words of its stem. The page order and document
+ * order come from the single booklet order in src/content/booklet.ts; the per-task `page` fields
+ * (local page inside a unit file) map to a global page id `U{unit}-P{page}`.
  */
 import { segmentMathText } from '../components/MathText';
-import { globalPageNumber, globalQuestionNumber, topicOf } from './booklet';
+import { AUTHORED_TASK_IDS, globalPageNumber, topicOf } from './booklet';
 import { unit1Questions } from './questions-unit1';
 import { unit2Questions } from './questions-unit2';
 import { unit3Questions } from './questions-unit3';
@@ -16,8 +16,8 @@ import { unit4Questions } from './questions-unit4';
 
 export type TaskLocation = {
   readonly id: string;
-  /** Continuous global question number (1..N) printed beside the question. */
-  readonly questionNumber: number;
+  /** The question's position on its page (1 = the first ● on the page, and so on). */
+  readonly positionOnPage: number;
   /** Continuous global page number (1..N) of the page the question is printed on. */
   readonly pageNumber: number;
   /** The natural topic title of that page. */
@@ -86,12 +86,25 @@ export function stemOpening(stem: string, maxWords = STEM_OPENING_WORDS): string
 }
 
 const locations: ReadonlyMap<string, TaskLocation> = (() => {
+  const byId = new Map(studentTasks.map(task => [task.id, task]));
+  // Position on a page = the order of the question among the questions printed on that page, in
+  // document order (AUTHORED_TASK_IDS = the plan order = the print order).
+  const positionOnPage = new Map<string, number>();
+  const seenPerPage = new Map<number, number>();
+  for (const id of AUTHORED_TASK_IDS) {
+    const task = byId.get(id);
+    if (!task) continue;
+    const pageNumber = globalPageNumber(task.pageId);
+    const next = (seenPerPage.get(pageNumber) ?? 0) + 1;
+    seenPerPage.set(pageNumber, next);
+    positionOnPage.set(id, next);
+  }
   const result = new Map<string, TaskLocation>();
   for (const task of studentTasks) {
     if (result.has(task.id)) throw new Error(`Duplicate student task id: ${task.id}`);
     result.set(task.id, {
       id: task.id,
-      questionNumber: globalQuestionNumber(task.id),
+      positionOnPage: positionOnPage.get(task.id) ?? 1,
       pageNumber: globalPageNumber(task.pageId),
       topic: topicOf(task.pageId),
       stem: task.stem,
@@ -107,7 +120,7 @@ export function locateTask(id: string): TaskLocation {
   return location;
 }
 
-/** Plain-language locator, e.g. "שאלה 12 · עמוד 6". */
-export function describeLocation(location: Pick<TaskLocation, 'questionNumber' | 'pageNumber'>): string {
-  return `שאלה ${location.questionNumber} · עמוד ${location.pageNumber}`;
+/** Plain-language locator, e.g. "עמוד 6 · שאלה 3 בעמוד" (the 3rd ● on page 6). */
+export function describeLocation(location: Pick<TaskLocation, 'positionOnPage' | 'pageNumber'>): string {
+  return `עמוד ${location.pageNumber} · שאלה ${location.positionOnPage} בעמוד`;
 }

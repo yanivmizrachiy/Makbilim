@@ -53,18 +53,11 @@ export const CURRICULUM_QUESTION_IDS: readonly string[] = unit5Questions.map(que
 export const AUTHORED_TASK_IDS: readonly string[] = plan.units.flatMap(unit => unit.tasks.map(task => task.id));
 
 /**
- * The continuous global question order over the WHOLE booklet: curriculum questions first
- * (1..8), then the authored questions (9..N), matching the printed top-to-bottom order.
+ * The document order of every question over the WHOLE booklet: curriculum questions first, then the
+ * authored questions, matching the printed top-to-bottom order. Questions are NOT numbered on the
+ * page (only pages are, SPEC 4.1); this order drives the teacher guide's page grouping and the
+ * position of a question on its page.
  */
 export const QUESTION_ORDER: readonly string[] = [...CURRICULUM_QUESTION_IDS, ...AUTHORED_TASK_IDS];
-
-const questionNumberById = new Map(QUESTION_ORDER.map((id, index) => [id, index + 1]));
-
-/** Continuous global question number (1..N) of a question, by its task/block id. */
-export function globalQuestionNumber(id: string): number {
-  const number = questionNumberById.get(id);
-  if (number === undefined) throw new Error(`No global question number for "${id}" — it is not in QUESTION_ORDER.`);
-  return number;
-}
 
 export const BOOKLET_QUESTION_COUNT = QUESTION_ORDER.length;

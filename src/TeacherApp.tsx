@@ -143,7 +143,7 @@ function groupByPage(located: readonly LocatedEntry[]): PageGroup[] {
     .map(([pageNumber, items]) => ({
       pageNumber,
       topic: items[0]!.location.topic,
-      items: [...items].sort((a, b) => a.location.questionNumber - b.location.questionNumber),
+      items: [...items].sort((a, b) => a.location.positionOnPage - b.location.positionOnPage),
     }));
 }
 
@@ -152,8 +152,8 @@ function AnswerHeader({ location, kindClassName = 'teacher-answer-kind' }: { loc
   return (
     <header className="teacher-answer-header">
       <span className="teacher-answer-position" title={describeLocation(location)}>
-        <span className="teacher-answer-position-number">{location.questionNumber}</span>
-        <span className="teacher-visually-hidden">{`שאלה ${location.questionNumber}`}</span>
+        <span className="teacher-answer-position-number" aria-hidden="true">●</span>
+        <span className="teacher-visually-hidden">{`עמוד ${location.pageNumber} · שאלה ${location.positionOnPage} בעמוד`}</span>
       </span>
       <span className={kindClassName}>{TASK_KIND_LABEL[taskKindById(location.id)]}</span>
       <span className="teacher-answer-locator" aria-hidden="true">עמוד {location.pageNumber}</span>
@@ -220,7 +220,7 @@ function ContentsTable({ located }: { located: readonly LocatedEntry[] }) {
 
 function AnswerCard({ entry, location }: LocatedEntry) {
   return (
-    <article className="teacher-answer-card" data-task-id={entry.id} data-question-number={location.questionNumber}>
+    <article className="teacher-answer-card" data-task-id={entry.id} data-question-position={location.positionOnPage}>
       <AnswerHeader location={location} />
       <AnswerStemOpening location={location} />
       <div className="teacher-answer-body">
@@ -249,14 +249,13 @@ function answerRows(items: readonly LocatedEntry[], flow: AnswerFlow): LocatedEn
 /** The answers of one student page: a heading naming the page and its topic, then the rows. */
 function PageAnswers({ pageNumber, topic, items }: PageGroup) {
   const flow = answerFlow(items.map(item => item.entry.answer));
-  const first = items[0]!.location.questionNumber;
-  const last = items[items.length - 1]!.location.questionNumber;
+
   return (
     <section className="teacher-page-group" aria-labelledby={`teacher-p${pageNumber}`}>
       <header className="teacher-page-heading">
         <h3 id={`teacher-p${pageNumber}`}>עמוד {pageNumber} · {topic}</h3>
         <p className="teacher-page-count">
-          {questionCount(items.length)} בעמוד · שאלות <NumberRange from={first} to={last} />
+          {questionCount(items.length)} בעמוד
         </p>
       </header>
 
@@ -312,7 +311,7 @@ export default function TeacherApp() {
 
         <p className="teacher-cover-lead">
           המדריך כולל את התשובות לכל המשימות הדידקטיות, כולל נימוקים גאומטריים ופתרון המשוואות,
-          לפי סדר העמודים והשאלות בחוברת. כל תשובה מזוהה לפי מספר השאלה הגלובלי ומספר העמוד.
+          לפי סדר העמודים והשאלות בחוברת. כל תשובה מזוהה לפי מספר העמוד ומיקום השאלה בעמוד.
         </p>
 
         <ContentsTable located={located} />
@@ -324,8 +323,8 @@ export default function TeacherApp() {
         <section className="teacher-howto" aria-labelledby="teacher-howto-title">
           <h2 id="teacher-howto-title">איך מוצאים את התשובה לשאלה</h2>
           <p>
-            בדפי התלמיד כל שאלה נושאת מספר גלובלי רציף, וכל עמוד ממוספר בעיגול. במדריך כל תשובה מסומנת לפי
-            אותו מספר שאלה ומספר העמוד — <strong className="teacher-inline-position">שאלה 12 · עמוד 6</strong> —
+            בדפי התלמיד כל שאלה נפתחת בנקודה שחורה (●), וכל עמוד ממוספר בעיגול. במדריך כל תשובה מסומנת לפי
+            מספר העמוד ומיקום השאלה בעמוד — <strong className="teacher-inline-position">עמוד 6 · שאלה 3 בעמוד</strong> —
             ולצדם סוג המשימה ומילות הפתיחה של השאלה.
           </p>
           <LocatorExample />

@@ -22,9 +22,9 @@ if (n.structure !== 'topics-not-units') fail('booklet-pages.json must declare st
 if (n.curriculumFirst !== true) fail('curriculum questions must come first');
 if (n.page !== 'continuous') fail('page numbering must be continuous');
 if (n.pageDisplay !== 'circle-top-left') fail('page number must display as a top-left circle');
-if (n.question !== 'continuous-global') fail('questions must be numbered continuously across the booklet');
-if (n.subpart !== 'hebrew-letters') fail('sub-parts must be lettered (א, ב, ג…)');
-if (n.curriculumNumberIsChrome !== true) fail('the curriculum question number must be booklet chrome, never source text');
+if (n.question !== 'dot-marker') fail('questions open with a ● marker, never a number');
+if (n.subpart !== 'dot-marker') fail('sub-parts open with a • marker, never a letter or number');
+if (n.curriculumNumberIsChrome !== true) fail('the curriculum question marker must be booklet chrome, never source text');
 if (n.unitsAreProvenanceOnly !== true) fail('internal unit ids (questions-unit*.ts, U*-P*) are provenance only and never a student-facing structure');
 
 if (!fs.existsSync(unitPlanPath)) {
@@ -44,7 +44,7 @@ if (!fs.existsSync(unitPlanPath)) {
 // No other file restates the policy (one source of truth).
 for (const file of ['src/content/page-manifest.json', 'src/content/unit-plan.json', 'src/content/question-plan.json', 'src/styles/tokens.ts']) {
   const text = fs.readFileSync(path.join(root, file), 'utf8');
-  if (/circle-top-left|hebrew-letters|continuous-global|"pageNumbering"|numbering: '/.test(text)) fail(`${file} restates the numbering policy — it lives only in booklet-pages.json`);
+  if (/circle-top-left|dot-marker|"pageNumbering"|numbering: '/.test(text)) fail(`${file} restates the numbering policy — it lives only in booklet-pages.json`);
 }
 
 // The printed order lives in booklet-pages.json (read through scripts/lib/booklet-pages.mjs, the
@@ -60,9 +60,13 @@ if (!fs.existsSync(bookletPath)) {
 } else {
   const booklet = fs.readFileSync(bookletPath, 'utf8');
   if (!booklet.includes("from './booklet-pages.json'")) fail('booklet.ts must derive BOOKLET_PAGES from booklet-pages.json (one source of the order)');
-  if (!booklet.includes('globalPageNumber') || !booklet.includes('globalQuestionNumber')) {
-    fail('booklet.ts must export globalPageNumber and globalQuestionNumber');
+  if (!booklet.includes('globalPageNumber')) {
+    fail('booklet.ts must export globalPageNumber');
   }
+  const qb = fs.readFileSync(path.join(root, 'src', 'components', 'QuestionBlock.tsx'), 'utf8');
+  if (!qb.includes("className=\"question-marker\"") || !qb.includes('●')) fail('a question must open with a ● marker (question-marker)');
+  if (!qb.includes("className=\"subpart-marker\"") || !qb.includes('•')) fail('a sub-part must open with a • marker (subpart-marker)');
+  if (qb.includes('globalQuestionNumber') || qb.includes('className="task-kind"')) fail('student pages must not print a question number or a task-type label');
 }
 
 if (!process.exitCode) {

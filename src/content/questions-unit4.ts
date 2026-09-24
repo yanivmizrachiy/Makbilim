@@ -178,7 +178,7 @@ export const unit4Questions: Unit4Question[] = [
   {
     id: 'U4-P2-C',
     page: 3,
-    stem: 'הישרים p ו־q נחתכים על ידי ישר שלישי. גודלי שתי זוויות מתאימות הם (3x + 14)° ו־(5x − 26)°. מצאו את x כך שניתן יהיה לקבוע כי p ∥ q, וחשבו את גודל הזוויות המתאימות עבור x זה. נמקו.',
+    stem: 'הישרים p ו־q נחתכים על ידי ישר שלישי. גודלי שתי זוויות מתאימות הם 3x + 14° ו־5x − 26°. מצאו את x כך שניתן יהיה לקבוע כי p ∥ q, וחשבו את גודל הזוויות המתאימות עבור x זה. נמקו.',
     diagram: {
       topology: 'converse-algebra-corresponding',
       lineLabels: ['p', 'q', 't'],
@@ -187,7 +187,7 @@ export const unit4Questions: Unit4Question[] = [
       orientationDeg: 28,
       transversalDeg: 134,
       parallelGiven: false,
-      givens: ['corresponding angles: (3x + 14)° and (5x − 26)°'],
+      givens: ['corresponding angles: 3x + 14° and 5x − 26°'],
       target: 'find x that guarantees p ∥ q'
     },
     justificationLane: true,

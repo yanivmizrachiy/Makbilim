@@ -78,13 +78,13 @@ describe('teacher guide is written for teachers', () => {
   const html = renderToStaticMarkup(createElement(TeacherApp));
   const { visibleText, mathSources } = inspect(html);
 
-  it('shows every authored answer, each with its global number, the student-page task-type label and the stem opening', () => {
+  it('shows every authored answer with its ● position marker and the stem opening', () => {
     expect(html.match(/<article class="teacher-answer-card"/g)).toHaveLength(AUTHORED_TASK_IDS.length);
     expect(html.match(/<span class="teacher-answer-kind">/g)).toHaveLength(62);
     const cards = html.match(/<article class="teacher-answer-card"[\s\S]*?<\/article>/g) ?? [];
     expect(cards).toHaveLength(62);
     for (const card of cards) {
-      expect(card).toMatch(/<span class="teacher-answer-position-number">\d+<\/span>/);
+      expect(card).toContain('teacher-answer-position-number');
       expect(card).toMatch(/<span class="teacher-answer-kind">[^<]+<\/span>/);
       expect(card).toMatch(/<p class="teacher-answer-stem">/);
     }

@@ -21,8 +21,8 @@
  * CI-1  U2-P2-D  ∠A = α = 54° (acute) but every marked sector is drawn at 99° (obtuse).
  * CI-2  U2-P4-C  the marked angles evaluate to 93° (obtuse) but are drawn at 45° (acute).
  * CI-3  U2-P4-D  the marked angles evaluate to 71° (acute) but are drawn at 129° (obtuse).
- * CI-4  U2-P5-C  (2y + 18)° = 94° (obtuse) and its alternate 94° are drawn at 68° (acute).
- * CI-5  U2-P5-D  (2x + 20)° = 70° is drawn at 112° and (3x + 35)° = 110° at 68° — swapped.
+ * CI-4  U2-P5-C  2y + 18° = 94° (obtuse) and its alternate 94° are drawn at 68° (acute).
+ * CI-5  U2-P5-D  2x + 20° = 70° is drawn at 112° and 3x + 35° = 110° at 68° — swapped.
  * CI-6  U2-P6-B  the 118° angle and its alternate are drawn at 45° (acute).
  * CI-7  U2-P6-C  ∠A = 128° is drawn at 43°; α = 52° is drawn at 137° — swapped.
  * CI-8  U2-P6-D  ∠C = 68° is drawn at 120°; β = 112° is drawn at 60° — swapped.
@@ -802,7 +802,7 @@ const unit2Specs: Unit2Spec[] = [
   {
     id: 'U2-P4-A',
     parallelText: 'p ∥ q',
-    stemGivens: ['(4x + 6)°', '(2x + 38)°'],
+    stemGivens: ['4x + 6°', '2x + 38°'],
     marks: ['e1', 'e2'],
     steps: [['e1', 'e2', 'corresponding']],
     equations: [{ left: '4x + 6', right: '2x + 38', kind: 'equal' }],
@@ -816,7 +816,7 @@ const unit2Specs: Unit2Spec[] = [
   {
     id: 'U2-P4-B',
     parallelText: 'הישרים k ו־m מקבילים',
-    stemGivens: ['(3x + 17)°', '(5x − 21)°'],
+    stemGivens: ['3x + 17°', '5x − 21°'],
     marks: ['e1', 'e2'],
     steps: [['e1', 'e2', 'alternate']],
     equations: [{ left: '3x + 17', right: '5x − 21', kind: 'equal' }],
@@ -830,7 +830,7 @@ const unit2Specs: Unit2Spec[] = [
   {
     id: 'U2-P4-C',
     parallelText: 'a ∥ b',
-    stemGivens: ['(6x − 9)°', '(3x + 42)°'],
+    stemGivens: ['6x − 9°', '3x + 42°'],
     marks: ['e1', 'e2'],
     steps: [['e1', 'e2', 'corresponding']],
     equations: [{ left: '6x − 9', right: '3x + 42', kind: 'equal' }],
@@ -844,7 +844,7 @@ const unit2Specs: Unit2Spec[] = [
   {
     id: 'U2-P4-D',
     parallelText: 'הישרים r ו־s מקבילים',
-    stemGivens: ['(2x + 35)°', '(5x − 19)°'],
+    stemGivens: ['2x + 35°', '5x − 19°'],
     marks: ['e1', 'e2'],
     steps: [['e1', 'e2', 'alternate']],
     equations: [{ left: '2x + 35', right: '5x − 19', kind: 'equal' }],
@@ -858,16 +858,16 @@ const unit2Specs: Unit2Spec[] = [
   {
     id: 'U2-P5-A',
     parallelText: 'p ∥ q',
-    stemGivens: ['(7x − 18)°', '(3x + 38)°'],
-    // The two expressions are NOT a corresponding pair: (3x + 38)° sits beside the (unmarked) angle
-    // that corresponds to (7x − 18)°, so they are supplementary — equating them (x = 14) is the trap.
+    stemGivens: ['7x − 18°', '3x + 38°'],
+    // The two expressions are NOT a corresponding pair: 3x + 38° sits beside the (unmarked) angle
+    // that corresponds to 7x − 18°, so they are supplementary — equating them (x = 14) is the trap.
     marks: ['e1', 'e2'],
     probes: { 'e1↓': ({ e1 }) => ({ intersection: e1!.intersection === 'top' ? 'bottom' : 'top', sector: e1!.sector }) },
     steps: [['e1', 'e1↓', 'corresponding'], ['e1↓', 'e2', 'adjacent']],
     twoStep: [['e1', 'e2']],
     equations: [{ left: '7x − 18', right: '3x + 38', kind: 'supplementary', via: 'e1↓' }],
     derive: () => {
-      // corresponding, then adjacent: (7x − 18) + (3x + 38) = 180  ⇒  10x = 160  ⇒  x = 16
+      // corresponding, then adjacent: 7x − 18 + 3x + 38 = 180  ⇒  10x = 160  ⇒  x = 16
       const x = (180 + 18 - 38) / (7 + 3);
       const e1 = 7 * x - 18; // 94
       const e2 = 3 * x + 38; // 86
@@ -877,7 +877,7 @@ const unit2Specs: Unit2Spec[] = [
   {
     id: 'U2-P5-B',
     parallelText: 'הישרים c ו־d מקבילים',
-    stemGivens: ['(4x + 15)°', '(2x + 63)°'],
+    stemGivens: ['4x + 15°', '2x + 63°'],
     marks: ['e1', 'e2'],
     steps: [['e1', 'e2', 'alternate']],
     equations: [{ left: '4x + 15', right: '2x + 63', kind: 'equal' }],
@@ -891,7 +891,7 @@ const unit2Specs: Unit2Spec[] = [
   {
     id: 'U2-P5-C',
     parallelText: 'p ∥ q',
-    stemGivens: ['(3x + 12)°', '72°', '(2y + 18)°', '94°'],
+    stemGivens: ['3x + 12°', '72°', '2y + 18°', '94°'],
     marks: ['ex', 'n72', 'ey', 'n94'],
     steps: [['ex', 'n72', 'corresponding'], ['ey', 'n94', 'alternate']],
     equations: [
@@ -915,7 +915,7 @@ const unit2Specs: Unit2Spec[] = [
     steps: [['e1', 'e2', 'adjacent']],
     equations: [{ left: '2x + 20', right: '3x + 35', kind: 'supplementary' }],
     derive: () => {
-      // adjacent angles: (2x + 20) + (3x + 35) = 180  ⇒  5x = 125  ⇒  x = 25
+      // adjacent angles: 2x + 20 + 3x + 35 = 180  ⇒  5x = 125  ⇒  x = 25
       const x = (180 - 20 - 35) / (2 + 3);
       // SPEC 7: substitute back — the two angles are 70° and 110°.
       return { answer: { x, '2x + 20': 2 * x + 20, '3x + 35': 3 * x + 35 }, measures: { e1: 2 * x + 20, e2: 3 * x + 35 } };
@@ -1015,7 +1015,7 @@ const NO_WRITTEN_JUSTIFICATION: Record<string, string> = {
   'U2-P3-C': 'the stem asks only for β and for the unneeded datum (no „נמקו”); the key states unneededDatum instead',
 };
 
-/** The drawn angle carrying the value of one side of an equation, e.g. '(4x + 6)°' or '72°'; exactly one mark must carry it. */
+/** The drawn angle carrying the value of one side of an equation, e.g. '4x + 6°' or '72°'; exactly one mark must carry it. */
 function markCarrying(id: string, side: string): DrawnAngle {
   const drawing = drawingOf(id);
   const indices = drawing.marks.flatMap((mark, index) => (mark.value === `(${side})°` || mark.value === `${side}°` ? [index] : []));
@@ -1091,7 +1091,10 @@ function assertMarksMatchStem(spec: Unit2Spec, q: Unit2Question | Unit4Question,
       expect(q.stem, `${spec.id}: unknown ${text} drawn but not asked for`).toContain(text);
     }
   }
-  for (const [, digits] of q.stem.matchAll(/(\d+)°/g)) {
+  // Algebraic angle expressions (3x + 17°) are drawn whole; only STANDALONE numeric data (47°, ∠A = 68°)
+  // are checked here — strip the x/y expressions first (parentheses used to fence them off).
+  const numericStem = q.stem.replace(/[0-9xy]*[xy][0-9xy +−-]*°/g, ' ');
+  for (const [, digits] of numericStem.matchAll(/(\d+)°/g)) {
     const asValue = shown.some(angle => angle.text === `${digits}°` && angle.measure === Number(digits));
     const asName = [...q.stem.matchAll(new RegExp(`∠([A-Z]) = ${digits}°`, 'g'))]
       .some(([, letter]) => shown.some(angle => angle.text === letter && angle.measure === Number(digits)));
@@ -1130,10 +1133,10 @@ describe('independent verification — the verifier itself', () => {
 
   it('parses and solves linear angle expressions', () => {
     expect(parseLinear('180 − (5x − 19)')).toEqual({ x: -5, y: 0, c: 199 });
-    expect(parseLinear('(2y + 18)°')).toEqual({ x: 0, y: 2, c: 18 });
+    expect(parseLinear('2y + 18°')).toEqual({ x: 0, y: 2, c: 18 });
     expect(solveOne(parseEquation('4x + 6 = 2x + 38'))).toEqual({ variable: 'x', value: 16 });
     expect(solveOne(parseEquation('2x + 1 = 2x + 5'))).toBeNull();
-    expect(equivalent(parseEquation('2x + 35 = 180 − (5x − 19)'), parseEquation('(2x + 35) + (5x − 19) = 180'))).toBe(true);
+    expect(equivalent(parseEquation('2x + 35 = 180 − (5x − 19)'), parseEquation('2x + 35 + 5x − 19 = 180'))).toBe(true);
     expect(equivalent(parseEquation('2x + 35 = 5x − 19'), parseEquation('2x + 35 = 5x + 19'))).toBe(false);
   });
 });
@@ -1407,9 +1410,9 @@ describe('independent verification — unit 2 algebra: unique, valid, justified'
     const studentSolution = solveOne(parseEquation(student!));
     expect(studentSolution).toEqual({ variable: 'x', value: -15 });
     expect(evaluate(parseLinear('2x + 20'), { x: -15 })).toBeLessThanOrEqual(0);
-    const supplementary = parseEquation('(2x + 20) + (3x + 35) = 180');
+    const supplementary = parseEquation('2x + 20 + 3x + 35 = 180');
     expect(equivalent(parseEquation(student!), supplementary)).toBe(false);
-    const keyEquation = /(\(2x \+ 20\) \+ \(3x \+ 35\) = 180)/.exec(asList(q.expected.justification).join(' '))?.[1];
+    const keyEquation = /(2x \+ 20 \+ 3x \+ 35 = 180)/.exec(asList(q.expected.justification).join(' '))?.[1];
     expect(keyEquation).toBeDefined();
     expect(equivalent(parseEquation(keyEquation!), supplementary)).toBe(true);
     // The stem no longer tells the student the angles are adjacent: deciding that is the task. The
@@ -1463,12 +1466,12 @@ describe('independent verification — unit 2 algebra: unique, valid, justified'
     expect([...relationsSeen].sort()).toEqual(['adjacent', 'alternate', 'corresponding', 'vertical']);
   });
 
-  it('U2-P3-B: the table states the same relations the drawing shows', () => {
+  it('U2-P3-B: the table hands the student nothing but the given — the relations are theirs to name', () => {
     const q = byId(unit2Questions, 'U2-P3-B');
     expect(q.tableRows).toEqual([
       { label: '∠A', relation: 'נתונה', value: '52°' },
-      { label: '∠D', relation: 'מתאימה ל־∠A', value: '' },
-      { label: '∠F', relation: 'צמודה ל־∠D', value: '' },
+      { label: '∠D', relation: '', value: '' },
+      { label: '∠F', relation: '', value: '' },
     ]);
   });
 
@@ -1542,7 +1545,7 @@ const unit4Specs: Unit4Spec[] = [
   {
     id: 'U4-P2-C',
     parallelText: null,
-    stemGivens: ['(3x + 14)°', '(5x − 26)°', 'מתאימות'],
+    stemGivens: ['3x + 14°', '5x − 26°', 'מתאימות'],
     marks: ['e1', 'e2'],
     steps: [['e1', 'e2', 'corresponding']],
     equations: [{ left: '3x + 14', right: '5x − 26', kind: 'equal' }],

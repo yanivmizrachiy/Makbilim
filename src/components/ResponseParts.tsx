@@ -60,10 +60,10 @@ export function LineSlot({ label }: { label?: string | undefined }) {
   );
 }
 
-/** Dotted writing rows under one sub-item, the first opened by a label (e.g. 'נימוק:'). */
+/** Squared writing rows under one sub-item, the first opened by a label (e.g. 'נימוק:'). */
 export function ItemRows({ label, rows }: { label: string; rows: number }) {
   return (
-    <div className="answer-lines answer-lines--item" data-answer-mode="reason">
+    <div className="answer-lines answer-lines--item" data-answer-mode="reason" data-grid="squares">
       <span className="rule rule--lane justification-lane"><span className="justification-label">{label}</span></span>
       {Array.from({ length: Math.max(0, rows - 1) }, (_, index) => <span className="rule" key={index} aria-hidden="true" />)}
     </div>

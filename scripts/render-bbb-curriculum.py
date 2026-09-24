@@ -123,7 +123,7 @@ with tempfile.TemporaryDirectory(prefix='makbilim-bbb-') as tmp:
 
         # Continuous global question number (SPEC 4.2): the curriculum block is the booklet's
         # chrome number. Curriculum blocks are FIRST, so the block's index is its global number.
-        label = str(index + 1)
+        label = '●'  # ● — questions are marked, not numbered (SPEC 4.2)
         html = (
             f'<div class="q"><div class="qhead"><span class="qnum">{label}</span>'
             f'<div class="qtags"></div></div><div class="qbody">{body}</div></div>'

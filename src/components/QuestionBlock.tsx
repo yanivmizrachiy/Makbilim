@@ -1,12 +1,8 @@
 import { type ReactNode } from 'react';
 import { answerSpecById, growOf } from '../content/answer-areas';
-import { globalQuestionNumber } from '../content/booklet';
-import { STUDENT_HIDDEN_KIND_LABELS, TASK_KIND_LABEL, taskKindById } from '../content/task-kinds';
+import { taskKindById } from '../content/task-kinds';
 import { DiagramSizeProvider, diagramSizeFor } from '../geometry/diagram-size';
 import { AnswerArea, AnswerSlots } from './AnswerArea';
-
-/** Local sub-part letters (SPEC 4.2/11.5): sub-parts are lettered א, ב, ג… within their question. */
-const SUBPART_LETTERS = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'כ', 'ל'] as const;
 
 /** A sub-item: its content, an optional answer beside it (a verdict) and an optional row under it. */
 export type SubpartItem = {
@@ -23,10 +19,12 @@ export type QuestionBlockProps = {
   /** The instruction (stem), plus anything that belongs directly to it: choices, a bank, a table. */
   children: ReactNode;
   /**
-   * Id of the original task (e.g. 'U2-P4-A'). Drives the student-facing task-type label, the answer
-   * area (content/answer-areas.ts) and the data-task-id / data-task-kind hooks.
+   * Id of the original task (e.g. 'U2-P4-A'). Drives the answer area (content/answer-areas.ts) and
+   * the data-task-id / data-task-kind hooks. It is never shown to the student.
    */
   taskId: string;
+  /** An explanatory note (e.g. the parallel-arrows convention), set apart from the instruction. */
+  hint?: ReactNode | undefined;
   diagram?: ReactNode | undefined;
   /** 'side': the diagram in its own column beside the text; 'stacked': under the stem (paired figures). */
   diagramLayout?: 'side' | 'stacked' | undefined;
@@ -37,7 +35,7 @@ export type QuestionBlockProps = {
   compact?: boolean | undefined;
 };
 
-function Subpart({ item, letter }: { item: SubpartItem; letter: string }) {
+function Subpart({ item }: { item: SubpartItem }) {
   const className = [
     'subpart',
     item.aside ? 'subpart--aside' : '',
@@ -45,7 +43,8 @@ function Subpart({ item, letter }: { item: SubpartItem; letter: string }) {
   ].filter(Boolean).join(' ');
   return (
     <div className={className}>
-      <span className="subpart-marker">{letter}</span>
+      {/* SPEC 4.2 / 11.5: a sub-part opens with a small filled dot •, never a letter or a number. */}
+      <span className="subpart-marker"><span className="sr-only">סעיף: </span><span aria-hidden="true">•</span></span>
       <div className="subpart-content">{item.content}</div>
       {item.aside && <div className="subpart-aside">{item.aside}</div>}
       {item.after && <div className="subpart-after">{item.after}</div>}
@@ -54,14 +53,16 @@ function Subpart({ item, letter }: { item: SubpartItem; letter: string }) {
 }
 
 /**
- * One question on the white page (SPEC 11.5 / 11.7): the continuous global question number, then one text column that reads
- * stem → sub-items / choices → answer slots → work area, with the diagram in its own column beside it.
- * The block's grow weight comes from its answer spec, so surplus page height becomes whole writing
- * rules where the student writes, never empty bands.
+ * One question on the white page (SPEC 11.5 / 11.7): a large filled dot ● opens the question, then
+ * one text column that reads stem → sub-items / choices → answer slots → work area, with the diagram
+ * in its own column beside it. Questions are NOT numbered (only pages are, SPEC 4.1) and carry no
+ * task-type label — the instruction itself says what to do. The block's grow weight comes from its
+ * answer spec, so surplus page height becomes whole writing rules where the student writes.
  */
 export function QuestionBlock({
   children,
   taskId,
+  hint,
   diagram,
   diagramLayout = 'side',
   subparts,
@@ -96,17 +97,20 @@ export function QuestionBlock({
       data-answer-mode={spec.mode}
       data-grow={growOf(spec)}
     >
-      <div className="question-marker"><span className="sr-only">שאלה </span>{globalQuestionNumber(taskId)}</div>
+      <div className="question-marker"><span className="sr-only">שאלה</span><span aria-hidden="true">●</span></div>
       <div className={contentClass}>
         <div className="question-main">
-          <div className="question-stem">
-            {!STUDENT_HIDDEN_KIND_LABELS.has(kind) && <span className="task-kind">{TASK_KIND_LABEL[kind]}</span>}
-            {children}
-          </div>
+          <div className="question-stem">{children}</div>
+          {hint && (
+            <aside className="hint-note" role="note">
+              <span className="hint-note-icon" aria-hidden="true">ⓘ</span>
+              <span className="hint-note-text">{hint}</span>
+            </aside>
+          )}
           {diagram && !side && <div className="question-diagram question-diagram--stacked">{sized}</div>}
           {allItems.length > 0 && (
             <div className="subparts">
-              {allItems.map((item, index) => <Subpart item={item} letter={SUBPART_LETTERS[index] ?? String(index + 1)} key={index} />)}
+              {allItems.map((item, index) => <Subpart item={item} key={index} />)}
             </div>
           )}
           {response}
