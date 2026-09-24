@@ -1,6 +1,7 @@
 import { A4Page } from '../components/A4Page';
 import { ClozeText } from '../components/ClozeText';
 import { MathText } from '../components/MathText';
+import { ClaimComic } from '../components/ClaimComic';
 import { QuestionBlock } from '../components/QuestionBlock';
 import { ChoiceGrid, ItemRows, LineSlot, VerdictOptions, WordBank } from '../components/ResponseParts';
 import { answerSpecById } from '../content/answer-areas';
@@ -251,6 +252,7 @@ function Unit1Page3() {
       <QuestionBlock
         taskId={claim.id}
         diagramLayout="stacked"
+        comic={claim.comic && <ClaimComic speakers={claim.comic} />}
         diagram={
           <div className="paired-diagrams">
             <ParallelLinesDiagram size="pair" lineLabels={['m', 'n']} transversalLabel="q" orientationDeg={13} transversalDeg={63} showParallelMarks angleMarks={markedPair(alternateInteriorPair(13, 63))} />

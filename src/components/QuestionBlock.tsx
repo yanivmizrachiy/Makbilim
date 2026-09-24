@@ -25,6 +25,8 @@ export type QuestionBlockProps = {
   taskId: string;
   /** An explanatory note (e.g. the parallel-arrows convention), set apart from the instruction. */
   hint?: ReactNode | undefined;
+  /** A comic (two students arguing a claim), set right after the instruction. */
+  comic?: ReactNode | undefined;
   diagram?: ReactNode | undefined;
   /** 'side': the diagram in its own column beside the text; 'stacked': under the stem (paired figures). */
   diagramLayout?: 'side' | 'stacked' | undefined;
@@ -63,6 +65,7 @@ export function QuestionBlock({
   children,
   taskId,
   hint,
+  comic,
   diagram,
   diagramLayout = 'side',
   subparts,
@@ -107,6 +110,7 @@ export function QuestionBlock({
               <span className="hint-note-text">{hint}</span>
             </aside>
           )}
+          {comic}
           {diagram && !side && <div className="question-diagram question-diagram--stacked">{sized}</div>}
           {allItems.length > 0 && (
             <div className="subparts">

@@ -1,4 +1,5 @@
 import { A4Page } from '../components/A4Page';
+import { ConclusionArrow } from '../components/ConclusionArrow';
 import { MathText } from '../components/MathText';
 import { QuestionBlock } from '../components/QuestionBlock';
 import { ChoiceGrid, LineSlot, WordBank } from '../components/ResponseParts';
@@ -133,9 +134,21 @@ function ProofDiagram({ q }: { q: Unit3Question }) {
 const isBlank = (text: string | undefined) => text === undefined || CLOZE_BLANK.test(text);
 
 /** A proof cell: its text, or an empty cell to write in when the line is missing. */
-function ProofCell({ text }: { text: string | undefined }) {
-  if (isBlank(text)) return <td className="write-cell"><span className="sr-only">מקום לכתיבה</span></td>;
-  return <td><MathText text={text ?? ''} /></td>;
+function ProofCell({ text, arrow = false }: { text: string | undefined; arrow?: boolean }) {
+  if (isBlank(text)) {
+    return (
+      <td className="write-cell">
+        {arrow && <span className="proof-step-arrow"><ConclusionArrow /></span>}
+        <span className="sr-only">מקום לכתיבה</span>
+      </td>
+    );
+  }
+  return (
+    <td>
+      {arrow && <span className="proof-step-arrow"><ConclusionArrow /></span>}
+      <MathText text={text ?? ''} />
+    </td>
+  );
 }
 
 /**
@@ -161,7 +174,9 @@ function ProofTable({ lines, orderColumn = false }: { lines: NonNullable<Unit3Qu
         {lines.map((line, index) => (
           <tr key={index}>
             {orderColumn && <td className="write-cell write-cell--order"><span className="sr-only">מקום לכתיבה</span></td>}
-            <ProofCell text={line.claim} />
+            {/* A conclusion arrow ⇓ leads each claim after the first — the proof flows step by step
+               (SPEC 11.14). Not on an order-the-proof table, whose rows are deliberately scrambled. */}
+            <ProofCell text={line.claim} arrow={!orderColumn && index > 0} />
             <ProofCell text={line.reason} />
           </tr>
         ))}

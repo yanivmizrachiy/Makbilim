@@ -598,10 +598,10 @@ body { direction: rtl; }
 }
 
 .paired-diagrams {
-  width: min(100%, 150mm);
+  width: min(100%, 138mm);
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-6);
+  gap: var(--space-4);
   align-items: center;
   margin-inline: auto;
 }
@@ -735,3 +735,86 @@ body { direction: rtl; }
 .question-block[data-answer-mode="critique"] .question-stem {
   font-size: var(--text-body-dense);
 }
+
+/* Claim comic (SPEC 8.5): two students argue a claim. Line-art boy avatars (paper fill + ink
+   stroke, accent shirt) beside a speech bubble holding each claim — friendly but restrained, and
+   fully legible in grayscale / forced-colors. */
+.claim-comic {
+  display: flex;
+  gap: var(--space-4);
+  margin: var(--space-1) 0;
+}
+.comic-speaker {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.6mm;
+}
+.comic-avatar {
+  flex: 0 0 auto;
+  width: 9mm;
+  height: auto;
+}
+.comic-skin { fill: var(--paper); stroke: var(--ink); stroke-width: 1; }
+.comic-hair { fill: var(--ink); }
+.comic-shirt { fill: var(--accent); }
+.comic-face { fill: var(--ink); }
+.comic-smile { fill: none; stroke: var(--ink); stroke-width: 1.4; stroke-linecap: round; }
+.comic-bubble {
+  flex: 1 1 auto;
+  min-width: 0;
+  position: relative;
+  background: var(--soft);
+  border: 0.3mm solid var(--line);
+  border-radius: 2mm;
+  padding: 1.2mm 2mm;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.comic-bubble::before {
+  content: '';
+  position: absolute;
+  top: 3.2mm;
+  inset-inline-end: 0;
+  width: 0;
+  height: 0;
+  border: 0.9mm solid transparent;
+  border-inline-start-color: var(--soft);
+}
+.comic-claim {
+  margin: 0;
+  font-size: var(--text-label);
+  line-height: 1.3;
+}
+.comic-name {
+  display: block;
+  margin-top: 1mm;
+  font-weight: 800;
+  color: var(--accent-dark);
+  font-size: var(--text-label);
+}
+@media (forced-colors: active) {
+  .comic-skin { fill: Canvas; stroke: CanvasText; }
+  .comic-hair, .comic-shirt, .comic-face { fill: CanvasText; }
+  .comic-smile { stroke: CanvasText; }
+  .comic-bubble { background: Canvas; border-color: CanvasText; }
+  .comic-bubble::before { border-inline-start-color: CanvasText; }
+}
+
+/* Conclusion arrow ⇓ inside a proof table: a small, centred double arrow that leads each claim
+   after the first, so the טענה column reads as a step-by-step deduction (SPEC 11.14). */
+.proof-step-arrow {
+  display: block;
+  text-align: center;
+  line-height: 0;
+}
+.proof-step-arrow .conclusion-arrow {
+  margin: 0 0 0.6mm;
+  justify-content: center;
+}
+.proof-step-arrow .conclusion-arrow-svg {
+  width: 3.6mm;
+  height: auto;
+}
+.proof-table td:has(> .proof-step-arrow) { text-align: center; }
