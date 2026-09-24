@@ -54,7 +54,7 @@ export const unit1Questions: Unit1Question[] = [
     diagram: { topology: 'eight-angle-labeled-grid', lineLabels: ['c', 'd', 'h'], pointLabels: ['K', 'L'], orientationDeg: -3, transversalDeg: 52, parallelGiven: false }
   },
   {
-    id: 'U1-P2-A', page: 2, stem: 'התאימו לכל זווית בטור הימני את הזווית המתחלפת לה בטור השמאלי.',
+    id: 'U1-P2-A', page: 2, stem: 'לפי השרטוט, השלימו בכל שורה את הזווית המתחלפת החסרה.',
     diagram: { topology: 'eight-angle-labeled-grid', lineLabels: ['g', 'j', 'n'], pointLabels: ['M', 'N'], orientationDeg: 19, transversalDeg: 95, parallelGiven: false }
   },
   {

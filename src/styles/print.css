@@ -602,6 +602,20 @@ body { direction: rtl; }
   font-weight: 700;
 }
 
+/* Sentence-completion lines (e.g. „זווית 1 מתחלפת לזווית ___”): a clean stack with room to write
+   above each blank. The blank itself is the answer surface, so no extra writing rows follow. */
+.completion-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.completion-line {
+  font-size: var(--text-body);
+  line-height: var(--leading-cloze);
+}
+
 .paired-diagrams {
   width: min(100%, 138mm);
   display: grid;
