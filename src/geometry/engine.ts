@@ -335,8 +335,15 @@ function placeLineLabel(
   allLines: Segment[],
   obstacles: Obstacles,
   frame: Frame,
+  crowd: LineNameCrowd = { names: [], sectors: [] },
 ): { label: PlacedLabel; rank: number } | null {
   const fontPx = pt(T.label.linePt);
+  const separation = mm(T.placement.lineNameSeparationMm);
+  // A spot is "separated" when no other name is close enough to read as one word with it and it is
+  // not inside a marked angle near that angle's vertex.
+  const separated = (center: Point) =>
+    crowd.names.every(name => Math.hypot(name.x - center.x, name.y - center.y) >= separation) &&
+    crowd.sectors.every(sector => Math.hypot(center.x - sector.vertex.x, center.y - sector.vertex.y) > sector.reach || !inSweep(dirOf(sector.vertex, center), sector.start, sector.end));
   const probe = labelBoxes(shaped, fontPx, { x: 0, y: 0 });
   const halfW = (probe.ink.right - probe.ink.left) / 2;
   const halfH = (probe.ink.bottom - probe.ink.top) / 2;
@@ -348,6 +355,7 @@ function placeLineLabel(
     ? [{ end: line.b, inward: -1 }, { end: line.a, inward: 1 }]
     : [{ end: line.a, inward: 1 }, { end: line.b, inward: -1 }];
   const own = allLines.find(other => other === line);
+  const candidates: Array<{ center: Point; rank: number }> = [];
 
   // Candidates by preference: the line's far end first; on each end the outer side first, as
   // close to the end as the free stretch allows; in line past the end last. The rank returned
@@ -370,7 +378,13 @@ function placeLineLabel(
       }
     }
     positions.push({ center: add(end, dir, -inward * (alongSupport + mm(1.2))), rank: endIndex * 3 + 2 });
-    for (const { center, rank } of positions) {
+    candidates.push(...positions);
+  }
+  // First a spot that is also separated from every other name and marked angle; only if none
+  // exists, the first legal spot (so no figure loses a name).
+  for (const strict of [true, false]) {
+    for (const { center, rank } of candidates) {
+      if (strict && !separated(center)) continue;
       const boxes = labelBoxes(shaped, fontPx, center);
       if (!isClear(boxes, obstacles, frame)) continue;
       const ownDistance = own ? distanceToSegment(center, own) : 0;
@@ -382,6 +396,9 @@ function placeLineLabel(
   }
   return null;
 }
+
+/** What a line name keeps apart from: the names already placed and the marked angles near their vertex. */
+type LineNameCrowd = { names: Point[]; sectors: Array<{ vertex: Point; start: number; end: number; reach: number }> };
 
 function distanceToSegment(p: Point, s: Segment) {
   const dx = s.b.x - s.a.x;
@@ -476,6 +493,7 @@ function attempt(spec: FigureSpec, size: DiagramSize, gap: number, requestedOver
   // Inner arc radius of every mark. Two differently styled arcs in sectors that share a ray at one
   // crossing would meet on that ray and read as ONE curve (a single arc and a double arc joining into
   // a semicircle); the later style (single → dashed → double) steps out past its neighbour's outer arc.
+  // Same-style neighbours at one radius would join as well; the later mark (by index) steps out.
   const STYLE_ORDER: Record<ArcStyle, number> = { single: 0, dashed: 1, double: 2 };
   const sharesRay = (a: FigureMark, b: FigureMark) =>
     [a.start, a.end].some(edge => [b.start, b.end].some(other => Math.abs(normalizeAngle(edge - other + 180) - 180) < 0.5));
@@ -490,8 +508,10 @@ function attempt(spec: FigureSpec, size: DiagramSize, gap: number, requestedOver
       let radius = arcRadiusFor(mark.end - mark.start);
       for (const other of innerRadius.keys()) {
         const neighbour = marks[other]!;
-        if (neighbour.given !== mark.given || neighbour.transversal !== mark.transversal || neighbour.arcStyle === mark.arcStyle) continue;
-        if (sharesRay(mark, neighbour)) radius = Math.max(radius, outerRadius(other) + mm(T.arc.neighbourStepMm));
+        if (neighbour.given !== mark.given || neighbour.transversal !== mark.transversal) continue;
+        // Different styles always; the same style only when the two arcs would share a radius.
+        const joins = neighbour.arcStyle !== mark.arcStyle || Math.abs(innerRadius.get(other)! - radius) < 1e-6;
+        if (joins && sharesRay(mark, neighbour)) radius = Math.max(radius, outerRadius(other) + mm(T.arc.neighbourStepMm));
       }
       innerRadius.set(index, radius);
     });
@@ -649,6 +669,18 @@ function attempt(spec: FigureSpec, size: DiagramSize, gap: number, requestedOver
       segments,
       obstacles,
       frame,
+      {
+        names: [
+          ...laidMarks.flatMap(m => (m.label ? [m.label.center] : [])),
+          ...lineLabels.flatMap(l => (l ? [l.center] : [])),
+        ],
+        sectors: laidMarks.filter(m => !m.index && m.mark.label).map(m => ({
+          vertex: m.vertex,
+          start: m.mark.start,
+          end: m.mark.end,
+          reach: Math.max(...m.arcs.map(arc => arc.radius)) + mm(T.placement.maxBeyondArcMm),
+        })),
+      },
     );
     if (!placed) {
       problems.push(`line label "${line.label}" has no legal spot`);

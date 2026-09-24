@@ -370,7 +370,7 @@ export function Unit1Page5() {
       <QuestionBlock
         taskId={trueFalse.id}
         items={(trueFalse.subparts ?? []).map(text => ({
-          // The claims carry '180°': one math island each, never a bare symbol in RTL text.
+          // Each claim goes through MathText, so any mathematics in it is typeset as an island.
           content: <MathText text={text} />,
           aside: <VerdictOptions options={trueFalse.verdictOptions ?? []} />,
           after: <ItemRows label="נימוק:" rows={answerSpecById(trueFalse.id).itemRows ?? 1} />,

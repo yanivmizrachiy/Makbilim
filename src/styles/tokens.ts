@@ -72,6 +72,7 @@ export const geometryTokens = {
     maxBeyondArcMm: 6.5,
     leaderReachMm: 16,
     lineClearanceMm: 0.8,
+    lineNameSeparationMm: 4.6,
     labelGapMm: 0.8,
     sectorMarginDeg: 4,
     lineLabelOffsetMm: 1.1,
