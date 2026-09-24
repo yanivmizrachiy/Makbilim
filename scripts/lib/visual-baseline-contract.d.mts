@@ -4,7 +4,6 @@ export type LayoutPage = Record<string, unknown> & { pageId: string; globalPage:
 
 export type LayoutReport = {
   pageCount: number;
-  expectedPages?: unknown;
   mathJaxStatus?: { total?: number; rendered?: number; svgNodes?: number };
   layout: LayoutPage[];
 };

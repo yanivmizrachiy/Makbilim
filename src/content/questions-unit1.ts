@@ -123,7 +123,7 @@ export const unit1Questions: Unit1Question[] = [
   },
   {
     id: 'U1-P5-B', page: 5,
-    stem: 'בשרטוט שני ישרים מקבילים וישר שלישי החותך אותם. סמנו את שמונה הזוויות שנוצרו בשני המפגשים.',
+    stem: 'בשרטוט שני ישרים מקבילים וישר שלישי החותך אותם. בשני המפגשים נוצרו שמונה זוויות, ממוספרות 1–8. הקיפו את מספרי הזוויות הנמצאות בין שני הישרים המקבילים.',
     diagram: { topology: 'eight-angles-emphasis', lineLabels: ['p', 'q', 't'], pointLabels: ['A', 'B'], orientationDeg: -4, transversalDeg: 116, parallelGiven: true }
   },
   {
@@ -131,17 +131,17 @@ export const unit1Questions: Unit1Question[] = [
     stem: `בשרטוט מסומן זוג זוויות חד-צדדיות. ${PARALLEL_ARROWS_CONVENTION} השלימו בכל שורה מילה אחת.`,
     subparts: [
       'זוויות חד-צדדיות בין ישרים מקבילים משלימות ל־______.',
-      'זוויות ______ בין ישרים מקבילים משלימות ל־180°.'
+      'לכן, אם אחת הזוויות המסומנות היא 70°, הזווית השנייה היא ______.'
     ],
-    diagram: { topology: 'cointerior-support', lineLabels: ['k', 'm', 'r'], orientationDeg: -11, transversalDeg: 57, parallelGiven: true }
+    diagram: { topology: 'cointerior-support', lineLabels: ['k', 'm', 'r'], orientationDeg: -11, transversalDeg: 59, parallelGiven: true }
   },
   {
     id: 'U1-P5-D', page: 5,
-    stem: 'לפניכם שלוש טענות על זוגות זוויות בין ישרים מקבילים. קבעו לגבי כל טענה אם היא נכונה או לא נכונה. נמקו.',
+    stem: 'לפניכם שלוש טענות על זוויות חד-צדדיות. קבעו לגבי כל טענה אם היא נכונה או לא נכונה. נמקו.',
     subparts: [
       'זוויות חד-צדדיות בין ישרים מקבילים הן שוות זו לזו.',
       'זוויות חד-צדדיות בין ישרים מקבילים משלימות ל־180°.',
-      'זוויות מתחלפות בין ישרים מקבילים משלימות ל־180°.'
+      'זוויות חד-צדדיות משלימות ל־180° גם כאשר הישרים אינם מקבילים.'
     ],
     verdictOptions: ['נכון', 'לא נכון'],
     diagram: { topology: 'statement-only-with-small-reference-diagram', lineLabels: ['r', 's', 't'], orientationDeg: 0, transversalDeg: 71, parallelGiven: true }

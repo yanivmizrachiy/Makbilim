@@ -75,12 +75,13 @@ export const unit2Questions: Unit2Question[] = [
     id: 'U2-P1-C',
     page: 1,
     stem: 'בשרטוט הישרים a ו־b מקבילים. נתון כי הזווית המסומנת היא 47°. בחרו את גודלה של הזווית המתאימה לה.',
-    choices: ['47°', '43°', '90°', '133°'],
+    // 'אי אפשר לקבוע' is the error of ignoring the given a ∥ b; 43° confuses with 90°; 133° with adjacent.
+    choices: ['47°', '43°', 'אי אפשר לקבוע מהנתונים', '133°'],
     diagram: {
       topology: 'parallel-lines-one-transversal-corresponding-choice',
       lineLabels: ['a', 'b', 's'],
       orientationDeg: -9,
-      transversalDeg: 122,
+      transversalDeg: 124,
       parallelGiven: true,
       givens: ['given angle = 47°'],
       targets: ['corresponding target angle']
@@ -133,7 +134,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'straight-angle-then-alternate',
       lineLabels: ['m', 'n', 'v'],
       orientationDeg: -5,
-      transversalDeg: 45,
+      transversalDeg: 38,
       parallelGiven: true,
       givens: ['given angle = 137°'],
       targets: ['γ alternate to the adjacent supplementary angle']
@@ -201,8 +202,8 @@ export const unit2Questions: Unit2Question[] = [
     diagram: {
       topology: 'eight-angles-table',
       lineLabels: ['p', 'q', 't'],
-      orientationDeg: -36,
-      transversalDeg: 87,
+      orientationDeg: -20,
+      transversalDeg: 122,
       parallelGiven: true,
       givens: ['reference angle = 38°'],
       targets: ['corresponding', 'alternate', 'vertical', 'adjacent']
@@ -225,7 +226,7 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['k', 'm', 's'],
       pointLabels: ['A', 'D', 'F'],
       orientationDeg: 84,
-      transversalDeg: 137,
+      transversalDeg: 136,
       parallelGiven: true,
       givens: ['∠A = 52°'],
       targets: ['∠D corresponding to ∠A', '∠F adjacent to ∠D']
@@ -258,8 +259,8 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['a', 'b', 'r', 's'],
       pointLabels: ['A', 'C'],
       orientationDeg: -11,
-      transversalDeg: 47,
-      secondaryTransversalDeg: 61,
+      transversalDeg: 38,
+      secondaryTransversalDeg: 96,
       parallelGiven: true,
       givens: ['∠A = 49° on transversal r', '∠C = 73° on transversal s'],
       targets: ['α corresponding to ∠A', 'β alternate to ∠C']
@@ -295,7 +296,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'alternate-two-expressions-simple',
       lineLabels: ['k', 'm', 'r'],
       orientationDeg: -8,
-      transversalDeg: 58,
+      transversalDeg: 66,
       parallelGiven: true,
       givens: ['(3x + 17)°', '(5x − 21)°'],
       targets: ['x', 'marked angle']
@@ -311,7 +312,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'corresponding-expressions-solve-x-then-angle',
       lineLabels: ['a', 'b', 's'],
       orientationDeg: 38,
-      transversalDeg: 140,
+      transversalDeg: 131,
       parallelGiven: true,
       givens: ['(6x − 9)°', '(3x + 42)°'],
       targets: ['x', 'marked angle']
@@ -326,14 +327,14 @@ export const unit2Questions: Unit2Question[] = [
     choices: [
       '2x + 35 = 5x − 19',
       '(2x + 35) + (5x − 19) = 180',
-      '2x + 35 = 180 − (5x − 19)',
+      '(2x + 35) + (5x − 19) = 90',
       '2x + 35 = 5x + 19'
     ],
     diagram: {
       topology: 'alternate-equation-choice',
       lineLabels: ['r', 's', 'u'],
       orientationDeg: 15,
-      transversalDeg: 80,
+      transversalDeg: 86,
       parallelGiven: true,
       givens: ['(2x + 35)°', '(5x − 19)°'],
       targets: ['correct equation', 'x', 'marked angle']
@@ -351,7 +352,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'corresponding-plus-adjacent-two-expressions',
       lineLabels: ['p', 'q', 'v'],
       orientationDeg: -15,
-      transversalDeg: 49,
+      transversalDeg: 71,
       parallelGiven: true,
       givens: ['(7x − 18)° at p', '(3x + 38)° at q, adjacent to the angle corresponding to (7x − 18)°'],
       targets: ['x', 'both angles']
@@ -388,7 +389,7 @@ export const unit2Questions: Unit2Question[] = [
       lineLabels: ['p', 'q', 'r', 's'],
       orientationDeg: 9,
       transversalDeg: 117,
-      secondaryTransversalDeg: 109,
+      secondaryTransversalDeg: 103,
       parallelGiven: true,
       givens: ['(3x + 12)° corresponds to 72°', '(2y + 18)° alternates with 94°'],
       targets: ['x', 'y']
@@ -402,19 +403,19 @@ export const unit2Questions: Unit2Question[] = [
   {
     id: 'U2-P5-D',
     page: 5,
-    stem: 'הישרים a ו־b מקבילים. דני כתב את המשוואה 2x + 20 = 3x + 35 והסביר: „הישרים מקבילים, ולכן שתי הזוויות המסומנות שוות.” קבעו אם המשוואה וההסבר נכונים. אם לא, כתבו משוואה נכונה, נמקו ומצאו את x.',
+    stem: 'הישרים a ו־b מקבילים. דני כתב את המשוואה 2x + 20 = 3x + 35 והסביר: „הישרים מקבילים, ולכן שתי הזוויות המסומנות שוות.” קבעו אם המשוואה וההסבר נכונים. אם לא, כתבו משוואה נכונה, נמקו, מצאו את x וחשבו את גודל שתי הזוויות.',
     diagram: {
       topology: 'adjacent-angles-error-analysis-with-parallel-context',
       lineLabels: ['a', 'b', 't'],
       orientationDeg: -4,
-      transversalDeg: 112,
+      transversalDeg: 106,
       parallelGiven: true,
       givens: ['a ∥ b', 'marked angles (2x + 20)° and (3x + 35)° at the same intersection (adjacency is not stated in words)'],
       targets: ['correct equation', 'x']
     },
     justificationLane: true,
     expected: {
-      values: { x: 25 },
+      values: { x: 25, '2x + 20': 70, '3x + 35': 110 },
       justification: `${ADJACENT} המשוואה הנכונה: (2x + 20) + (3x + 35) = 180.`
     },
     note: 'המשוואה וההסבר שגויים: שתי הזוויות המסומנות נמצאות באותה נקודת חיתוך — הן צמודות, לא מתאימות ולא מתחלפות, ולכן המקבילות אינה נותנת כאן שוויון. המשוואה של דני נותנת x = −15, כלומר זוויות של −10°.'
@@ -444,7 +445,7 @@ export const unit2Questions: Unit2Question[] = [
       topology: 'parallel-rails-alternate-then-adjacent',
       lineLabels: ['מסילה 1', 'מסילה 2', 'חותך'],
       orientationDeg: -18,
-      transversalDeg: 105,
+      transversalDeg: 100,
       parallelGiven: true,
       givens: ['given angle = 118°'],
       targets: ['the angle marked ? on the second rail, adjacent to the angle alternate to 118°']
@@ -463,7 +464,7 @@ export const unit2Questions: Unit2Question[] = [
       orientationDeg: 18,
       // 258° / 273° are the same lines as 78° / 93°; the upper end carries the line label,
       // away from where the two transversals meet below q.
-      transversalDeg: 258,
+      transversalDeg: 146,
       secondaryTransversalDeg: 273,
       parallelGiven: true,
       givens: ['∠A = 128° on transversal r', '∠C = 75° on transversal s'],
@@ -486,8 +487,8 @@ export const unit2Questions: Unit2Question[] = [
       orientationDeg: 74,
       // 202° / 189° (the lines through 22° / 9°): each line label sits at the end where the
       // two transversals spread apart.
-      transversalDeg: 202,
-      secondaryTransversalDeg: 189,
+      transversalDeg: 213,
+      secondaryTransversalDeg: 186,
       parallelGiven: true,
       givens: ['∠A = 41°', '∠C = 68°'],
       targets: ['α corresponding to ∠A', 'β adjacent to angle corresponding to ∠C', 'α + β']

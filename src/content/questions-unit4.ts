@@ -135,7 +135,9 @@ export const unit4Questions: Unit4Question[] = [
     deduction: {
       givens: ['∠C = 112°', '∠D = 112°'],
       steps: ['∠C = ∠D'],
-      conclusion: 'k ∥ m',
+      // Graded scaffolding (SPEC 3.2): the first chain prints its conclusion as a model; here the
+      // student writes the conclusion after the last ↓.
+      conclusion: '______',
       reasonLines: ['אם זוג זוויות ______ שוות זו לזו,', 'אז שני הישרים ______.']
     },
     expected: {
@@ -175,7 +177,7 @@ export const unit4Questions: Unit4Question[] = [
   {
     id: 'U4-P2-C',
     page: 3,
-    stem: 'הישרים p ו־q נחתכים על ידי ישר שלישי. גודלי שתי זוויות מתאימות הם (3x + 14)° ו־(5x − 26)°. מצאו את x כך שניתן יהיה לקבוע כי p ∥ q. נמקו.',
+    stem: 'הישרים p ו־q נחתכים על ידי ישר שלישי. גודלי שתי זוויות מתאימות הם (3x + 14)° ו־(5x − 26)°. מצאו את x כך שניתן יהיה לקבוע כי p ∥ q, וחשבו את גודל הזוויות המתאימות עבור x זה. נמקו.',
     diagram: {
       topology: 'converse-algebra-corresponding',
       lineLabels: ['p', 'q', 't'],
@@ -189,8 +191,8 @@ export const unit4Questions: Unit4Question[] = [
     },
     justificationLane: true,
     expected: {
-      // The stem asks only for x; the angle (74°) appears in the key only as the check.
-      values: { x: 20 },
+      // SPEC 7: the work ends at the angle — x = 20, then the corresponding angles are 74°.
+      values: { x: 20, 'זווית': 74 },
       justification: THEOREMS.correspondingConverse.text,
       conclusion: 'p ∥ q',
       reason: [

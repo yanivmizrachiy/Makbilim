@@ -492,7 +492,7 @@ try {
 
   await fs.writeFile(
     path.join(root, 'artifacts', 'layout-report.json'),
-    `${JSON.stringify({ pageCount, expectedPages, mathJaxStatus, layout }, null, 2)}\n`,
+    `${JSON.stringify({ pageCount, mathJaxStatus, layout }, null, 2)}\n`,
     'utf8',
   );
   await fs.writeFile(

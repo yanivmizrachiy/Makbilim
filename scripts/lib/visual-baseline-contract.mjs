@@ -7,7 +7,7 @@
  *
  * Inputs are the layout reports written by scripts/build-pdf.mjs
  * (artifacts/layout-report.json) and the committed qa/visual-baseline.json,
- * which share one shape: { pageCount, expectedPages, mathJaxStatus, layout[] }.
+ * which share one shape: { pageCount, mathJaxStatus, layout[] } (the page order itself lives in booklet-pages.json).
  */
 
 import { EXPECTED_PAGES } from './booklet-pages.mjs';

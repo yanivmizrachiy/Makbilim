@@ -135,9 +135,11 @@ const authoredPagesUseSvg = ['Unit1Continuation.tsx', 'Unit2Pages.tsx', 'Unit3Pa
   });
 gate('svg-geometry', authoredPagesUseSvg && /ParallelLinesDiagram/.test(read('src/App.tsx')), 'authored units must render vector geometry');
 
-const hasQuestionMarker = pageText.includes('QuestionBlock') && spec.includes('●');
-const hasSubpartMarker = spec.includes('•');
-gate('markers', hasQuestionMarker && hasSubpartMarker, 'question/subpart marker contract must be present');
+// SPEC 4.2 / 11.5: every question prints its continuous global number; sub-parts print Hebrew letters.
+const questionBlock = read('src/components/QuestionBlock.tsx');
+const hasQuestionMarker = pageText.includes('QuestionBlock') && questionBlock.includes('globalQuestionNumber(taskId)') && questionBlock.includes('className="question-marker"');
+const hasSubpartMarker = questionBlock.includes('className="subpart-marker"') && questionBlock.includes('SUBPART_LETTERS');
+gate('markers', hasQuestionMarker && hasSubpartMarker && spec.includes('1..N'), 'question/subpart marker contract (continuous global number + Hebrew letters) must be present');
 
 const visualDemandOrder = { V1: 1, V2: 2, V3: 3, V4: 4 };
 let visualProgressionOk = true;

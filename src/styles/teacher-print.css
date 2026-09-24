@@ -252,13 +252,7 @@ body {
 
 /* ── Unit and page headings ────────────────────────────────────────────── */
 
-/* Each unit starts on a new sheet so it can be printed or copied on its own. */
-.teacher-unit {
-  break-before: page;
-  margin-top: 16mm;
-}
-
-.teacher-unit-heading {
+.teacher-section-heading {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   grid-template-areas:
@@ -272,7 +266,7 @@ body {
   break-after: avoid;
 }
 
-.teacher-unit-kicker {
+.teacher-section-kicker {
   grid-area: kicker;
   margin: 0;
   color: var(--teacher-accent);
@@ -281,22 +275,13 @@ body {
   letter-spacing: .04em;
 }
 
-.teacher-unit-heading h2 {
+.teacher-section-heading h2 {
   grid-area: title;
   margin: .5mm 0 0;
   color: var(--teacher-navy);
   font-size: 19pt;
   font-weight: 800;
   line-height: 1.15;
-}
-
-.teacher-unit-meta {
-  grid-area: meta;
-  margin: 0;
-  color: var(--teacher-muted);
-  font-size: var(--teacher-small-size);
-  font-weight: 600;
-  white-space: nowrap;
 }
 
 .teacher-page-group + .teacher-page-group {
@@ -532,7 +517,7 @@ body {
   break-inside: avoid;
 }
 
-.teacher-source-policy .teacher-unit-heading {
+.teacher-source-policy .teacher-section-heading {
   grid-template-areas:
     "kicker"
     "title";
@@ -540,7 +525,7 @@ body {
   margin-bottom: 3mm;
 }
 
-.teacher-source-policy p:not(.teacher-unit-kicker) {
+.teacher-source-policy p:not(.teacher-section-kicker) {
   max-width: 160mm;
   margin: 0;
   line-height: 1.6;
@@ -580,15 +565,11 @@ body {
   .teacher-cover {
     min-height: 0;
   }
-
-  .teacher-unit {
-    margin-top: 0;
-  }
 }
 
 @media (forced-colors: active) {
   .teacher-cover-title,
-  .teacher-unit-heading,
+  .teacher-section-heading,
   .teacher-page-heading,
   .teacher-contents thead th,
   .teacher-contents tfoot th,

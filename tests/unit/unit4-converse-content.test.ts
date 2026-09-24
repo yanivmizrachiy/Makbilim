@@ -144,7 +144,9 @@ describe('Unit 4 — משפטים הפוכים', () => {
     expect(answerSpecById('U4-P2-A').mode).toBe('deduction');
     expect(q.deduction?.givens).toEqual(['∠C = 112°', '∠D = 112°']);
     expect(q.deduction?.steps).toEqual(['∠C = ∠D']);
-    expect(q.deduction?.conclusion).toBe('k ∥ m');
+    // Graded scaffolding: the 67° chain models its conclusion; here the student writes it after the ↓.
+    expect(q.deduction?.conclusion).toMatch(WHOLE_WORD_BLANK);
+    expect(q.expected.conclusion).toBe('k ∥ m');
     expect(q.deduction?.reasonLines.some(line => WHOLE_WORD_BLANK.test(line))).toBe(true);
     expect(q.expected.completions).toEqual(['מתחלפות', 'מקבילים']);
     // The printed chain names no pair type (the stem only ASKS "מתאימות או מתחלפות") — the drawing decides.
@@ -188,10 +190,11 @@ describe('Unit 4 — משפטים הפוכים', () => {
     expect(answerSpecById('U4-P2-B').itemRows ?? 0).toBeGreaterThanOrEqual(1);
   });
 
-  it('U4-P2-C: the key names the corresponding converse in the theorem lane and asks only for x', () => {
+  it('U4-P2-C: the key names the corresponding converse in the theorem lane and ends at the angle', () => {
     const q = byId('U4-P2-C');
     expect(q.expected.justification).toBe(THEOREMS.correspondingConverse.text);
-    expect(Object.keys(q.expected.values ?? {})).toEqual(['x']);
+    // SPEC 7: x, then the angle it produces (74°).
+    expect(q.expected.values).toEqual({ x: 20, 'זווית': 74 });
     expect(asList(q.expected.reason).join(' ')).toContain('המשפט ההפוך של הזוויות המתאימות');
     // The lane holds the theorem; the equation, its solution and the check need rows of their own.
     expect(answerSpecById('U4-P2-C').lane).toBe('theorem');

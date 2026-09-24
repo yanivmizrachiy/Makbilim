@@ -561,6 +561,18 @@ function acuteObtuseViolations(pairs: Array<{ name: string; drawn: number; measu
     .map(({ name, drawn, measure }) => `${name}: measure ${measure}° but drawn as ${drawn.toFixed(1)}°`);
 }
 
+/**
+ * SPEC 10 / כז — protractor accuracy: a drawn angle IS its written measure. The engine draws the
+ * crossing at exactly |transversalDeg − orientationDeg|, so every marked value must match the sector
+ * it sits in to within 1° (rounding of the pose); a student measuring the figure must read the number.
+ */
+const PROTRACTOR_TOLERANCE_DEG = 1;
+function exactnessViolations(pairs: Array<{ name: string; drawn: number; measure: number }>) {
+  return pairs
+    .filter(({ drawn, measure }) => Math.abs(drawn - measure) > PROTRACTOR_TOLERANCE_DEG)
+    .map(({ name, drawn, measure }) => `${name}: measure ${measure}° but drawn as ${drawn.toFixed(1)}° (protractor accuracy)`);
+}
+
 const isDegreeValue = (value: string) => /^\d+°$/.test(value);
 const isExpressionValue = (value: string) => /^\(.*[xy].*\)°$/.test(value);
 const bareExpression = (value: string) => value.replace(/^\(/, '').replace(/\)°$/, '');
@@ -905,7 +917,8 @@ const unit2Specs: Unit2Spec[] = [
     derive: () => {
       // adjacent angles: (2x + 20) + (3x + 35) = 180  ⇒  5x = 125  ⇒  x = 25
       const x = (180 - 20 - 35) / (2 + 3);
-      return { answer: { x }, measures: { e1: 2 * x + 20, e2: 3 * x + 35 } };
+      // SPEC 7: substitute back — the two angles are 70° and 110°.
+      return { answer: { x, '2x + 20': 2 * x + 20, '3x + 35': 3 * x + 35 }, measures: { e1: 2 * x + 20, e2: 3 * x + 35 } };
     },
   },
   {
@@ -1301,10 +1314,9 @@ describe('independent verification — unit 2 hand-derived solutions', () => {
 
       it(`drawn angles agree with the computed measures on acute / obtuse (SPEC 10.3)${regressionNote(spec.id)}`, () => {
         const angles = anglesWithProbes(spec);
-        const violations = acuteObtuseViolations(
-          [...spec.marks, ...Object.keys(spec.probes ?? {})].map(name => ({ name, drawn: angles.get(name)!.span, measure: measures[name]! })),
-        );
-        expect(violations).toEqual([]);
+        const pairs = [...spec.marks, ...Object.keys(spec.probes ?? {})].map(name => ({ name, drawn: angles.get(name)!.span, measure: measures[name]! }));
+        expect(acuteObtuseViolations(pairs)).toEqual([]);
+        expect(exactnessViolations(pairs)).toEqual([]);
       });
     });
   }
@@ -1537,10 +1549,10 @@ const unit4Specs: Unit4Spec[] = [
     conclusion: 'p ∥ q',
     derive: () => {
       // p ∥ q follows from the converse exactly when the corresponding angles are equal:
-      // 3x + 14 = 5x − 26  ⇒  40 = 2x  ⇒  x = 20 ; angle = 3·20 + 14 = 74 (a check, not asked)
+      // 3x + 14 = 5x − 26  ⇒  40 = 2x  ⇒  x = 20 ; the corresponding angles are 3·20 + 14 = 74°
       const x = (14 + 26) / (5 - 3);
       const angle = 3 * x + 14;
-      return { answer: { x }, measures: { e1: angle, e2: 5 * x - 26 } };
+      return { answer: { x, 'זווית': angle }, measures: { e1: angle, e2: 5 * x - 26 } };
     },
   },
 ];
@@ -1645,10 +1657,9 @@ describe('independent verification — unit 4 converse tasks', () => {
 
       it(`drawn angles agree with the computed measures on acute / obtuse (SPEC 10.3)${regressionNote(spec.id)}`, () => {
         const angles = namedAngles(spec);
-        const violations = acuteObtuseViolations(
-          spec.marks.map(name => ({ name, drawn: angles.get(name)!.span, measure: measures[name]! })),
-        );
-        expect(violations).toEqual([]);
+        const pairs = spec.marks.map(name => ({ name, drawn: angles.get(name)!.span, measure: measures[name]! }));
+        expect(acuteObtuseViolations(pairs)).toEqual([]);
+        expect(exactnessViolations(pairs)).toEqual([]);
       });
     });
   }
@@ -1966,7 +1977,8 @@ describe('independent verification — unit 3 proof relations match the drawing'
     expect(new Set(used).size).toBe(3);
     for (const reason of used) expect(q.choices).toContain(reason);
     const unused = (q.choices ?? []).filter(choice => !used.includes(choice));
-    expect(unused).toEqual([REASONS.adjacent]);
+    // The spare reason is the incomplete theorem (no parallel condition): it proves nothing.
+    expect(unused).toEqual(['זוויות מתחלפות שוות.']);
     // No drawn pair among the claims is adjacent, so the spare reason really fits nothing.
     expect(unit3Claims['U3-P1-C']!.map(([, , kind]) => kind)).not.toContain('adjacent');
     // The bank does not list the reasons in the order of the claims.
@@ -2076,6 +2088,7 @@ describe('independent verification — unit 3 proof relations match the drawing'
     const index = drawing.marks.findIndex(mark => mark.label === 'E');
     expect(drawing.marks[index]!.value).toBe('35°');
     expect(acuteObtuseViolations([{ name: 'E', drawn: drawing.angles[index]!.span, measure: 35 }])).toEqual([]);
+    expect(exactnessViolations([{ name: 'E', drawn: drawing.angles[index]!.span, measure: 35 }])).toEqual([]);
   });
 
   it('unit 3: every drawn numeric value agrees with its sector on acute / obtuse', () => {
@@ -2083,7 +2096,9 @@ describe('independent verification — unit 3 proof relations match the drawing'
       const drawing = drawingOf(q.id);
       drawing.marks.forEach((mark, index) => {
         if (!mark.value || !isDegreeValue(mark.value)) return;
-        expect(acuteObtuseViolations([{ name: `${q.id} ${mark.label}`, drawn: drawing.angles[index]!.span, measure: Number.parseInt(mark.value, 10) }])).toEqual([]);
+        const pair = { name: `${q.id} ${mark.label}`, drawn: drawing.angles[index]!.span, measure: Number.parseInt(mark.value, 10) };
+        expect(acuteObtuseViolations([pair])).toEqual([]);
+        expect(exactnessViolations([pair])).toEqual([]);
       });
     }
   });
@@ -2266,11 +2281,14 @@ describe('independent verification — unit 1 identification keys match the rend
     expect(a.span + b.span).toBeCloseTo(180, 0);
     expect(Math.abs(a.span - b.span), 'the drawn crossing is far from 90°, so the pair is visibly unequal').toBeGreaterThan(20);
     const words = u1Key('U1-P5-C').answer as string[];
-    expect(words).toEqual(['180°', 'חד-צדדיות']);
+    // Line 2 applies the theorem: 180° − 70° = 110°.
+    expect(words).toEqual(['180°', '110°']);
     const q = unit1Questions.find(item => item.id === 'U1-P5-C')!;
-    for (const [index, line] of q.subparts!.entries()) {
-      expect(line.replace(/_+/, words[index]!)).toBe(THEOREMS.coInteriorDirect.text);
-    }
+    expect(q.subparts![0]!.replace(/_+/, words[0]!)).toBe(THEOREMS.coInteriorDirect.text);
+    expect(q.subparts![1]).toContain('70°');
+    expect(180 - 70).toBe(Number.parseInt(words[1]!, 10));
+    // Protractor accuracy: the acute angle of the marked pair is drawn at the 70° the line names.
+    expect(Math.min(a.span, b.span)).toBeCloseTo(70, 0);
   });
 
   it.each([

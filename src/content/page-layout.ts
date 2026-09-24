@@ -11,6 +11,7 @@ export type PageDensity = 'regular' | 'dense';
 export const PAGE_DENSITY: Readonly<Record<string, PageDensity>> = {
   'U1-P4': 'dense',
   'U2-P4': 'dense',
+  'U2-P5': 'dense',
   'U3-P3': 'dense',
 };
 

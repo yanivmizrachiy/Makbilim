@@ -1,3 +1,4 @@
+import { CLOZE_BLANK } from '../content/cloze';
 import { ClozeText } from './ClozeText';
 import { ConclusionArrow } from './ConclusionArrow';
 import { MathText } from './MathText';
@@ -7,7 +8,7 @@ export type Deduction = {
   givens: readonly string[];
   /** Intermediate conclusions, in order; a ↓ precedes each. */
   steps: readonly string[];
-  /** The final conclusion; a ↓ precedes it. */
+  /** The final conclusion; a ↓ precedes it. A blank ('______') leaves it for the student. */
   conclusion: string;
   /** The justification the student completes — one blank per line. */
   reasonLines: readonly string[];
@@ -38,7 +39,9 @@ export function DeductionChain({ deduction }: { deduction: Deduction }) {
       ))}
       <div className="deduction-block deduction-block--conclusion">
         <ConclusionArrow />
-        <div className="deduction-line"><MathText text={deduction.conclusion} /></div>
+        <div className="deduction-line">
+          {CLOZE_BLANK.test(deduction.conclusion) ? <ClozeText text={deduction.conclusion} /> : <MathText text={deduction.conclusion} />}
+        </div>
       </div>
       <div className="deduction-reason">
         <span className="justification-label">נימוק:</span>

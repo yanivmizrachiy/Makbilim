@@ -361,7 +361,7 @@ export function Unit1Page5() {
       <QuestionBlock
         taskId={cointerior.id}
         compact
-        diagram={<ParallelLinesDiagram lineLabels={['k', 'm']} transversalLabel="r" orientationDeg={-11} transversalDeg={57} showParallelMarks angleMarks={markedPair(coInteriorPair(-11, 57))} />}
+        diagram={<ParallelLinesDiagram lineLabels={['k', 'm']} transversalLabel="r" orientationDeg={-11} transversalDeg={59} showParallelMarks angleMarks={markedPair(coInteriorPair(-11, 59))} />}
         items={clozeItems(cointerior.subparts ?? [])}
       >
         {cointerior.stem}

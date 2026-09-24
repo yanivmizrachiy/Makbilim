@@ -171,8 +171,8 @@ describe('page header and footer', () => {
   it('lets the unit lead: the unit title is larger than the running head, which is quiet', () => {
     const tokens = baseTokens();
     const pt = (name: string) => Number(/^([\d.]+)pt$/.exec(tokens.get(name) ?? '')?.[1]);
-    expect(pt('--unit-title-size')).toBeGreaterThanOrEqual(13);
-    expect(pt('--unit-title-size')).toBeLessThanOrEqual(14);
+    expect(pt('--topic-title-size')).toBeGreaterThanOrEqual(13);
+    expect(pt('--topic-title-size')).toBeLessThanOrEqual(14);
     expect(pt('--running-head-size')).toBeGreaterThanOrEqual(8.6);
     expect(pt('--running-head-size')).toBeLessThanOrEqual(8.8);
     expect(pt('--page-number-size')).toBeGreaterThanOrEqual(10);

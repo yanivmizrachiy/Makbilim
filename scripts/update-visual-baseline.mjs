@@ -48,7 +48,6 @@ if (!accept) {
 
 const next = {
   pageCount: current.pageCount,
-  expectedPages: current.expectedPages,
   mathJaxStatus: current.mathJaxStatus,
   layout: current.layout,
 };

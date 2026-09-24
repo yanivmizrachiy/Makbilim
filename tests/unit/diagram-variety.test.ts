@@ -53,8 +53,14 @@ describe('diagram variety (SPEC 10.1 / 10.2)', () => {
     expect(poseOf({ ...diagrams[0]!, props: { orientationDeg: 0, transversalDeg: 122 } }).lean).toBe('/');
   });
 
+  // Protractor accuracy (SPEC 10) outranks variety: these figures print 93° and 94°, so their true
+  // crossing is near-right. Every other figure keeps a clearly acute or obtuse crossing.
+  const TRUE_SIZE_NEAR_RIGHT = ['U2-P4-C', 'U2-P5-A'];
   it('crossing angles stay within 35°–80° (no near-parallel or near-perpendicular transversal)', () => {
-    const outside = poses.filter(pose => pose.crossing < 35 || pose.crossing > 80).map(name);
+    const outside = poses
+      .filter(pose => pose.crossing < 35 || pose.crossing > 80)
+      .map(name)
+      .filter(label => !TRUE_SIZE_NEAR_RIGHT.some(id => label.startsWith(id)));
     expect(outside).toEqual([]);
   });
 

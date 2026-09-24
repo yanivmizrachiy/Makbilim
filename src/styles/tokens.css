@@ -50,7 +50,7 @@
   --header-accent-w: 22mm;
   --header-accent-h: 0.8mm;
   --running-head-size: 8.7pt;
-  --unit-title-size: 13.6pt;
+  --topic-title-size: 13.6pt;
   --page-number-size: 10.6pt;
   --page-number-circle: 9mm;       /* number-only page circle, top-left (SPEC 4.1/11.6) */
   --page-number-ring-w: 0.4mm;
@@ -108,7 +108,7 @@
 /* One uniform accent across the whole booklet (SPEC 11.2 / כח: a single visual language, not a
    colour per topic). A restrained typographic accent on the page number, question numbers, labels
    and the header tick. */
-.a4-page[data-layout-quality="premium"] { --unit-accent: #0f6f78; --unit-accent-dark: #183b56; }
+.a4-page[data-layout-quality="premium"] { --accent: #0f6f78; --accent-dark: #183b56; }
 
 @media print and (monochrome) {
   :root {
@@ -122,8 +122,8 @@
   }
 
   .a4-page[data-layout-quality="premium"] {
-    --unit-accent: #222;
-    --unit-accent-dark: #111;
+    --accent: #222;
+    --accent-dark: #111;
   }
 }
 

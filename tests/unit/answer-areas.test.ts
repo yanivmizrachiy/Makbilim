@@ -102,10 +102,16 @@ describe('answer areas are decided in data (content/answer-areas.ts)', () => {
       const area = findAll(blockOf(task.id), node => hasClass(node, 'answer-lines'))[0]!;
       const first = elementChildren(area)[0]!;
       expect(classesOf(first), task.id).toEqual(expect.arrayContaining(['rule', 'rule--lane', 'justification-lane']));
-      // The lane row reads „המשפט המתאים | המשוואה” (SPEC 7): theorem cell, then the equation cell.
+      // The lane row reads „המשפט המתאים | המשוואה” (SPEC 7) when the task writes an equation (algebra,
+      // or correcting a wrong equation); numeric work keeps the theorem cell alone.
       expect(visibleText(first), task.id).toContain(LANE_LABEL[lane]);
-      expect(visibleText(first), task.id).toContain(EQUATION_LABEL);
-      expect(attrOf(first, 'data-equation-lane'), task.id).toBe('true');
+      const writesEquation = ['algebra', 'critique'].includes(answerSpecById(task.id).mode);
+      if (writesEquation) {
+        expect(visibleText(first), task.id).toContain(EQUATION_LABEL);
+        expect(attrOf(first, 'data-equation-lane'), task.id).toBe('true');
+      } else {
+        expect(visibleText(first), task.id).not.toContain(EQUATION_LABEL);
+      }
     }
     // A singular label never promises one reason where the key needs two (and vice versa).
     expect(LANE_LABEL.theorem).toBe('המשפט המתאים:');
@@ -134,6 +140,11 @@ describe('answer areas are decided in data (content/answer-areas.ts)', () => {
       for (const slot of slots) {
         expect(slot, task.id).toMatch(/_{4}/);
         expect(slot, `${task.id}: a slot must not reveal a number`).not.toMatch(/\d/);
+        // Two different angles are named by size in words; the stem must ask for the angles.
+        if (/^גודל הזווית ה(קטנה|גדולה)/.test(slot)) {
+          expect(stem, `${task.id}: slot "${slot}" but the stem asks for no angles`).toMatch(/הזוויות/);
+          continue;
+        }
         const unknown = slot.replace(/:?\s*=?\s*_{4}°?$/, '').replace(/^גודל ה/, '');
         expect(stem, `${task.id}: slot "${slot}" names something the stem does not`).toContain(unknown);
       }
@@ -231,7 +242,7 @@ describe('places to write that match each instruction', () => {
     for (const item of items) expect(findAll(item, node => hasClass(node, 'cloze-blank'))).toHaveLength(1);
   });
 
-  it('never shows typed underscores to the student in units 1–4: every blank is a slot', () => {
+  it('never shows typed underscores to the student in any authored question: every blank is a slot', () => {
     for (const [id, block] of blocks) expect(visibleText(block), id).not.toMatch(/_{2,}/);
   });
 });

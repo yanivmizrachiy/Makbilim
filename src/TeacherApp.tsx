@@ -335,8 +335,8 @@ export default function TeacherApp() {
       {pages.map(page => <PageAnswers key={page.pageNumber} {...page} />)}
 
       <section className="teacher-source-policy" aria-labelledby="teacher-source-title">
-        <header className="teacher-unit-heading">
-          <p className="teacher-unit-kicker">שאלות מתוך תוכנית הלימודים</p>
+        <header className="teacher-section-heading">
+          <p className="teacher-section-kicker">מדיניות המקור</p>
           <h2 id="teacher-source-title">שאלות מתוך תוכנית הלימודים</h2>
         </header>
         <p>

@@ -32,14 +32,18 @@ function Rules({ count, className = 'rule' }: { count: number; className?: strin
   return <>{Array.from({ length: count }, (_, index) => <span className={className} key={index} aria-hidden="true" />)}</>;
 }
 
+/** Only a task that writes an equation (algebra, or correcting a wrong equation) gets the equation cell. */
+const EQUATION_MODES = new Set(['algebra', 'critique']);
+const hasEquationCell = (spec: AnswerSpec) => EQUATION_MODES.has(spec.mode) && spec.lane !== undefined && EQUATION_LANES.has(spec.lane);
+
 /** Dotted writing rules, optionally opened by a labelled lane ('המשפט המתאים:', 'נימוק:'). */
 function RuledArea({ spec, minLines }: { spec: AnswerSpec; minLines: number }) {
   return (
     <div className="answer-lines" data-answer-mode={spec.mode} data-lane={spec.lane} {...(GRID_MODES.has(spec.mode) ? { 'data-grid': 'squares' } : {})} style={minLinesStyle(minLines + (spec.lane ? 1 : 0))}>
       {spec.lane && (
-        <span className="rule rule--lane justification-lane" {...(EQUATION_LANES.has(spec.lane) ? { 'data-equation-lane': 'true' } : {})}>
+        <span className="rule rule--lane justification-lane" {...(hasEquationCell(spec) ? { 'data-equation-lane': 'true' } : {})}>
           <span className="justification-label">{LANE_LABEL[spec.lane]}</span>
-          {EQUATION_LANES.has(spec.lane) && <span className="justification-label justification-label--equation">{EQUATION_LABEL}</span>}
+          {hasEquationCell(spec) && <span className="justification-label justification-label--equation">{EQUATION_LABEL}</span>}
         </span>
       )}
       <Rules count={RULE_POOL} />

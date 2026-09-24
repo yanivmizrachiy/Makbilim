@@ -14,18 +14,18 @@ export type TeacherAnswerEntry = {
 
 const unit1AnswerKey: TeacherAnswerEntry[] = [
   { id: 'U1-P5-A', unit: 1, page: 5, answer: ['משותפות', 'מקבילים'], note: 'ההגדרות: „ישרים מקבילים הם ישרים במישור שאין להם נקודות משותפות” ו„שני קטעים נקראים מקבילים אם הם נמצאים על ישרים מקבילים”.' },
-  { id: 'U1-P5-B', unit: 1, page: 5, answer: 'יש לסמן שמונה זוויות: ארבע בכל אחד משני המפגשים של החותך עם הישרים (1–4 במפגש העליון, 5–8 במפגש התחתון).' },
+  { id: 'U1-P5-B', unit: 1, page: 5, answer: 'יש להקיף את 1, 4, 6, 7: שתי זוויות בכל מפגש נמצאות בין שני הישרים המקבילים. הזוויות 2, 3, 5, 8 נמצאות מחוץ לישרים.' },
   {
     id: 'U1-P5-C', unit: 1, page: 5,
-    answer: ['180°', 'חד-צדדיות'],
-    note: `שתי השורות משלימות את המשפט „${THEOREMS.coInteriorDirect.text}”`,
+    answer: ['180°', '110°'],
+    note: `השורה הראשונה משלימה את המשפט „${THEOREMS.coInteriorDirect.text}”; בשורה השנייה: 180° − 70° = 110°.`,
   },
   {
     id: 'U1-P5-D', unit: 1, page: 5,
     answer: [
       'לא נכון — זוויות חד-צדדיות בין ישרים מקבילים משלימות ל־180°, אינן שוות.',
       `נכון — ${THEOREMS.coInteriorDirect.text}`,
-      `לא נכון — ${THEOREMS.alternateDirect.text} הן אינן משלימות ל־180°.`,
+      'לא נכון — ההשלמה ל־180° מובטחת רק בין ישרים מקבילים; כשהישרים אינם מקבילים סכום הזוויות החד-צדדיות שונה מ־180°.',
     ],
   },
   { id: 'U1-P1-A', unit: 1, page: 1, answer: 'הישר r הוא הישר החותך.' },
@@ -157,7 +157,7 @@ export const curriculumAnswerKeyPolicy = {
   sourceRepository: 'yanivmizrachiy/bbb',
   selectedSourceBlocks: 8,
   status: 'not-provided-by-verified-source' as const,
-  rule: 'אין להמציא או להסיק מפתח תשובות ליחידה 5. יש להוסיף תשובות רק אם נמצא מקור פתרונות מפורש ומאומת ב־BBB או במקור תוכנית הלימודים.',
+  rule: 'אין להמציא או להסיק מפתח תשובות לשאלות מתוך תוכנית הלימודים. יש להוסיף תשובות רק אם נמצא מקור פתרונות מפורש ומאומת ב־BBB או במקור תוכנית הלימודים.',
 };
 
 export const answerKeySummary = {

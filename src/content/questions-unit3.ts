@@ -98,9 +98,10 @@ export const unit3Questions: Unit3Question[] = [
       '∠C = ∠D',
       '∠E = ∠F'
     ],
+    // The spare reason lacks the parallel condition, so the full theorem must be chosen deliberately.
     choices: [
       ALTERNATE,
-      ADJACENT,
+      'זוויות מתחלפות שוות.',
       CORRESPONDING,
       VERTICAL
     ],
@@ -124,7 +125,7 @@ export const unit3Questions: Unit3Question[] = [
         `∠E = ∠F — ${VERTICAL}`
       ]
     },
-    teacherNote: `הנימוק „${ADJACENT}” אינו מתאים לאף טענה.`
+    teacherNote: 'הנימוק „זוויות מתחלפות שוות.” חסר את תנאי המקבילות ולכן אינו נימוק תקף לאף טענה.'
   },
   {
     id: 'U3-P1-D',
@@ -323,7 +324,7 @@ export const unit3Questions: Unit3Question[] = [
       pointLabels: ['A', 'B', 'D', 'E'],
       orientationDeg: 11,
       transversalDeg: 114,
-      secondaryTransversalDeg: 129,
+      secondaryTransversalDeg: 156,
       parallelGivens: ['a ∥ b'],
       givens: ['∠A corresponds to ∠B on transversal r', '∠B vertical to ∠D', '∠A and ∠D are alternate (one-step route)', '∠E = 35° on transversal s'],
       target: '∠A = ∠D'

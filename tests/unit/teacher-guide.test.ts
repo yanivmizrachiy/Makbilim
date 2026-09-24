@@ -14,7 +14,7 @@ import { describeLocation, locateTask, stemOpening, STEM_OPENING_WORDS } from '.
 /**
  * The teacher guide as a printed answer key for the CONTINUOUSLY-NUMBERED student booklet (SPEC
  * 4.2/11.5/11.11): every answer is located by the question's global number and its global page
- * number, and quotes the opening words of the stem without breaking a math run. The ● position
+ * number, and quotes the opening words of the stem without breaking a math run. The marker position
  * model is retired; no "יחידה N" reaches the teacher.
  */
 
@@ -29,7 +29,7 @@ const decode = (value: string) =>
 
 type RenderedStudentPage = { pageId: string; globalPage: number; taskIds: string[]; markers: number };
 
-/** The authored student pages as rendered (curriculum loads async and is absent in SSR): per A4 page, the task ids of its ● (now numbered) questions in document order. */
+/** The authored student pages as rendered (curriculum loads async and is absent in SSR): per A4 page, the task ids of its numbered questions in document order. */
 function renderedStudentPages(): RenderedStudentPage[] {
   const pages: RenderedStudentPage[] = [];
   const token = /<article class="a4-page[^"]*" data-page-id="([^"]+)" data-page="(\d+)"|data-task-id="([^"]+)"|class="question-marker"/g;
@@ -64,7 +64,7 @@ describe('teacher guide — locating an answer by its global number', () => {
     expect(pages.flatMap(page => page.taskIds)).toHaveLength(62);
   });
 
-  it('numbers every ● slot on each page and gives each task its global question and page number', () => {
+  it('prints the continuous global number in every question-marker slot on each page and gives each task its global question and page number', () => {
     for (const page of pages) {
       expect(page.markers, page.pageId).toBe(page.taskIds.length);
       expect(page.globalPage).toBe(globalPageNumber(page.pageId));

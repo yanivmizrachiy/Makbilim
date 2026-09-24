@@ -88,7 +88,8 @@ export const FORMAT_ANSWER: Readonly<Record<string, AnswerSpec>> = {
   'mark-on-diagram': { mode: 'none', minLines: 0 },
   classification: { mode: 'items', minLines: 0 },
   matching: { mode: 'none', minLines: 0 },
-  'construction-and-explain': { mode: 'work', minLines: 2 },
+  // A short verbal explanation: prose rules, not the squared derivation grid (SPEC 11.11א).
+  'construction-and-explain': { mode: 'justify', minLines: 2 },
   'sentence-completion': { mode: 'none', minLines: 0 },
   'true-false': { mode: 'items', minLines: 0, itemRows: 2 },
   'claim-comparison': { mode: 'critique', minLines: 3 },
@@ -137,7 +138,8 @@ export const FORMAT_ANSWER: Readonly<Record<string, AnswerSpec>> = {
 export const TASK_ANSWER_OVERRIDES: Readonly<Record<string, AnswerSpec>> = {
   // Two reasons (corresponding angles, then adjacent angles): the lane label is plural. The key
   // records both angle sizes; the slot is x only, since a slot never names an expression by its digits.
-  'U2-P5-A': { mode: 'algebra', minLines: 2, lane: 'theorems', final: true, finalKeys: ['x'] },
+  'U2-P5-A': { mode: 'algebra', minLines: 2, lane: 'theorems', final: true, finalKeys: ['x', 'הזווית הקטנה', 'הזווית הגדולה'] },
+  'U2-P5-D': { mode: 'critique', minLines: 2, lane: 'theorem', final: true, finalKeys: ['x', 'הזווית הקטנה', 'הזווית הגדולה'] },
   // Two equations, two theorems (corresponding for x, alternate for y).
   'U2-P5-C': { mode: 'algebra', minLines: 2, lane: 'theorems', final: true },
   // 'חשבו את α + β. נמקו כל שלב' — α and β are steps on the way, the asked value is their sum;
@@ -174,6 +176,8 @@ export const growOf = (spec: AnswerSpec): 0 | 1 | 2 | 3 => GROW_BY_MODE[spec.mod
 const PURE_NUMBER = new Set(['x', 'y']);
 /** The unknown named in words ('the angle'), labelled in the stem's own number (זווית / זוויות). */
 const WORD_ANGLE = 'זווית';
+/** Two different angles, named by size in words — a slot never names an expression by its digits. */
+const NAMED_ANGLES = new Set(['הזווית הקטנה', 'הזווית הגדולה']);
 
 /**
  * One final-answer slot as a MathText line with a typed blank: '∠B = ____°', 'x = ____',
@@ -181,6 +185,7 @@ const WORD_ANGLE = 'זווית';
  */
 export function finalSlotText(key: string, stem = ''): string {
   if (key === WORD_ANGLE) return `${stem.includes('הזוויות') ? 'גודל הזוויות' : 'גודל הזווית'}: ____°`;
+  if (NAMED_ANGLES.has(key)) return `גודל ${key}: ____°`;
   return PURE_NUMBER.has(key) ? `${key} = ____` : `${key} = ____°`;
 }
 

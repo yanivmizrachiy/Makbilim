@@ -7,7 +7,7 @@ import { AUTHORED_TASK_IDS } from '../../src/content/booklet';
 
 /**
  * Rendered math integrity — checks the math islands that MathText actually emits,
- * for the whole student booklet (units 1-4) and the teacher guide, without a browser.
+ * for every SSR-rendered student page (the authored pages; the curriculum loads async) and the teacher guide, without a browser.
  *
  * Why: every inline math token is an isolated LTR island (<bdi dir="ltr">) inside an
  * RTL paragraph. If one expression is split into several islands with a bare operator
@@ -52,7 +52,7 @@ function inspect(html: string) {
 }
 
 describe.each([
-  ['student booklet (units 1-4)', createElement(App), 50],
+  ['student booklet (authored pages; the curriculum loads async)', createElement(App), 50],
   ['teacher guide', createElement(TeacherApp), 100],
 ] as const)('rendered math integrity — %s', (_name, element, minimumIslands) => {
   const report = inspect(renderToStaticMarkup(element));
