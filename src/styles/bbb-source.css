@@ -91,7 +91,7 @@
   flex: 0 0 auto;
   min-width: 7mm;
   font-weight: 800;
-  color: #0f6b78;
+  color: var(--ink);
 }
 
 .bbb-source .ptext {
@@ -214,7 +214,7 @@
 .bbb-source .jlab,
 .bbb-source .alab {
   font-weight: 700;
-  color: #0b2e4f;
+  color: var(--ink);
 }
 
 .bbb-source table {
@@ -234,7 +234,7 @@
 
 .bbb-source th {
   background: #eef4f7;
-  color: #0b2e4f;
+  color: var(--ink);
   font-weight: 800;
 }
 

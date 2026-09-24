@@ -597,7 +597,7 @@ body { direction: rtl; }
 }
 
 .matching-columns strong {
-  color: var(--navy);
+  color: var(--ink);
   font-size: var(--text-label);
   font-weight: 700;
 }
@@ -654,14 +654,19 @@ body { direction: rtl; }
 /* Footer (SPEC 11.8): a thin dark-blue full-width rule, then the round district crest on the right
    (inline-start, RTL) beside the two-line credit set in a stronger weight. */
 .page-footer {
-  align-self: end;
+  align-self: stretch;
   direction: rtl;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 2.4mm;
-  padding-top: 1.5mm;
+  /* the rule bleeds past the inline page padding to both paper edges — truly full width */
+  margin-inline: calc(-1 * var(--page-pad-inline));
+  padding-inline: var(--page-pad-inline);
+  /* the band reaches down to the page bottom edge; the credit is centred within it (rule → bottom) */
+  margin-bottom: calc(-1 * var(--page-pad-bottom));
+  min-height: calc(var(--footer-height) + var(--page-pad-bottom));
   border-top: var(--footer-rule-w) solid var(--footer-rule-color);
   color: var(--footer-color);
   font-size: var(--footer-size);

@@ -49,9 +49,9 @@
   --page-number-circle: 9mm;       /* number-only page circle, top-left (SPEC 4.1/11.6) */
   --page-number-ring-w: 0.4mm;
   --footer-size: 7pt;
-  --footer-color: #5b6470;
-  --footer-rule-w: 0.2mm;             /* thin, elegant */
-  --footer-rule-color: #183b56;       /* dark blue, full width */
+  --footer-color: var(--ink);         /* black credit text, never blue */
+  --footer-rule-w: 0.3mm;             /* thin but present */
+  --footer-rule-color: var(--ink);    /* dark, full-bleed rule */
   --footer-logo-size: 7.5mm;          /* the round district crest */
 
   /* ── Question rhythm ── */
@@ -103,7 +103,10 @@
 
 /* One uniform accent across the whole booklet (SPEC 11.2 / כח: a single visual language, not a
    colour per topic). A restrained accent on the page-number ring, answer-area labels and the crest. */
-.a4-page[data-layout-quality="premium"] { --accent: #0f6f78; --accent-dark: #183b56; }
+/* One restrained accent for non-text decoration only (header tick, hint callout, the comic — a
+   drawing). Every TEXT element is ink-black (SPEC 11.2): markers, labels, headers, table heads,
+   the page-number ring and answer bubbles all read black, never blue. */
+.a4-page[data-layout-quality="premium"] { --accent: #0f6f78; --accent-dark: var(--ink); }
 
 @media print and (monochrome) {
   :root {

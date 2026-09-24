@@ -31,14 +31,21 @@ const EQUATION_MODES = new Set(['algebra', 'critique']);
 const hasEquationCell = (spec: AnswerSpec) => EQUATION_MODES.has(spec.mode) && spec.lane !== undefined && EQUATION_LANES.has(spec.lane);
 
 /**
- * Squared work paper (SPEC 11.5 / 11.11א), optionally opened by a labelled lane. On an equation
- * lane the row reads „המשוואה | המשפט המתאים”: the equation cell on the RIGHT (the start of the
- * RTL row), the theorem cell on the left. The labels sit on an opaque white background so they
- * never read over the grid squares.
+ * Squared paper is for real COMPUTATION (SPEC 11.11א): multi-step angle work, algebra, or an
+ * equation the student writes/corrects. Prose reasoning — a „נמקו/הסבירו” justification, judging a
+ * true/false claim — is written on plain dotted rules, where squares would be noise, not help.
+ */
+const wantsSquares = (spec: AnswerSpec) => spec.mode === 'work' || spec.mode === 'algebra' || hasEquationCell(spec);
+
+/**
+ * A writing area, optionally opened by a labelled lane. Computation tasks get squared paper; prose
+ * reasoning gets dotted writing rules. On an equation lane the row reads „המשוואה | המשפט המתאים”:
+ * the equation cell on the RIGHT (the start of the RTL row), the theorem cell on the left. The
+ * labels sit on an opaque white background so they never read over the grid.
  */
 function RuledArea({ spec, minLines }: { spec: AnswerSpec; minLines: number }) {
   return (
-    <div className="answer-lines" data-answer-mode={spec.mode} data-lane={spec.lane} data-grid="squares" style={minLinesStyle(minLines + (spec.lane ? 1 : 0))}>
+    <div className="answer-lines" data-answer-mode={spec.mode} data-lane={spec.lane} {...(wantsSquares(spec) ? { 'data-grid': 'squares' } : {})} style={minLinesStyle(minLines + (spec.lane ? 1 : 0))}>
       {spec.lane && (
         <span className="rule rule--lane justification-lane" {...(hasEquationCell(spec) ? { 'data-equation-lane': 'true' } : {})}>
           {hasEquationCell(spec) && <span className="justification-label">{spec.equationLabel ?? EQUATION_LABEL}</span>}
