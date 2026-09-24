@@ -43,7 +43,7 @@
   --page-pad-inline: 10mm;
   --page-pad-bottom: 7mm;
   --header-height: 14mm;
-  --footer-height: 10.5mm;
+  --footer-height: 9.5mm;
   --content-pad-top: 3.5mm;
   --content-pad-bottom: var(--space-2);
   --frame-rule-w: 0.3mm;
@@ -58,7 +58,7 @@
   --footer-color: #5b6470;
   --footer-rule-w: 0.2mm;             /* thin, elegant */
   --footer-rule-color: #183b56;       /* dark blue, full width */
-  --footer-logo-size: 8mm;            /* the round district crest */
+  --footer-logo-size: 7.5mm;          /* the round district crest */
 
   /* ── Question rhythm ── */
   --question-marker-size: 13.5pt;  /* the ● that opens a question — large, black */
@@ -69,7 +69,7 @@
   --q-inner-gap: 2mm;           /* between stem, sub-items, answer slots and work area */
   --q-sep-w: 0.22mm;            /* solid hairline between questions … */
   --q-sep-color: #707d8b;       /* … darker than the dotted writing rules */
-  --q-sep-after: 4.5mm;         /* separator → next question's first line (roomier) */
+  --q-sep-after: 3.6mm;         /* space between questions (roomier than the old 3mm) */
   --work-clearance: 3.5mm;      /* last writing rule → separator (≥ 3mm, never a 'double line') */
   --diagram-col: 62mm;          /* diagram column of the side-by-side question grid */
   --diagram-col-mark: 78mm;     /* identification tasks: the diagram is the answer surface (geometryTokens.size.mark) */

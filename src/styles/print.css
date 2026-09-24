@@ -261,7 +261,7 @@ body { direction: rtl; }
   overflow: visible;
 }
 
-.question-diagram--stacked { place-items: center; margin-block: var(--space-4); }
+.question-diagram--stacked { place-items: center; margin-block: var(--space-2); }
 
 /* ── Answer system: one writing-line grammar ─────────────────────────────────
    dotted light rules at a constant pitch for work · solid ink slots for final answers and blanks ·
