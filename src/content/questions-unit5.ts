@@ -1,3 +1,4 @@
+import curriculumManifest from '../../sources/curriculum/bbb-parallel-lines.manifest.json';
 export type CurriculumQuestion = {
   id: string;
   sourceSection: string;
@@ -10,7 +11,8 @@ export type CurriculumQuestion = {
   answerMode: 'lines' | 'numeric' | 'numeric-justify' | 'proof';
 };
 
-const BBB_COMMIT = 'ad12425c6b2e1d4dac84030a5cd865c2b03d3804';
+// The pinned bbb commit is stated once, in the source manifest (SPEC 0.2 / 12.1).
+const BBB_COMMIT = curriculumManifest.sourceCommit;
 const RAW_ASSETS = `https://raw.githubusercontent.com/yanivmizrachiy/bbb/${BBB_COMMIT}/geometry8/assets`;
 
 export const unit5Questions: CurriculumQuestion[] = [
