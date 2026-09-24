@@ -57,8 +57,8 @@
   /* ── Question rhythm ── */
   --question-marker-size: 13.5pt;  /* the ● that opens a question — large, black */
   --subpart-marker-size: 10.5pt;  /* the • that opens a sub-part — smaller than the ● */
-  --q-marker-col: 5.8mm;
-  --q-marker-gap: 2mm;
+  --q-marker-col: 4.4mm;
+  --q-marker-gap: 1.3mm;
   --sub-marker-col: 4mm;
   --q-inner-gap: 2mm;           /* between stem, sub-items, answer slots and work area */
   --q-sep-w: 0.22mm;            /* hairline for the proof-table column divider and word-bank list border */

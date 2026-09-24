@@ -135,16 +135,22 @@ body { direction: rtl; }
   padding-top: var(--q-sep-after);
 }
 
-/* Question marker (SPEC 4.2/11.5): a large filled black dot ● opens every question, at a fixed
-   position and alignment. Questions are NOT numbered — only pages are. */
+/* Question marker (SPEC 4.2/11.5): a large filled black dot ● opens every question — a hanging
+   bullet at the START of the first stem line, snug to the first word, never floating in the corner.
+   `align-self: start` keeps the marker on the first line while the content column still stretches to
+   fill the page; a one-line-tall flex box centres the dot on that first line. Questions are NOT
+   numbered — only pages are. */
 .question-marker {
+  align-self: start;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: calc(var(--text-body) * var(--leading-body));
   color: var(--ink);
   font-family: "Makbilim Math", var(--font-body);
   font-size: var(--question-marker-size);
   font-weight: 700;
   line-height: 1;
-  text-align: center;
-  padding-top: 0.4mm;
 }
 
 /* One text column (stem → sub-items / choices → answer slots → work area) and, beside it, the
@@ -653,7 +659,8 @@ body { direction: rtl; }
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 3mm;
+  justify-content: center;
+  gap: 2.4mm;
   padding-top: 1.5mm;
   border-top: var(--footer-rule-w) solid var(--footer-rule-color);
   color: var(--footer-color);
@@ -673,7 +680,7 @@ body { direction: rtl; }
 }
 
 .footer-text {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   text-align: center;
 }
 
