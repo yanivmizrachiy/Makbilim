@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import questionPlan from '../../src/content/question-plan.json';
+
+const AUTHORED = questionPlan.originalTaskCount;
 import { authoredMisconceptionTarget, didacticProfiles } from '../../src/didactics/profile';
 
 type PlanTask = { id: string; page: number; format: string; misconceptionTarget?: string };
@@ -34,10 +36,10 @@ const requiredFingerprintKeys = [
 ] as const;
 
 describe('canonical didactic profiles', () => {
-  it('covers exactly the 62 authored tasks with unique fingerprints', () => {
-    expect(didacticProfiles).toHaveLength(62);
-    expect(new Set(didacticProfiles.map(profile => profile.id)).size).toBe(62);
-    expect(new Set(didacticProfiles.map(profile => profile.fingerprint)).size).toBe(62);
+  it('covers exactly the authored tasks (originalTaskCount) with unique fingerprints', () => {
+    expect(didacticProfiles).toHaveLength(AUTHORED);
+    expect(new Set(didacticProfiles.map(profile => profile.id)).size).toBe(AUTHORED);
+    expect(new Set(didacticProfiles.map(profile => profile.fingerprint)).size).toBe(AUTHORED);
   });
 
   it('keeps every mandatory profile field populated', () => {
@@ -75,7 +77,7 @@ describe('authored misconception targets (SPEC 5.2, 6, 6.1)', () => {
   const profileById = new Map(didacticProfiles.map(profile => [profile.id, profile]));
 
   it('every unit 1–4 task authors its own specific Hebrew target in question-plan.json', () => {
-    expect(planTasks).toHaveLength(62);
+    expect(planTasks).toHaveLength(AUTHORED);
     expect([...new Set(planTasks.map(task => task.unit))]).toEqual([1, 2, 3, 4]);
 
     for (const task of planTasks) {
@@ -93,7 +95,7 @@ describe('authored misconception targets (SPEC 5.2, 6, 6.1)', () => {
     }
   });
 
-  it('never repeats a target: each of the 62 tasks names a distinct error', () => {
+  it('never repeats a target: each authored task names a distinct error', () => {
     const byTarget = new Map<string, string[]>();
     for (const task of planTasks) {
       const target = (task.misconceptionTarget ?? '').trim();

@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { PDFDocument } from '@cantoo/pdf-lib';
+import { EXPECTED_PAGES } from './lib/booklet-pages.mjs';
 
 const root = process.cwd();
 const pdfDir = path.join(root, 'artifacts', 'pdf');
@@ -8,7 +9,6 @@ const canonicalPath = path.join(pdfDir, 'זוויות-בין-ישרים-מקבי
 const chromiumPath = path.join(pdfDir, 'זוויות-בין-ישרים-מקבילים-chromium.pdf');
 const reportPath = path.join(root, 'artifacts', 'pdf-crosscheck.json');
 
-const EXPECTED_PAGES = 21;
 const A4_WIDTH_PT = 595.28;
 const A4_HEIGHT_PT = 841.89;
 const SIZE_TOLERANCE_PT = 2.0;

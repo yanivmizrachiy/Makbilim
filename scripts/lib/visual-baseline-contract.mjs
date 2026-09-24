@@ -10,7 +10,10 @@
  * which share one shape: { pageCount, expectedPages, mathJaxStatus, layout[] }.
  */
 
-export const EXPECTED_PAGES = 21;
+import { EXPECTED_PAGES } from './booklet-pages.mjs';
+
+/** The booklet page count, derived from booklet-pages.json (re-exported for the gate, the tool and the tests). */
+export { EXPECTED_PAGES };
 
 /** Structural facts per page that must match the baseline exactly. */
 export const EXACT_KEYS = [

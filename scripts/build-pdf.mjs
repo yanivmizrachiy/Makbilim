@@ -2,6 +2,7 @@ import { chromium } from '@playwright/test';
 import { spawn } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { BOOKLET_PAGES, EXPECTED_PAGES } from './lib/booklet-pages.mjs';
 
 const root = process.cwd();
 const pdfDir = path.join(root, 'artifacts', 'pdf');
@@ -77,7 +78,7 @@ try {
 
   await page.goto('http://127.0.0.1:4173/', { waitUntil: 'domcontentloaded', timeout: 20000 });
   await page.waitForSelector('[data-curriculum-ready="true"]', { timeout: 15000 });
-  await page.waitForFunction(() => document.querySelectorAll('.a4-page').length === 21, null, { timeout: 15000 });
+  await page.waitForFunction(expected => document.querySelectorAll('.a4-page').length === expected, EXPECTED_PAGES, { timeout: 15000 });
   await page.evaluate(async () => { if (document.fonts?.ready) await document.fonts.ready; });
   await page.waitForFunction(() => {
     const mathNodes = [...document.querySelectorAll('.mathjax-inline > span')];
@@ -131,10 +132,10 @@ try {
   if (accessibilityStatus.lang !== 'he') accessibilityFailures.push(`html lang=${accessibilityStatus.lang}`);
   if (accessibilityStatus.dir !== 'rtl') accessibilityFailures.push(`html dir=${accessibilityStatus.dir}`);
   if (!accessibilityStatus.title) accessibilityFailures.push('document title missing');
-  if (accessibilityStatus.pageCount !== 21) accessibilityFailures.push(`pageCount=${accessibilityStatus.pageCount}`);
+  if (accessibilityStatus.pageCount !== EXPECTED_PAGES) accessibilityFailures.push(`pageCount=${accessibilityStatus.pageCount}`);
   if (accessibilityStatus.mainLandmarkCount !== 0) accessibilityFailures.push(`mainLandmarkCount=${accessibilityStatus.mainLandmarkCount}`);
-  if (accessibilityStatus.pagesWithRtl !== 21) accessibilityFailures.push(`pagesWithRtl=${accessibilityStatus.pagesWithRtl}`);
-  if (accessibilityStatus.pagesWithSingleHeading !== 21) accessibilityFailures.push(`pagesWithSingleHeading=${accessibilityStatus.pagesWithSingleHeading}`);
+  if (accessibilityStatus.pagesWithRtl !== EXPECTED_PAGES) accessibilityFailures.push(`pagesWithRtl=${accessibilityStatus.pagesWithRtl}`);
+  if (accessibilityStatus.pagesWithSingleHeading !== EXPECTED_PAGES) accessibilityFailures.push(`pagesWithSingleHeading=${accessibilityStatus.pagesWithSingleHeading}`);
   if (accessibilityStatus.geometryTotal === 0 || accessibilityStatus.geometryAccessible !== accessibilityStatus.geometryTotal) {
     accessibilityFailures.push(`geometryAccessible=${accessibilityStatus.geometryAccessible}/${accessibilityStatus.geometryTotal}`);
   }
@@ -151,7 +152,7 @@ try {
   await page.emulateMedia({ media: 'print' });
 
   const pageCount = await page.locator('.a4-page').count();
-  if (pageCount !== 21) throw new Error(`Expected 21 A4 pages across units 1-5, found ${pageCount}`);
+  if (pageCount !== EXPECTED_PAGES) throw new Error(`Expected ${EXPECTED_PAGES} A4 booklet pages (booklet-pages.json), found ${pageCount}`);
 
   const layout = await page.locator('.a4-page').evaluateAll((pages) => pages.map((node, index) => {
     const PX_PER_MM = 96 / 25.4;
@@ -334,31 +335,9 @@ try {
     };
   }));
 
-  // Booklet order (SPEC 4.3): curriculum first, then the authored topics; global pages 1..21.
+  // Booklet order (SPEC 4.3) from booklet-pages.json: curriculum first, then the authored topics; global pages 1..N.
   // Mirrors src/content/booklet.ts BOOKLET_PAGES.
-  const expectedPages = [
-    { pageId: 'C-P1', topic: 'שאלות מתוך תוכנית הלימודים' },
-    { pageId: 'C-P2', topic: 'שאלות מתוך תוכנית הלימודים' },
-    { pageId: 'C-P3', topic: 'שאלות מתוך תוכנית הלימודים' },
-    { pageId: 'C-P4', topic: 'שאלות מתוך תוכנית הלימודים' },
-    { pageId: 'U1-P5', topic: 'הגדרות ושמונה הזוויות' },
-    { pageId: 'U1-P1', topic: 'זוויות מתאימות ומתחלפות' },
-    { pageId: 'U1-P2', topic: 'זוויות מתאימות ומתחלפות' },
-    { pageId: 'U1-P3', topic: 'המשפטים הישירים' },
-    { pageId: 'U1-P4', topic: 'המשפטים הישירים' },
-    { pageId: 'U2-P1', topic: 'חישובי זוויות' },
-    { pageId: 'U2-P2', topic: 'חישובי זוויות' },
-    { pageId: 'U2-P3', topic: 'חישובי זוויות' },
-    { pageId: 'U2-P4', topic: 'אלגברה' },
-    { pageId: 'U2-P5', topic: 'אלגברה' },
-    { pageId: 'U2-P6', topic: 'אלגברה' },
-    { pageId: 'U3-P1', topic: 'נימוק והוכחה' },
-    { pageId: 'U3-P2', topic: 'נימוק והוכחה' },
-    { pageId: 'U3-P3', topic: 'נימוק והוכחה' },
-    { pageId: 'U4-P1', topic: 'המשפטים ההפוכים' },
-    { pageId: 'U4-P2', topic: 'המשפטים ההפוכים' },
-    { pageId: 'U4-P3', topic: 'המשפטים ההפוכים' },
-  ];
+  const expectedPages = BOOKLET_PAGES.map(page => ({ pageId: page.id, topic: page.topic }));
   const canonicalProjectTitle = 'זוויות בין ישרים מקבילים';
   const canonicalFooter = [
     'יניב רז - מדריך מחוזי חט"ב בעיר ירושלים',
@@ -469,7 +448,7 @@ try {
     mathSvg: document.querySelectorAll('.mathjax-inline svg').length,
     geometrySvg: document.querySelectorAll('svg.geometry-diagram').length,
   }));
-  if (snapshotStats.pages !== 21 || snapshotStats.mathSvg < 1 || snapshotStats.geometrySvg < 1) {
+  if (snapshotStats.pages !== EXPECTED_PAGES || snapshotStats.mathSvg < 1 || snapshotStats.geometrySvg < 1) {
     throw new Error(`Vivliostyle snapshot incomplete: ${JSON.stringify(snapshotStats)}`);
   }
 

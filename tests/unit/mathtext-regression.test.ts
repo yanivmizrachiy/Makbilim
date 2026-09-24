@@ -29,6 +29,7 @@ import '@mathjax/src/js/input/tex/base/BaseConfiguration.js';
 import '@mathjax/src/js/input/tex/ams/AmsConfiguration.js';
 import { isMathToken, segmentMathText, tokenizeMathText } from '../../src/components/MathText';
 import { teacherAnswerKey } from '../../src/content/answer-key';
+import { AUTHORED_TASK_IDS } from '../../src/content/booklet';
 import { unit1Questions } from '../../src/content/questions-unit1';
 import { unit2Questions } from '../../src/content/questions-unit2';
 import { unit3Questions } from '../../src/content/questions-unit3';
@@ -190,7 +191,7 @@ function assertTypesetsFaithfully(source: string, tex: string) {
 describe('MathText regression over the whole booklet corpus', () => {
   it('covers every original task of units 1–4 and every rendered page string', () => {
     const ids = [...unit1Questions, ...unit2Questions, ...unit3Questions, ...unit4Questions].map(q => q.id);
-    expect(ids).toHaveLength(62);
+    expect(ids).toHaveLength(AUTHORED_TASK_IDS.length);
     for (const id of ids) expect(corpus.some(entry => entry.key === `${id}.stem`), id).toBe(true);
     for (const file of STUDENT_PAGE_FILES) expect(corpus.some(entry => entry.key === `${file} literal`), file).toBe(true);
     expect(corpus.filter(entry => entry.audience === 'teacher').length).toBeGreaterThan(100);

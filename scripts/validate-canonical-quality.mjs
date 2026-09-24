@@ -29,7 +29,7 @@ const originalTasks = (plan.units ?? [])
   .filter(u => u.unit <= 4)
   .flatMap(u => (u.tasks ?? []).map((task, index) => ({ ...task, unit: u.unit, _index: index })));
 
-gate('coverage', originalTasks.length === 62, `expected 62 original tasks, found ${originalTasks.length}`);
+gate('coverage', originalTasks.length === plan.originalTaskCount, `expected ${plan.originalTaskCount} original tasks (question-plan originalTaskCount), found ${originalTasks.length}`);
 
 gate('unique-ids', new Set(originalTasks.map(t => t.id)).size === originalTasks.length, 'task ids must be unique');
 
@@ -112,7 +112,7 @@ gate('student-facing-copy', bannedHits.length === 0, bannedHits.join('; '));
 
 // Stems are single-quoted literals, or template literals when they quote a canonical sentence from theorems.ts.
 const stemValues = [...allQuestionText.matchAll(/stem:\s*(?:'([^']+)'|`([^`]+)`)/g)].map(m => m[1] ?? m[2]);
-gate('hebrew', stemValues.length >= 62 && stemValues.every(s => /[\u0590-\u05FF]/.test(s)), `found ${stemValues.length} Hebrew stems`);
+gate('hebrew', stemValues.length >= plan.originalTaskCount && stemValues.every(s => /[\u0590-\u05FF]/.test(s)), `found ${stemValues.length} Hebrew stems`);
 
 const normalizedStemCounts = new Map();
 for (const stem of stemValues) {

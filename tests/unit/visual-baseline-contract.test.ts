@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
+  EXPECTED_PAGES,
   baselineDrift,
   pageHealthIssues,
   reportHealthIssues,
@@ -34,9 +35,9 @@ const healthyPage = (unit: number, localPage: number): LayoutPage => ({
 });
 
 const healthyReport = (): LayoutReport => ({
-  pageCount: 21,
+  pageCount: EXPECTED_PAGES,
   mathJaxStatus: { total: 10, rendered: 10, svgNodes: 10 },
-  layout: Array.from({ length: 21 }, (_, index) => healthyPage(1, index + 1)),
+  layout: Array.from({ length: EXPECTED_PAGES }, (_, index) => healthyPage(1, index + 1)),
 });
 
 describe('visual baseline contract', () => {

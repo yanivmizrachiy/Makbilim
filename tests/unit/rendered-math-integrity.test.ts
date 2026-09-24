@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import App from '../../src/App';
 import TeacherApp from '../../src/TeacherApp';
+import { AUTHORED_TASK_IDS } from '../../src/content/booklet';
 
 /**
  * Rendered math integrity — checks the math islands that MathText actually emits,
@@ -77,8 +78,8 @@ describe('teacher guide is written for teachers', () => {
   const html = renderToStaticMarkup(createElement(TeacherApp));
   const { visibleText, mathSources } = inspect(html);
 
-  it('shows all 62 answers, each with its global number, the student-page task-type label and the stem opening', () => {
-    expect(html.match(/<article class="teacher-answer-card"/g)).toHaveLength(62);
+  it('shows every authored answer, each with its global number, the student-page task-type label and the stem opening', () => {
+    expect(html.match(/<article class="teacher-answer-card"/g)).toHaveLength(AUTHORED_TASK_IDS.length);
     expect(html.match(/<span class="teacher-answer-kind">/g)).toHaveLength(62);
     const cards = html.match(/<article class="teacher-answer-card"[\s\S]*?<\/article>/g) ?? [];
     expect(cards).toHaveLength(62);

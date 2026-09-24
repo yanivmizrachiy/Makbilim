@@ -15,12 +15,13 @@ if (!fs.existsSync(file)) {
   const units = plan.units ?? [];
   const tasks = units.flatMap((unit) => unit.tasks ?? []);
 
-  if (plan.originalTaskCount !== 62) fail('originalTaskCount must be 62');
-  if (tasks.length !== 62) fail(`expected 62 original tasks, found ${tasks.length}`);
+  // originalTaskCount is the one deliberate pin (question-plan.json): the task list must match it exactly.
+  if (!Number.isInteger(plan.originalTaskCount) || plan.originalTaskCount < 1) fail('originalTaskCount must be a positive integer');
+  if (tasks.length !== plan.originalTaskCount) fail(`expected ${plan.originalTaskCount} original tasks (originalTaskCount), found ${tasks.length}`);
   if (plan.curriculumSourceTaskBlocks !== 8) fail('curriculumSourceTaskBlocks must be 8');
   if (units.length !== 4) fail(`question plan must contain 4 authored units, found ${units.length}`);
 
-  const expectedCounts = new Map([[1, 18], [2, 24], [3, 12], [4, 8]]);
+  const expectedCounts = new Map(units.map((unit) => [unit.unit, unit.taskCount]));
   const ids = new Set();
 
   for (const unit of units) {

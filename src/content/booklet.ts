@@ -7,6 +7,7 @@
  * continuous global number 1..N. The `U{unit}-P{page}` ids remain only as internal, stable page
  * ids (a maintenance artifact, never shown); this module maps them to the booklet's global order.
  */
+import bookletPages from './booklet-pages.json';
 import plan from './question-plan.json';
 import { unit5Questions } from './questions-unit5';
 
@@ -14,33 +15,12 @@ import { unit5Questions } from './questions-unit5';
 export type BookletPage = { readonly id: string; readonly topic: string; readonly curriculum?: boolean };
 
 /**
- * The printed order of the booklet's pages. Curriculum first (4 pages), then the authored topics
- * mapped from the internal `unit*` page ids. Topic titles are natural (no "יחידה"); several pages
- * may share a topic. This array's order IS the continuous page numbering.
+ * The printed order of the booklet's pages — read from booklet-pages.json, the ONE source of the
+ * order (the PDF/layout QA scripts and the validators read the same file). Curriculum first, then
+ * the authored topics mapped from the internal `unit*` page ids. Topic titles are natural (no
+ * "יחידה"); several pages may share a topic. This array's order IS the continuous page numbering.
  */
-export const BOOKLET_PAGES: readonly BookletPage[] = [
-  { id: 'C-P1', topic: 'שאלות מתוך תוכנית הלימודים', curriculum: true },
-  { id: 'C-P2', topic: 'שאלות מתוך תוכנית הלימודים', curriculum: true },
-  { id: 'C-P3', topic: 'שאלות מתוך תוכנית הלימודים', curriculum: true },
-  { id: 'C-P4', topic: 'שאלות מתוך תוכנית הלימודים', curriculum: true },
-  { id: 'U1-P5', topic: 'הגדרות ושמונה הזוויות' },
-  { id: 'U1-P1', topic: 'זוויות מתאימות ומתחלפות' },
-  { id: 'U1-P2', topic: 'זוויות מתאימות ומתחלפות' },
-  { id: 'U1-P3', topic: 'המשפטים הישירים' },
-  { id: 'U1-P4', topic: 'המשפטים הישירים' },
-  { id: 'U2-P1', topic: 'חישובי זוויות' },
-  { id: 'U2-P2', topic: 'חישובי זוויות' },
-  { id: 'U2-P3', topic: 'חישובי זוויות' },
-  { id: 'U2-P4', topic: 'אלגברה' },
-  { id: 'U2-P5', topic: 'אלגברה' },
-  { id: 'U2-P6', topic: 'אלגברה' },
-  { id: 'U3-P1', topic: 'נימוק והוכחה' },
-  { id: 'U3-P2', topic: 'נימוק והוכחה' },
-  { id: 'U3-P3', topic: 'נימוק והוכחה' },
-  { id: 'U4-P1', topic: 'המשפטים ההפוכים' },
-  { id: 'U4-P2', topic: 'המשפטים ההפוכים' },
-  { id: 'U4-P3', topic: 'המשפטים ההפוכים' },
-];
+export const BOOKLET_PAGES: readonly BookletPage[] = bookletPages.pages;
 
 const pageIndexById = new Map(BOOKLET_PAGES.map((page, index) => [page.id, index]));
 
@@ -63,6 +43,8 @@ export function isCurriculumPage(pageId: string): boolean {
 }
 
 export const BOOKLET_PAGE_COUNT = BOOKLET_PAGES.length;
+export const CURRICULUM_PAGE_COUNT = BOOKLET_PAGES.filter(page => page.curriculum).length;
+export const AUTHORED_PAGE_COUNT = BOOKLET_PAGE_COUNT - CURRICULUM_PAGE_COUNT;
 
 /** The 8 curriculum block ids, in source order — the first questions of the booklet. */
 export const CURRICULUM_QUESTION_IDS: readonly string[] = unit5Questions.map(question => question.id);

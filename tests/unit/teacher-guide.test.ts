@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 import App from '../../src/App';
 import TeacherApp, { answerFlow, COLUMN_FLOW_MAX_LINE } from '../../src/TeacherApp';
 import { segmentMathText } from '../../src/components/MathText';
-import { globalPageNumber, globalQuestionNumber } from '../../src/content/booklet';
+import { AUTHORED_PAGE_COUNT, AUTHORED_TASK_IDS, globalPageNumber, globalQuestionNumber } from '../../src/content/booklet';
 import { teacherAnswerKey } from '../../src/content/answer-key';
 import { TASK_KIND_LABEL, taskKindById } from '../../src/content/task-kinds';
 import { describeLocation, locateTask, stemOpening, STEM_OPENING_WORDS } from '../../src/content/teacher-locator';
@@ -58,8 +58,9 @@ const visibleText = (html: string) =>
 describe('teacher guide — locating an answer by its global number', () => {
   const pages = renderedStudentPages();
 
-  it('renders all 17 authored student pages and their 62 questions', () => {
-    expect(pages).toHaveLength(17);
+  it('renders every authored student page and its questions', () => {
+    expect(pages).toHaveLength(AUTHORED_PAGE_COUNT);
+    expect(AUTHORED_TASK_IDS).toHaveLength(teacherAnswerKey.length);
     expect(pages.flatMap(page => page.taskIds)).toHaveLength(62);
   });
 
@@ -196,7 +197,7 @@ describe('teacher guide — flat printed layout', () => {
     expect(answerFlow(['שוות', { values: { x: 16 }, justification: 'x'.repeat(COLUMN_FLOW_MAX_LINE) }])).toBe('columns');
 
     const grids = [...teacherHtml.matchAll(/<div class="teacher-answer-grid" data-flow="(columns|single)">([\s\S]*?)<\/section>/g)];
-    expect(grids).toHaveLength(17);
+    expect(grids).toHaveLength(AUTHORED_PAGE_COUNT);
     const flows = grids.map(match => match[1]);
     expect(flows).toContain('columns');
     expect(flows).toContain('single');

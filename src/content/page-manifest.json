@@ -10,7 +10,6 @@
     {"unit": 3, "title": "תרגילי הוכחה", "pages": 3, "pageNumbers": [1,2,3]},
     {"unit": 4, "title": "משפטים הפוכים", "pages": 3, "pageNumbers": [1,2,3]}
   ],
-  "originalPageCount": 17,
   "curriculumUnit": {
     "unit": 5,
     "title": "שאלות מתוך תוכנית הלימודים",
@@ -21,7 +20,6 @@
     "questionsPerPage": 2,
     "firstPage": 1
   },
-  "studentPageCount": 21,
   "studentFacingRules": {
     "questionNumbering": "continuous",
     "subpartNumbering": "hebrew-letters",

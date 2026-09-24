@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import questionPlan from '../../src/content/question-plan.json';
 import pageManifest from '../../src/content/page-manifest.json';
+import { AUTHORED_PAGE_COUNT, BOOKLET_PAGE_COUNT } from '../../src/content/booklet';
 import { unit1Questions } from '../../src/content/questions-unit1';
 import { unit2Questions } from '../../src/content/questions-unit2';
 import { unit3Questions } from '../../src/content/questions-unit3';
@@ -59,8 +60,8 @@ describe('canonical deep workbook contract', () => {
 
   it('derives the page architecture from the canonical manifest and rejects cross-layer drift', () => {
     const summedOriginalPages = pageManifest.originalUnits.reduce((sum, unit) => sum + unit.pages, 0);
-    expect(pageManifest.originalPageCount).toBe(summedOriginalPages);
-    expect(pageManifest.studentPageCount).toBe(pageManifest.originalPageCount + pageManifest.curriculumUnit.pages);
+    expect(AUTHORED_PAGE_COUNT).toBe(summedOriginalPages);
+    expect(BOOKLET_PAGE_COUNT).toBe(summedOriginalPages + pageManifest.curriculumUnit.pages);
     expect(pageManifest.curriculumUnit.identifiedQuestionBlocks).toBe(questionPlan.curriculumSourceTaskBlocks);
 
     for (const manifestUnit of pageManifest.originalUnits) {
