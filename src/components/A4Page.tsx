@@ -13,8 +13,8 @@ export type A4PageProps = {
 };
 
 /**
- * One A4 sheet (SPEC 4.1/4.3/11.6): the header (the topic leads; the project title is a quiet
- * running head; the CONTINUOUS global page number sits in a circle at the far, top-left corner),
+ * One A4 sheet (SPEC 4.1/4.3/11.6): the header (the booklet subject is the title — no topic/unit
+ * meta-label; the CONTINUOUS global page number sits in a circle at the far, top-left corner),
  * the content area and the canonical two-line footer. No "יחידה N" anywhere. The header/footer
  * TEXTS are canonical (the visual baseline compares them); only their typography lives in CSS.
  */

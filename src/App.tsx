@@ -27,21 +27,20 @@ export function Unit1Page1() {
 
   return (
     <A4Page pageId="U1-P1">
-      <QuestionBlock taskId={a.id} compact diagram={<ParallelLinesDiagram lineLabels={['p', 'q']} transversalLabel="r" orientationDeg={0} transversalDeg={50} showParallelMarks={false} ariaLabel="שני ישרים וישר נוסף החותך את שניהם" />}>
+      <QuestionBlock taskId={a.id} diagram={<ParallelLinesDiagram lineLabels={['p', 'q']} transversalLabel="r" orientationDeg={0} transversalDeg={50} showParallelMarks={false} ariaLabel="שני ישרים וישר נוסף החותך את שניהם" />}>
         {a.stem}
       </QuestionBlock>
 
-      <QuestionBlock taskId={b.id} compact diagram={<ParallelLinesDiagram lineLabels={['k', 'm']} transversalLabel="t" orientationDeg={4} transversalDeg={142} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 0, role: 'marked' }]} ariaLabel="זווית אחת מסומנת במפגש העליון" />}>
+      <QuestionBlock taskId={b.id} diagram={<ParallelLinesDiagram lineLabels={['k', 'm']} transversalLabel="t" orientationDeg={4} transversalDeg={142} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 0, role: 'marked' }]} ariaLabel="זווית אחת מסומנת במפגש העליון" />}>
         {b.stem}
       </QuestionBlock>
 
-      <QuestionBlock taskId={c.id} compact diagram={<ParallelLinesDiagram lineLabels={['a', 'b']} transversalLabel="s" orientationDeg={-7} transversalDeg={101} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 0, role: 'marked' }]} ariaLabel="זווית אחת מסומנת בין שני הישרים; יש לזהות את הזווית המתחלפת לה" />}>
+      <QuestionBlock taskId={c.id} diagram={<ParallelLinesDiagram lineLabels={['a', 'b']} transversalLabel="s" orientationDeg={-7} transversalDeg={101} showParallelMarks={false} angleMarks={[{ intersection: 'top', sector: 0, role: 'marked' }]} ariaLabel="זווית אחת מסומנת בין שני הישרים; יש לזהות את הזווית המתחלפת לה" />}>
         {c.stem}
       </QuestionBlock>
 
       <QuestionBlock
         taskId={d.id}
-        compact
         diagram={<ParallelLinesDiagram lineLabels={['u', 'v']} transversalLabel="w" orientationDeg={11} transversalDeg={71} showParallelMarks={false} angleMarks={[
           // arc-form-whitelist:start U1-P1-D — the task text names each pair by its arc form
           // (one arc / two arcs / a dashed arc), so only the arc form is set here. All three pairs

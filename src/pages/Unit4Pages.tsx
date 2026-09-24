@@ -104,7 +104,7 @@ function ClozeLine({ line }: { line: string }) {
 // The student writes directly in the blank of each line, so the block has no separate work rules.
 function TheoremCompletion({ q }: { q: Unit4Question }) {
   return (
-    <QuestionBlock taskId={q.id} compact subparts={(q.subparts ?? []).map(line => <ClozeLine line={line} />)}>
+    <QuestionBlock taskId={q.id} subparts={(q.subparts ?? []).map(line => <ClozeLine line={line} />)}>
       <MathText text={q.stem} />
     </QuestionBlock>
   );
@@ -117,7 +117,6 @@ function PerStatementVerdict({ q }: { q: Unit4Question }) {
   return (
     <QuestionBlock
       taskId={q.id}
-      compact
       items={(q.subparts ?? []).map(line => ({
         content: <MathText text={line} />,
         aside: <VerdictOptions options={q.verdictOptions ?? []} />,
@@ -135,7 +134,6 @@ function ConverseQuestion({ q }: { q: Unit4Question }) {
   return (
     <QuestionBlock
       taskId={q.id}
-      compact
       diagram={q.diagram ? <ConverseDiagram q={q} /> : undefined}
       subparts={(q.subparts ?? []).map(text => <MathText text={text} />)}
       response={q.deduction ? <DeductionChain deduction={q.deduction} /> : undefined}

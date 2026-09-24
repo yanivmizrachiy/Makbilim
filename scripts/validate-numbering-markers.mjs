@@ -3,9 +3,9 @@ import path from 'node:path';
 import process from 'node:process';
 import { BOOKLET_PAGES, NUMBERING } from './lib/booklet-pages.mjs';
 
-// continuous-numbering gate (SPEC 4.1/4.2/11.5/11.6): pages and questions are numbered
-// continuously 1..N across the whole booklet (no per-unit reset, no "אין מספור, רק ●"),
-// sub-parts are lettered, and the curriculum block is first.
+// continuous-numbering gate (SPEC 4.1/4.2/11.5/11.6): only PAGES are numbered continuously 1..N
+// (no per-unit reset); each question opens with a ● marker and each sub-part with a • marker
+// (never numbers or letters), and the curriculum block is first.
 const root = process.cwd();
 const unitPlanPath = path.join(root, 'src', 'content', 'unit-plan.json');
 const tokensPath = path.join(root, 'src', 'styles', 'tokens.ts');

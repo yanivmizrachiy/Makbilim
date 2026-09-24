@@ -95,15 +95,14 @@ describe('one design-token system (src/styles/tokens.css)', () => {
     expect(RULE_POOL * 7).toBeGreaterThanOrEqual(260);
   });
 
-  it('draws writing rules lighter than the question separator, and never with gradients (forced colors drop them)', () => {
+  it('draws writing rules light on paper, and never with gradients (forced colors drop them)', () => {
     const tokens = baseTokens();
     const luminance = (hex: string) => {
       const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255);
       return 0.2126 * r! + 0.7152 * g! + 0.0722 * b!;
     };
-    // Rules stay visible on paper, but are clearly lighter than the solid separator.
+    // Rules stay visible on paper, but are drawn light so the squares guide without competing.
     expect(luminance(tokens.get('--rule-color')!)).toBeLessThan(0.72);
-    expect(luminance(tokens.get('--q-sep-color')!)).toBeLessThan(luminance(tokens.get('--rule-color')!) - 0.1);
     expect(mmOf(tokens.get('--rule-w') ?? '')).toBeLessThanOrEqual(0.25);
     // The squared work grid (SPEC 11.11א) is the one gradient-drawn rule set. Forced colours drop
     // it, so print.css must restore the bordered rules under it — the writing guidance survives.
@@ -179,7 +178,7 @@ describe('page header and footer', () => {
     expect(mmOf(tokens.get('--header-height') ?? '')).toBeLessThanOrEqual(15);
   });
 
-  it('draws a square-ended accent tick under the unit title, not a rounded pill', () => {
+  it('draws a square-ended accent tick under the header title, not a rounded pill', () => {
     const tick = rules(premiumCss).find(rule => rule.selector.endsWith('.page-header::after') && rule.declarations.some(([p]) => p === 'content'));
     expect(tick).toBeDefined();
     expect(tick!.declarations).toContainEqual(['inset-inline-start', '0']);

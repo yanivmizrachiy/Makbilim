@@ -20,13 +20,6 @@ import { MathText } from './MathText';
  */
 export const RULE_POOL = 38;
 
-/**
- * Work areas that get squared paper (SPEC 11.11א / כ): multi-step calculation, algebra and the two
- * solution lanes. Short-answer reasons (justify / critique), completions and choices do NOT — they
- * keep prose writing rules or no area at all.
- */
-export const GRID_MODES: ReadonlySet<string> = new Set(['work', 'algebra', 'value', 'two-ways']);
-
 const minLinesStyle = (lines: number) => ({ '--answer-min-lines': lines }) as CSSProperties;
 
 function Rules({ count, className = 'rule' }: { count: number; className?: string }) {
@@ -48,7 +41,7 @@ function RuledArea({ spec, minLines }: { spec: AnswerSpec; minLines: number }) {
     <div className="answer-lines" data-answer-mode={spec.mode} data-lane={spec.lane} data-grid="squares" style={minLinesStyle(minLines + (spec.lane ? 1 : 0))}>
       {spec.lane && (
         <span className="rule rule--lane justification-lane" {...(hasEquationCell(spec) ? { 'data-equation-lane': 'true' } : {})}>
-          {hasEquationCell(spec) && <span className="justification-label justification-label--equation">{spec.equationLabel ?? EQUATION_LABEL}</span>}
+          {hasEquationCell(spec) && <span className="justification-label">{spec.equationLabel ?? EQUATION_LABEL}</span>}
           <span className="justification-label">{LANE_LABEL[spec.lane]}</span>
         </span>
       )}

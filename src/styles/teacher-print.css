@@ -1,7 +1,7 @@
 /*
  * Teacher guide — a printed answer key, typeset like the student booklet's companion:
  * white page, hairline rules, no cards, tiles, tints or shadows around answers. Every
- * answer is found by its global question number and page number (SPEC 11.11).
+ * answer is found by its page number and its position on that page (the n-th ●) (SPEC 11.11).
  */
 
 @page {
@@ -353,7 +353,7 @@ body {
   line-height: 1.2;
 }
 
-/* "27" — the question's global number (SPEC 4.2); the page follows as „עמוד N”. */
+/* The ● marker standing for the question (questions are not numbered, per SPEC 4.2); the page follows as „עמוד N”. */
 .teacher-answer-position {
   display: inline-flex;
   align-items: baseline;
@@ -372,7 +372,7 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Same task-type vocabulary and look as the student page's eyebrow label. */
+/* The teacher-facing task-type label; the student page prints no such eyebrow (task-kinds.ts). */
 .teacher-answer-kind,
 .teacher-sample-kind {
   padding-inline-start: 2.2mm;

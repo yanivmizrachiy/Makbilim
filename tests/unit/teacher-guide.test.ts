@@ -12,10 +12,11 @@ import { TASK_KIND_LABEL, taskKindById } from '../../src/content/task-kinds';
 import { describeLocation, locateTask, stemOpening, STEM_OPENING_WORDS } from '../../src/content/teacher-locator';
 
 /**
- * The teacher guide as a printed answer key for the CONTINUOUSLY-NUMBERED student booklet (SPEC
- * 4.2/11.5/11.11): every answer is located by the question's global number and its global page
- * number, and quotes the opening words of the stem without breaking a math run. The marker position
- * model is retired; no "יחידה N" reaches the teacher.
+ * The teacher guide as a printed answer key for the student booklet, whose questions are NOT
+ * numbered (SPEC 4.2/11.5/11.11): only pages carry a continuous number, each question opens with a
+ * ● marker, and every answer is located by its global PAGE number and its POSITION on that page
+ * (the n-th ● on the page), quoting the opening words of the stem without breaking a math run. No
+ * "יחידה N" reaches the teacher.
  */
 
 const root = process.cwd();
@@ -74,6 +75,18 @@ describe('teacher guide — locating an answer by its page and position', () => 
         expect(location.pageNumber, id).toBe(page.globalPage);
       });
     }
+  });
+
+  it('binds ● to the question marker and • to the sub-part marker — a swap fails the gate', () => {
+    // The source/HTML substring gates elsewhere check the glyphs exist but not that each is inside
+    // its own marker element. Pin each glyph to its marker's sr-only label so a ●/• swap is caught.
+    const questionMarker = 'class="question-marker"><span class="sr-only">שאלה</span><span aria-hidden="true">●</span>';
+    const subpartMarker = 'class="subpart-marker"><span class="sr-only">סעיף: </span><span aria-hidden="true">•</span>';
+    expect(studentHtml).toContain(questionMarker);
+    expect(studentHtml).toContain(subpartMarker);
+    // The swapped forms must never appear (● in a sub-part marker, • in a question marker).
+    expect(studentHtml).not.toContain('class="question-marker"><span class="sr-only">שאלה</span><span aria-hidden="true">•</span>');
+    expect(studentHtml).not.toContain('class="subpart-marker"><span class="sr-only">סעיף: </span><span aria-hidden="true">●</span>');
   });
 
   it('prints the answers in booklet order; positions restart on every page', () => {

@@ -125,7 +125,7 @@ function AnswerBody({ answer }: { answer: unknown }) {
 
 type LocatedEntry = { entry: TeacherAnswerEntry; location: TaskLocation };
 
-/** Every authored answer with its place in the student booklet (global question + page number). */
+/** Every authored answer with its place in the student booklet (position on its page + page number). */
 function locateEntries(entries: readonly TeacherAnswerEntry[]): LocatedEntry[] {
   return entries.map(entry => ({ entry, location: locateTask(entry.id) }));
 }
@@ -147,7 +147,7 @@ function groupByPage(located: readonly LocatedEntry[]): PageGroup[] {
     }));
 }
 
-/** "12 · חישוב … עמוד 6" — the question's global number, its task type, and its page. */
+/** "● · חישוב · עמוד 6" — the ● marker, the task kind and the page (no global question number). */
 function AnswerHeader({ location, kindClassName = 'teacher-answer-kind' }: { location: TaskLocation; kindClassName?: string }) {
   return (
     <header className="teacher-answer-header">
@@ -270,7 +270,7 @@ function PageAnswers({ pageNumber, topic, items }: PageGroup) {
   );
 }
 
-/** A sample answer header on the cover, showing how the guide points at a numbered question. */
+/** A sample answer header on the cover, showing how the guide points at a question by page number and position. */
 function LocatorExample() {
   const sample = teacherAnswerKey.map(entry => locateTask(entry.id)).find(location => taskKindById(location.id) === 'calculation');
   if (!sample) throw new Error('The cover example needs a calculation question.');
@@ -282,7 +282,7 @@ function LocatorExample() {
       </div>
       <figcaption>
         כך נראית כותרת של תשובה במדריך. כאן: {describeLocation(sample)} — כלומר {describeLocation(sample)} בחוברת —
-        ומשימה מסוג „{TASK_KIND_LABEL[taskKindById(sample.id)]}”, כפי שהסוג כתוב בדף התלמיד.
+        ומשימה מסוג „{TASK_KIND_LABEL[taskKindById(sample.id)]}”. הסוג מופיע במדריך המורה בלבד, ואינו מודפס בדף התלמיד.
       </figcaption>
     </figure>
   );

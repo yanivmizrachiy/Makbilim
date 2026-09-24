@@ -9,8 +9,8 @@ export type Unit4Question = {
   /** Response structure: the verdict the student marks beside each sub-item statement. */
   verdictOptions?: string[];
   /**
-   * A guided deduction (SPEC 3.2 / 11.14): givens ↓ intermediate equality ↓ conclusion are printed,
-   * joined by the shared ↓ arrow; the student completes the justification one word per line.
+   * A guided deduction (SPEC 3.2 / 11.14): givens ⇓ intermediate equality ⇓ conclusion are printed,
+   * joined by the shared ⇓ arrow; the student completes the justification one word per line.
    */
   deduction?: {
     givens: string[];
@@ -130,13 +130,13 @@ export const unit4Questions: Unit4Question[] = [
       givens: ['∠C = 112°', '∠D = 112°'],
       target: 'identify the pair type, then determine k ∥ m'
     },
-    // The guided 112° example (SPEC 3.2): ∠C = 112°, ∠D = 112° ↓ ∠C = ∠D ↓ k ∥ m. The pair type is
+    // The guided 112° example (SPEC 3.2): ∠C = 112°, ∠D = 112° ⇓ ∠C = ∠D ⇓ k ∥ m. The pair type is
     // NOT named anywhere: identifying it from the drawing is what fills the first blank.
     deduction: {
       givens: ['∠C = 112°', '∠D = 112°'],
       steps: ['∠C = ∠D'],
       // Graded scaffolding (SPEC 3.2): the first chain prints its conclusion as a model; here the
-      // student writes the conclusion after the last ↓.
+      // student writes the conclusion after the last ⇓.
       conclusion: '______',
       reasonLines: ['אם זוג זוויות ______ שוות זו לזו,', 'אז שני הישרים ______.']
     },
