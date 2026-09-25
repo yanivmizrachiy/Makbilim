@@ -118,7 +118,7 @@ describe('one design-token system (src/styles/tokens.css)', () => {
   it('uses two text sizes for what students read (body, secondary) instead of per-component literals', () => {
     const tokens = baseTokens();
     expect(tokens.get('--text-body')).toBe('11.7pt');
-    expect(tokens.get('--text-secondary')).toBe('11pt');
+    expect(tokens.get('--text-secondary')).toBe('10.6pt');
     const sizes = rules(printCss).filter(rule => !GEOMETRY_SELECTOR.test(rule.selector)).flatMap(rule => rule.declarations.filter(([property]) => property === 'font-size').map(([, value]) => value));
     expect(sizes.filter(value => !value.startsWith('var(--'))).toEqual([]);
   });
