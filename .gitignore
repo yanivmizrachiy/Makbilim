@@ -7,3 +7,6 @@ public/generated/
 src/content/generated/
 *.log
 .vivliostyle/
+
+# Local Claude Code dev config (launch.json for the preview server)
+.claude/
