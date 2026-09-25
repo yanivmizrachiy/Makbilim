@@ -77,6 +77,16 @@ body { direction: rtl; }
   letter-spacing: -0.005em;
 }
 
+/* Curriculum pages name their source under the booklet title („שאלות מתוך תוכנית הלימודים”, SPEC 1/4.3).
+   Didactic pages have no topic title at all. Black text, a size and weight clearly below the title. */
+.topic-title {
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--text-secondary);
+  line-height: 1.15;
+  font-weight: 600;
+}
+
 /* Continuous global page number: a number-only circle at the far (top-left in RTL) corner of the
    header (SPEC 4.1/11.6). The ring colour equals the numeral colour; transparent fill; the New
    Computer Modern numeral matches the formulas. Principle adapted from razpages, not its look. */

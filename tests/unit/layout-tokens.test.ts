@@ -167,6 +167,15 @@ describe('page header and footer', () => {
     ]);
   });
 
+  it('names the source on curriculum pages (topic-title), none on didactic pages', () => {
+    const curriculum = parseMarkup(renderToStaticMarkup(createElement(A4Page, { pageId: 'C-P3', children: null })));
+    const label = findAll(curriculum, node => hasClass(node, 'topic-title'))[0];
+    expect(label, 'C-P3 must name its source').toBeDefined();
+    expect(visibleText(label!).trim()).toBe('שאלות מתוך תוכנית הלימודים');
+    // The didactic page (U2-P4, rendered above) carries no topic title.
+    expect(findAll(tree, node => hasClass(node, 'topic-title'))).toEqual([]);
+  });
+
   it('makes the booklet subject the header title, no topic meta-label', () => {
     const tokens = baseTokens();
     const pt = (name: string) => Number(/^([\d.]+)pt$/.exec(tokens.get(name) ?? '')?.[1]);

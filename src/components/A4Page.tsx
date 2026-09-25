@@ -40,8 +40,10 @@ export function A4Page({
     >
       <header className="page-header">
         <div className="page-title-group">
-          {/* The booklet's own subject is the header title. No topic/unit meta-label (SPEC 4.3 / 11.5). */}
+          {/* The booklet's own subject is the header title. Didactic pages carry no topic meta-label;
+             curriculum pages name their source — „שאלות מתוך תוכנית הלימודים” (SPEC 1 / 4.3 / 11.5). */}
           <h1>{projectTitle}</h1>
+          {curriculum && <p className="topic-title">{topic}</p>}
         </div>
         <div className="page-number" aria-label={`עמוד ${pageNumber}`}>{pageNumber}</div>
       </header>
