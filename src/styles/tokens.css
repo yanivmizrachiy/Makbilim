@@ -16,7 +16,7 @@
   /* ── Type scale: two sizes for text the student reads, plus small labels ── */
   --font-body: "Noto Sans Hebrew", "Makbilim Symbols", "Arial Hebrew", Arial, sans-serif;
   --text-body: 11.7pt;          /* stems, statements, sub-items */
-  --text-secondary: 11pt;       /* answer options, matching columns, tables, word banks */
+  --text-secondary: 10.6pt;       /* answer options, matching columns, tables, word banks */
   --text-body-dense: 10.4pt;    /* equation-heavy stems read a touch smaller (SPEC 7) */
   --text-label: 9.4pt;          /* answer-area labels: נימוק:, המשפט המתאים:, דרך ראשונה … */
   --leading-body: 1.45;
@@ -43,25 +43,25 @@
   --frame-rule-w: 0.3mm;
   --frame-rule-color: #9aa8b6;
   --header-accent-w: 22mm;
-  --header-accent-h: 0.8mm;
-  --header-title-size: 13pt;    /* the booklet subject is the header title; no topic meta-label */
+  --header-accent-h: 0.55mm;
+  --header-title-size: 13.5pt;    /* the booklet subject is the header title; no topic meta-label */
   --page-number-size: 10.6pt;
   --page-number-circle: 9mm;       /* number-only page circle, top-left (SPEC 4.1/11.6) */
-  --page-number-ring-w: 0.4mm;
-  --footer-size: 7pt;
+  --page-number-ring-w: 0.35mm;
+  --footer-size: 7.5pt;
   --footer-color: var(--ink);         /* black credit text, never blue */
   --footer-rule-w: 0.3mm;             /* thin but present */
   --footer-rule-color: var(--ink);    /* dark, full-bleed rule */
-  --footer-logo-size: 7.5mm;          /* the round district crest */
+  --footer-logo-size: 6.6mm;          /* the round district crest */
 
   /* ── Question rhythm ── */
-  --question-marker-size: 13.5pt;  /* the ● that opens a question — large, black */
+  --question-marker-size: 13pt;  /* the ● that opens a question — large, black */
   --subpart-marker-size: 10.5pt;  /* the • that opens a sub-part — smaller than the ● */
   --q-marker-col: 4.4mm;
   --q-marker-gap: 1.3mm;
-  --sub-marker-col: 4mm;
+  --sub-marker-col: 4.4mm;
   --q-inner-gap: 2mm;           /* between stem, sub-items, answer slots and work area */
-  --q-sep-w: 0.22mm;            /* hairline for the proof-table column divider and word-bank list border */
+  --q-sep-w: 0.25mm;            /* hairline for the proof-table column divider and word-bank list border */
   --q-sep-after: 3.6mm;         /* space between questions (roomier than the old 3mm) */
   --work-clearance: 3.5mm;      /* last writing rule → separator (≥ 3mm, never a 'double line') */
   --diagram-col: 62mm;          /* diagram column of the side-by-side question grid */
@@ -74,7 +74,7 @@
   --rule-pitch: 8mm;            /* handwriting line pitch; a density preset may use 7mm, never less */
   --rule-w: 0.25mm;
   --rule-style: dotted;
-  --rule-color: #98a2ad;
+  --rule-color: #a6afba;
   --slot-w: 0.3mm;              /* solid ink slots: final answers, cloze blanks, per-line slots */
   --slot-color: var(--ink-soft);
   --slot-value-w: 22mm;

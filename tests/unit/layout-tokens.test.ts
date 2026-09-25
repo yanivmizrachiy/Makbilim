@@ -118,7 +118,7 @@ describe('one design-token system (src/styles/tokens.css)', () => {
   it('uses two text sizes for what students read (body, secondary) instead of per-component literals', () => {
     const tokens = baseTokens();
     expect(tokens.get('--text-body')).toBe('11.7pt');
-    expect(tokens.get('--text-secondary')).toBe('11pt');
+    expect(tokens.get('--text-secondary')).toBe('10.6pt');
     const sizes = rules(printCss).filter(rule => !GEOMETRY_SELECTOR.test(rule.selector)).flatMap(rule => rule.declarations.filter(([property]) => property === 'font-size').map(([, value]) => value));
     expect(sizes.filter(value => !value.startsWith('var(--'))).toEqual([]);
   });
@@ -165,6 +165,15 @@ describe('page header and footer', () => {
       printTokens.footer.line1,
       printTokens.footer.line2,
     ]);
+  });
+
+  it('names the source on curriculum pages (topic-title), none on didactic pages', () => {
+    const curriculum = parseMarkup(renderToStaticMarkup(createElement(A4Page, { pageId: 'C-P3', children: null })));
+    const label = findAll(curriculum, node => hasClass(node, 'topic-title'))[0];
+    expect(label, 'C-P3 must name its source').toBeDefined();
+    expect(visibleText(label!).trim()).toBe('שאלות מתוך תוכנית הלימודים');
+    // The didactic page (U2-P4, rendered above) carries no topic title.
+    expect(findAll(tree, node => hasClass(node, 'topic-title'))).toEqual([]);
   });
 
   it('makes the booklet subject the header title, no topic meta-label', () => {

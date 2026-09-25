@@ -362,7 +362,7 @@ try {
     const expected = expectedPages[index] ?? { pageId: '', topic: '' };
     const pageChromeFailure = (
       item.projectTitleText !== canonicalProjectTitle ||
-      item.topicTitleText !== '' ||
+      item.topicTitleText !== (item.isVerbatimCurriculum ? expected.topic : '') ||
       item.pageNumberText !== String(index + 1) ||
       item.footerLines.length !== 2 ||
       item.footerLines[0] !== canonicalFooter[0] ||

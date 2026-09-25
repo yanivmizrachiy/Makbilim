@@ -77,6 +77,17 @@ body { direction: rtl; }
   letter-spacing: -0.005em;
 }
 
+/* Curriculum pages name their source under the booklet title („שאלות מתוך תוכנית הלימודים”, SPEC 1/4.3).
+   Didactic pages have no topic title at all. Black text, a size and weight clearly below the title. */
+.topic-title {
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--text-label);
+  line-height: 1.15;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
 /* Continuous global page number: a number-only circle at the far (top-left in RTL) corner of the
    header (SPEC 4.1/11.6). The ring colour equals the numeral colour; transparent fill; the New
    Computer Modern numeral matches the formulas. Principle adapted from razpages, not its look. */
@@ -216,7 +227,7 @@ body { direction: rtl; }
 .subpart {
   display: grid;
   grid-template-columns: var(--sub-marker-col) minmax(0, 1fr);
-  column-gap: var(--space-2);
+  column-gap: var(--q-marker-gap);
   align-items: start;
 }
 
@@ -224,7 +235,7 @@ body { direction: rtl; }
    after the longest statement (never across the page) and all verdicts align in one column. */
 .subparts:has(> .subpart--aside) {
   grid-template-columns: var(--sub-marker-col) fit-content(var(--measure)) var(--verdict-col);
-  column-gap: var(--space-2);
+  column-gap: var(--q-marker-gap);
 }
 
 .subpart--aside {
@@ -238,12 +249,16 @@ body { direction: rtl; }
 
 /* Sub-part marker (SPEC 4.2/11.5): a small filled black dot • opens every sub-part. No letters, no numbers. */
 .subpart-marker {
+  /* Hang the • on the first sub-item line WITHOUT forcing the row taller than its content: a
+     computed top nudge centres the dot's em-box on the line (no magic number, no min-height that
+     would inflate short sub-item rows — the ● can use min-height because its row is a whole question). */
+  align-self: start;
+  padding-top: calc((var(--text-body) * var(--leading-body) - 1em) / 2);
   color: var(--ink);
   font-size: var(--subpart-marker-size);
   font-weight: 700;
   line-height: 1;
   text-align: center;
-  padding-top: 1mm;
 }
 
 /* One-line sub-items that end in a write-in slot (pair → word, claim → reason). */
@@ -638,7 +653,7 @@ body { direction: rtl; }
 
 .data-table th,
 .data-table td {
-  border: 0.26mm solid #8f9baa;
+  border: var(--frame-rule-w) solid var(--frame-rule-color);
   padding: var(--table-cell-pad) var(--space-2);
   text-align: center;
   vertical-align: middle;
@@ -685,7 +700,7 @@ body { direction: rtl; }
   color: var(--footer-color);
   font-size: var(--footer-size);
   line-height: 1.28;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .footer-logo {

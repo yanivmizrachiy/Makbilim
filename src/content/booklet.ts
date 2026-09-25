@@ -51,13 +51,3 @@ export const CURRICULUM_QUESTION_IDS: readonly string[] = unit5Questions.map(que
 
 /** The authored task ids, in booklet (document) order — question-plan.json lists them in that order. */
 export const AUTHORED_TASK_IDS: readonly string[] = plan.units.flatMap(unit => unit.tasks.map(task => task.id));
-
-/**
- * The document order of every question over the WHOLE booklet: curriculum questions first, then the
- * authored questions, matching the printed top-to-bottom order. Questions are NOT numbered on the
- * page (only pages are, SPEC 4.1); this order drives the teacher guide's page grouping and the
- * position of a question on its page.
- */
-export const QUESTION_ORDER: readonly string[] = [...CURRICULUM_QUESTION_IDS, ...AUTHORED_TASK_IDS];
-
-export const BOOKLET_QUESTION_COUNT = QUESTION_ORDER.length;
