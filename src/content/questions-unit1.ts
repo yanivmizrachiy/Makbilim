@@ -93,10 +93,10 @@ export const unit1Questions: Unit1Question[] = [
     diagram: { topology: 'statement-only-with-small-reference-diagram', lineLabels: ['r', 's', 't'], orientationDeg: 0, transversalDeg: 64, parallelGiven: true }
   },
   {
-    id: 'U1-P3-A', page: 3, stem: `בכל אחד משני השרטוטים מסומן זוג זוויות מתחלפות. בשרטוט אחד הישרים m ו־n מקבילים (מסומנים בחצים), ובשרטוט השני הם אינם מקבילים. קראו מה טוענים דניאל ונועם, קבעו מי צודק, ציינו באיזה שרטוט אפשר לקבוע שהזוויות המסומנות שוות, ונמקו.`,
+    id: 'U1-P3-A', page: 3, stem: `בכל אחד משני השרטוטים מסומן זוג זוויות מתחלפות. בשרטוט אחד הישרים m ו־n מקבילים (מסומנים בחצים), ובשרטוט השני הם אינם מקבילים. קראו מה טוענים דניאל ונועה, קבעו מי צודק, ציינו באיזה שרטוט אפשר לקבוע שהזוויות המסומנות שוות, ונמקו.`,
     comic: [
       { name: 'דניאל', claim: 'בשני השרטוטים הזוויות המסומנות שוות, כי זוויות מתחלפות שוות.' },
-      { name: 'נועם', claim: `לא מדויק: ${THEOREMS.alternateDirect.text}` }
+      { name: 'נועה', claim: `לא מדויק: ${THEOREMS.alternateDirect.text}` }
     ],
     diagram: { topology: 'claim-analysis-two-configurations', lineLabels: ['m', 'n', 'q'], orientationDeg: 13, transversalDeg: 63, parallelGiven: false }
   },

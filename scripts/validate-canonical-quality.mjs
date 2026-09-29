@@ -78,6 +78,35 @@ const theoremSentences = [
 ];
 gate('theorem-conditions', theoremSentences.every(sentence => spec.includes(sentence)), 'all four canonical theorem sentences must appear verbatim in SPEC.md');
 
+const canonicalDirectShort = [
+  'זוויות מתאימות בין ישרים מקבילים שוות.',
+  'זוויות מתחלפות בין ישרים מקבילים שוות.',
+];
+gate('canonical-direct-wording', canonicalDirectShort.every(sentence => spec.includes(sentence) && questionText['src/content/questions-unit1.ts'].includes(sentence.split(' ').slice(0, 2).join(' '))),
+  'the two direct theorem wordings must stay canonical in SPEC and unit 1');
+
+const unit1 = (plan.units ?? []).find(u => u.unit === 1);
+const u1Tasks = unit1?.tasks ?? [];
+const idx = skill => u1Tasks.findIndex(t => t.skill === skill);
+const firstDirectIndex = u1Tasks.findIndex(t => (t.theoremIds ?? []).some(id => id === 'T1' || id === 'T2'));
+const firstCriticalIndex = u1Tasks.findIndex(t => ['parallel-condition', 'student-claim-analysis', 'fix-incomplete-theorem'].includes(t.skill));
+const firstDirectPair = firstDirectIndex >= 0 ? u1Tasks.slice(firstDirectIndex, firstDirectIndex + 2) : [];
+const directEntryOk =
+  idx('identify-corresponding-pair') >= 0 &&
+  idx('identify-alternate-pair') >= 0 &&
+  idx('identify-corresponding-pair') < firstDirectIndex &&
+  idx('identify-alternate-pair') < firstDirectIndex &&
+  firstDirectPair.length === 2 &&
+  firstDirectPair.every(t => t.format === 'sentence-completion' && /^complete-direct-/.test(t.skill)) &&
+  firstCriticalIndex > firstDirectIndex + 1;
+gate('direct-theorem-learning-order', directEntryOk,
+  'identify corresponding/alternate first; first direct-theorem use must be one-word completion; critical comparison follows');
+
+const u1Text = questionText['src/content/questions-unit1.ts'];
+gate('mixed-gender-critical-dialogue',
+  u1Text.includes("name: 'דניאל'") && u1Text.includes("name: 'נועה'") && spec.includes('נער ונערה'),
+  'critical claim dialogue must include named boy and girl characters');
+
 const badJustifications = [...allQuestionText.matchAll(/justification:\s*['"]([^'"]+)['"]/g)]
   .map(m => m[1])
   .filter(text => /זוויות\s+(מתאימות|מתחלפות)/.test(text) && !/בין ישרים מקבילים/.test(text));

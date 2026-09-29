@@ -116,16 +116,17 @@ describe('Unit 1 conceptual integrity', () => {
 
   it('explicitly challenges the misconception that alternate angles are always equal, on both drawings', () => {
     const q = unit1Questions.find(item => item.id === 'U1-P3-A')!;
-    // SPEC 3.1 / 8.5: the two claims are argued by two boys in the comic — one says the incomplete
+    // SPEC 3.1 / 8.5: the two claims are argued by a boy and a girl in the comic — one says the incomplete
     // wording, the other corrects it with the canonical sentence.
     const claims = (q.comic ?? []).map(c => c.claim).join(' ');
+    expect((q.comic ?? []).map(c => c.name)).toEqual(['דניאל', 'נועה']);
     expect(claims).toContain('זוויות מתחלפות שוות');
     expect(claims).toContain(THEOREMS.alternateDirect.text);
     // The two drawings are part of the task: the student decides in which one equality follows.
     expect(q.stem).toContain('אינם מקבילים');
     expect(q.stem).toMatch(/באיזה שרטוט/);
     const key = teacherAnswerKey.find(entry => entry.id === 'U1-P3-A')!.answer as string;
-    expect(key).toContain('נועם צודק');
+    expect(key).toContain('נועה צודקת');
     expect(key).toContain(THEOREMS.alternateDirect.text);
     expect(key).toContain('בשרטוט השני');
   });
