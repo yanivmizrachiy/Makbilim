@@ -23,9 +23,8 @@ export function AyeletCrispinVideos() {
       </div>
 
       <header className="crispin-videos__header">
-        <div className="crispin-videos__eyebrow">סרטוני המחשה • דפי עבודה • כיתה ח׳</div>
+        <div className="crispin-videos__eyebrow">כיתה ח׳ • סרטוני המחשה ודפי עבודה</div>
         <h2 id="crispin-videos-title">זוויות בין ישרים מקבילים</h2>
-        <p className="crispin-videos__subject">סרטוני המחשה ודפי עבודה</p>
         <p className="crispin-videos__credit">
           הסרטונים צולמו על ידי איילת קריספין — מתכללת את תחום המתמטיקה בעל יסודי בעיר ירושלים ובמחוז ירושלים
         </p>
