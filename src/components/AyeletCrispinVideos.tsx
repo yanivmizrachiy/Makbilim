@@ -27,7 +27,7 @@ export function AyeletCrispinVideos() {
         <h2 id="crispin-videos-title">זוויות בין ישרים מקבילים</h2>
         <p className="crispin-videos__subject">סרטוני המחשה ודפי עבודה</p>
         <p className="crispin-videos__credit">
-          הסרטונים צולמו על ידי איילת קריספין — מדריכה מחוזית למתמטיקה חט״ב, מחוז ירושלים
+          הסרטונים צולמו על ידי איילת קריספין — מתכללת את תחום המתמטיקה בעל יסודי בעיר ירושלים ובמחוז ירושלים
         </p>
       </header>
 
