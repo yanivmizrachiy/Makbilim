@@ -1,4 +1,5 @@
 import { A4Page } from './components/A4Page';
+import { MobileViewerControls } from './components/MobileViewerControls';
 import { QuestionBlock } from './components/QuestionBlock';
 import { LineSlot, WordBank } from './components/ResponseParts';
 import { ParallelLinesDiagram } from './geometry/ParallelLinesDiagram';
@@ -9,6 +10,7 @@ import { Unit3Pages } from './pages/Unit3Pages';
 import { Unit4Pages } from './pages/Unit4Pages';
 import { Unit5Pages } from './pages/Unit5Pages';
 import './styles/print.css';
+import './styles/viewer.css';
 
 const byId = (id: string) => {
   const question = unit1Questions.find(item => item.id === id);
@@ -64,14 +66,17 @@ export function Unit1Page1() {
 
 export default function App() {
   return (
-    <div className="preview-stack">
-      <Unit5Pages />
-      <Unit1Page5 />
-      <Unit1Page1 />
-      <Unit1Continuation />
-      <Unit2Pages />
-      <Unit3Pages />
-      <Unit4Pages />
-    </div>
+    <>
+      <MobileViewerControls />
+      <div className="preview-stack">
+        <Unit5Pages />
+        <Unit1Page5 />
+        <Unit1Page1 />
+        <Unit1Continuation />
+        <Unit2Pages />
+        <Unit3Pages />
+        <Unit4Pages />
+      </div>
+    </>
   );
 }

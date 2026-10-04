@@ -1,0 +1,136 @@
+/* Screen-only controls for phone viewing, sharing, printing and camera-overlay AR preview.
+   The A4 document itself remains unchanged; all controls disappear in print media. */
+
+@media screen {
+  body {
+    padding-top: calc(58px + env(safe-area-inset-top, 0px));
+    overflow-x: hidden;
+  }
+
+  .viewer-controls {
+    position: fixed;
+    z-index: 5000;
+    inset-block-start: 0;
+    inset-inline: 0;
+    min-height: calc(54px + env(safe-area-inset-top, 0px));
+    padding: calc(7px + env(safe-area-inset-top, 0px)) 10px 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    background: rgb(255 255 255 / 96%);
+    border-bottom: 1px solid rgb(15 23 42 / 16%);
+    box-shadow: 0 2px 12px rgb(15 23 42 / 10%);
+    backdrop-filter: blur(10px);
+  }
+
+  .viewer-controls button,
+  .ar-actions button {
+    min-height: 40px;
+    padding: 8px 16px;
+    border: 1px solid rgb(30 64 175 / 22%);
+    border-radius: 12px;
+    background: #fff;
+    color: #172554;
+    font: 700 15px/1.1 var(--font-body);
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .viewer-controls button:active,
+  .ar-actions button:active { transform: translateY(1px); }
+
+  .ar-view {
+    position: fixed;
+    z-index: 10000;
+    inset: 0;
+    overflow: hidden;
+    background: #020617;
+  }
+
+  .ar-camera {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #020617;
+  }
+
+  .ar-page-overlay {
+    position: absolute;
+    inset: 8% 3% 12%;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .ar-page-clone {
+    flex: none;
+    transform: scale(0.43);
+    transform-origin: center;
+    opacity: 0.9;
+    box-shadow: 0 8px 34px rgb(0 0 0 / 42%);
+  }
+
+  .ar-actions {
+    position: absolute;
+    z-index: 2;
+    inset-inline: 0;
+    bottom: max(16px, env(safe-area-inset-bottom, 0px));
+    display: flex;
+    justify-content: center;
+  }
+
+  .ar-actions button {
+    min-width: 110px;
+    background: rgb(255 255 255 / 94%);
+  }
+
+  .ar-error {
+    position: absolute;
+    z-index: 3;
+    inset-inline: 18px;
+    top: max(78px, calc(env(safe-area-inset-top, 0px) + 62px));
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgb(255 255 255 / 94%);
+    color: #7f1d1d;
+    font: 700 15px/1.45 var(--font-body);
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .preview-stack {
+    gap: 8mm;
+    padding: 8mm 0;
+  }
+
+  .viewer-controls {
+    justify-content: stretch;
+  }
+
+  .viewer-controls button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: 8px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (min-width: 700px) {
+  .ar-page-clone { transform: scale(0.62); }
+}
+
+@media print {
+  .viewer-controls,
+  .ar-view {
+    display: none !important;
+  }
+
+  body { padding-top: 0 !important; }
+
+  .preview-stack { zoom: 1 !important; }
+}
