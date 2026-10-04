@@ -70,6 +70,7 @@ export default function App() {
     <>
       <MobileViewerControls />
       <AyeletCrispinVideos />
+      <h2 className="print-pages-heading">דפים להדפסה</h2>
       <div className="preview-stack">
         <Unit5Pages />
         <Unit1Page5 />
