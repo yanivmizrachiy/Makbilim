@@ -33,10 +33,6 @@ export function AyeletCrispinVideos() {
       <div className="crispin-videos__grid">
         {VIDEOS.map(video => (
           <article className="crispin-video-card" key={video.id}>
-            <div className="crispin-video-card__topline">
-              <span className="crispin-video-card__label">{video.label}</span>
-            </div>
-
             <div className="crispin-video-card__frame">
               <iframe
                 src={`https://www.youtube-nocookie.com/embed/${video.id}?rel=0`}
@@ -49,8 +45,7 @@ export function AyeletCrispinVideos() {
             </div>
 
             <div className="crispin-video-card__body">
-              <span className="crispin-video-card__topic-label">נושא הסרטון</span>
-              <h3>{video.title}</h3>
+              <h3>{video.label}</h3>
               <a className="crispin-video-card__link" href={video.url} target="_blank" rel="noreferrer">
                 <span>צפייה בסרטון ביוטיוב</span>
                 <span className="crispin-video-card__arrow" aria-hidden="true">←</span>
