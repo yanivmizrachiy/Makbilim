@@ -1,4 +1,5 @@
 import { A4Page } from './components/A4Page';
+import { AyeletCrispinVideos } from './components/AyeletCrispinVideos';
 import { MobileViewerControls } from './components/MobileViewerControls';
 import { QuestionBlock } from './components/QuestionBlock';
 import { LineSlot, WordBank } from './components/ResponseParts';
@@ -68,6 +69,7 @@ export default function App() {
   return (
     <>
       <MobileViewerControls />
+      <AyeletCrispinVideos />
       <div className="preview-stack">
         <Unit5Pages />
         <Unit1Page5 />
