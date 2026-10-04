@@ -24,13 +24,19 @@ export function MobileViewerControls() {
 
   useEffect(() => {
     const updateScale = () => {
+      const stack = document.querySelector<HTMLElement>('.preview-stack');
+      if (!stack) return;
       const available = Math.max(280, window.innerWidth - 16);
-      const scale = Math.min(1, available / PAGE_WIDTH_PX);
-      document.documentElement.style.setProperty('--mobile-page-scale', String(scale));
+      const scale = window.innerWidth <= 900 ? Math.min(1, available / PAGE_WIDTH_PX) : 1;
+      stack.style.setProperty('zoom', String(scale));
     };
     updateScale();
     window.addEventListener('resize', updateScale, { passive: true });
-    return () => window.removeEventListener('resize', updateScale);
+    window.addEventListener('orientationchange', updateScale, { passive: true });
+    return () => {
+      window.removeEventListener('resize', updateScale);
+      window.removeEventListener('orientationchange', updateScale);
+    };
   }, []);
 
   const share = async () => {
@@ -43,8 +49,12 @@ export function MobileViewerControls() {
       try { await navigator.share(data); } catch { /* user cancelled */ }
       return;
     }
-    await navigator.clipboard?.writeText(window.location.href);
-    window.alert('הקישור הועתק.');
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(window.location.href);
+      window.alert('הקישור הועתק.');
+      return;
+    }
+    window.prompt('העתיקו את הקישור:', window.location.href);
   };
 
   const closeAr = () => {
