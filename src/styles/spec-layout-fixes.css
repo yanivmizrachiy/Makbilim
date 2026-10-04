@@ -1,0 +1,8 @@
+/* Canonical SPEC layout fixes.
+ *
+ * SPEC 11.1 requires surplus height in guided deductions to be distributed through
+ * the reasoning chain instead of leaving a dead band below the final reason.
+ */
+.question-main > .deduction-chain {
+  justify-content: space-between;
+}
