@@ -1,3 +1,4 @@
+# Dependencies and build output
 node_modules/
 dist/
 dist-teacher/
@@ -5,8 +6,51 @@ artifacts/
 public/vendor/
 public/generated/
 src/content/generated/
-*.log
 .vivliostyle/
+.vite/
+.cache/
+coverage/
+playwright-report/
+test-results/
 
-# Local Claude Code dev config (launch.json for the preview server)
+# Logs, temporary files and editor backups
+*.log
+*.tmp
+*.temp
+*.bak
+*.old
+*.orig
+*.rej
+*.swp
+*.swo
+*~
+~$*
+*.tsbuildinfo
+.eslintcache
+
+# OS metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Thumbs.db:encryptable
+desktop.ini
+
+# IDE / local workspace settings
+.idea/
+.vscode/
+
+# Python local artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local environment / secrets
+.env
+.env.*
+!.env.example
+
+# Local Claude Code dev config
 .claude/
