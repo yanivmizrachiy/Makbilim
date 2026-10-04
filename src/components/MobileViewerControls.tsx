@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 const PAGE_WIDTH_PX = 210 * 96 / 25.4;
-const DOWNLOAD_URL = `${import.meta.env.BASE_URL}זוויות-בין-ישרים-מקבילים.pdf`;
+const DOWNLOAD_URL = './זוויות-בין-ישרים-מקבילים.pdf';
 
 function applyLockedA4Scale() {
   const cssScreenWidth = Math.min(
