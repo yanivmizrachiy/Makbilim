@@ -15,6 +15,16 @@ function visiblePage(): HTMLElement | null {
   });
 }
 
+function applyLockedA4Scale() {
+  const cssScreenWidth = Math.min(
+    window.screen.width || document.documentElement.clientWidth,
+    document.documentElement.clientWidth || window.screen.width,
+  );
+  const available = Math.max(1, cssScreenWidth - 12);
+  const scale = cssScreenWidth <= 900 ? Math.min(1, available / PAGE_WIDTH_PX) : 1;
+  document.documentElement.style.setProperty('--mobile-a4-scale', String(scale));
+}
+
 export function MobileViewerControls() {
   const [arOpen, setArOpen] = useState(false);
   const [cameraError, setCameraError] = useState('');
@@ -23,20 +33,14 @@ export function MobileViewerControls() {
   const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
-    const updateScale = () => {
-      const stack = document.querySelector<HTMLElement>('.preview-stack');
-      if (!stack) return;
-      const available = Math.max(280, window.innerWidth - 16);
-      const scale = window.innerWidth <= 900 ? Math.min(1, available / PAGE_WIDTH_PX) : 1;
-      stack.style.setProperty('zoom', String(scale));
+    applyLockedA4Scale();
+
+    const onOrientationChange = () => {
+      window.setTimeout(applyLockedA4Scale, 180);
     };
-    updateScale();
-    window.addEventListener('resize', updateScale, { passive: true });
-    window.addEventListener('orientationchange', updateScale, { passive: true });
-    return () => {
-      window.removeEventListener('resize', updateScale);
-      window.removeEventListener('orientationchange', updateScale);
-    };
+
+    window.addEventListener('orientationchange', onOrientationChange, { passive: true });
+    return () => window.removeEventListener('orientationchange', onOrientationChange);
   }, []);
 
   const share = async () => {
