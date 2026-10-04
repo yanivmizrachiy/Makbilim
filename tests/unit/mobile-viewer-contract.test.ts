@@ -4,24 +4,35 @@ import { describe, expect, it } from 'vitest';
 const app = fs.readFileSync('src/App.tsx', 'utf8');
 const controls = fs.readFileSync('src/components/MobileViewerControls.tsx', 'utf8');
 const viewerCss = fs.readFileSync('src/styles/viewer.css', 'utf8');
+const workflow = fs.readFileSync('.github/workflows/ci.yml', 'utf8');
 
-describe('mobile viewer, print and AR contract', () => {
+describe('mobile viewer, download and print contract', () => {
   it('mounts the screen-only viewer controls without changing the A4 booklet source', () => {
     expect(app).toContain('<MobileViewerControls />');
     expect(app).toContain("import './styles/viewer.css'");
   });
 
-  it('offers native phone share, print and camera-overlay AR actions', () => {
-    expect(controls).toContain('navigator.share');
+  it('offers only download and print actions', () => {
+    expect(controls).toContain('הורדה');
+    expect(controls).toContain('הדפסה');
     expect(controls).toContain('window.print()');
-    expect(controls).toContain('getUserMedia');
-    expect(controls).toContain("facingMode: { ideal: 'environment' }");
-    expect(controls).toContain('AR / וידאו');
+    expect(controls).toContain('זוויות-בין-ישרים-מקבילים.pdf');
+    expect(controls).not.toContain('navigator.share');
+    expect(controls).not.toContain('getUserMedia');
+    expect(controls).not.toContain('AR / וידאו');
+    expect(viewerCss).not.toContain('.ar-view');
+    expect(viewerCss).not.toContain('.ar-camera');
+  });
+
+  it('publishes the validated student PDF into the deployed site', () => {
+    expect(workflow).toContain('Publish student PDF into site');
+    expect(workflow).toContain('artifacts/pdf/זוויות-בין-ישרים-מקבילים-chromium.pdf');
+    expect(workflow).toContain('dist/זוויות-בין-ישרים-מקבילים.pdf');
   });
 
   it('locks the phone preview to one stable A4 scale without scroll-time resize drift', () => {
     expect(controls).toContain('PAGE_WIDTH_PX');
-    expect(controls).toContain("--mobile-a4-scale");
+    expect(controls).toContain('--mobile-a4-scale');
     expect(controls).not.toContain("addEventListener('resize'");
     expect(controls).toContain("addEventListener('orientationchange'");
     expect(viewerCss).toMatch(/@media\s+screen\s+and\s+\(max-width:\s*900px\)/);
