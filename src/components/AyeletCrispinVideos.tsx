@@ -1,13 +1,13 @@
 const VIDEOS = [
   {
     id: 'XbwGamf-tsg',
-    label: 'סרטון 1',
+    label: 'מיקום זוויות מתאימות ומתחלפות',
     title: 'זוויות בין ישרים מקבילים — הבנת המיקום של זוויות מתאימות ומתחלפות',
     url: 'https://youtu.be/XbwGamf-tsg',
   },
   {
     id: 'y9Uu3NGoU-I',
-    label: 'סרטון 2',
+    label: 'מדוע זוויות מתאימות ומתחלפות שוות',
     title: 'זוויות בין ישרים מקבילים — למה הזוויות המתאימות והמתחלפות שוות בין ישרים מקבילים',
     url: 'https://www.youtube.com/watch?v=y9Uu3NGoU-I',
   },
@@ -32,13 +32,10 @@ export function AyeletCrispinVideos() {
       </header>
 
       <div className="crispin-videos__grid">
-        {VIDEOS.map((video, index) => (
+        {VIDEOS.map(video => (
           <article className="crispin-video-card" key={video.id}>
             <div className="crispin-video-card__topline">
               <span className="crispin-video-card__label">{video.label}</span>
-              <span className="crispin-video-card__number" aria-hidden="true">
-                {String(index + 1).padStart(2, '0')}
-              </span>
             </div>
 
             <div className="crispin-video-card__frame">
