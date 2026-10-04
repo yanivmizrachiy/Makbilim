@@ -2,6 +2,11 @@
    The A4 document itself remains unchanged; all controls disappear in print media. */
 
 @media screen {
+  html,
+  body {
+    overscroll-behavior-x: none;
+  }
+
   body {
     padding-top: calc(58px + env(safe-area-inset-top, 0px));
     overflow-x: hidden;
@@ -104,8 +109,21 @@
 
 @media screen and (max-width: 900px) {
   .preview-stack {
+    width: 100%;
     gap: 8mm;
     padding: 8mm 0;
+    justify-items: center;
+    overflow: visible;
+  }
+
+  /* Mobile is a viewport onto the SAME A4 sheet, never a responsive reflow.
+     The scale is calculated once from stable screen width and does not react to browser-chrome
+     resize events while scrolling. Every page remains exactly 210:297 and fixed in the centre. */
+  .a4-page {
+    zoom: var(--mobile-a4-scale, 1);
+    flex: none;
+    margin-inline: auto;
+    touch-action: pan-y;
   }
 
   .viewer-controls {
@@ -131,6 +149,5 @@
   }
 
   body { padding-top: 0 !important; }
-
-  .preview-stack { zoom: 1 !important; }
+  .a4-page { zoom: 1 !important; }
 }
